@@ -52,7 +52,7 @@ describe("factorHelper", () => {
     factorSet: "setA",
     source: "sourceA",
     activityType: "fuel",
-    activityUnit: "L",
+    activityUnit: ["L"],
     name: "Diesel Combustion",
     description: "Diesel use",
     effectiveFrom: "2024-01-01",
@@ -71,14 +71,14 @@ describe("factorHelper", () => {
     bioCO2: 0,
     indirectCO2e: 1.5,
     unit: "L",
-    factorId:"abc-123",
+    factorId: 12345,
     transactionId: "abc-123",
     
     
   };
 
   it("returns all values from full response", async () => {
-    mockedRetrieveFactor.mockResolvedValue(JSON.stringify(baseResponse));
+    mockedRetrieveFactor.mockResolvedValue(baseResponse);
 
     const result = await factorHelper("fuel", "L", "USA", "CA", "2024-01-01");
 
@@ -93,7 +93,7 @@ describe("factorHelper", () => {
         baseResponse.factorSet,
         baseResponse.source,
         baseResponse.activityType,
-        baseResponse.activityUnit,
+        "L",
         baseResponse.name,
         baseResponse.description,
         baseResponse.effectiveFrom,
@@ -121,7 +121,7 @@ describe("factorHelper", () => {
   });
 
   it("handles factorId input", async () => {
-    mockedRetrieveFactor.mockResolvedValue(JSON.stringify(baseResponse));
+    mockedRetrieveFactor.mockResolvedValue(baseResponse);
 
     await factorHelper(12345, "kg");
 
@@ -136,21 +136,33 @@ describe("factorHelper", () => {
     await expect(factorHelper("type", "unit")).rejects.toThrow("Invalid API response");
   });
 
-  it("parses JSON string response from SDK", async () => {
-    mockedRetrieveFactor.mockResolvedValue(JSON.stringify(baseResponse));
+  it("handles typed object response from SDK v1.0.2+", async () => {
+    mockedRetrieveFactor.mockResolvedValue(baseResponse);
 
     const result = await factorHelper("fuel", "L");
 
     expect(result[0][11]).toBe(123.45); // totalCO2e
   });
 
+  it("handles activityUnit as array", async () => {
+    const responseWithMultipleUnits = {
+      ...baseResponse,
+      activityUnit: ["L", "gal", "m3"],
+    };
+    mockedRetrieveFactor.mockResolvedValue(responseWithMultipleUnits);
+
+    const result = await factorHelper("fuel", "L");
+
+    expect(result[0][3]).toBe("L, gal, m3"); // activityUnit joined
+  });
+
   it("returns default values for missing or null fields", async () => {
   // Create a mock response with some fields missing (null or undefined)
   const mockResponseWithNullValues = {
-    factorSet: null,         
-    source: "sourceA",       
-    activityType: "fuel",    
-    activityUnit: "L",
+    factorSet: null,
+    source: "sourceA",
+    activityType: "fuel",
+    activityUnit: ["L"],
     name: null,              
     description: null,    
     effectiveFrom: null,
@@ -168,13 +180,13 @@ describe("factorHelper", () => {
     NF3: null,               
     bioCO2: null,            
     indirectCO2e: null,      
-    unit: "L",               
-    factorId: null,          
-    transactionId: null,     
+    unit: "L",
+    factorId: null as any,
+    transactionId: null,
   };
 
   
-  mockedRetrieveFactor.mockResolvedValue(JSON.stringify(mockResponseWithNullValues));
+  mockedRetrieveFactor.mockResolvedValue(mockResponseWithNullValues);
 
   const result = await factorHelper("fuel", "L", "USA", "CA", "2024-01-01");
 
@@ -184,9 +196,9 @@ describe("factorHelper", () => {
       "",             
       "sourceA",      
       "fuel",         
-      "L",            
-      "",             
-      "",             
+      "L",
+      "",
+      "",
       "",
       "",
       "",
@@ -208,6 +220,27 @@ describe("factorHelper", () => {
     ]
   ]);
 });
+  it("handles country without stateProvince", async () => {
+    mockedRetrieveFactor.mockResolvedValue(baseResponse);
+    await factorHelper("fuel", "L", "USA");
+    expect(mockedRetrieveFactor).toHaveBeenCalledWith({
+      activity: { type: "fuel", unit: "L" },
+      location: { country: "USA" },
+    });
+  });
+
+  it("handles empty date string", async () => {
+    mockedRetrieveFactor.mockResolvedValue(baseResponse);
+    await factorHelper("fuel", "L", "USA", "CA", "   ");
+    expect(mockedConvertDate).not.toHaveBeenCalled();
+  });
+
+  it("handles activityUnit as string", async () => {
+    const response = { ...baseResponse, activityUnit: "kg" as any };
+    mockedRetrieveFactor.mockResolvedValue(response);
+    const result = await factorHelper("fuel", "L");
+    expect(result[0][3]).toBe("kg");
+  });
 
 
   
