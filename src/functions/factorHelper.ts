@@ -34,20 +34,23 @@ export async function factorHelper(
     apiParams.activity.factorId = typeOrId;
   }
 
-  const rawResponse = await Factor.retrieveFactor(apiParams);
-
-  const response = typeof rawResponse === "string" ? JSON.parse(rawResponse) : rawResponse;
+  const response = await Factor.retrieveFactor(apiParams);
 
   if (!response || typeof response === "undefined") {
     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, "Invalid API response");
   }
+
+  // Handle activityUnit as array (join with ", " to maintain single column)
+  const activityUnit = Array.isArray(response.activityUnit)
+    ? response.activityUnit.join(", ")
+    : (response.activityUnit ?? "");
 
   return [
     [
       response.factorSet ?? "",
       response.source ?? "",
       response.activityType ?? "",
-      response.activityUnit ?? "",
+      activityUnit,
       response.name ?? "",
       response.description ?? "",
       response.effectiveFrom ?? "",
