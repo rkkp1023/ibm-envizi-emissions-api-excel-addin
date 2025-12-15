@@ -47,24 +47,15 @@ export async function fetchUnits(apiName: string, type: string): Promise<string[
     // Call the getUnits method with the type parameter
     const response = await ApiClass.getUnits(type);
     
-    // The SDK returns a string, but we need to parse it as JSON to get the units array
-    let parsedResponse: any;
-    try {
-      parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
-    } catch (error) {
-      throw new Error(`Failed to parse response from ${apiName} API`);
-    }
-    
-    // Extract units array from response
-    if (!parsedResponse?.units || !Array.isArray(parsedResponse.units)) {
+    if (!response?.units || !Array.isArray(response.units)) {
       throw new Error(`Invalid response format from ${apiName} API`);
     }
     
-    if (parsedResponse.units.length === 0) {
+    if (response.units.length === 0) {
       throw new Error(`No units found for type: ${type}`);
     }
     
-    return parsedResponse.units;
+    return response.units;
   } catch (error) {
     throw new Error(`Failed to fetch units: ${error.message || "Unknown error"}`);
   }
