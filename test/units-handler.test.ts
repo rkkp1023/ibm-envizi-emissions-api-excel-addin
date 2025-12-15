@@ -120,7 +120,7 @@ describe("units-handler", () => {
   const mockFactorGetUnits = Factor.getUnits as jest.MockedFunction<typeof Factor.getUnits>;
 
   const mockUnitsArray = ["J", "KJ", "MJ", "GJ", "TJ", "BTU", "thm", "dth", "kBTU", "MMBTU", "Wh", "kWh", "mWh", "usd"];
-  const mockUnitsResponse = JSON.stringify({ units: mockUnitsArray });
+  const mockUnitsResponse = { units: mockUnitsArray };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -239,22 +239,25 @@ describe("units-handler", () => {
       await expect(fetchUnits("unknown" as any, "electricity")).rejects.toThrow("Unknown API name");
     });
 
-    it("should throw error if API returns invalid JSON", async () => {
-      mockLocationGetUnits.mockResolvedValueOnce("invalid json" as any);
-
-      await expect(fetchUnits("location", "electricity")).rejects.toThrow("Failed to parse response");
-    });
-
     it("should throw error if API returns invalid response format", async () => {
-      mockLocationGetUnits.mockResolvedValueOnce(JSON.stringify({ units: null }) as any);
+      mockLocationGetUnits.mockResolvedValueOnce({ units: null } as any);
 
       await expect(fetchUnits("location", "electricity")).rejects.toThrow("Invalid response format");
     });
 
     it("should throw error if API returns empty units array", async () => {
-      mockLocationGetUnits.mockResolvedValueOnce(JSON.stringify({ units: [] }) as any);
+      mockLocationGetUnits.mockResolvedValueOnce({ units: [] } as any);
 
       await expect(fetchUnits("location", "electricity")).rejects.toThrow("No units found for type");
+    });
+
+    it("should handle typed object response from SDK v1.0.2+", async () => {
+      const typedResponse = { units: ["kWh", "MWh", "GWh"] };
+      mockLocationGetUnits.mockResolvedValueOnce(typedResponse);
+
+      const units = await fetchUnits("location", "electricity");
+
+      expect(units).toEqual(["kWh", "MWh", "GWh"]);
     });
 
     it("should throw error if API call fails", async () => {
