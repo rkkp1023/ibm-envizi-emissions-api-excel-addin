@@ -293,6 +293,114 @@ describe("factorSearch", () => {
     }));
   });
 
+  it("handles activityUnit as undefined in formatFactorSearchResponse", async () => {
+    const responseWithUndefinedUnit = {
+      factors: [
+        {
+          factorSet: "set1",
+          source: "source1",
+          activityType: "type1",
+          activityUnit: undefined,
+          region: "USA",
+          factorId: 1001,
+          transactionId: "txn-1001",
+          name: "Factor 1",
+          description: "Description 1",
+          effectiveFrom: "2024-01-01",
+          effectiveTo: "2025-01-01",
+          publishedFrom: "2024-01-01",
+          publishedTo: "2025-01-01",
+          totalCO2e: 100,
+          CO2: 50,
+          CH4: 10,
+          N2O: 5,
+          HFC: 0,
+          PFC: 0,
+          SF6: 0,
+          NF3: 0,
+          bioCO2: 0,
+          indirectCO2e: 2,
+          unit: "kgCO2e",
+        },
+      ],
+    };
+    mockedSearch.mockResolvedValue(responseWithUndefinedUnit as any);
+    const result = await factorSearch("diesel", "USA");
+    expect(result[0][3]).toBe("");
+  });
+
+  it("handles activityUnit as null in formatFactorSearchResponse", async () => {
+    const responseWithNullUnit = {
+      factors: [
+        {
+          factorSet: "set1",
+          source: "source1",
+          activityType: "type1",
+          activityUnit: null,
+          region: "USA",
+          factorId: 1001,
+          transactionId: "txn-1001",
+          name: "Factor 1",
+          description: "Description 1",
+          effectiveFrom: "2024-01-01",
+          effectiveTo: "2025-01-01",
+          publishedFrom: "2024-01-01",
+          publishedTo: "2025-01-01",
+          totalCO2e: 100,
+          CO2: 50,
+          CH4: 10,
+          N2O: 5,
+          HFC: 0,
+          PFC: 0,
+          SF6: 0,
+          NF3: 0,
+          bioCO2: 0,
+          indirectCO2e: 2,
+          unit: "kgCO2e",
+        },
+      ],
+    };
+    mockedSearch.mockResolvedValue(responseWithNullUnit as any);
+    const result = await factorSearch("diesel", "USA");
+    expect(result[0][3]).toBe("");
+  });
+
+  it("handles activityUnit as non-array string in formatFactorSearchResponse", async () => {
+    const responseWithStringUnit = {
+      factors: [
+        {
+          factorSet: "set1",
+          source: "source1",
+          activityType: "type1",
+          activityUnit: "kg",
+          region: "USA",
+          factorId: 1001,
+          transactionId: "txn-1001",
+          name: "Factor 1",
+          description: "Description 1",
+          effectiveFrom: "2024-01-01",
+          effectiveTo: "2025-01-01",
+          publishedFrom: "2024-01-01",
+          publishedTo: "2025-01-01",
+          totalCO2e: 100,
+          CO2: 50,
+          CH4: 10,
+          N2O: 5,
+          HFC: 0,
+          PFC: 0,
+          SF6: 0,
+          NF3: 0,
+          bioCO2: 0,
+          indirectCO2e: 2,
+          unit: "kgCO2e",
+        },
+      ],
+    };
+    mockedSearch.mockResolvedValue(responseWithStringUnit as any);
+    const result = await factorSearch("diesel", "USA");
+    expect(result[0][3]).toBe("kg");
+  });
+
   it("throws error when response is missing factors array", async () => {
     mockedSearch.mockResolvedValue({ factors: null } as any);
     await expect(factorSearch("diesel", "USA")).rejects.toThrow("Invalid API response structure");
@@ -313,5 +421,5 @@ describe("factorSearch", () => {
       expect(e.code).toBe("InvalidValue");
     }
   });
-  });
+});
 });
