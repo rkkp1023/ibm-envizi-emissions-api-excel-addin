@@ -217,5 +217,101 @@ describe("factorSearch", () => {
     expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
       pagination: { page: 2, size: 50 }
     }));
+
+});
+
+describe("factorSearch", () => {
+  const mockedEnsureClient = ensureClient as jest.MockedFunction<typeof ensureClient>;
+  const mockedSearch = Factor.search as jest.MockedFunction<typeof Factor.search>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockedEnsureClient.mockResolvedValue(undefined);
+    jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  const mockResponse = {
+    factors: [
+      {
+        factorSet: "set1",
+        source: "source1",
+        activityType: "type1",
+        activityUnit: ["kg"],
+        region: "USA",
+        factorId: 1001,
+        transactionId: "txn-1001",
+        name: "Factor 1",
+        description: "Description 1",
+        effectiveFrom: "2024-01-01",
+        effectiveTo: "2025-01-01",
+        publishedFrom: "2024-01-01",
+        publishedTo: "2025-01-01",
+        totalCO2e: 100,
+        CO2: 50,
+        CH4: 10,
+        N2O: 5,
+        HFC: 0,
+        PFC: 0,
+        SF6: 0,
+        NF3: 0,
+        bioCO2: 0,
+        indirectCO2e: 2,
+        unit: "kgCO2e",
+      },
+    ],
+  };
+
+  it("includes stateProvince in params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA", "CA");
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      location: { country: "USA", stateProvince: "CA" }
+    }));
+  });
+
+  it("excludes stateProvince from params when not provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA");
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      location: { country: "USA" }
+    }));
+  });
+
+  it("includes date in params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA", undefined, "2024-01-01");
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      time: { date: "2024-01-01" }
+    }));
+  });
+
+  it("excludes date from params when empty string", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA", undefined, "   ");
+    expect(mockedSearch).toHaveBeenCalledWith(expect.not.objectContaining({
+      time: expect.anything()
+    }));
+  });
+
+  it("throws error when response is missing factors array", async () => {
+    mockedSearch.mockResolvedValue({ factors: null } as any);
+    await expect(factorSearch("diesel", "USA")).rejects.toThrow("Invalid API response structure");
+  });
+
+  it("re-throws CustomFunctions.Error without modification", async () => {
+    const customError = new (global as any).CustomFunctions.Error("NotAvailable", "Custom error");
+    mockedSearch.mockRejectedValue(customError);
+    await expect(factorSearch("diesel", "USA")).rejects.toThrow(customError);
+  });
+
+  it("uses InvalidValue error code for 400 status", async () => {
+    const error = { status: 400, message: "Bad request" };
+    mockedSearch.mockRejectedValue(error);
+    try {
+      await factorSearch("diesel", "USA");
+    } catch (e: any) {
+      expect(e.code).toBe("InvalidValue");
+    }
+  });
   });
 });

@@ -220,6 +220,27 @@ describe("factorHelper", () => {
     ]
   ]);
 });
+  it("handles country without stateProvince", async () => {
+    mockedRetrieveFactor.mockResolvedValue(baseResponse);
+    await factorHelper("fuel", "L", "USA");
+    expect(mockedRetrieveFactor).toHaveBeenCalledWith({
+      activity: { type: "fuel", unit: "L" },
+      location: { country: "USA" },
+    });
+  });
+
+  it("handles empty date string", async () => {
+    mockedRetrieveFactor.mockResolvedValue(baseResponse);
+    await factorHelper("fuel", "L", "USA", "CA", "   ");
+    expect(mockedConvertDate).not.toHaveBeenCalled();
+  });
+
+  it("handles activityUnit as string", async () => {
+    const response = { ...baseResponse, activityUnit: "kg" as any };
+    mockedRetrieveFactor.mockResolvedValue(response);
+    const result = await factorHelper("fuel", "L");
+    expect(result[0][3]).toBe("kg");
+  });
 
 
   
