@@ -11,6 +11,7 @@ import { handleCountryFunction, handleStateProvinceFunction, handlePowerGridFunc
  * Triggers data validation dropdown for API types.
  * Returns the API name and stores a request for the taskpane to apply validation.
  * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#types
  * @param apiName The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor)
  * @param invocation Invocation object to get cell address
  * @requiresAddress
@@ -26,6 +27,7 @@ export async function types(
  * Triggers data validation dropdown for API units.
  * Fetches units on-demand from the API and applies validation to the cell.
  * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#units
  * @param apiName The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor)
  * @param type The type parameter to fetch units for (e.g., "electricity")
  * @param invocation Invocation object to get cell address
@@ -43,6 +45,7 @@ export async function units(
  * Triggers data validation dropdown for country selection.
  * Fetches countries from the API and applies validation to the cell.
  * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#country
  * @param apiName The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor, factorsearch)
  * @param invocation Invocation object to get cell address
  * @requiresAddress
@@ -58,6 +61,7 @@ export async function country(
  * Triggers data validation dropdown for state/province selection.
  * Fetches state/province data for the specified country and applies validation to the cell.
  * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#state-province
  * @param apiName The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor, factorsearch)
  * @param country The country alpha3 code (e.g., "USA", "CAN")
  * @param invocation Invocation object to get cell address
@@ -75,6 +79,7 @@ export async function state_province(
  * Triggers data validation dropdown for power grid selection.
  * Fetches power grid data for the specified country and applies validation to the cell.
  * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#power-grid
  * @param apiName The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor, factorsearch)
  * @param country The country alpha3 code (e.g., "USA", "CAN")
  * @param invocation Invocation object to get cell address
