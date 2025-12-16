@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>90ef193d-e53e-4f93-b280-39e2dc609661</Id>
-  <Version>1.0.2</Version>
+  <Version>1.0.3</Version>
   <ProviderName>IBM</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="IBM Envizi Emissions API"/>
+  <DisplayName DefaultValue="IBM Envizi Emissions Calculations"/>
   <Description DefaultValue="Seamlessly integrate emissions data into your workflows."/>
   <IconUrl DefaultValue="https://localhost:8000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:8000/assets/icon-64.png"/>
@@ -96,12 +96,12 @@
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="ENVIZI"/>
-        <bt:String id="GetStarted.Title" DefaultValue="Get started with IBM Envizi Emissions API"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Get started with IBM Envizi Emissions Calculations"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="IBM Envizi"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="IBM Envizi Emissions API"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="IBM Envizi Emissions Calculations"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Seamlessly integrate emissions data into your workflows. Open the 'IBM Envizi Emissions API' task pane to get started."/>
+        <bt:String id="GetStarted.Description" DefaultValue="Seamlessly integrate emissions data into your workflows. Open the 'IBM Envizi Emissions Calculations' task pane to get started."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Seamlessly integrate emissions data into your workflows."/>
       </bt:LongStrings>
     </Resources>
