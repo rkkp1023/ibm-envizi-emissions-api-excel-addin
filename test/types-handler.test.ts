@@ -48,6 +48,7 @@ const mockDataRange = {
 
 const mockUsedRange = {
   rowCount: 4,
+  rowIndex: 0,
   load: jest.fn(),
 };
 
@@ -58,7 +59,7 @@ const mockColumn = {
 const mockApiTypesSheet = {
   name: "API_Types_Data",
   getRange: jest.fn().mockImplementation((address) => {
-    if (address.includes("2:")) {
+    if (address.includes("3:")) {
       return mockDataRange;
     }
     return mockColumn;
@@ -304,7 +305,8 @@ describe("types-handler", () => {
 
     it("should handle empty types data", async () => {
       // Mock empty data range
-      mockUsedRange.rowCount = 1; // Only header row
+      mockUsedRange.rowCount = 2; // Only metadata and header rows (no data)
+      mockUsedRange.rowIndex = 0;
 
       await expect(handleTypesFunction("Location", mockInvocation)).rejects.toThrow();
 

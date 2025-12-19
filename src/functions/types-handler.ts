@@ -61,17 +61,23 @@ async function applyDataValidation(cellAddress: string, apiName: string): Promis
     // Get the entire column to find the last row with data
     const column = apiTypesSheet.getRange(`${columnLetter}:${columnLetter}`);
     const usedRange = column.getUsedRange();
-    usedRange.load("rowCount");
+    usedRange.load("rowCount, rowIndex");
     await context.sync();
     
     const rowCount = usedRange.rowCount;
+    const startRow = usedRange.rowIndex;
     
-    if (rowCount <= 1) {
+    // Calculate the actual last row (startRow is 0-based)
+    const lastRow = startRow + rowCount;
+    
+    // Data starts at row 2 (0-based index), skipping metadata (row 0) and header (row 1)
+    if (lastRow <= 2) {
       throw new Error(`No types found for API: ${apiName}`);
     }
     
-    // Get the actual data range (excluding header)
-    const dataRange = apiTypesSheet.getRange(`${columnLetter}2:${columnLetter}${rowCount}`);
+    // Get the actual data range (excluding metadata row 0 and header row 1)
+    // Row 2 in 1-based Excel notation is index 2
+    const dataRange = apiTypesSheet.getRange(`${columnLetter}3:${columnLetter}${lastRow}`);
     dataRange.load("values");
     await context.sync();
     
