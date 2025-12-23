@@ -10,7 +10,7 @@ import {
 } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
-import { convertExcelDateToISO } from "./utils";
+import { convertExcelDateToISO, extractSymbolFromDisplay } from "./utils";
 
 
 type ApiType =
@@ -54,7 +54,12 @@ const emissionApiMap: Record<ApiType, (params: any) => Promise<any>> = {
 
 function buildLocation(payload: PayloadWithType, apiType: ApiType): Record<string, string> | undefined {
   const { country, stateProvince, powerGrid } = payload;
-  const location: any = { country };
+  
+  // Extract country alpha3 from display format
+  // "United States (USA)" → "USA" or "USA" → "USA"
+  const countryCode = extractSymbolFromDisplay(country) || country;
+  
+  const location: any = { country: countryCode };
 
   if (stateProvince) location.stateProvince = stateProvince;
   if ((apiType === "location" || apiType === "calculation") && powerGrid) {
@@ -66,7 +71,15 @@ function buildLocation(payload: PayloadWithType, apiType: ApiType): Record<strin
 
 function buildApiParams(apiType: ApiType, payload: Payload): any {
   const { value, unit } = payload;
-  const activity: any = { value, ...(unit ? { unit } : {}) };
+  
+  // Extract unit symbol from display format
+  // "kilogram (kg)" → "kg" or "kg" → "kg"
+  const unitSymbol = unit ? extractSymbolFromDisplay(unit) : undefined;
+  
+  const activity: any = {
+    value,
+    ...(unitSymbol ? { unit: unitSymbol } : {})
+  };
 
   if ("type" in payload) {
     activity.type = payload.type;
