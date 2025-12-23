@@ -119,7 +119,13 @@ describe("units-handler", () => {
   >;
   const mockFactorGetUnits = Factor.getUnits as jest.MockedFunction<typeof Factor.getUnits>;
 
-  const mockUnitsArray = ["J", "KJ", "MJ", "GJ", "TJ", "BTU", "thm", "dth", "kBTU", "MMBTU", "Wh", "kWh", "mWh", "usd"];
+  // SDK 1.0.3 format: array of objects with unit and unitName
+  const mockUnitsArray = [
+    { unit: "J", unitName: "joule" },
+    { unit: "KJ", unitName: "kilojoule" },
+    { unit: "MJ", unitName: "megajoule" },
+    { unit: "kWh", unitName: "kilowatt hour" },
+  ];
   const mockUnitsResponse = { units: mockUnitsArray };
 
   beforeEach(() => {
@@ -190,49 +196,56 @@ describe("units-handler", () => {
       const units = await fetchUnits("location", "electricity");
 
       expect(mockLocationGetUnits).toHaveBeenCalledWith("electricity");
-      expect(units).toEqual(mockUnitsArray);
+      // Expect transformed display format
+      const expectedUnits = mockUnitsArray.map(u => `${u.unitName} (${u.unit})`);
+      expect(units).toEqual(expectedUnits);
     });
 
     it("should fetch units for mobile API", async () => {
       const units = await fetchUnits("mobile", "diesel");
 
       expect(mockMobileGetUnits).toHaveBeenCalledWith("diesel");
-      expect(units).toEqual(mockUnitsArray);
+      const expectedUnits = mockUnitsArray.map(u => `${u.unitName} (${u.unit})`);
+      expect(units).toEqual(expectedUnits);
     });
 
     it("should fetch units for fugitive API", async () => {
       const units = await fetchUnits("fugitive", "refrigerant");
 
       expect(mockFugitiveGetUnits).toHaveBeenCalledWith("refrigerant");
-      expect(units).toEqual(mockUnitsArray);
+      const expectedUnits = mockUnitsArray.map(u => `${u.unitName} (${u.unit})`);
+      expect(units).toEqual(expectedUnits);
     });
 
     it("should fetch units for stationary API", async () => {
       const units = await fetchUnits("stationary", "natural-gas");
 
       expect(mockStationaryGetUnits).toHaveBeenCalledWith("natural-gas");
-      expect(units).toEqual(mockUnitsArray);
+      const expectedUnits = mockUnitsArray.map(u => `${u.unitName} (${u.unit})`);
+      expect(units).toEqual(expectedUnits);
     });
 
     it("should fetch units for calculation API", async () => {
       const units = await fetchUnits("calculation", "electricity");
 
       expect(mockCalculationGetUnits).toHaveBeenCalledWith("electricity");
-      expect(units).toEqual(mockUnitsArray);
+      const expectedUnits = mockUnitsArray.map(u => `${u.unitName} (${u.unit})`);
+      expect(units).toEqual(expectedUnits);
     });
+it("should fetch units for transportationanddistribution API", async () => {
+  const units = await fetchUnits("transportationanddistribution", "freight");
 
-    it("should fetch units for transportationanddistribution API", async () => {
-      const units = await fetchUnits("transportationanddistribution", "freight");
-
-      expect(mockTransportationGetUnits).toHaveBeenCalledWith("freight");
-      expect(units).toEqual(mockUnitsArray);
-    });
+  expect(mockTransportationGetUnits).toHaveBeenCalledWith("freight");
+  const expectedUnits = mockUnitsArray.map(u => `${u.unitName} (${u.unit})`);
+  expect(units).toEqual(expectedUnits);
+});
 
     it("should fetch units for factor API", async () => {
       const units = await fetchUnits("factor", "electricity");
 
       expect(mockFactorGetUnits).toHaveBeenCalledWith("electricity");
-      expect(units).toEqual(mockUnitsArray);
+      const expectedUnits = mockUnitsArray.map(u => `${u.unitName} (${u.unit})`);
+      expect(units).toEqual(expectedUnits);
     });
 
     it("should throw error for unknown API name", async () => {
@@ -251,13 +264,23 @@ describe("units-handler", () => {
       await expect(fetchUnits("location", "electricity")).rejects.toThrow("No units found for type");
     });
 
-    it("should handle typed object response from SDK v1.0.2+", async () => {
-      const typedResponse = { units: ["kWh", "MWh", "GWh"] };
+    it("should handle typed object response from SDK v1.0.3+", async () => {
+      const typedResponse = {
+        units: [
+          { unit: "kWh", unitName: "kilowatt hour" },
+          { unit: "MWh", unitName: "megawatt hour" },
+          { unit: "GWh", unitName: "gigawatt hour" }
+        ]
+      };
       mockLocationGetUnits.mockResolvedValueOnce(typedResponse);
 
       const units = await fetchUnits("location", "electricity");
 
-      expect(units).toEqual(["kWh", "MWh", "GWh"]);
+      expect(units).toEqual([
+        "kilowatt hour (kWh)",
+        "megawatt hour (MWh)",
+        "gigawatt hour (GWh)"
+      ]);
     });
 
     it("should throw error if API call fails", async () => {
@@ -326,10 +349,12 @@ describe("units-handler", () => {
       expect(mockLocationGetUnits).toHaveBeenCalledWith("electricity");
       expect(mockExcelRun).toHaveBeenCalled();
       expect(mockTargetCell.dataValidation.clear).toHaveBeenCalled();
+      // Expected display format: "unitName (unit)"
+      const expectedSource = mockUnitsArray.map(u => `${u.unitName} (${u.unit})`).join(",");
       expect(mockTargetCell.dataValidation.rule).toEqual({
         list: {
           inCellDropDown: true,
-          source: mockUnitsArray.join(","),
+          source: expectedSource,
         },
       });
     });
