@@ -20,14 +20,21 @@ export function extractSymbolFromDisplay(displayValue: string | undefined): stri
   
   const trimmed = displayValue.trim();
   
-  // Match pattern: "anything (SYMBOL)" where SYMBOL is captured
-  // Using RegExp.exec() for better performance and safety
-  // The regex looks for content within parentheses at the end of the string
-  const regex = /\(([^)]+)\)$/;
-  const match = regex.exec(trimmed);
+  // Extract symbol from "Name (Symbol)" format using string operations
+  // This approach is safe from ReDoS attacks and more performant
+  const lastOpenParen = trimmed.lastIndexOf('(');
+  const lastCloseParen = trimmed.lastIndexOf(')');
   
-  // If match found, return the symbol; otherwise return original (backward compatible)
-  return match ? match[1].trim() : trimmed;
+  // Check if we have valid parentheses at the end: "something (symbol)"
+  if (lastOpenParen > 0 &&
+      lastCloseParen === trimmed.length - 1 &&
+      lastOpenParen < lastCloseParen) {
+    // Extract and return the content between parentheses
+    return trimmed.substring(lastOpenParen + 1, lastCloseParen).trim();
+  }
+  
+  // No valid parentheses pattern found, return original (backward compatible)
+  return trimmed;
 }
 
 export function convertExcelDateToISO(input: string): string {
