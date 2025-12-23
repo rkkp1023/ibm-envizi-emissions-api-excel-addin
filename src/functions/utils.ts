@@ -21,8 +21,10 @@ export function extractSymbolFromDisplay(displayValue: string | undefined): stri
   const trimmed = displayValue.trim();
   
   // Match pattern: "anything (SYMBOL)" where SYMBOL is captured
+  // Using RegExp.exec() for better performance and safety
   // The regex looks for content within parentheses at the end of the string
-  const match = trimmed.match(/\(([^)]+)\)$/);
+  const regex = /\(([^)]+)\)$/;
+  const match = regex.exec(trimmed);
   
   // If match found, return the symbol; otherwise return original (backward compatible)
   return match ? match[1].trim() : trimmed;
