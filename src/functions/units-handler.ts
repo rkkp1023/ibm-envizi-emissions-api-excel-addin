@@ -32,10 +32,10 @@ const API_CLASS_MAP = {
 };
 
 /**
- * Fetches units for a specific API type
+ * Fetches units for a specific API type and transforms them to display format
  * @param apiName The normalized API name (lowercase)
  * @param type The type parameter to pass to getUnits
- * @returns Array of unit strings
+ * @returns Array of unit strings in display format "unitName (unit)"
  */
 export async function fetchUnits(apiName: string, type: string): Promise<string[]> {
   try {
@@ -55,7 +55,8 @@ export async function fetchUnits(apiName: string, type: string): Promise<string[
       throw new Error(`No units found for type: ${type}`);
     }
     
-    return response.units;
+    // Transform to display format: "unitName (unit)"
+    return response.units.map(item => `${item.unitName} (${item.unit})`);
   } catch (error) {
     throw new Error(`Failed to fetch units: ${error.message || "Unknown error"}`);
   }

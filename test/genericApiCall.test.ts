@@ -21,9 +21,24 @@
   },
 };
 
+// Mock the utils module BEFORE imports
+jest.mock("../src/functions/utils", () => ({
+  convertExcelDateToISO: jest.fn().mockReturnValue("2025-08-23"),
+  extractSymbolFromDisplay: jest.fn((value) => {
+    // Mock implementation: extract symbol from "Name (Symbol)" or return as-is
+    if (!value) return value;
+    const match = value.match(/\(([^)]+)\)$/);
+    return match ? match[1] : value;
+  }),
+}));
+
+jest.mock("../src/functions/client", () => ({
+  ensureClient: jest.fn().mockResolvedValue(undefined),
+}));
+
 import { genericApiCall } from "../src/functions/generic-api-call";
 import { ensureClient } from "../src/functions/client";
-import { convertExcelDateToISO } from "../src/functions/utils";
+import { convertExcelDateToISO, extractSymbolFromDisplay } from "../src/functions/utils";
 
 import {
   Location,
@@ -33,14 +48,6 @@ import {
   Calculation,
   TransportationAndDistribution,
 } from "emissions-api-sdk";
-
-jest.mock("../src/functions/client", () => ({
-  ensureClient: jest.fn().mockResolvedValue(undefined),
-}));
-
-jest.mock("../src/functions/utils", () => ({
-  convertExcelDateToISO: jest.fn().mockReturnValue("2025-08-23"),
-}));
 
 // Mock Emission classes
 jest.mock("emissions-api-sdk", () => {
