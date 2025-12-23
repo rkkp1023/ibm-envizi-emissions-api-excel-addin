@@ -1,4 +1,33 @@
 // Copyright IBM Corp. 2025
+
+/**
+ * Extracts symbol/code from display format "Name (Symbol)" or returns as-is
+ * This function handles both display format and direct symbol input for backward compatibility
+ *
+ * @param displayValue The value to extract from (e.g., "kilogram (kg)" or "kg")
+ * @returns The extracted symbol (e.g., "kg") or the original value if no parentheses found
+ *
+ * @example
+ * extractSymbolFromDisplay("kilogram (kg)") // Returns: "kg"
+ * extractSymbolFromDisplay("United States (USA)") // Returns: "USA"
+ * extractSymbolFromDisplay("kg") // Returns: "kg" (backward compatible)
+ * extractSymbolFromDisplay("USA") // Returns: "USA" (backward compatible)
+ */
+export function extractSymbolFromDisplay(displayValue: string | undefined): string | undefined {
+  if (!displayValue || typeof displayValue !== 'string') {
+    return displayValue;
+  }
+  
+  const trimmed = displayValue.trim();
+  
+  // Match pattern: "anything (SYMBOL)" where SYMBOL is captured
+  // The regex looks for content within parentheses at the end of the string
+  const match = trimmed.match(/\(([^)]+)\)$/);
+  
+  // If match found, return the symbol; otherwise return original (backward compatible)
+  return match ? match[1].trim() : trimmed;
+}
+
 export function convertExcelDateToISO(input: string): string {
   const trimmed = input.trim();
 
