@@ -46,11 +46,12 @@ function mapApiNameForAreaData(apiName: string): string {
 }
 
 /**
- * Gets unique alpha3 codes for a specific API from the area data sheet
+ * Gets unique country display strings for a specific API from the area data sheet
+ * Returns format: "CountryName (alpha3)"
  * @param apiName The normalized API name
- * @returns Promise<string[]> Array of alpha3 codes
+ * @returns Promise<string[]> Array of country display strings
  */
-async function getAlpha3CodesForApi(apiName: string): Promise<string[]> {
+async function getCountryDisplayForApi(apiName: string): Promise<string[]> {
   // Map factor/factorsearch to calculation
   const queryApiName = mapApiNameForAreaData(apiName);
   
@@ -61,20 +62,22 @@ async function getAlpha3CodesForApi(apiName: string): Promise<string[]> {
     await context.sync();
     
     const values = usedRange.values;
-    const alpha3Codes: string[] = [];
+    const countries: string[] = [];
     
-    // Skip header row (index 0)
-    for (let i = 1; i < values.length; i++) {
+    // Skip metadata row (index 0) and header row (index 1)
+    for (let i = 2; i < values.length; i++) {
       const row = values[i];
       const rowApiName = row[AREA_COLUMN_MAP.apiName]?.toString().toLowerCase();
       const alpha3 = row[AREA_COLUMN_MAP.alpha3]?.toString();
+      const countryName = row[AREA_COLUMN_MAP.countryName]?.toString();
       
-      if (rowApiName === queryApiName && alpha3) {
-        alpha3Codes.push(alpha3);
+      if (rowApiName === queryApiName && alpha3 && countryName) {
+        // Create display format: "CountryName (alpha3)"
+        countries.push(`${countryName} (${alpha3})`);
       }
     }
     
-    return alpha3Codes;
+    return countries;
   });
 }
 
@@ -145,10 +148,10 @@ export async function handleCountryFunction(
     // Ensure area data sheet exists (create if needed)
     await ensureAreaDataSheet();
     
-    // Get alpha3 codes for this API
-    const alpha3Codes = await getAlpha3CodesForApi(normalizedApiName);
+    // Get country display strings for this API
+    const countryDisplays = await getCountryDisplayForApi(normalizedApiName);
     
-    if (alpha3Codes.length === 0) {
+    if (countryDisplays.length === 0) {
       throw new Error(`No countries found for API: ${apiName}`);
     }
     
@@ -158,9 +161,9 @@ export async function handleCountryFunction(
       
       applyListValidation(
         targetCell,
-        alpha3Codes,
+        countryDisplays,
         "Invalid Country",
-        "Please select a valid country code from the dropdown list"
+        "Please select a valid country from the dropdown list"
       );
       
       await context.sync();
@@ -205,10 +208,14 @@ export async function handleStateProvinceFunction(
     // Ensure area data sheet exists (create if needed)
     await ensureAreaDataSheet();
     
+    // Extract alpha3 from country parameter (handles both "USA" and "United States (USA)")
+    const { extractSymbolFromDisplay } = await import("./utils");
+    const alpha3 = extractSymbolFromDisplay(country.trim())?.toUpperCase() || country.trim().toUpperCase();
+    
     // Get state/province data for this API and country
     const stateProvinces = await getAreaDataForCountry(
       normalizedApiName,
-      country.trim().toUpperCase(),
+      alpha3,
       AREA_COLUMN_MAP.stateProvince
     );
     
@@ -272,10 +279,14 @@ export async function handlePowerGridFunction(
     // Ensure area data sheet exists (create if needed)
     await ensureAreaDataSheet();
     
+    // Extract alpha3 from country parameter (handles both "USA" and "United States (USA)")
+    const { extractSymbolFromDisplay } = await import("./utils");
+    const alpha3 = extractSymbolFromDisplay(country.trim())?.toUpperCase() || country.trim().toUpperCase();
+    
     // Get power grid data for this API and country
     const powerGrids = await getAreaDataForCountry(
       normalizedApiName,
-      country.trim().toUpperCase(),
+      alpha3,
       AREA_COLUMN_MAP.powerGrid
     );
     
