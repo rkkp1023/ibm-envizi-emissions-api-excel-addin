@@ -24,7 +24,7 @@ Step 1: Locate Add-ins in Excel
 Step 2: Install the Add-in
 ---------------------------
 
-1. In the search box of the Add-ins dialog box, type **Emissions Calculation** and press **Enter**.
+1. In the search box of the Add-ins dialog box, type **IBM Envizi - Emissions calculation** and press **Enter**.
 2. Locate **IBM Envizi - Emissions Calculation in Excel** in the search results.
 3. Click on the add-in to view its details, then click the **Add** button to install the add-in.
 
