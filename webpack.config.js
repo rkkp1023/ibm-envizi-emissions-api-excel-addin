@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2025, 2026
 
 /* eslint-disable no-undef */
 
@@ -39,7 +39,12 @@ module.exports = async (env, options) => {
         buffer: require.resolve("buffer/"),
       },
     },
-
+    optimization: {
+      runtimeChunk: "single", // create a single runtime file
+      splitChunks: {
+        chunks: "all", // make chunks shared to avoid duplication
+      },
+    },
     module: {
       rules: [
         {
@@ -47,6 +52,10 @@ module.exports = async (env, options) => {
           exclude: /node_modules/,
           use: {
             loader: "babel-loader",
+            options: {
+              targets: { browsers: "defaults", node: "current" },
+              presets: [["@babel/preset-env"]],
+            },
           },
         },
         {
