@@ -18,39 +18,14 @@ Install
 
 In order to use **IBM Envizi Emissions API** for Excel, there are two options to install:
 
-1. Download from the AppSource Store (coming soon)
-2. Sideload a manifest.xml file
-
-Microsoft AppSource Store
-=========================
-
-Coming soon.
-
-
-Sideload
-========
-
-Download the Manifest File
---------------------------
-
-The manifest file is available at the following location:
-
-`manifest.xml <https://plugins.app.ibm.com/excel-addin/manifest.xml>`_
-
-.. important::
- If your browser displays the XML content instead of downloading the file, select **File** → **Save As**, name the file **manifest.xml**, and save it to your preferred location.
-
-Platform-Specific Installation
-------------------------------
-
-The following sections contain instructions for sideloading the Add-in in different environments, please choose the one that is relevant:
+1. Install from the Microsoft Marketplace (Recommended)
+2. Sideload using a manifest.xml file
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   online
-   windows
-   mac
+   install-appstore
+   install-manifest
 
 .. important::
    Note that Excel custom functions are available on the following platforms:
