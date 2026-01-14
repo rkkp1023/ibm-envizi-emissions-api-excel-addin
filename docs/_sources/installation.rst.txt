@@ -18,7 +18,7 @@ Install
 
 In order to use **IBM Envizi Emissions API** for Excel, there are two options to install:
 
-1. Install from the Microsoft AppSource Store (Recommended)
+1. Install from the Microsoft Marketplace (Recommended)
 2. Sideload using a manifest.xml file
 
 .. toctree::

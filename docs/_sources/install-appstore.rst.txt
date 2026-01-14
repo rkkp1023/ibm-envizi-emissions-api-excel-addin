@@ -1,10 +1,10 @@
 ============================
-Microsoft AppSource Store
+Microsoft Marketplace
 ============================
 
-This guide explains how to install the **IBM Envizi Emissions API** add-in from the Microsoft AppSource Store on **macOS**.
+This guide explains how to install the **IBM Envizi Emissions API** add-in from the Microsoft Marketplace on **macOS**.
 
-The **IBM Envizi Emissions API** add-in is now available on the Microsoft AppSource Store. This is the recommended installation method as it provides automatic updates and simplified installation.
+The **IBM Envizi Emissions API** add-in is now available on the Microsoft Marketplace. This is the recommended installation method as it provides automatic updates and simplified installation.
 
 
 Step 1: Locate Add-ins in Excel
