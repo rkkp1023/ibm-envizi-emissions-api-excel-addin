@@ -3,6 +3,8 @@
  * Licensed Materials - Property of IBM
  */
 
+import TaskpaneApp from "./TaskpaneApp";
+
 /* global Office, localStorage */
 
 // Feature flag to switch between old and new React version
@@ -40,8 +42,6 @@ async function loadReactVersion() {
   const ReactDOM = await import("react-dom/client");
   const { FluentProvider, webLightTheme, webDarkTheme } =
     await import("@fluentui/react-components");
-  const AppModule = await import("./TaskpaneApp");
-  const App = (AppModule as any).default || AppModule;
 
   // Hide sideload message
   const sideloadMsg = document.getElementById("sideload-msg");
@@ -58,11 +58,11 @@ async function loadReactVersion() {
   if (rootElement) {
     const root = ReactDOM.createRoot(rootElement);
     root.render(
-      React.createElement(
-        React.StrictMode,
-        null,
-        React.createElement(FluentProvider, { theme }, React.createElement(App))
-      )
+      <React.StrictMode>
+        <FluentProvider theme={theme}>
+          <TaskpaneApp />
+        </FluentProvider>
+      </React.StrictMode>
     );
   }
 

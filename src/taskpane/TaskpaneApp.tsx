@@ -1,5 +1,9 @@
-function TaskpaneApp() {
-  return <h1> React Application Loaded</h1>;
-}
+import WelcomePage from "./components/WelcomePage";
 
-export default TaskpaneApp;
+export default function TaskpaneApp() {
+  const handleGetStarted = () => {
+    console.log("Get Started clicked");
+  };
+
+  return <WelcomePage onGetStarted={handleGetStarted} />;
+}
