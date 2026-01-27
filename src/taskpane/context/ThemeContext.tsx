@@ -3,8 +3,8 @@
  * Licensed Materials - Property of IBM
  */
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Theme, webLightTheme, webDarkTheme } from "@fluentui/react-components";
+import { Theme, webDarkTheme, webLightTheme } from "@fluentui/react-components";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 /* global Office, window */
 

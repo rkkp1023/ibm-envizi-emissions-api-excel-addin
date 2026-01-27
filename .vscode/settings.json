@@ -1,8 +1,6 @@
 {
-    "eslint.validate": [
-      "javascript",
-      "javascriptreact",
-      "typescript"
-    ]
+  "eslint.validate": ["javascript", "javascriptreact", "typescript"],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
   }
-  
+}

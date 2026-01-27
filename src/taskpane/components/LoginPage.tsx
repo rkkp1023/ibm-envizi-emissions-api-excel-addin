@@ -3,10 +3,10 @@
  * Licensed Materials - Property of IBM
  */
 
-import { Link, Input, Checkbox, Button, Field } from "@fluentui/react-components";
-import { useAuth } from "../context/AuthContext";
+import { Button, Checkbox, Field, Input, Link } from "@fluentui/react-components";
 import { useState } from "react";
 import { getEnvType } from "../../common/env";
+import { useAuth } from "../context/AuthContext";
 
 const apiHomeUrls = {
   prod: "https://www.app.ibm.com/envizi/emissions-api-home",

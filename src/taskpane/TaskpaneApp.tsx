@@ -3,12 +3,12 @@
  * Licensed Materials - Property of IBM
  */
 
-import { useState, useEffect } from "react";
-import { ThemeProvider } from "./context/ThemeContext";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import WelcomePage from "./components/WelcomePage";
+import { useEffect, useState } from "react";
 import LoginPage from "./components/LoginPage";
 import MainPage from "./components/MainPage";
+import WelcomePage from "./components/WelcomePage";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
