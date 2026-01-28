@@ -1,3 +1,8 @@
+/*
+ * Copyright IBM Corp. 2026
+ * Licensed Materials - Property of IBM
+ */
+
 import { Button } from "@fluentui/react-components";
 
 interface WelcomePageProps {
@@ -28,7 +33,7 @@ export default function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>
           <li className="ms-ListItem">Export your results quickly & easily</li>
         </ul>
         <div className="welcome-bottom">
-          <Button id="get-started-button" type="submit" appearance="primary">
+          <Button id="get-started-button" type="submit" appearance="primary" onClick={onGetStarted}>
             Get started
           </Button>
         </div>

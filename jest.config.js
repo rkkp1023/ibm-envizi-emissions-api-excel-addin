@@ -1,11 +1,25 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  roots: ['<rootDir>/test'],
-  testMatch: ['**/*.test.ts'],
-  moduleFileExtensions: ['ts', 'js', 'json'],
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
+  roots: ["<rootDir>/test", "<rootDir>/src"],
+  testMatch: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
   collectCoverage: true,
-  coverageDirectory: 'dist/coverage',
-  coverageReporters: ['text', 'lcov'],
-  coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/lib/']
+  coverageDirectory: "dist/coverage",
+  coverageReporters: ["text", "lcov"],
+  coveragePathIgnorePatterns: ["/node_modules/", "/dist/", "/lib/"],
+  transform: {
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: {
+          jsx: "react-jsx",
+          esModuleInterop: true,
+          allowSyntheticDefaultImports: true,
+          module: "commonjs",
+        },
+        isolatedModules: true,
+      },
+    ],
+  },
 };
