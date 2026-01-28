@@ -29,9 +29,6 @@ import {
 } from "../common/credentials";
 import { getEnvType } from "../common/env";
 import { ensureClient, resetClient } from "../functions/client";
-import { refreshSheetOnLogin } from "../functions/metadata-utils";
-import { loadAndPopulateApiTypes } from "../functions/api-types-loader";
-import { loadAndPopulateAreaData } from "../functions/area-loader";
 
 accordionDefinition.define(FluentDesignSystem.registry);
 accordionItemDefinition.define(FluentDesignSystem.registry);
@@ -83,9 +80,6 @@ Office.onReady(() => {
       pageId = "login-page";
     }
     switchPage(pageId);
-    if (apiCredentials) {
-      postLogin();
-    }
   });
 });
 
@@ -149,7 +143,6 @@ export function login(): void {
       credentialsForm["orgId"].value = apiCredentials.orgId;
 
       switchPage("main-page");
-      postLogin();
     })
     .catch((e) => {
       const errorMessage =
@@ -159,17 +152,6 @@ export function login(): void {
       errorMessageElement.innerText = errorMessage;
       errorMessageElement.hidden = false;
     });
-}
-
-async function postLogin(): Promise<void> {
-  // Processing needed after login
-  // Refresh metadata sheets if they exist
-  try {
-    await refreshSheetOnLogin("API_Types_Data", loadAndPopulateApiTypes);
-    await refreshSheetOnLogin("API_Area_Data", loadAndPopulateAreaData);
-  } catch (error) {
-    console.error("Error during metadata refresh:", error);
-  }
 }
 
 export function logout(): void {
