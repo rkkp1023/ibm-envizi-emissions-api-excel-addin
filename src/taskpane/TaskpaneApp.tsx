@@ -4,19 +4,25 @@
  */
 
 import { useEffect, useState } from "react";
-import LoginPage from "./components/LoginPage";
-import MainPage from "./components/MainPage";
-import WelcomePage from "./components/WelcomePage";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { LoginPage } from "./components/LoginPage";
+import { MainPage } from "./components/MainPage";
+import { WelcomePage } from "./components/WelcomePage";
+import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { useAuth } from "./hooks/useAuth";
+import { useStyles } from "./hooks/useStyles";
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
-  const [showWelcome, setShowWelcome] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    const hasSeenWelcome = localStorage.getItem("getStartedClicked") === "true";
+    return !hasSeenWelcome;
+  });
 
   useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem("getStartedClicked") === "true";
-    setShowWelcome(!hasSeenWelcome && !isAuthenticated);
+    if (isAuthenticated) {
+      setShowWelcome(false);
+    }
   }, [isAuthenticated]);
 
   const handleGetStarted = () => {
@@ -44,11 +50,14 @@ function AppContent() {
 }
 
 export default function TaskpaneApp() {
+  const styles = useStyles();
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </ThemeProvider>
+    <div className={styles.root}>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </div>
   );
 }

@@ -3,79 +3,95 @@
  * Licensed Materials - Property of IBM
  */
 
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import {
-  ApiCredentials,
-  loadApiCredentialsFromStorage,
-  removeApiCredentialsFromStorage,
-  saveApiCredentialsToStorage,
-  setApiCredentials,
-} from "../../common/credentials";
+import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
+import { loadApiCredentialsFromStorage } from "../../common/credentials";
+import { performLogin, performLogout } from "../services/authService";
+import { ApiCredentials } from "../types/auth.types";
+import { AuthActionType, authReducer, initialAuthState } from "./authReducer";
 
 /* global OfficeRuntime */
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
+  credentials: ApiCredentials | null;
+  error: string | null;
   login: (credentials: ApiCredentials, saveCredentials: boolean) => Promise<void>;
   logout: () => Promise<void>;
+  clearError: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
+  // Restore session on mount
   useEffect(() => {
-    // Check if user has saved credentials
-    loadApiCredentialsFromStorage()
-      .then((credentials) => {
+    const restoreSession = async () => {
+      try {
+        const credentials = await loadApiCredentialsFromStorage();
+
         if (credentials) {
-          setIsAuthenticated(true);
+          dispatch({
+            type: AuthActionType.RESTORE_SESSION,
+            payload: { credentials },
+          });
+        } else {
+          dispatch({ type: AuthActionType.LOGOUT });
         }
-      })
-      .catch((error) => {
-        console.error("Error loading credentials:", error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      } catch (error) {
+        dispatch({ type: AuthActionType.LOGOUT });
+      }
+    };
+
+    restoreSession();
   }, []);
 
-  const login = async (credentials: ApiCredentials, saveCredentials: boolean) => {
-    // Validate credentials (basic validation)
-    if (!credentials.apiKey || !credentials.tenantId || !credentials.orgId) {
-      throw new Error("All fields are required");
+  const login = useCallback(async (credentials: ApiCredentials, saveCredentials: boolean) => {
+    dispatch({ type: AuthActionType.LOGIN_START });
+
+    try {
+      // Perform login with API validation
+      await performLogin(credentials, saveCredentials);
+
+      dispatch({
+        type: AuthActionType.LOGIN_SUCCESS,
+        payload: { credentials },
+      });
+    } catch (error: any) {
+      dispatch({
+        type: AuthActionType.LOGIN_FAILURE,
+        payload: { error: error.message || "Login failed" },
+      });
+      throw error;
     }
+  }, []);
 
-    // Set credentials in memory
-    setApiCredentials(credentials);
-
-    // Save to storage if requested
-    if (saveCredentials) {
-      await saveApiCredentialsToStorage(credentials);
+  const logout = useCallback(async () => {
+    try {
+      // Perform logout and reset client
+      await performLogout();
+      dispatch({ type: AuthActionType.LOGOUT });
+    } catch (error) {
+      // Always dispatch logout even if there's an error
+      dispatch({ type: AuthActionType.LOGOUT });
     }
+  }, []);
 
-    setIsAuthenticated(true);
+  const clearError = useCallback(() => {
+    dispatch({ type: AuthActionType.CLEAR_ERROR });
+  }, []);
+
+  const value: AuthContextType = {
+    isAuthenticated: state.isAuthenticated,
+    isLoading: state.isLoading,
+    credentials: state.credentials,
+    error: state.error,
+    login,
+    logout,
+    clearError,
   };
 
-  const logout = async () => {
-    await removeApiCredentialsFromStorage();
-    setIsAuthenticated(false);
-  };
-
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
-  return context;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

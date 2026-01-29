@@ -9,10 +9,10 @@ interface WelcomePageProps {
   onGetStarted: () => void;
 }
 
-export default function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
+export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
   return (
     <div id="welcome-page" className="page welcome-page">
-      <header className="welcome-header ms-bgColor-neutralLighter">
+      <header className="welcome-header">
         <img
           width="64"
           height="64"

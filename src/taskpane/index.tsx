@@ -4,6 +4,8 @@
  */
 
 import TaskpaneApp from "./TaskpaneApp";
+import "./reset.css";
+import "./taskpane.css";
 
 /* global Office, localStorage */
 

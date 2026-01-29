@@ -171,6 +171,14 @@ b {
   padding-block-end: 10px;
 }
 
+.accordion-content > p:first-child {
+  margin-block-end: 16px;
+}
+
+.text-block {
+  margin-block-start: 16px;
+}
+
 .text-block:not(:last-child) {
   margin-block-end: 12px;
 }
