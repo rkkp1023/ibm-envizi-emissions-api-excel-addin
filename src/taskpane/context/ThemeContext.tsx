@@ -4,7 +4,7 @@
  */
 
 import { Theme, webDarkTheme, webLightTheme } from "@fluentui/react-components";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 /* global Office, window */
 
@@ -13,7 +13,7 @@ interface ThemeContextType {
   isDark: boolean;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(webLightTheme);
@@ -45,12 +45,4 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return <ThemeContext.Provider value={{ theme, isDark }}>{children}</ThemeContext.Provider>;
-}
-
-export function useTheme() {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within ThemeProvider");
-  }
-  return context;
 }

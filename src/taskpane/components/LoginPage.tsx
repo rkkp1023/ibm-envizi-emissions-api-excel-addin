@@ -5,37 +5,25 @@
 
 import { Button, Checkbox, Field, Input, Link } from "@fluentui/react-components";
 import { useState } from "react";
-import { getEnvType } from "../../common/env";
-import { useAuth } from "../context/AuthContext";
+import { getOverviewDashboardUrl } from "../../common/env";
+import { useAuth } from "../hooks/useAuth";
 
-const apiHomeUrls = {
-  prod: "https://www.app.ibm.com/envizi/emissions-api-home",
-  np: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
-  local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
-};
-
-export default function LoginPage() {
-  const { login } = useAuth();
+export function LoginPage() {
+  const { login, error, isLoading, clearError } = useAuth();
   const [apiKey, setApiKey] = useState("");
   const [tenantId, setTenantId] = useState("");
   const [orgId, setOrgId] = useState("");
   const [saveCredentials, setSaveCredentials] = useState(true);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  const overviewDashboardUrl = `${apiHomeUrls[getEnvType()]}/overview`;
+  const overviewDashboardUrl = getOverviewDashboardUrl();
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setError("");
-    setIsLoading(true);
+  const handleSubmit = async () => {
+    clearError();
 
     try {
       await login({ apiKey, tenantId, orgId }, saveCredentials);
-    } catch (err: any) {
-      setError(err.message || "Login failed");
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      // Error is handled by the context
     }
   };
 
@@ -50,7 +38,7 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
-      <form className="form" onSubmit={handleSubmit}>
+      <form className="form" action={handleSubmit}>
         <div className="form-grid">
           <Field label="API key" required>
             <Input

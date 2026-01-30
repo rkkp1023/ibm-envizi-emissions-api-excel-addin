@@ -6,7 +6,7 @@
 import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
-import WelcomePage from "./WelcomePage";
+import { WelcomePage } from "./WelcomePage";
 
 describe("WelcomePage", () => {
   const mockOnGetStarted = jest.fn();

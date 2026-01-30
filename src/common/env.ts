@@ -16,6 +16,12 @@ export const apiUrls: Record<ApiId, Record<EnvType, string>> = {
   },
 };
 
+export const apiHomeUrls: Record<EnvType, string> = {
+  prod: "https://www.app.ibm.com/envizi/emissions-api-home",
+  np: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
+  local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
+};
+
 let _envType: EnvType;
 
 function detectEnvType(): EnvType {
@@ -40,4 +46,13 @@ export function getEnvType(): EnvType {
 export function getApiUrl(api: ApiId) {
   const envType = getEnvType();
   return apiUrls[api][envType];
+}
+
+export function getApiHomeUrl(): string {
+  const envType = getEnvType();
+  return apiHomeUrls[envType];
+}
+
+export function getOverviewDashboardUrl(): string {
+  return `${getApiHomeUrl()}/overview`;
 }

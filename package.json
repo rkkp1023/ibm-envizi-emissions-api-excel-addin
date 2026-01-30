@@ -22,7 +22,8 @@
     "watch": "webpack --mode development --watch",
     "log-server": "node logger-server.js",
     "dev": "concurrently \"npm run dev-server\" \"npm start\"",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.72.9",
