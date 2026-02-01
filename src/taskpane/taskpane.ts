@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corp. 2025
+ * Copyright IBM Corp. 2025, 2026
  * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
  * See LICENSE in the project root for license information.
  */
@@ -29,6 +29,7 @@ import {
 } from "../common/credentials";
 import { getEnvType } from "../common/env";
 import { ensureClient, resetClient } from "../functions/client";
+import { displayLoginDialog } from "./auth";
 
 accordionDefinition.define(FluentDesignSystem.registry);
 accordionItemDefinition.define(FluentDesignSystem.registry);
@@ -89,6 +90,11 @@ function getOverviewDashboardUrl(): string {
 
 function initGetStartedPage(): void {
   document.getElementById("get-started-button").onclick = () => {
+    if (window.localStorage.getItem("testLogin") === "true") {
+      displayLoginDialog();
+      return;
+    }
+
     getStartedClicked = true;
     window.localStorage.setItem("getStartedClicked", "true");
     switchPage("login-page");

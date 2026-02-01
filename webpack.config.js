@@ -26,6 +26,7 @@ module.exports = async (env, options) => {
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       taskpane: ["./src/taskpane/index.tsx"],
+      login: ["./src/login/login.ts"],
       functions: ["./src/functions/functions.ts"],
     },
     output: {
@@ -88,6 +89,11 @@ module.exports = async (env, options) => {
         filename: "taskpane.html",
         template: "./src/taskpane/taskpane.html",
         chunks: ["polyfill", "taskpane", "functions"],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "login.html",
+        template: "./src/login/login.html",
+        chunks: ["login"],
       }),
       new CopyWebpackPlugin({
         patterns: [
