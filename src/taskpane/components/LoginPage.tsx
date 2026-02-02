@@ -17,7 +17,8 @@ export function LoginPage() {
 
   const overviewDashboardUrl = getOverviewDashboardUrl();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     clearError();
 
     try {
@@ -38,7 +39,7 @@ export function LoginPage() {
           </Link>
         </p>
       </div>
-      <form className="form" action={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         <div className="form-grid">
           <Field label="API key" required>
             <Input

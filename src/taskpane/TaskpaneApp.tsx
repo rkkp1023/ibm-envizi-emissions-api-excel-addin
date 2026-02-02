@@ -30,14 +30,6 @@ function AppContent() {
     setShowWelcome(false);
   };
 
-  if (isLoading) {
-    return (
-      <div className="loading-container">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
   if (showWelcome) {
     return <WelcomePage onGetStarted={handleGetStarted} />;
   }
