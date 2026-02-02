@@ -30,7 +30,7 @@ export const initialAuthState: AuthState = {
   isAuthenticated: false,
 };
 
-export function authReducer(state: AuthState, action: AuthAction): AuthState {
+export function AuthReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case AuthActionType.LOGIN_START:
       return {

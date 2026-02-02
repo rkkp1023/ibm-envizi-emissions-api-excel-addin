@@ -7,7 +7,7 @@ import { createContext, ReactNode, useCallback, useEffect, useReducer } from "re
 import { loadApiCredentialsFromStorage } from "../../common/credentials";
 import { performLogin, performLogout } from "../services/authService";
 import { ApiCredentials } from "../types/auth.types";
-import { AuthActionType, authReducer, initialAuthState } from "./authReducer";
+import { AuthActionType, AuthReducer, initialAuthState } from "./AuthReducer";
 
 /* global OfficeRuntime */
 
@@ -24,7 +24,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(authReducer, initialAuthState);
+  const [state, dispatch] = useReducer(AuthReducer, initialAuthState);
 
   // Restore session on mount
   useEffect(() => {
