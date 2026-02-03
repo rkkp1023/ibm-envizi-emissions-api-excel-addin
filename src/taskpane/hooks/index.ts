@@ -4,5 +4,5 @@
  */
 
 export { useAuth } from "./useAuth";
-export { useStyles } from "./useStyles";
 export { useTheme } from "./useTheme";
+

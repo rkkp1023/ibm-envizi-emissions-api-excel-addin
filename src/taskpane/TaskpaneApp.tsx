@@ -10,7 +10,7 @@ import { MainPage } from "./components/MainPage";
 import { WelcomePage } from "./components/WelcomePage";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
-import { useAuth, useStyles, useTheme } from "./hooks";
+import { useAuth, useTheme } from "./hooks";
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
@@ -43,15 +43,12 @@ function AppContent() {
 
 function AppWithTheme() {
   const { theme } = useTheme();
-  const styles = useStyles();
 
   return (
     <FluentProvider theme={theme}>
-      <div className={styles.root}>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </div>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </FluentProvider>
   );
 }

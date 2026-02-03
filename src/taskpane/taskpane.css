@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corp. 2025
+ * Copyright IBM Corp. 2025, 2026
  * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
  * See LICENSE in the project root for license information.
  */
@@ -216,6 +216,6 @@ b {
   margin-block-start: 32px;
 }
 
-.account-buttons fluent-button {
+.account-buttons button {
   width: 256px;
 }

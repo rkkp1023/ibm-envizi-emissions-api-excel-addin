@@ -53,7 +53,7 @@ export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
           </Button>
         </div>
       </div>
-      <div className="copyright">© Copyright IBM Corp. 2026</div>
+      <div className="copyright">© Copyright IBM Corp. 2025, 2026</div>
     </div>
   );
 }
