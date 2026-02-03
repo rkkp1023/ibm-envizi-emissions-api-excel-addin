@@ -10,12 +10,12 @@ export const loginUrls: Record<EnvType, string> = {
 };
 
 Office.onReady(() => {
-  document.getElementById("redirect-button").onclick = () => {
-    window.location.href = loginUrls[getEnvType()];
-  };
-
-  document.getElementById("token-button").onclick = () => {
-    const dialogMessage = { token: 'test123' };
+  // For local development, store a valid Envizi token in localStorage to bypass the login UI
+  const token = window.localStorage.getItem("id_token");
+  if (token) {
+    const dialogMessage = { token };
     Office.context.ui.messageParent(JSON.stringify(dialogMessage));
-  };
+  } else {
+    window.location.href = loginUrls[getEnvType()];
+  }
 });
