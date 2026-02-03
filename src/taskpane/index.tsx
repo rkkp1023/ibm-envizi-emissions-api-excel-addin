@@ -3,96 +3,46 @@
  * Licensed Materials - Property of IBM
  */
 
-import TaskpaneApp from "./TaskpaneApp";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { TaskpaneApp } from "./TaskpaneApp";
 import "./reset.css";
 import "./taskpane.css";
 
-/* global Office, localStorage */
+/* global Office */
 
-// Feature flag to switch between old and new React version
-const USE_REACT_VERSION_KEY = "useReactVersion";
-
-// Extend Window interface for version switching functions
-declare global {
-  interface Window {
-    switchToReactVersion: () => void;
-    switchToOldVersion: () => void;
-    getCurrentVersion: () => string;
-  }
-}
-
-// Check if React version should be used (default: false to maintain backward compatibility)
-function shouldUseReactVersion(): boolean {
-  const flag = localStorage.getItem(USE_REACT_VERSION_KEY);
-  return flag === "true";
-}
-
-// Initialize the appropriate version
-Office.onReady(() => {
-  if (shouldUseReactVersion()) {
-    // Load React version
-    loadReactVersion();
-  } else {
-    // Load TypeScript version
-    loadOldVersion();
-  }
-});
-
-// Load React version
-async function loadReactVersion() {
-  const React = await import("react");
-  const ReactDOM = await import("react-dom/client");
-  const { FluentProvider, webLightTheme, webDarkTheme } =
-    await import("@fluentui/react-components");
-
-  // Hide sideload message
+/**
+ * Hides the sideload message once the app is ready
+ */
+function hideSideloadMessage() {
   const sideloadMsg = document.getElementById("sideload-msg");
   if (sideloadMsg) {
     sideloadMsg.style.display = "none";
   }
+}
 
-  // Determine theme
-  const isDark = Office.context?.officeTheme?.isDarkTheme ?? false;
-  const theme = isDark ? webDarkTheme : webLightTheme;
+/**
+ * Initializes and renders the React application
+ */
+function initializeApp() {
+  hideSideloadMessage();
 
-  // Render React app
   const rootElement = document.getElementById("root");
-  if (rootElement) {
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(
-      <React.StrictMode>
-        <FluentProvider theme={theme}>
-          <TaskpaneApp />
-        </FluentProvider>
-      </React.StrictMode>
-    );
+  if (!rootElement) {
+    console.error("Root element not found");
+    return;
   }
 
-  console.log("React version loaded");
+  const root = createRoot(rootElement);
+
+  root.render(
+    <React.StrictMode>
+      <TaskpaneApp />
+    </React.StrictMode>
+  );
 }
 
-// Load TypeScript version
-async function loadOldVersion() {
-  // Import the original taskpane.ts module
-  await import("./taskpane");
-  console.log("TypeScript version loaded");
-}
-
-// Expose functions to switch versions (for debugging/testing)
-window.switchToReactVersion = () => {
-  localStorage.setItem(USE_REACT_VERSION_KEY, "true");
-  console.log("Switched to React version. Please reload the add-in.");
-};
-
-window.switchToOldVersion = () => {
-  localStorage.setItem(USE_REACT_VERSION_KEY, "false");
-  console.log("Switched to Typescript version. Please reload the add-in.");
-};
-
-window.getCurrentVersion = () => {
-  const version = shouldUseReactVersion() ? "React version" : "TypeScript version";
-  console.log(`Current version: ${version}`);
-  return version;
-};
-
-export {};
+// Initialize the app when Office is ready
+Office.onReady(() => {
+  initializeApp();
+});

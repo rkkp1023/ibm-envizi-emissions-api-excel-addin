@@ -3,17 +3,17 @@
  * Licensed Materials - Property of IBM
  */
 
+import { FluentProvider } from "@fluentui/react-components";
 import { useEffect, useState } from "react";
 import { LoginPage } from "./components/LoginPage";
 import { MainPage } from "./components/MainPage";
 import { WelcomePage } from "./components/WelcomePage";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
-import { useAuth } from "./hooks/useAuth";
-import { useStyles } from "./hooks/useStyles";
+import { useAuth, useStyles, useTheme } from "./hooks";
 
 function AppContent() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [showWelcome, setShowWelcome] = useState(() => {
     const hasSeenWelcome = localStorage.getItem("getStartedClicked") === "true";
     return !hasSeenWelcome;
@@ -41,15 +41,25 @@ function AppContent() {
   return <MainPage />;
 }
 
-export default function TaskpaneApp() {
+function AppWithTheme() {
+  const { theme } = useTheme();
   const styles = useStyles();
+
   return (
-    <div className={styles.root}>
-      <ThemeProvider>
+    <FluentProvider theme={theme}>
+      <div className={styles.root}>
         <AuthProvider>
           <AppContent />
         </AuthProvider>
-      </ThemeProvider>
-    </div>
+      </div>
+    </FluentProvider>
+  );
+}
+
+export function TaskpaneApp() {
+  return (
+    <ThemeProvider>
+      <AppWithTheme />
+    </ThemeProvider>
   );
 }

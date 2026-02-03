@@ -49,7 +49,7 @@ describe("WelcomePage", () => {
   });
 
   it("should render the copyright notice", () => {
-    expect(screen.getByText("© Copyright IBM Corp. 2025")).toBeInTheDocument();
+    expect(screen.getByText("© Copyright IBM Corp. 2026")).toBeInTheDocument();
   });
 
   it("should have correct image source", () => {

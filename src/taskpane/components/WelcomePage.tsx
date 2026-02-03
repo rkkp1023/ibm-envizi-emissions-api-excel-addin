@@ -4,12 +4,22 @@
  */
 
 import { Button } from "@fluentui/react-components";
+import { displayLoginDialog } from "../auth";
 
 interface WelcomePageProps {
   onGetStarted: () => void;
 }
 
 export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
+  const handleGetStarted = () => {
+    // Check if test login mode is enabled
+    if (window.localStorage.getItem("testLogin") === "true") {
+      displayLoginDialog();
+      return;
+    }
+    onGetStarted();
+  };
+
   return (
     <div id="welcome-page" className="page welcome-page">
       <header className="welcome-header">
@@ -33,12 +43,17 @@ export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
           <li className="ms-ListItem">Export your results quickly & easily</li>
         </ul>
         <div className="welcome-bottom">
-          <Button id="get-started-button" type="submit" appearance="primary" onClick={onGetStarted}>
+          <Button
+            id="get-started-button"
+            type="submit"
+            appearance="primary"
+            onClick={handleGetStarted}
+          >
             Get started
           </Button>
         </div>
       </div>
-      <div className="copyright">© Copyright IBM Corp. 2025</div>
+      <div className="copyright">© Copyright IBM Corp. 2026</div>
     </div>
   );
 }
