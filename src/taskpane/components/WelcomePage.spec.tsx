@@ -64,7 +64,7 @@ describe("WelcomePage", () => {
     it("should render the copyright notice", () => {
       renderWelcomePage();
 
-      expect(screen.getByText("© Copyright IBM Corp. 2026")).toBeInTheDocument();
+      expect(screen.getByText("© Copyright IBM Corp. 2025, 2026")).toBeInTheDocument();
     });
 
     it("should have correct image source", () => {
