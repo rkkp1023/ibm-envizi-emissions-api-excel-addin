@@ -26,7 +26,7 @@ export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
         <img
           width="64"
           height="64"
-          src="../../assets/icon-128.png"
+          src="assets/icon-128.png"
           alt="IBM Envizi Emissions Calculations"
         />
         <h2 className="ms-font-xl">Welcome to the Envizi Emissions Calculations</h2>
