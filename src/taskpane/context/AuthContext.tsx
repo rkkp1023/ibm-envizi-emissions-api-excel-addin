@@ -4,6 +4,7 @@
  */
 
 import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
+
 import { loadApiCredentialsFromStorage } from "../../common/credentials";
 import { performLogin, performLogout } from "../services/authService";
 import { ApiCredentials } from "../types/auth.types";
@@ -23,7 +24,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [state, dispatch] = useReducer(AuthReducer, initialAuthState);
 
   // Restore session on mount
