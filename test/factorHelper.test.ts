@@ -1,8 +1,8 @@
 // Copyright IBM Corp. 2025
 
-import { factorHelper } from "../src/functions/factorHelper";
 import { Factor } from "emissions-api-sdk";
 import { ensureClient } from "../src/functions/client";
+import { factorHelper } from "../src/functions/factorHelper";
 import { convertExcelDateToISO } from "../src/functions/utils";
 
 (global as any).CustomFunctions = {
@@ -51,6 +51,8 @@ describe("factorHelper", () => {
   const baseResponse = {
     factorSet: "setA",
     source: "sourceA",
+    methodology: undefined,
+    scope: undefined,
     activityType: "fuel",
     activityUnit: ["L"],
     name: "Diesel Combustion",
@@ -73,8 +75,6 @@ describe("factorHelper", () => {
     unit: "L",
     factorId: 12345,
     transactionId: "abc-123",
-    
-    
   };
 
   it("returns all values from full response", async () => {
@@ -92,6 +92,8 @@ describe("factorHelper", () => {
       [
         baseResponse.factorSet,
         baseResponse.source,
+        "",  // methodology
+        "",  // scope
         baseResponse.activityType,
         "L",
         baseResponse.name,
@@ -114,8 +116,6 @@ describe("factorHelper", () => {
         baseResponse.unit,
         baseResponse.factorId,
         baseResponse.transactionId,
-        
-        
       ],
     ]);
   });
@@ -141,7 +141,7 @@ describe("factorHelper", () => {
 
     const result = await factorHelper("fuel", "L");
 
-    expect(result[0][11]).toBe(123.45); // totalCO2e
+    expect(result[0][13]).toBe(123.45); // totalCO2e (index shifted by 2 due to methodology and scope)
   });
 
   it("handles activityUnit as array", async () => {
@@ -153,7 +153,7 @@ describe("factorHelper", () => {
 
     const result = await factorHelper("fuel", "L");
 
-    expect(result[0][3]).toBe("L, gal, m3"); // activityUnit joined
+    expect(result[0][5]).toBe("L, gal, m3"); // activityUnit joined (index shifted by 2)
   });
 
   it("returns default values for missing or null fields", async () => {
@@ -161,25 +161,27 @@ describe("factorHelper", () => {
   const mockResponseWithNullValues = {
     factorSet: null,
     source: "sourceA",
+    methodology: null,
+    scope: null,
     activityType: "fuel",
     activityUnit: ["L"],
-    name: null,              
-    description: null,    
+    name: null,
+    description: null,
     effectiveFrom: null,
     effectiveTo: null,
     publishedFrom: null,
-    publishedTo: null,         
-    region: null,            
-    totalCO2e: null,         
-    CO2: null,               
-    CH4: null,               
-    N2O: null,               
-    HFC: null,               
-    PFC: null,               
-    SF6: null,               
-    NF3: null,               
-    bioCO2: null,            
-    indirectCO2e: null,      
+    publishedTo: null,
+    region: null,
+    totalCO2e: null,
+    CO2: null,
+    CH4: null,
+    N2O: null,
+    HFC: null,
+    PFC: null,
+    SF6: null,
+    NF3: null,
+    bioCO2: null,
+    indirectCO2e: null,
     unit: "L",
     factorId: null as any,
     transactionId: null,
@@ -193,9 +195,11 @@ describe("factorHelper", () => {
   
   expect(result).toEqual([
     [
-      "",             
-      "sourceA",      
-      "fuel",         
+      "",
+      "sourceA",
+      "",             // methodology
+      "",             // scope
+      "fuel",
       "L",
       "",
       "",
@@ -203,20 +207,20 @@ describe("factorHelper", () => {
       "",
       "",
       "",
-      "",             
-      0,              
-      0,              
-      0,              
-      0,              
-      0,              
-      0,              
-      0,              
-      0,              
-      0,              
-      0,              
-      "L",            
-      "",              
-      "",             
+      "",
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      "L",
+      "",
+      "",
     ]
   ]);
 });
@@ -236,10 +240,10 @@ describe("factorHelper", () => {
   });
 
   it("handles activityUnit as string", async () => {
-    const response = { ...baseResponse, activityUnit: "kg" as any };
+    const response = { ...baseResponse, activityUnit: "kg" as any, methodology: undefined, scope: undefined };
     mockedRetrieveFactor.mockResolvedValue(response);
     const result = await factorHelper("fuel", "L");
-    expect(result[0][3]).toBe("kg");
+    expect(result[0][5]).toBe("kg"); // activityUnit (index shifted by 2)
   });
 
 

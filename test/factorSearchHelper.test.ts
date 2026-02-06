@@ -1,8 +1,8 @@
 // Copyright IBM Corp. 2025
 
-import { factorSearch } from "../src/functions/factorSearchHelper";
 import { Factor } from "emissions-api-sdk";
 import { ensureClient } from "../src/functions/client";
+import { factorSearch } from "../src/functions/factorSearchHelper";
 
 
 jest.mock("emissions-api-sdk", () => ({
@@ -56,6 +56,8 @@ describe("factorSearch", () => {
       {
         factorSet: "set1",
         source: "source1",
+        methodology: undefined,
+        scope: undefined,
         activityType: "type1",
         activityUnit: ["kg"],
         region: "USA",
@@ -82,6 +84,8 @@ describe("factorSearch", () => {
       {
         factorSet: "set2",
         source: "source2",
+        methodology: undefined,
+        scope: undefined,
         activityType: "type2",
         activityUnit: ["L"],
         region: "Canada",
@@ -114,8 +118,8 @@ describe("factorSearch", () => {
     const result = await factorSearch("diesel", "USA");
 
     expect(result).toEqual([
-      ["set1", "source1", "type1", "kg", "USA", 1001],
-      ["set2", "source2", "type2", "L", "Canada", 1002],
+      ["set1", "source1", "", "", "type1", "kg", "USA", 1001, "2024-01-01", "2025-01-01"],
+      ["set2", "source2", "", "", "type2", "L", "Canada", 1002, "2024-01-01", "2025-01-01"],
     ]);
     
     expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
@@ -129,8 +133,8 @@ describe("factorSearch", () => {
     const result = await factorSearch("diesel", "USA");
 
     expect(result).toEqual([
-      ["set1", "source1", "type1", "kg", "USA", 1001],
-      ["set2", "source2", "type2", "L", "Canada", 1002],
+      ["set1", "source1", "", "", "type1", "kg", "USA", 1001, "2024-01-01", "2025-01-01"],
+      ["set2", "source2", "", "", "type2", "L", "Canada", 1002, "2024-01-01", "2025-01-01"],
     ]);
   });
 
@@ -147,7 +151,7 @@ describe("factorSearch", () => {
 
     const result = await factorSearch("diesel", "USA");
 
-    expect(result[0][3]).toBe("kg, lb, ton"); // activityUnit joined
+    expect(result[0][5]).toBe("kg, lb, ton"); // activityUnit joined (index shifted by 2)
   });
 
   it("throws CustomFunctions.Error with message from error response", async () => {
@@ -175,10 +179,14 @@ describe("factorSearch", () => {
         ...mockResponse.factors[0],
         factorSet: null,
         factorId: null as any,
+        methodology: null,
+        scope: null,
       },
       {
         ...mockResponse.factors[1],
         source: null,
+        methodology: null,
+        scope: null,
       },
     ],
   };
@@ -193,18 +201,26 @@ describe("factorSearch", () => {
     [
       "",
       "source1",
+      "",  // methodology
+      "",  // scope
       "type1",
       "kg",
       "USA",
       "",
+      "2024-01-01",
+      "2025-01-01",
     ],
     [
       "set2",
       "",
+      "",  // methodology
+      "",  // scope
       "type2",
       "L",
       "Canada",
       1002,
+      "2024-01-01",
+      "2025-01-01",
     ],
   ]);
 });
@@ -235,6 +251,8 @@ describe("factorSearch", () => {
       {
         factorSet: "set1",
         source: "source1",
+        methodology: undefined,
+        scope: undefined,
         activityType: "type1",
         activityUnit: ["kg"],
         region: "USA",
@@ -326,7 +344,7 @@ describe("factorSearch", () => {
     };
     mockedSearch.mockResolvedValue(responseWithUndefinedUnit as any);
     const result = await factorSearch("diesel", "USA");
-    expect(result[0][3]).toBe("");
+    expect(result[0][5]).toBe(""); // activityUnit (index shifted by 2)
   });
 
   it("handles activityUnit as null in formatFactorSearchResponse", async () => {
@@ -362,7 +380,7 @@ describe("factorSearch", () => {
     };
     mockedSearch.mockResolvedValue(responseWithNullUnit as any);
     const result = await factorSearch("diesel", "USA");
-    expect(result[0][3]).toBe("");
+    expect(result[0][5]).toBe(""); // activityUnit (index shifted by 2)
   });
 
   it("handles activityUnit as non-array string in formatFactorSearchResponse", async () => {
@@ -371,6 +389,8 @@ describe("factorSearch", () => {
         {
           factorSet: "set1",
           source: "source1",
+          methodology: undefined,
+          scope: undefined,
           activityType: "type1",
           activityUnit: "kg",
           region: "USA",
@@ -398,7 +418,7 @@ describe("factorSearch", () => {
     };
     mockedSearch.mockResolvedValue(responseWithStringUnit as any);
     const result = await factorSearch("diesel", "USA");
-    expect(result[0][3]).toBe("kg");
+    expect(result[0][5]).toBe("kg"); // activityUnit (index shifted by 2)
   });
 
   it("throws error when response is missing factors array", async () => {
