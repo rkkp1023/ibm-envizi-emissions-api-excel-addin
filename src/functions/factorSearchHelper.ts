@@ -44,13 +44,22 @@ function formatFactorSearchResponse(response: any): (string | number | null)[][]
       ? factor.activityUnit.join(", ")
       : (factor.activityUnit ?? "");
     
+    // Handle scope as array (join with ", " to maintain single column)
+    const scope = Array.isArray(factor.scope)
+      ? factor.scope.join(", ")
+      : (factor.scope ?? "");
+    
     return [
       factor.factorSet ?? "",
       factor.source ?? "",
+      factor.methodology ?? "",
+      scope,
       factor.activityType ?? "",
       activityUnit,
       factor.region ?? "",
-      factor.factorId ?? ""
+      factor.factorId ?? "",
+      factor.publishedFrom ?? "",
+      factor.publishedTo ?? ""
     ];
   });
 }
