@@ -317,6 +317,8 @@ describe("factorSearch", () => {
         {
           factorSet: "set1",
           source: "source1",
+          methodology: undefined,
+          scope: undefined,
           activityType: "type1",
           activityUnit: undefined,
           region: "USA",
@@ -353,6 +355,8 @@ describe("factorSearch", () => {
         {
           factorSet: "set1",
           source: "source1",
+          methodology: undefined,
+          scope: undefined,
           activityType: "type1",
           activityUnit: null,
           region: "USA",
