@@ -45,6 +45,11 @@ export async function factorHelper(
     ? response.activityUnit.join(", ")
     : (response.activityUnit ?? "");
 
+  // Handle scope as array (join with ", " to maintain single column)
+  const scope = Array.isArray(response.scope)
+    ? response.scope.join(", ")
+    : (response.scope ?? "");
+
   return [
     [
       response.factorSet ?? "",
@@ -59,6 +64,8 @@ export async function factorHelper(
       response.publishedTo ?? "",
       response.region ?? "",
       response.totalCO2e ?? 0,
+      response.methodology ?? "",
+      scope,
       response.CO2 ?? 0,
       response.CH4 ?? 0,
       response.N2O ?? 0,
