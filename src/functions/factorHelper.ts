@@ -54,6 +54,8 @@ export async function factorHelper(
     [
       response.factorSet ?? "",
       response.source ?? "",
+      response.methodology ?? "",
+      scope,
       response.activityType ?? "",
       activityUnit,
       response.name ?? "",
@@ -64,8 +66,6 @@ export async function factorHelper(
       response.publishedTo ?? "",
       response.region ?? "",
       response.totalCO2e ?? 0,
-      response.methodology ?? "",
-      scope,
       response.CO2 ?? 0,
       response.CH4 ?? 0,
       response.N2O ?? 0,
