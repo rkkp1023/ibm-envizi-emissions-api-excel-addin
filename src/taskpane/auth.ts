@@ -1,6 +1,5 @@
 // Copyright IBM Corp. 2026
 
-import axios from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 import { LoginDialogMessage } from "../login/login-dialog-message";
@@ -26,23 +25,10 @@ export function displayLoginDialog(): void {
         if ("message" in args) {
           // TODO: Process the message
           const message = JSON.parse(args.message) as LoginDialogMessage;
-          exchangeToken(message.token).then((coreToken) => {
-            const decodedToken = jwtDecode<CoreToken>(coreToken);
-            console.log(decodedToken);
-          });
+          const decodedToken = jwtDecode<CoreToken>(message.coreToken);
+          console.log(decodedToken);
         }
       });
     }
   );
-}
-
-export async function exchangeToken(token: string): Promise<string> {
-  // Using prod URL since the test accounts were created on prod
-  const tokenExchangeUrl = "https://api.ibm.com/saascore/bluerun/envizi-auth/exchange";
-  const enviziTokenExchangeClientId = "f3d0be6fd3fb3d938b748fe18612cf92";
-  const response = await axios.post<string>(tokenExchangeUrl, null, {
-    headers: { authorization: `Bearer ${token}`, "x-ibm-client-id": enviziTokenExchangeClientId },
-    responseType: "text",
-  });
-  return response.data;
 }

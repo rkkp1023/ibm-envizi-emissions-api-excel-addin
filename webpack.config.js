@@ -124,6 +124,10 @@ module.exports = async (env, options) => {
         Buffer: ["buffer", "Buffer"],
       }),
     ],
+    performance: {
+      maxEntrypointSize: 614400,
+      maxAssetSize: 1048576,
+    },
     devServer: {
       static: {
         directory: path.join(__dirname, "dist"),

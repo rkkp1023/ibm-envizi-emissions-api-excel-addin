@@ -24,7 +24,7 @@ interface ResourceSectionProps {
   }>;
 }
 
-function StepItem({ title, description }: StepItemProps) {
+function StepItem({ title, description }: Readonly<StepItemProps>) {
   return (
     <div className="text-block">
       <p className="text-header">{title}</p>
@@ -33,7 +33,7 @@ function StepItem({ title, description }: StepItemProps) {
   );
 }
 
-function ResourceSection({ title, links }: ResourceSectionProps) {
+function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
   return (
     <div>
       <p className="block-header">{title}</p>
