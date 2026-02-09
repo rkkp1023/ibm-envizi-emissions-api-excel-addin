@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2025, 2026
 
 import { Factor } from "emissions-api-sdk";
 
@@ -45,16 +45,21 @@ export async function factorHelper(
     ? response.activityUnit.join(", ")
     : (response.activityUnit ?? "");
 
+  // Handle scope as array (join with ", " to maintain single column)
+  const scope = Array.isArray(response.scope)
+    ? response.scope.join(", ")
+    : (response.scope ?? "");
+
   return [
     [
       response.factorSet ?? "",
       response.source ?? "",
+      response.methodology ?? "",
+      scope,
       response.activityType ?? "",
       activityUnit,
       response.name ?? "",
       response.description ?? "",
-      response.effectiveFrom ?? "",
-      response.effectiveTo ?? "",
       response.publishedFrom ?? "",
       response.publishedTo ?? "",
       response.region ?? "",
