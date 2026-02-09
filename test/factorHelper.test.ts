@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2025, 2026
 
 import { Factor } from "emissions-api-sdk";
 import { ensureClient } from "../src/functions/client";
@@ -57,8 +57,6 @@ describe("factorHelper", () => {
     activityUnit: ["L"],
     name: "Diesel Combustion",
     description: "Diesel use",
-    effectiveFrom: "2024-01-01",
-    effectiveTo: "2025-01-01",
     publishedFrom: "2024-01-01",
     publishedTo:"2024-01-01",
     region: "USA",
@@ -98,8 +96,6 @@ describe("factorHelper", () => {
         "L",
         baseResponse.name,
         baseResponse.description,
-        baseResponse.effectiveFrom,
-        baseResponse.effectiveTo,
         baseResponse.publishedFrom,
         baseResponse.publishedTo,
         baseResponse.region,
@@ -141,7 +137,7 @@ describe("factorHelper", () => {
 
     const result = await factorHelper("fuel", "L");
 
-    expect(result[0][13]).toBe(123.45); // totalCO2e (index shifted by 2 due to methodology and scope)
+    expect(result[0][11]).toBe(123.45); // totalCO2e
   });
 
   it("handles activityUnit as array", async () => {
@@ -153,7 +149,7 @@ describe("factorHelper", () => {
 
     const result = await factorHelper("fuel", "L");
 
-    expect(result[0][5]).toBe("L, gal, m3"); // activityUnit joined (index shifted by 2)
+    expect(result[0][5]).toBe("L, gal, m3"); // activityUnit joined
   });
 
   it("returns default values for missing or null fields", async () => {
@@ -167,8 +163,6 @@ describe("factorHelper", () => {
     activityUnit: ["L"],
     name: null,
     description: null,
-    effectiveFrom: null,
-    effectiveTo: null,
     publishedFrom: null,
     publishedTo: null,
     region: null,
@@ -201,8 +195,6 @@ describe("factorHelper", () => {
       "",             // scope
       "fuel",
       "L",
-      "",
-      "",
       "",
       "",
       "",
@@ -243,7 +235,7 @@ describe("factorHelper", () => {
     const response = { ...baseResponse, activityUnit: "kg" as any, methodology: undefined, scope: undefined };
     mockedRetrieveFactor.mockResolvedValue(response);
     const result = await factorHelper("fuel", "L");
-    expect(result[0][5]).toBe("kg"); // activityUnit (index shifted by 2)
+    expect(result[0][5]).toBe("kg"); // activityUnit
   });
 
 
