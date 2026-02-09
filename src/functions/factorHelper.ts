@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2025, 2026
 
 import { Factor } from "emissions-api-sdk";
 
@@ -60,8 +60,6 @@ export async function factorHelper(
       activityUnit,
       response.name ?? "",
       response.description ?? "",
-      response.effectiveFrom ?? "",
-      response.effectiveTo ?? "",
       response.publishedFrom ?? "",
       response.publishedTo ?? "",
       response.region ?? "",
