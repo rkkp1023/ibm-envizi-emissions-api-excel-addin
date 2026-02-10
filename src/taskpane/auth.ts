@@ -1,14 +1,18 @@
 // Copyright IBM Corp. 2026
 
-import { jwtDecode, JwtPayload } from "jwt-decode";
+import { JwtPayload } from "jwt-decode";
 
+import { UserCredentials } from "../common/credentials";
 import { LoginDialogMessage } from "../login/login-dialog-message";
 
 export interface CoreToken extends JwtPayload {
   tenantId: string;
 }
 
-export function displayLoginDialog(): void {
+export function displayLoginDialog(
+  onConfirm: (credentials: UserCredentials) => void,
+  onClose: () => void
+): void {
   // Use the Office dialog API to open the login page
   const loginUrl = `${window.location.origin}/login.html`;
   const uiContext = Office.context.ui;
@@ -22,11 +26,12 @@ export function displayLoginDialog(): void {
       const dialog = asyncResult.value;
       dialog.addEventHandler(Office.EventType.DialogMessageReceived, (args) => {
         dialog.close();
-        if ("message" in args) {
-          // TODO: Process the message
-          const message = JSON.parse(args.message) as LoginDialogMessage;
-          const decodedToken = jwtDecode<CoreToken>(message.coreToken);
-          console.log(decodedToken);
+        const message = JSON.parse(args["message"]) as LoginDialogMessage;
+        onConfirm?.(message);
+      });
+      dialog.addEventHandler(Office.EventType.DialogEventReceived, (args) => {
+        if (args["error"] === 12006) {
+          onClose?.();
         }
       });
     }

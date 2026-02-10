@@ -4,7 +4,6 @@
  */
 
 import { Button } from "@fluentui/react-components";
-import { displayLoginDialog } from "../auth";
 
 interface WelcomePageProps {
   onGetStarted: () => void;
@@ -12,11 +11,6 @@ interface WelcomePageProps {
 
 export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
   const handleGetStarted = () => {
-    // Check if test login mode is enabled
-    if (window.localStorage.getItem("testLogin") === "true") {
-      displayLoginDialog();
-      return;
-    }
     onGetStarted();
   };
 

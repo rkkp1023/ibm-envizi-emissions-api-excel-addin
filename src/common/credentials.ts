@@ -1,6 +1,7 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2025, 2026
 
 const apiCredentialsKey = "apiCredentials";
+const userCredentialsKey = "userCredentials";
 
 export interface ApiCredentials {
   apiKey: string;
@@ -8,9 +9,16 @@ export interface ApiCredentials {
   orgId: string;
 }
 
+export interface UserCredentials {
+  token: string; // normal Envizi access token, expires in 1 hour
+  refreshToken: string; // Envizi refresh token for getting new access tokens, expires in 8 hours
+  coreToken: string; // CoreGUUT token
+}
+
 declare global {
   interface Window {
     apiCredentials?: ApiCredentials;
+    userCredentials?: UserCredentials;
   }
 }
 
@@ -20,6 +28,14 @@ export function getApiCredentials(): ApiCredentials {
 
 export function setApiCredentials(apiCredentials: ApiCredentials): void {
   window.apiCredentials = apiCredentials;
+}
+
+export function getUserCredentials(): UserCredentials {
+  return window.userCredentials;
+}
+
+export function setUserCredentials(userCredentials: UserCredentials): void {
+  window.userCredentials = userCredentials;
 }
 
 export async function loadApiCredentialsFromStorage(): Promise<ApiCredentials | null> {
@@ -52,3 +68,34 @@ export async function removeApiCredentialsFromStorage(): Promise<void> {
   return OfficeRuntime.storage.removeItem(apiCredentialsKey);
 }
 
+export async function loadUserCredentialsFromStorage(): Promise<UserCredentials | null> {
+  if (!OfficeRuntime.storage) {
+    return null;
+  }
+  return OfficeRuntime.storage.getItem(userCredentialsKey).then((credentialsJSON) => {
+    if (credentialsJSON) {
+      const userCredentials = JSON.parse(credentialsJSON);
+      setUserCredentials(userCredentials);
+      return userCredentials;
+    }
+    return null;
+  });
+}
+
+export async function saveUserCredentialsToStorage(
+  userCredentials: UserCredentials
+): Promise<void> {
+  setUserCredentials(userCredentials);
+  if (!OfficeRuntime.storage) {
+    return;
+  }
+  const credentialsJSON = JSON.stringify(userCredentials);
+  return OfficeRuntime.storage.setItem(userCredentialsKey, credentialsJSON);
+}
+
+export async function removeUserCredentialsFromStorage(): Promise<void> {
+  if (!OfficeRuntime.storage) {
+    return;
+  }
+  return OfficeRuntime.storage.removeItem(userCredentialsKey);
+}

@@ -4,15 +4,9 @@
  */
 
 import "@testing-library/jest-dom";
-
 import { fireEvent, render, screen } from "@testing-library/react";
-import * as auth from "../auth";
-import { WelcomePage } from "./WelcomePage";
 
-// Mock the auth module
-jest.mock("../auth", () => ({
-  displayLoginDialog: jest.fn(),
-}));
+import { WelcomePage } from "./WelcomePage";
 
 describe("WelcomePage", () => {
   const mockOnGetStarted = jest.fn();
@@ -20,7 +14,6 @@ describe("WelcomePage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    window.localStorage.clear();
   });
 
   afterEach(() => {
@@ -91,25 +84,6 @@ describe("WelcomePage", () => {
       fireEvent.click(button);
 
       expect(mockOnGetStarted).toHaveBeenCalledTimes(1);
-    });
-
-    // TODO: Remove testLogin feature and this test case once testing is complete
-    it("should call displayLoginDialog when testLogin is enabled", () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      getItemSpy.mockImplementation((key: string) => {
-        if (key === "testLogin") return "true";
-        return null;
-      });
-
-      renderWelcomePage();
-
-      const button = screen.getByRole("button", { name: /Get started/i });
-      fireEvent.click(button);
-
-      expect(auth.displayLoginDialog).toHaveBeenCalledTimes(1);
-      expect(mockOnGetStarted).not.toHaveBeenCalled();
-
-      getItemSpy.mockRestore();
     });
   });
 });

@@ -3,9 +3,10 @@
  * Licensed Materials - Property of IBM
  */
 
-import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
+import { createContext, ReactNode, useCallback, useEffect, useReducer, useState } from "react";
 
 import { loadApiCredentialsFromStorage } from "../../common/credentials";
+import { displayLoginDialog } from "../auth";
 import { performLogin, performLogout } from "../services/authService";
 import { ApiCredentials } from "../types/auth.types";
 import { AuthActionType, AuthReducer, initialAuthState } from "./AuthReducer";
@@ -13,10 +14,12 @@ import { AuthActionType, AuthReducer, initialAuthState } from "./AuthReducer";
 /* global OfficeRuntime */
 
 interface AuthContextType {
+  enableEnviziLogin: boolean;
   isAuthenticated: boolean;
   isLoading: boolean;
   credentials: ApiCredentials | null;
   error: string | null;
+  displayLogin: () => void;
   login: (credentials: ApiCredentials, saveCredentials: boolean) => Promise<void>;
   logout: () => Promise<void>;
   clearError: () => void;
@@ -25,6 +28,9 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
+  const [enableEnviziLogin] = useState(
+    () => window.localStorage.getItem("enableEnviziLogin") === "true"
+  );
   const [state, dispatch] = useReducer(AuthReducer, initialAuthState);
 
   // Restore session on mount
@@ -47,6 +53,14 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     };
 
     restoreSession();
+  }, []);
+
+  const displayLogin = useCallback(() => {
+    displayLoginDialog(
+      (credentials) => {},
+      () => {}
+    );
+    dispatch({ type: AuthActionType.CLEAR_ERROR });
   }, []);
 
   const login = useCallback(async (credentials: ApiCredentials, saveCredentials: boolean) => {
@@ -85,10 +99,12 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   }, []);
 
   const value: AuthContextType = {
+    enableEnviziLogin,
     isAuthenticated: state.isAuthenticated,
     isLoading: state.isLoading,
     credentials: state.credentials,
     error: state.error,
+    displayLogin,
     login,
     logout,
     clearError,
