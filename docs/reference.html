@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Troubleshooting Guide" href="troubleshooting.html"><link rel="prev" title="Use" href="use.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
         <title>Reference - IBM Envizi for Excel documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8d04aa46" />
     
@@ -801,103 +801,6 @@
 </tbody>
 </table>
 </div>
-<p>—</p>
-</section>
-<section id="metadata-functions">
-<h3>Metadata Functions<a class="headerlink" href="#metadata-functions" title="Link to this heading">¶</a></h3>
-<p>These functions provide data validation dropdowns to help users select valid values for API parameters.</p>
-<section id="types">
-<h4>Types<a class="headerlink" href="#types" title="Link to this heading">¶</a></h4>
-<p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.TYPES(apiName)
-</pre></div>
-</div>
-<p><strong>Parameters</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">apiName</span></code> – The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor)</p></li>
-</ul>
-<p><strong>Description</strong></p>
-<p>Triggers a data validation dropdown for API types. Applies validation to the cell with available activity types for the specified API.</p>
-<p><strong>Example</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.TYPES(&quot;location&quot;)
-</pre></div>
-</div>
-<p>—</p>
-</section>
-<section id="units">
-<h4>Units<a class="headerlink" href="#units" title="Link to this heading">¶</a></h4>
-<p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.UNITS(apiName, type)
-</pre></div>
-</div>
-<p><strong>Parameters</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">apiName</span></code> – The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> – The type parameter to fetch units for (e.g., “electricity”)</p></li>
-</ul>
-<p><strong>Description</strong></p>
-<p>Triggers a data validation dropdown for API units. Fetches units on-demand from the API based on the specified type and applies validation to the cell.</p>
-<p><strong>Example</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.UNITS(&quot;location&quot;, &quot;electricity&quot;)
-</pre></div>
-</div>
-<p>—</p>
-</section>
-<section id="country">
-<h4>Country<a class="headerlink" href="#country" title="Link to this heading">¶</a></h4>
-<p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.COUNTRY(apiName)
-</pre></div>
-</div>
-<p><strong>Parameters</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">apiName</span></code> – The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor, factorsearch)</p></li>
-</ul>
-<p><strong>Description</strong></p>
-<p>Triggers a data validation dropdown for country selection. Fetches available countries from the API and applies validation to the cell with ISO alpha-3 country codes.</p>
-<p><strong>Example</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.COUNTRY(&quot;location&quot;)
-</pre></div>
-</div>
-<p>—</p>
-</section>
-<section id="state-province">
-<h4>State Province<a class="headerlink" href="#state-province" title="Link to this heading">¶</a></h4>
-<p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.STATE_PROVINCE(apiName, country)
-</pre></div>
-</div>
-<p><strong>Parameters</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">apiName</span></code> – The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor, factorsearch)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">country</span></code> – The country alpha-3 code (e.g., “USA”, “CAN”)</p></li>
-</ul>
-<p><strong>Description</strong></p>
-<p>Triggers a data validation dropdown for state/province selection. Fetches state/province data for the specified country and applies validation to the cell.</p>
-<p><strong>Example</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.STATE_PROVINCE(&quot;location&quot;, &quot;USA&quot;)
-</pre></div>
-</div>
-<p>—</p>
-</section>
-<section id="power-grid">
-<h4>Power Grid<a class="headerlink" href="#power-grid" title="Link to this heading">¶</a></h4>
-<p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.POWER_GRID(apiName, country)
-</pre></div>
-</div>
-<p><strong>Parameters</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">apiName</span></code> – The name of the API (location, mobile, fugitive, stationary, calculation, transportationanddistribution, factor, factorsearch)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">country</span></code> – The country alpha-3 code (e.g., “USA”, “CAN”)</p></li>
-</ul>
-<p><strong>Description</strong></p>
-<p>Triggers a data validation dropdown for power grid selection. Fetches power grid data for the specified country and applies validation to the cell with available power grid region identifiers.</p>
-<p><strong>Example</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.POWER_GRID(&quot;location&quot;, &quot;USA&quot;)
-</pre></div>
-</div>
-</section>
 </section>
 </section>
 </section>
@@ -968,14 +871,6 @@
 <li><a class="reference internal" href="#calculation">Calculation</a></li>
 <li><a class="reference internal" href="#factor">Factor</a></li>
 <li><a class="reference internal" href="#factor-search">Factor Search</a></li>
-<li><a class="reference internal" href="#metadata-functions">Metadata Functions</a><ul>
-<li><a class="reference internal" href="#types">Types</a></li>
-<li><a class="reference internal" href="#units">Units</a></li>
-<li><a class="reference internal" href="#country">Country</a></li>
-<li><a class="reference internal" href="#state-province">State Province</a></li>
-<li><a class="reference internal" href="#power-grid">Power Grid</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
