@@ -28,7 +28,7 @@ function EnviziLogin() {
 }
 
 function ApiLogin() {
-  const { login, error, isLoading, clearError } = useAuth();
+  const { state, login, clearError } = useAuth();
   const [apiKey, setApiKey] = useState("");
   const [tenantId, setTenantId] = useState("");
   const [orgId, setOrgId] = useState("");
@@ -42,7 +42,7 @@ function ApiLogin() {
     try {
       await login({ apiKey, tenantId, orgId }, saveCredentials);
     } catch (err) {
-      // Error is handled by the context
+      // state.error is handled by the context
     }
   };
 
@@ -64,34 +64,34 @@ function ApiLogin() {
               type="password"
               value={apiKey}
               onChange={(event) => setApiKey(event.target.value)}
-              disabled={isLoading}
+              disabled={state.isLoading}
             />
           </Field>
           <Field label="Tenant ID" required>
             <Input
               value={tenantId}
               onChange={(e) => setTenantId(e.target.value)}
-              disabled={isLoading}
+              disabled={state.isLoading}
             />
           </Field>
           <Field label="Organization ID" required>
             <Input
               value={orgId}
               onChange={(event) => setOrgId(event.target.value)}
-              disabled={isLoading}
+              disabled={state.isLoading}
             />
           </Field>
           <Checkbox
             checked={saveCredentials}
             onChange={(event, data) => setSaveCredentials(!!data.checked)}
             label="Save credentials"
-            disabled={isLoading}
+            disabled={state.isLoading}
           />
 
-          {error && <div className="error-message">{error}</div>}
+          {state.error && <div className="state.error-message">{state.error}</div>}
 
-          <Button type="submit" appearance="primary" disabled={isLoading}>
-            {isLoading ? "Logging in..." : "Login"}
+          <Button type="submit" appearance="primary" disabled={state.isLoading}>
+            {state.isLoading ? "Logging in..." : "Login"}
           </Button>
         </div>
       </form>

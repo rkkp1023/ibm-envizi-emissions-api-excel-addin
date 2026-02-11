@@ -1,5 +1,7 @@
 // Copyright IBM Corp. 2025, 2026
 
+import { JwtPayload } from "jwt-decode";
+
 const apiCredentialsKey = "apiCredentials";
 const userCredentialsKey = "userCredentials";
 
@@ -13,6 +15,10 @@ export interface UserCredentials {
   token: string; // normal Envizi access token, expires in 1 hour
   refreshToken: string; // Envizi refresh token for getting new access tokens, expires in 8 hours
   coreToken: string; // CoreGUUT token
+}
+
+export interface CoreToken extends JwtPayload {
+  tenantId: string;
 }
 
 declare global {

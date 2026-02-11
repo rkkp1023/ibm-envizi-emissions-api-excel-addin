@@ -1,13 +1,8 @@
 // Copyright IBM Corp. 2026
 
-import { JwtPayload } from "jwt-decode";
 
 import { UserCredentials } from "../common/credentials";
 import { LoginDialogMessage } from "../login/login-dialog-message";
-
-export interface CoreToken extends JwtPayload {
-  tenantId: string;
-}
 
 export function displayLoginDialog(
   onConfirm: (credentials: UserCredentials) => void,

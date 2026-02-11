@@ -1,45 +1,70 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2025, 2026
 
 import { Client, ClientConfig } from "emissions-api-sdk";
 
-import { getApiUrl } from "../common/env";
+import { jwtDecode } from "jwt-decode";
 import {
   ApiCredentials,
+  CoreToken,
   getApiCredentials,
+  getUserCredentials,
   loadApiCredentialsFromStorage,
+  loadUserCredentialsFromStorage,
+  UserCredentials,
 } from "../common/credentials";
+import { getApiUrl, getEnableEnviziLogin } from "../common/env";
 
-async function getClientConfig(apiCredentials?: ApiCredentials): Promise<ClientConfig> {
-  let resolvedApiCredentials = apiCredentials || getApiCredentials();
-  if (!resolvedApiCredentials) {
-    resolvedApiCredentials = await loadApiCredentialsFromStorage();
-    if (!resolvedApiCredentials) {
-      Office.addin.showAsTaskpane();
-      throw new CustomFunctions.Error(
-        CustomFunctions.ErrorCode.notAvailable,
-        "Enter your credentials in the task pane."
-      );
+async function getClientConfig(
+  credentials?: ApiCredentials | UserCredentials
+): Promise<ClientConfig> {
+  const enableEnviziLogin = getEnableEnviziLogin();
+  let resolvedCredentials = credentials;
+  if (!resolvedCredentials) {
+    if (enableEnviziLogin) {
+      resolvedCredentials = getUserCredentials() || (await loadUserCredentialsFromStorage());
+    } else {
+      resolvedCredentials = getApiCredentials() || (await loadApiCredentialsFromStorage());
     }
   }
+  if (!resolvedCredentials) {
+    Office.addin.showAsTaskpane();
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.notAvailable,
+      "Enter your credentials in the task pane."
+    );
+  }
+
+  const envType = resolvedCredentials["token"] ? "prod" : undefined;
+  let tenantId: string;
+  if (resolvedCredentials["apiKey"]) {
+    tenantId = resolvedCredentials["tenantId"];
+  } else {
+    const decodedToken = jwtDecode<CoreToken>(resolvedCredentials["coreToken"]);
+    tenantId = decodedToken.tenantId;
+  }
   const config: ClientConfig = {
-    host: getApiUrl("ghgemissions"),
-    authUrl: `${getApiUrl("saascore")}/authentication-retrieve/api-key`,
-    apiKey: resolvedApiCredentials.apiKey,
-    clientId: resolvedApiCredentials.tenantId,
-    orgId: resolvedApiCredentials.orgId,
+    host: getApiUrl("ghgemissions", envType),
+    authUrl: `${getApiUrl("saascore", envType)}/authentication-retrieve/api-key`,
+    clientId: tenantId,
     isExcelAddIn: true,
   };
+  if (resolvedCredentials["apiKey"]) {
+    config.apiKey = resolvedCredentials["apiKey"];
+    config.orgId = resolvedCredentials["orgId"];
+  } else {
+    config.token = resolvedCredentials["coreToken"];
+  }
   return config;
 }
 
 /**
  * Ensures the Client object is properly initialized.
  */
-export async function ensureClient(apiCredentials?: ApiCredentials): Promise<void> {
-  if (Client["instance"] && !apiCredentials) {
+export async function ensureClient(credentials?: ApiCredentials | UserCredentials): Promise<void> {
+  if (Client["instance"] && !credentials) {
     return;
   }
-  const config = await getClientConfig(apiCredentials);
+  const config = await getClientConfig(credentials);
   return Client.getClient(config);
 }
 

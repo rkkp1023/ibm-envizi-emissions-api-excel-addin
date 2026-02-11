@@ -3,7 +3,8 @@
  * Licensed Materials - Property of IBM
  */
 
-import { ApiCredentials, AuthState, AuthStatus } from "../types/auth.types";
+import { ApiCredentials, UserCredentials } from "../../common/credentials";
+import { AuthState, AuthStatus } from "../types/auth.types";
 
 export enum AuthActionType {
   LOGIN_START = "LOGIN_START",
@@ -16,10 +17,16 @@ export enum AuthActionType {
 
 export type AuthAction =
   | { type: AuthActionType.LOGIN_START }
-  | { type: AuthActionType.LOGIN_SUCCESS; payload: { credentials: ApiCredentials } }
+  | {
+      type: AuthActionType.LOGIN_SUCCESS;
+      payload: { credentials: ApiCredentials | UserCredentials };
+    }
   | { type: AuthActionType.LOGIN_FAILURE; payload: { error: string } }
   | { type: AuthActionType.LOGOUT }
-  | { type: AuthActionType.RESTORE_SESSION; payload: { credentials: ApiCredentials } }
+  | {
+      type: AuthActionType.RESTORE_SESSION;
+      payload: { credentials: ApiCredentials | UserCredentials };
+    }
   | { type: AuthActionType.CLEAR_ERROR };
 
 export const initialAuthState: AuthState = {

@@ -14,33 +14,32 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { useAuth, useTheme } from "./hooks";
 
 function AppContent() {
-  const { enableEnviziLogin, isAuthenticated, displayLogin } = useAuth();
+  const { enableEnviziLogin, state, displayLogin } = useAuth();
   const [showWelcome, setShowWelcome] = useState(() => {
     const hasSeenWelcome = localStorage.getItem("getStartedClicked") === "true";
     return !hasSeenWelcome;
   });
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (state.isAuthenticated) {
       setShowWelcome(false);
     }
-  }, [isAuthenticated]);
+  }, [state.isAuthenticated]);
 
   if (showWelcome) {
     const handleGetStarted = () => {
+      localStorage.setItem("getStartedClicked", "true");
+      setShowWelcome(false);
       // Check if Envizi login is enabled
       if (enableEnviziLogin) {
         displayLogin();
-      } else {
-        localStorage.setItem("getStartedClicked", "true");
-        setShowWelcome(false);
       }
     };
 
     return <WelcomePage onGetStarted={handleGetStarted} />;
   }
 
-  if (!isAuthenticated) {
+  if (!state.isAuthenticated) {
     return <LoginPage />;
   }
 

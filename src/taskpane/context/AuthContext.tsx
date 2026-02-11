@@ -5,20 +5,19 @@
 
 import { createContext, ReactNode, useCallback, useEffect, useReducer, useState } from "react";
 
-import { loadApiCredentialsFromStorage } from "../../common/credentials";
+import { ApiCredentials, loadApiCredentialsFromStorage } from "../../common/credentials";
+import { getEnableEnviziLogin } from "../../common/env";
+import { ensureClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
 import { performLogin, performLogout } from "../services/authService";
-import { ApiCredentials } from "../types/auth.types";
+import { AuthState } from "../types/auth.types";
 import { AuthActionType, AuthReducer, initialAuthState } from "./AuthReducer";
 
 /* global OfficeRuntime */
 
 interface AuthContextType {
   enableEnviziLogin: boolean;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  credentials: ApiCredentials | null;
-  error: string | null;
+  state: AuthState;
   displayLogin: () => void;
   login: (credentials: ApiCredentials, saveCredentials: boolean) => Promise<void>;
   logout: () => Promise<void>;
@@ -28,9 +27,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [enableEnviziLogin] = useState(
-    () => window.localStorage.getItem("enableEnviziLogin") === "true"
-  );
+  const [enableEnviziLogin] = useState(() => getEnableEnviziLogin());
   const [state, dispatch] = useReducer(AuthReducer, initialAuthState);
 
   // Restore session on mount
@@ -57,7 +54,13 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   const displayLogin = useCallback(() => {
     displayLoginDialog(
-      (credentials) => {},
+      (credentials) => {
+        ensureClient(credentials);
+        dispatch({
+          type: AuthActionType.LOGIN_SUCCESS,
+          payload: { credentials },
+        });
+      },
       () => {}
     );
     dispatch({ type: AuthActionType.CLEAR_ERROR });
@@ -100,10 +103,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   const value: AuthContextType = {
     enableEnviziLogin,
-    isAuthenticated: state.isAuthenticated,
-    isLoading: state.isLoading,
-    credentials: state.credentials,
-    error: state.error,
+    state,
     displayLogin,
     login,
     logout,
