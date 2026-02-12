@@ -3,9 +3,9 @@
  * Licensed Materials - Property of IBM
  */
 
-import { createContext, ReactNode, useCallback, useEffect, useReducer, useState } from "react";
+import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
 
-import { ApiCredentials, loadApiCredentialsFromStorage } from "../../common/credentials";
+import { ApiCredentials, loadCredentialsFromStorage } from "../../common/credentials";
 import { getEnableEnviziLogin } from "../../common/env";
 import { ensureClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
@@ -27,29 +27,25 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [enableEnviziLogin] = useState(() => getEnableEnviziLogin());
+  const enableEnviziLogin = getEnableEnviziLogin();
   const [state, dispatch] = useReducer(AuthReducer, initialAuthState);
 
-  // Restore session on mount
+  // Load credentials on mount
   useEffect(() => {
-    const restoreSession = async () => {
+    const loadCredentials = async () => {
       try {
-        const credentials = await loadApiCredentialsFromStorage();
+        const credentials = await loadCredentialsFromStorage();
 
         if (credentials) {
           dispatch({
             type: AuthActionType.RESTORE_SESSION,
             payload: { credentials },
           });
-        } else {
-          dispatch({ type: AuthActionType.LOGOUT });
         }
-      } catch (error) {
-        dispatch({ type: AuthActionType.LOGOUT });
-      }
+      } catch (error) {}
     };
 
-    restoreSession();
+    loadCredentials();
   }, []);
 
   const displayLogin = useCallback(() => {

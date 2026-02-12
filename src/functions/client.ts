@@ -6,26 +6,15 @@ import { jwtDecode } from "jwt-decode";
 import {
   ApiCredentials,
   CoreToken,
-  getApiCredentials,
-  getUserCredentials,
-  loadApiCredentialsFromStorage,
-  loadUserCredentialsFromStorage,
+  loadCredentialsFromStorage,
   UserCredentials,
 } from "../common/credentials";
-import { getApiUrl, getEnableEnviziLogin } from "../common/env";
+import { getApiUrl } from "../common/env";
 
 async function getClientConfig(
   credentials?: ApiCredentials | UserCredentials
 ): Promise<ClientConfig> {
-  const enableEnviziLogin = getEnableEnviziLogin();
-  let resolvedCredentials = credentials;
-  if (!resolvedCredentials) {
-    if (enableEnviziLogin) {
-      resolvedCredentials = getUserCredentials() || (await loadUserCredentialsFromStorage());
-    } else {
-      resolvedCredentials = getApiCredentials() || (await loadApiCredentialsFromStorage());
-    }
-  }
+  const resolvedCredentials = credentials || (await loadCredentialsFromStorage());
   if (!resolvedCredentials) {
     Office.addin.showAsTaskpane();
     throw new CustomFunctions.Error(

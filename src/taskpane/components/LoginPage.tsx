@@ -19,7 +19,7 @@ function EnviziLogin() {
         <p style={{ textAlign: "center" }}>Log in to perform emissions calculations.</p>
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <Button type="submit" appearance="primary" onClick={() => displayLogin()}>
+        <Button type="submit" appearance="primary" onClick={displayLogin}>
           Log in
         </Button>
       </div>
