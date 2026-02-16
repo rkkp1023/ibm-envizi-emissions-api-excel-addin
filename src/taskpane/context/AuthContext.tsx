@@ -5,15 +5,13 @@
 
 import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
 
-import { ApiCredentials, loadCredentialsFromStorage } from "../../common/credentials";
+import { ApiCredentials, Credentials, loadCredentialsFromStorage } from "../../common/credentials";
 import { getEnableEnviziLogin } from "../../common/env";
 import { ensureClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
 import { performLogin, performLogout } from "../services/authService";
 import { AuthState } from "../types/auth.types";
-import { AuthActionType, AuthReducer, initialAuthState } from "./AuthReducer";
-
-/* global OfficeRuntime */
+import { authReducer, initialAuthState } from "./authReducer";
 
 interface AuthContextType {
   enableEnviziLogin: boolean;
@@ -21,31 +19,29 @@ interface AuthContextType {
   displayLogin: () => void;
   login: (credentials: ApiCredentials, saveCredentials: boolean) => Promise<void>;
   logout: () => Promise<void>;
-  clearError: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const enableEnviziLogin = getEnableEnviziLogin();
-  const [state, dispatch] = useReducer(AuthReducer, initialAuthState);
+  const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
-  // Load credentials on mount
+  // Initialize on mount
   useEffect(() => {
-    const loadCredentials = async () => {
+    const initialize = async () => {
+      let credentials: Credentials;
       try {
-        const credentials = await loadCredentialsFromStorage();
-
-        if (credentials) {
-          dispatch({
-            type: AuthActionType.RESTORE_SESSION,
-            payload: { credentials },
-          });
-        }
+        credentials = await loadCredentialsFromStorage();
       } catch (error) {}
+
+      dispatch({
+        type: "initialize",
+        payload: { credentials },
+      });
     };
 
-    loadCredentials();
+    initialize();
   }, []);
 
   const displayLogin = useCallback(() => {
@@ -53,30 +49,29 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       (credentials) => {
         ensureClient(credentials);
         dispatch({
-          type: AuthActionType.LOGIN_SUCCESS,
+          type: "loginSuccess",
           payload: { credentials },
         });
       },
-      () => {}
+      () => {
+        dispatch({
+          type: "loginFailed",
+        });
+      }
     );
-    dispatch({ type: AuthActionType.CLEAR_ERROR });
   }, []);
 
   const login = useCallback(async (credentials: ApiCredentials, saveCredentials: boolean) => {
-    dispatch({ type: AuthActionType.LOGIN_START });
-
     try {
       // Perform login with API validation
       await performLogin(credentials, saveCredentials);
-
       dispatch({
-        type: AuthActionType.LOGIN_SUCCESS,
+        type: "loginSuccess",
         payload: { credentials },
       });
-    } catch (error: any) {
+    } catch (error) {
       dispatch({
-        type: AuthActionType.LOGIN_FAILURE,
-        payload: { error: error.message || "Login failed" },
+        type: "loginFailed",
       });
       throw error;
     }
@@ -86,15 +81,9 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     try {
       // Perform logout and reset client
       await performLogout();
-      dispatch({ type: AuthActionType.LOGOUT });
-    } catch (error) {
-      // Always dispatch logout even if there's an error
-      dispatch({ type: AuthActionType.LOGOUT });
-    }
-  }, []);
+    } catch (error) {}
 
-  const clearError = useCallback(() => {
-    dispatch({ type: AuthActionType.CLEAR_ERROR });
+    dispatch({ type: "logout" });
   }, []);
 
   const value: AuthContextType = {
@@ -103,7 +92,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     displayLogin,
     login,
     logout,
-    clearError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

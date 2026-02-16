@@ -3,7 +3,7 @@
  * Licensed Materials - Property of IBM
  */
 
-import { ApiCredentials } from "../types/auth.types";
+import { ApiCredentials } from "../../common/credentials";
 import { performLogin, performLogout, validateCredentials } from "./authService";
 
 // Mock the client module
@@ -16,10 +16,12 @@ jest.mock("../../functions/client", () => ({
 
 // Mock the credentials module
 const mockSaveApiCredentialsToStorage = jest.fn();
+const mockRemoveCredentialsFromStorage = jest.fn();
 const mockRemoveApiCredentialsFromStorage = jest.fn();
 const mockSetApiCredentials = jest.fn();
 jest.mock("../../common/credentials", () => ({
   saveApiCredentialsToStorage: (...args: any[]) => mockSaveApiCredentialsToStorage(...args),
+  removeCredentialsFromStorage: () => mockRemoveCredentialsFromStorage(),
   removeApiCredentialsFromStorage: () => mockRemoveApiCredentialsFromStorage(),
   setApiCredentials: (...args: any[]) => mockSetApiCredentials(...args),
 }));
@@ -93,7 +95,7 @@ describe("authService", () => {
     beforeEach(() => {
       mockEnsureClient.mockResolvedValue(undefined);
       mockSaveApiCredentialsToStorage.mockResolvedValue(undefined);
-      mockRemoveApiCredentialsFromStorage.mockResolvedValue(undefined);
+      mockRemoveCredentialsFromStorage.mockResolvedValue(undefined);
       mockSetApiCredentials.mockReturnValue(undefined);
     });
 
@@ -103,7 +105,7 @@ describe("authService", () => {
       expect(mockEnsureClient).toHaveBeenCalledWith(mockCredentials);
       expect(mockSetApiCredentials).toHaveBeenCalledWith(mockCredentials);
       expect(mockSaveApiCredentialsToStorage).toHaveBeenCalledWith(mockCredentials);
-      expect(mockRemoveApiCredentialsFromStorage).not.toHaveBeenCalled();
+      expect(mockRemoveCredentialsFromStorage).not.toHaveBeenCalled();
     });
 
     it("should perform login without saving credentials", async () => {
@@ -175,7 +177,7 @@ describe("authService", () => {
 
   describe("performLogout", () => {
     beforeEach(() => {
-      mockRemoveApiCredentialsFromStorage.mockResolvedValue(undefined);
+      mockRemoveCredentialsFromStorage.mockResolvedValue(undefined);
       mockSetApiCredentials.mockReturnValue(undefined);
       mockResetClient.mockReturnValue(undefined);
     });
@@ -183,33 +185,30 @@ describe("authService", () => {
     it("should perform logout successfully", async () => {
       await performLogout();
 
-      expect(mockSetApiCredentials).toHaveBeenCalledWith(null);
-      expect(mockRemoveApiCredentialsFromStorage).toHaveBeenCalledTimes(1);
+      expect(mockRemoveCredentialsFromStorage).toHaveBeenCalledTimes(1);
       expect(mockResetClient).toHaveBeenCalledTimes(1);
     });
 
     it("should clear credentials in correct order", async () => {
       const callOrder: string[] = [];
-      mockSetApiCredentials.mockImplementation(() => callOrder.push("setNull"));
-      mockRemoveApiCredentialsFromStorage.mockImplementation(() => callOrder.push("removeStorage"));
       mockResetClient.mockImplementation(() => callOrder.push("resetClient"));
+      mockRemoveCredentialsFromStorage.mockImplementation(() => callOrder.push("removeStorage"));
 
       await performLogout();
 
-      expect(callOrder).toEqual(["setNull", "removeStorage", "resetClient"]);
+      expect(callOrder).toEqual(["resetClient", "removeStorage"]);
     });
 
     it("should handle storage removal errors gracefully", async () => {
-      mockRemoveApiCredentialsFromStorage.mockRejectedValue(new Error("Storage error"));
+      mockRemoveCredentialsFromStorage.mockRejectedValue(new Error("Storage error"));
 
       // Should not throw, just log the error
       await expect(performLogout()).resolves.toBeUndefined();
-      expect(mockSetApiCredentials).toHaveBeenCalledWith(null);
       expect(mockResetClient).toHaveBeenCalledTimes(1);
     });
 
     it("should reset client even if storage removal fails", async () => {
-      mockRemoveApiCredentialsFromStorage.mockRejectedValue(new Error("Storage error"));
+      mockRemoveCredentialsFromStorage.mockRejectedValue(new Error("Storage error"));
 
       await performLogout();
 
@@ -221,7 +220,7 @@ describe("authService", () => {
     beforeEach(() => {
       mockEnsureClient.mockResolvedValue(undefined);
       mockSaveApiCredentialsToStorage.mockResolvedValue(undefined);
-      mockRemoveApiCredentialsFromStorage.mockResolvedValue(undefined);
+      mockRemoveCredentialsFromStorage.mockResolvedValue(undefined);
       mockSetApiCredentials.mockReturnValue(undefined);
       mockResetClient.mockReturnValue(undefined);
     });
@@ -231,7 +230,6 @@ describe("authService", () => {
       await performLogout();
 
       expect(mockSetApiCredentials).toHaveBeenCalledWith(mockCredentials);
-      expect(mockSetApiCredentials).toHaveBeenCalledWith(null);
       expect(mockResetClient).toHaveBeenCalledTimes(1);
     });
 
@@ -245,7 +243,6 @@ describe("authService", () => {
 
     it("should handle logout without prior login", async () => {
       await expect(performLogout()).resolves.toBeUndefined();
-      expect(mockSetApiCredentials).toHaveBeenCalledWith(null);
       expect(mockResetClient).toHaveBeenCalledTimes(1);
     });
   });

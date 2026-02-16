@@ -28,22 +28,26 @@ function EnviziLogin() {
 }
 
 function ApiLogin() {
-  const { state, login, clearError } = useAuth();
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [tenantId, setTenantId] = useState("");
   const [orgId, setOrgId] = useState("");
   const [saveCredentials, setSaveCredentials] = useState(true);
   const overviewDashboardUrl = getOverviewDashboardUrl();
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
-    clearError();
+    setError("");
+    setIsLoading(true);
 
     try {
       await login({ apiKey, tenantId, orgId }, saveCredentials);
-    } catch (err) {
-      // state.error is handled by the context
+    } catch (error) {
+      setError(error.message || "Login failed");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -53,8 +57,9 @@ function ApiLogin() {
         <p>
           Enter the credentials from your{" "}
           <Link href={overviewDashboardUrl} target="_blank">
-            Emissions API overview dashboard.
+            Emissions API overview dashboard
           </Link>
+          .
         </p>
       </div>
       <form className="form" onSubmit={handleSubmit}>
@@ -64,34 +69,34 @@ function ApiLogin() {
               type="password"
               value={apiKey}
               onChange={(event) => setApiKey(event.target.value)}
-              disabled={state.isLoading}
+              disabled={isLoading}
             />
           </Field>
           <Field label="Tenant ID" required>
             <Input
               value={tenantId}
               onChange={(e) => setTenantId(e.target.value)}
-              disabled={state.isLoading}
+              disabled={isLoading}
             />
           </Field>
           <Field label="Organization ID" required>
             <Input
               value={orgId}
               onChange={(event) => setOrgId(event.target.value)}
-              disabled={state.isLoading}
+              disabled={isLoading}
             />
           </Field>
           <Checkbox
             checked={saveCredentials}
             onChange={(event, data) => setSaveCredentials(!!data.checked)}
             label="Save credentials"
-            disabled={state.isLoading}
+            disabled={isLoading}
           />
 
-          {state.error && <div className="state.error-message">{state.error}</div>}
+          {error && <div className="error-message">{error}</div>}
 
-          <Button type="submit" appearance="primary" disabled={state.isLoading}>
-            {state.isLoading ? "Logging in..." : "Login"}
+          <Button type="submit" appearance="primary" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
         </div>
       </form>

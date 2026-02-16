@@ -3,90 +3,52 @@
  * Licensed Materials - Property of IBM
  */
 
-import { ApiCredentials, UserCredentials } from "../../common/credentials";
-import { AuthState, AuthStatus } from "../types/auth.types";
-
-export enum AuthActionType {
-  LOGIN_START = "LOGIN_START",
-  LOGIN_SUCCESS = "LOGIN_SUCCESS",
-  LOGIN_FAILURE = "LOGIN_FAILURE",
-  LOGOUT = "LOGOUT",
-  RESTORE_SESSION = "RESTORE_SESSION",
-  CLEAR_ERROR = "CLEAR_ERROR",
-}
+import { Credentials } from "../../common/credentials";
+import { AuthState } from "../types/auth.types";
 
 export type AuthAction =
-  | { type: AuthActionType.LOGIN_START }
+  | { type: "initialize"; payload: { credentials: Credentials } }
   | {
-      type: AuthActionType.LOGIN_SUCCESS;
-      payload: { credentials: ApiCredentials | UserCredentials };
+      type: "loginSuccess";
+      payload: { credentials: Credentials };
     }
-  | { type: AuthActionType.LOGIN_FAILURE; payload: { error: string } }
-  | { type: AuthActionType.LOGOUT }
-  | {
-      type: AuthActionType.RESTORE_SESSION;
-      payload: { credentials: ApiCredentials | UserCredentials };
-    }
-  | { type: AuthActionType.CLEAR_ERROR };
+  | { type: "loginFailed" }
+  | { type: "logout" };
 
 export const initialAuthState: AuthState = {
-  status: AuthStatus.IDLE,
   credentials: null,
-  error: null,
-  isLoading: true,
+  isInitialized: false,
   isAuthenticated: false,
 };
 
-export function AuthReducer(state: AuthState, action: AuthAction): AuthState {
+export function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
-    case AuthActionType.LOGIN_START:
+    case "initialize":
       return {
         ...state,
-        status: AuthStatus.LOADING,
-        isLoading: true,
-        error: null,
-      };
-
-    case AuthActionType.LOGIN_SUCCESS:
-      return {
-        ...state,
-        status: AuthStatus.AUTHENTICATED,
-        isLoading: false,
-        isAuthenticated: true,
         credentials: action.payload.credentials,
-        error: null,
+        isInitialized: true,
       };
 
-    case AuthActionType.LOGIN_FAILURE:
+    case "loginSuccess":
       return {
         ...state,
-        status: AuthStatus.ERROR,
-        isLoading: false,
-        isAuthenticated: false,
-        error: action.payload.error,
+        credentials: action.payload.credentials,
+        isAuthenticated: true,
       };
 
-    case AuthActionType.LOGOUT:
+    case "loginFailed":
       return {
-        ...initialAuthState,
-        status: AuthStatus.UNAUTHENTICATED,
-        isLoading: false,
+        ...state,
+        credentials: null,
         isAuthenticated: false,
       };
 
-    case AuthActionType.RESTORE_SESSION:
+    case "logout":
       return {
         ...state,
-        status: AuthStatus.AUTHENTICATED,
-        isLoading: false,
-        isAuthenticated: true,
-        credentials: action.payload.credentials,
-      };
-
-    case AuthActionType.CLEAR_ERROR:
-      return {
-        ...state,
-        error: null,
+        credentials: null,
+        isAuthenticated: false,
       };
 
     default:

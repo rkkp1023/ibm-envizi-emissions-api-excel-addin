@@ -10,10 +10,6 @@ interface WelcomePageProps {
 }
 
 export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
-  const handleGetStarted = () => {
-    onGetStarted();
-  };
-
   return (
     <div id="welcome-page" className="page welcome-page">
       <header className="welcome-header">
@@ -37,12 +33,7 @@ export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
           <li className="ms-ListItem">Export your results quickly & easily</li>
         </ul>
         <div className="welcome-bottom">
-          <Button
-            id="get-started-button"
-            type="submit"
-            appearance="primary"
-            onClick={handleGetStarted}
-          >
+          <Button id="get-started-button" type="submit" appearance="primary" onClick={onGetStarted}>
             Get started
           </Button>
         </div>

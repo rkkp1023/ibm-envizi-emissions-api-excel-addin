@@ -1,19 +1,12 @@
 // Copyright IBM Corp. 2025, 2026
 
 import { Client, ClientConfig } from "emissions-api-sdk";
-
 import { jwtDecode } from "jwt-decode";
-import {
-  ApiCredentials,
-  CoreToken,
-  loadCredentialsFromStorage,
-  UserCredentials,
-} from "../common/credentials";
+
+import { CoreToken, Credentials, loadCredentialsFromStorage } from "../common/credentials";
 import { getApiUrl } from "../common/env";
 
-async function getClientConfig(
-  credentials?: ApiCredentials | UserCredentials
-): Promise<ClientConfig> {
+async function getClientConfig(credentials?: Credentials): Promise<ClientConfig> {
   const resolvedCredentials = credentials || (await loadCredentialsFromStorage());
   if (!resolvedCredentials) {
     Office.addin.showAsTaskpane();
@@ -49,7 +42,7 @@ async function getClientConfig(
 /**
  * Ensures the Client object is properly initialized.
  */
-export async function ensureClient(credentials?: ApiCredentials | UserCredentials): Promise<void> {
+export async function ensureClient(credentials?: Credentials): Promise<void> {
   if (Client["instance"] && !credentials) {
     return;
   }

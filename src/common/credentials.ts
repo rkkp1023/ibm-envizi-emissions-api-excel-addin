@@ -19,6 +19,8 @@ export interface UserCredentials {
   coreToken: string; // CoreGUUT token
 }
 
+export type Credentials = ApiCredentials | UserCredentials;
+
 export interface CoreToken extends JwtPayload {
   tenantId: string;
 }
@@ -110,10 +112,8 @@ export async function removeUserCredentialsFromStorage(): Promise<void> {
   return OfficeRuntime.storage.removeItem(userCredentialsKey);
 }
 
-export async function loadCredentialsFromStorage(): Promise<
-  ApiCredentials | UserCredentials | null
-> {
-  let credentials: ApiCredentials | UserCredentials | null = await loadApiCredentialsFromStorage();
+export async function loadCredentialsFromStorage(): Promise<Credentials | null> {
+  let credentials: Credentials | null = await loadApiCredentialsFromStorage();
   if (!credentials && getEnableEnviziLogin()) {
     credentials = await loadUserCredentialsFromStorage();
   }

@@ -26,6 +26,10 @@ function AppContent() {
     }
   }, [state.isAuthenticated]);
 
+  if (!state.isInitialized) {
+    return null;
+  }
+
   if (showWelcome) {
     const handleGetStarted = () => {
       localStorage.setItem("getStartedClicked", "true");

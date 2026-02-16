@@ -67,8 +67,3 @@ export function getEnableEnviziLogin(): boolean {
   }
   return window.enableEnviziLogin;
 }
-
-export function setEnableEnviziLogin(enableEnviziLogin: boolean): void {
-  window.enableEnviziLogin = !!enableEnviziLogin;
-  window.localStorage.setItem("enableEnviziLogin", String(window.enableEnviziLogin));
-}
