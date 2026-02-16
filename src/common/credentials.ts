@@ -4,6 +4,8 @@ import { JwtPayload } from "jwt-decode";
 
 import { getEnableEnviziLogin } from "./env";
 
+/* global OfficeRuntime */
+
 const apiCredentialsKey = "apiCredentials";
 const userCredentialsKey = "userCredentials";
 

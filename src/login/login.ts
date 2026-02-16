@@ -5,6 +5,8 @@ import axios from "axios";
 import { EnvType, getEnvType } from "../common/env";
 import { LoginDialogMessage } from "./login-dialog-message";
 
+/* global Office */
+
 // To be updated
 export const loginUrls: Record<EnvType, string> = {
   prod: "https://us006t.envizi.com/ui-alpha/envizi/excel-login",

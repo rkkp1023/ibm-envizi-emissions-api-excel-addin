@@ -1,8 +1,9 @@
 // Copyright IBM Corp. 2026
 
-
 import { UserCredentials } from "../common/credentials";
 import { LoginDialogMessage } from "../login/login-dialog-message";
+
+/* global Office */
 
 export function displayLoginDialog(
   onConfirm: (credentials: UserCredentials) => void,
