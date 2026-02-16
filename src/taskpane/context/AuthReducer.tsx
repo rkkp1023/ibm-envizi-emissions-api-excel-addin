@@ -28,6 +28,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         ...state,
         credentials: action.payload.credentials,
         isInitialized: true,
+        isAuthenticated: !!action.payload.credentials,
       };
 
     case "loginSuccess":
