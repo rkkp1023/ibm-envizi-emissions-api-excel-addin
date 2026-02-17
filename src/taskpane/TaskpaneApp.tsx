@@ -5,6 +5,7 @@
 
 import { FluentProvider } from "@fluentui/react-components";
 import { useEffect, useState } from "react";
+
 import { LoginPage } from "./components/LoginPage";
 import { MainPage } from "./components/MainPage";
 import { WelcomePage } from "./components/WelcomePage";
@@ -13,28 +14,36 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { useAuth, useTheme } from "./hooks";
 
 function AppContent() {
-  const { isAuthenticated } = useAuth();
+  const { enableEnviziLogin, state, displayLogin } = useAuth();
   const [showWelcome, setShowWelcome] = useState(() => {
     const hasSeenWelcome = localStorage.getItem("getStartedClicked") === "true";
     return !hasSeenWelcome;
   });
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (state.isAuthenticated) {
       setShowWelcome(false);
     }
-  }, [isAuthenticated]);
+  }, [state.isAuthenticated]);
 
-  const handleGetStarted = () => {
-    localStorage.setItem("getStartedClicked", "true");
-    setShowWelcome(false);
-  };
+  if (!state.isInitialized) {
+    return null;
+  }
 
   if (showWelcome) {
+    const handleGetStarted = () => {
+      localStorage.setItem("getStartedClicked", "true");
+      setShowWelcome(false);
+      // Check if Envizi login is enabled
+      if (enableEnviziLogin) {
+        displayLogin();
+      }
+    };
+
     return <WelcomePage onGetStarted={handleGetStarted} />;
   }
 
-  if (!isAuthenticated) {
+  if (!state.isAuthenticated) {
     return <LoginPage />;
   }
 

@@ -5,11 +5,34 @@
 
 import { Button, Field, Input } from "@fluentui/react-components";
 import React from "react";
+
+import { ApiCredentials } from "../../common/credentials";
 import { getOverviewDashboardUrl } from "../../common/env";
 import { useAuth } from "../hooks/useAuth";
 
+function ApiCredentialsForm() {
+  const { state } = useAuth();
+  const credentials = state.credentials as ApiCredentials;
+
+  return (
+    <form className="form">
+      <div className="form-grid">
+        <Field label="API key">
+          <Input type="password" appearance="underline" value={credentials.apiKey || ""} readOnly />
+        </Field>
+        <Field label="Tenant ID">
+          <Input appearance="underline" value={credentials.tenantId || ""} readOnly />
+        </Field>
+        <Field label="Organization ID">
+          <Input appearance="underline" value={credentials.orgId || ""} readOnly />
+        </Field>
+      </div>
+    </form>
+  );
+}
+
 export const AccountPage: React.FC = () => {
-  const { credentials, logout } = useAuth();
+  const { state, logout } = useAuth();
   const overviewDashboardUrl = getOverviewDashboardUrl();
 
   const handleViewDashboard = () => {
@@ -18,24 +41,7 @@ export const AccountPage: React.FC = () => {
 
   return (
     <div className="account-panel">
-      <form className="form">
-        <div className="form-grid">
-          <Field label="API key">
-            <Input
-              type="password"
-              appearance="underline"
-              value={credentials?.apiKey || ""}
-              readOnly
-            />
-          </Field>
-          <Field label="Tenant ID">
-            <Input appearance="underline" value={credentials?.tenantId || ""} readOnly />
-          </Field>
-          <Field label="Organization ID">
-            <Input appearance="underline" value={credentials?.orgId || ""} readOnly />
-          </Field>
-        </div>
-      </form>
+      {state.credentials["apiKey"] && <ApiCredentialsForm></ApiCredentialsForm>}
       <div className="account-buttons">
         <Button appearance="primary" onClick={handleViewDashboard}>
           View dashboard

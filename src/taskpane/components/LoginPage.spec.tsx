@@ -6,13 +6,14 @@
 import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+
 import { AuthProvider } from "../context/AuthContext";
 import { LoginPage } from "./LoginPage";
 
 // Mock the credentials module
 const mockLoadApiCredentialsFromStorage = jest.fn();
 jest.mock("../../common/credentials", () => ({
-  loadApiCredentialsFromStorage: mockLoadApiCredentialsFromStorage,
+  loadCredentialsFromStorage: mockLoadApiCredentialsFromStorage,
   saveApiCredentialsToStorage: jest.fn(),
   removeApiCredentialsFromStorage: jest.fn(),
   setApiCredentials: jest.fn(),
@@ -33,14 +34,6 @@ jest.mock("../services/authService", () => ({
   performLogin: (...args: any[]) => mockPerformLogin(...args),
   performLogout: (...args: any[]) => mockPerformLogout(...args),
   validateCredentials: (...args: any[]) => mockValidateCredentials(...args),
-}));
-
-// Mock the env module
-jest.mock("../../common/env", () => ({
-  getEnvType: jest.fn(() => "np"),
-  getOverviewDashboardUrl: jest.fn(
-    () => "https://www-dev.app.ibm.com/envizi/emissions-api-home/overview"
-  ),
 }));
 
 describe("LoginPage", () => {

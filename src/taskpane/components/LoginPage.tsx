@@ -5,27 +5,49 @@
 
 import { Button, Checkbox, Field, Input, Link } from "@fluentui/react-components";
 import { useState } from "react";
+
 import { getOverviewDashboardUrl } from "../../common/env";
 import { useAuth } from "../hooks/useAuth";
 
-export function LoginPage() {
-  const { login, error, isLoading, clearError } = useAuth();
+function EnviziLogin() {
+  const { displayLogin } = useAuth();
+
+  return (
+    <div className="page login-page" id="login-page">
+      <div className="login-header">
+        <h2 className="ms-font-xl">Log in</h2>
+        <p style={{ textAlign: "center" }}>Log in to perform emissions calculations.</p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Button type="submit" appearance="primary" onClick={displayLogin}>
+          Log in
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function ApiLogin() {
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [tenantId, setTenantId] = useState("");
   const [orgId, setOrgId] = useState("");
   const [saveCredentials, setSaveCredentials] = useState(true);
-
   const overviewDashboardUrl = getOverviewDashboardUrl();
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
-    clearError();
+    setError("");
+    setIsLoading(true);
 
     try {
       await login({ apiKey, tenantId, orgId }, saveCredentials);
-    } catch (err) {
-      // Error is handled by the context
+    } catch (error) {
+      setError(error.message || "Login failed");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -35,8 +57,9 @@ export function LoginPage() {
         <p>
           Enter the credentials from your{" "}
           <Link href={overviewDashboardUrl} target="_blank">
-            Emissions API overview dashboard.
+            Emissions API overview dashboard
           </Link>
+          .
         </p>
       </div>
       <form className="form" onSubmit={handleSubmit}>
@@ -79,4 +102,10 @@ export function LoginPage() {
       </form>
     </div>
   );
+}
+
+export function LoginPage() {
+  const { enableEnviziLogin } = useAuth();
+
+  return enableEnviziLogin ? <EnviziLogin></EnviziLogin> : <ApiLogin></ApiLogin>;
 }

@@ -6,6 +6,7 @@
 import {
   ApiCredentials,
   removeApiCredentialsFromStorage,
+  removeCredentialsFromStorage,
   saveApiCredentialsToStorage,
   setApiCredentials,
 } from "../../common/credentials";
@@ -69,15 +70,12 @@ export async function performLogin(
  * @returns Promise that resolves when logout is complete
  */
 export async function performLogout(): Promise<void> {
-  setApiCredentials(null);
-
+  resetClient();
   // Try to remove from storage, but don't fail if it errors
   try {
-    await removeApiCredentialsFromStorage();
+    await removeCredentialsFromStorage();
   } catch (error) {
     // Log error but continue with logout
     console.error("Failed to remove credentials from storage:", error);
   }
-
-  resetClient();
 }

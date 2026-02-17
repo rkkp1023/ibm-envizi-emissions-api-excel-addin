@@ -3,24 +3,10 @@
  * Licensed Materials - Property of IBM
  */
 
-export enum AuthStatus {
-  IDLE = "idle",
-  LOADING = "loading",
-  AUTHENTICATED = "authenticated",
-  UNAUTHENTICATED = "unauthenticated",
-  ERROR = "error",
-}
-
-export interface ApiCredentials {
-  apiKey: string;
-  tenantId: string;
-  orgId: string;
-}
+import { Credentials } from "../../common/credentials";
 
 export interface AuthState {
-  status: AuthStatus;
-  credentials: ApiCredentials | null;
-  error: string | null;
-  isLoading: boolean;
+  credentials: Credentials | null;
+  isInitialized: boolean;
   isAuthenticated: boolean;
 }

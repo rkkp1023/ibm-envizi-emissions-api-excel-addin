@@ -6,6 +6,7 @@
 import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
+
 import { AccountPage } from "./AccountPage";
 
 // Mock the useAuth hook
@@ -18,12 +19,14 @@ const mockCredentials = {
 
 jest.mock("../hooks/useAuth", () => ({
   useAuth: () => ({
-    credentials: mockCredentials,
-    logout: mockLogout,
-    isAuthenticated: true,
-    isLoading: false,
-    error: null,
+    state: {
+      credentials: mockCredentials,
+      isAuthenticated: true,
+      isLoading: false,
+      error: null,
+    },
     login: jest.fn(),
+    logout: mockLogout,
     clearError: jest.fn(),
   }),
 }));

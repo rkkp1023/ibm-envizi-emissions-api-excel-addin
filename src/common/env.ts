@@ -1,7 +1,14 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2025, 2026
 
 export type EnvType = "prod" | "np" | "local";
 export type ApiId = "saascore" | "ghgemissions";
+
+declare global {
+  interface Window {
+    envType?: EnvType;
+    enableEnviziLogin?: boolean;
+  }
+}
 
 export const apiUrls: Record<ApiId, Record<EnvType, string>> = {
   saascore: {
@@ -22,8 +29,6 @@ export const apiHomeUrls: Record<EnvType, string> = {
   local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
 };
 
-let _envType: EnvType;
-
 function detectEnvType(): EnvType {
   const origin = window.location.origin;
   if (origin === "https://plugins.app.ibm.com") {
@@ -37,15 +42,14 @@ function detectEnvType(): EnvType {
 }
 
 export function getEnvType(): EnvType {
-  if (!_envType) {
-    _envType = detectEnvType();
+  if (!window.envType) {
+    window.envType = detectEnvType();
   }
-  return _envType;
+  return window.envType;
 }
 
-export function getApiUrl(api: ApiId) {
-  const envType = getEnvType();
-  return apiUrls[api][envType];
+export function getApiUrl(api: ApiId, envType?: EnvType) {
+  return apiUrls[api][envType || getEnvType()];
 }
 
 export function getApiHomeUrl(): string {
@@ -55,4 +59,11 @@ export function getApiHomeUrl(): string {
 
 export function getOverviewDashboardUrl(): string {
   return `${getApiHomeUrl()}/overview`;
+}
+
+export function getEnableEnviziLogin(): boolean {
+  if (window.enableEnviziLogin === undefined) {
+    window.enableEnviziLogin = window.localStorage.getItem("enableEnviziLogin") === "true";
+  }
+  return window.enableEnviziLogin;
 }

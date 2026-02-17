@@ -5,65 +5,73 @@
 
 import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
 
-import { loadApiCredentialsFromStorage } from "../../common/credentials";
+import { ApiCredentials, Credentials, loadCredentialsFromStorage } from "../../common/credentials";
+import { getEnableEnviziLogin } from "../../common/env";
+import { ensureClient } from "../../functions/client";
+import { displayLoginDialog } from "../auth";
 import { performLogin, performLogout } from "../services/authService";
-import { ApiCredentials } from "../types/auth.types";
-import { AuthActionType, AuthReducer, initialAuthState } from "./AuthReducer";
-
-/* global OfficeRuntime */
+import { AuthState } from "../types/auth.types";
+import { authReducer, initialAuthState } from "./authReducer";
 
 interface AuthContextType {
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  credentials: ApiCredentials | null;
-  error: string | null;
+  enableEnviziLogin: boolean;
+  state: AuthState;
+  displayLogin: () => void;
   login: (credentials: ApiCredentials, saveCredentials: boolean) => Promise<void>;
   logout: () => Promise<void>;
-  clearError: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [state, dispatch] = useReducer(AuthReducer, initialAuthState);
+  const enableEnviziLogin = getEnableEnviziLogin();
+  const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
-  // Restore session on mount
+  // Initialize on mount
   useEffect(() => {
-    const restoreSession = async () => {
+    const initialize = async () => {
+      let credentials: Credentials;
       try {
-        const credentials = await loadApiCredentialsFromStorage();
+        credentials = await loadCredentialsFromStorage();
+      } catch (error) {}
 
-        if (credentials) {
-          dispatch({
-            type: AuthActionType.RESTORE_SESSION,
-            payload: { credentials },
-          });
-        } else {
-          dispatch({ type: AuthActionType.LOGOUT });
-        }
-      } catch (error) {
-        dispatch({ type: AuthActionType.LOGOUT });
-      }
+      dispatch({
+        type: "initialize",
+        payload: { credentials },
+      });
     };
 
-    restoreSession();
+    initialize();
+  }, []);
+
+  const displayLogin = useCallback(() => {
+    displayLoginDialog(
+      (credentials) => {
+        ensureClient(credentials);
+        dispatch({
+          type: "loginSuccess",
+          payload: { credentials },
+        });
+      },
+      () => {
+        dispatch({
+          type: "loginFailed",
+        });
+      }
+    );
   }, []);
 
   const login = useCallback(async (credentials: ApiCredentials, saveCredentials: boolean) => {
-    dispatch({ type: AuthActionType.LOGIN_START });
-
     try {
       // Perform login with API validation
       await performLogin(credentials, saveCredentials);
-
       dispatch({
-        type: AuthActionType.LOGIN_SUCCESS,
+        type: "loginSuccess",
         payload: { credentials },
       });
-    } catch (error: any) {
+    } catch (error) {
       dispatch({
-        type: AuthActionType.LOGIN_FAILURE,
-        payload: { error: error.message || "Login failed" },
+        type: "loginFailed",
       });
       throw error;
     }
@@ -73,25 +81,17 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     try {
       // Perform logout and reset client
       await performLogout();
-      dispatch({ type: AuthActionType.LOGOUT });
-    } catch (error) {
-      // Always dispatch logout even if there's an error
-      dispatch({ type: AuthActionType.LOGOUT });
-    }
-  }, []);
+    } catch (error) {}
 
-  const clearError = useCallback(() => {
-    dispatch({ type: AuthActionType.CLEAR_ERROR });
+    dispatch({ type: "logout" });
   }, []);
 
   const value: AuthContextType = {
-    isAuthenticated: state.isAuthenticated,
-    isLoading: state.isLoading,
-    credentials: state.credentials,
-    error: state.error,
+    enableEnviziLogin,
+    state,
+    displayLogin,
     login,
     logout,
-    clearError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
