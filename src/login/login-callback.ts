@@ -1,6 +1,6 @@
 // Copyright IBM Corp. 2026
 
-import { LoginDialogMessage } from "../login/login-dialog-message";
+import { LoginDialogMessage } from "./login-dialog-message";
 
 /* global Office, URLSearchParams */
 
