@@ -1,8 +1,8 @@
 // Copyright IBM Corp. 2025
-import * as api from "../src/functions/functions"
-import { genericApiCall } from "../src/functions/generic-api-call";
-import { factorSearch } from "../src/functions/factorSearchHelper";
 import { factorHelper } from "../src/functions/factorHelper";
+import { factorSearch } from "../src/functions/factorSearchHelper";
+import * as api from "../src/functions/functions";
+import { genericApiCall } from "../src/functions/generic-api-call";
 
 jest.mock("../src/functions/generic-api-call", () => ({
   genericApiCall: jest.fn(),
@@ -158,6 +158,48 @@ describe("emissions custom functions", () => {
       apiType: "calculation",
       args: [333, 444, "kg"],
       expectedPayload: { factorId: 333, value: 444, unit: "kg" },
+    },
+    {
+      fn: api.economic_activity,
+      name: "economic_activity",
+      apiType: "economic_activity",
+      args: ["office", 1000, "sqft", "USA", "CA", "2024-01-01"],
+      expectedPayload: {
+        type: "office",
+        value: 1000,
+        unit: "sqft",
+        country: "USA",
+        stateProvince: "CA",
+        date: "2024-01-01",
+      },
+    },
+    {
+      fn: api.economic_activity_by_factorId,
+      name: "economic_activity_by_factorId",
+      apiType: "economic_activity",
+      args: [555, 2000, "sqft"],
+      expectedPayload: { factorId: 555, value: 2000, unit: "sqft" },
+    },
+    {
+      fn: api.real_estate,
+      name: "real_estate",
+      apiType: "real_estate",
+      args: ["building", 5000, "sqm", "USA", "NY", "2024-01-01"],
+      expectedPayload: {
+        type: "building",
+        value: 5000,
+        unit: "sqm",
+        country: "USA",
+        stateProvince: "NY",
+        date: "2024-01-01",
+      },
+    },
+    {
+      fn: api.real_estate_by_factorId,
+      name: "real_estate_by_factorId",
+      apiType: "real_estate",
+      args: [666, 3000, "sqm"],
+      expectedPayload: { factorId: 666, value: 3000, unit: "sqm" },
     },
   ];
 
