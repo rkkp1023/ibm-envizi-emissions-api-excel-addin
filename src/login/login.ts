@@ -9,9 +9,9 @@ import { LoginDialogMessage } from "./login-dialog-message";
 
 // To be updated
 export const loginUrls: Record<EnvType, string> = {
-  prod: "https://us006t.envizi.com/ui-alpha/envizi/excel-login",
-  np: "https://us006t.envizi.com/ui-alpha/envizi/excel-login",
-  local: "https://local-envizi.ibm.com/ui/envizi/excel-login",
+  prod: "https://us006t.envizi.com/emissions-excel-login/login",
+  np: "https://us006t.envizi.com/emissions-excel-login/login",
+  local: "https://local-envizi.ibm.com/sci-bridge/login",
 };
 
 Office.onReady(() => {
