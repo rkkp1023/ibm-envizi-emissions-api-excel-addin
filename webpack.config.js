@@ -27,7 +27,7 @@ module.exports = async (env, options) => {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       taskpane: ["./src/taskpane/index.tsx"],
       login: ["./src/login/login.ts"],
-      callback: ["./src/callback/callback.ts"],
+      callback: ["./src/callback/login-callback.ts"],
       functions: ["./src/functions/functions.ts"],
     },
     output: {
@@ -97,9 +97,9 @@ module.exports = async (env, options) => {
         chunks: ["login"],
       }),
       new HtmlWebpackPlugin({
-        filename: "callback.html",
-        template: "./src/callback/callback.html",
-        chunks: ["callback"],
+        filename: "login-callback.html",
+        template: "./src/callback/login-callback.html",
+        chunks: ["login-callback"],
       }),
       new CopyWebpackPlugin({
         patterns: [
