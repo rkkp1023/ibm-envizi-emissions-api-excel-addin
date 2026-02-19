@@ -36,16 +36,18 @@ jest.mock("../src/functions/client", () => ({
   ensureClient: jest.fn().mockResolvedValue(undefined),
 }));
 
-import { genericApiCall } from "../src/functions/generic-api-call";
 import { ensureClient } from "../src/functions/client";
-import { convertExcelDateToISO, extractSymbolFromDisplay } from "../src/functions/utils";
+import { genericApiCall } from "../src/functions/generic-api-call";
+import { convertExcelDateToISO } from "../src/functions/utils";
 
 import {
+  Calculation,
+  EconomicActivity,
+  Fugitive,
   Location,
   Mobile,
-  Fugitive,
+  RealEstate,
   Stationary,
-  Calculation,
   TransportationAndDistribution,
 } from "emissions-api-sdk";
 
@@ -59,6 +61,8 @@ jest.mock("emissions-api-sdk", () => {
     Stationary: { calculate: jest.fn() },
     Calculation: { calculate: jest.fn() },
     TransportationAndDistribution: { calculate: jest.fn() },
+    EconomicActivity: { calculate: jest.fn() },
+    RealEstate: { calculate: jest.fn() },
     default: {},
   };
 });
@@ -95,7 +99,9 @@ type ApiCase = {
     | "fugitive"
     | "mobile"
     | "calculation"
-    | "transportation_and_distribution";
+    | "transportation_and_distribution"
+    | "economic_activity"
+    | "real_estate";
   emissionMock: jest.Mock;
 };
 
@@ -117,6 +123,16 @@ const apiCases: ApiCase[] = [
     name: "Transportation & Distribution",
     apiType: "transportation_and_distribution",
     emissionMock: TransportationAndDistribution.calculate as jest.Mock,
+  },
+  {
+    name: "Economic Activity",
+    apiType: "economic_activity",
+    emissionMock: EconomicActivity.calculate as jest.Mock,
+  },
+  {
+    name: "Real Estate",
+    apiType: "real_estate",
+    emissionMock: RealEstate.calculate as jest.Mock,
   },
 ];
 

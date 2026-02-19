@@ -1,11 +1,13 @@
 // Copyright IBM Corp. 2025
 
 import {
+  Calculation,
+  EconomicActivity,
+  Fugitive,
   Location,
   Mobile,
-  Fugitive,
+  RealEstate,
   Stationary,
-  Calculation,
   TransportationAndDistribution,
 } from "emissions-api-sdk";
 
@@ -19,7 +21,9 @@ type ApiType =
   | "fugitive"
   | "mobile"
   | "transportation_and_distribution"
-  | "calculation" ;
+  | "calculation"
+  | "economic_activity"
+  | "real_estate";
 
 interface BasePayload {
   value: number;
@@ -49,7 +53,8 @@ const emissionApiMap: Record<ApiType, (params: any) => Promise<any>> = {
   mobile: Mobile.calculate,
   transportation_and_distribution: TransportationAndDistribution.calculate,
   calculation: Calculation.calculate,
-  
+  economic_activity: EconomicActivity.calculate,
+  real_estate: RealEstate.calculate,
 };
 
 function buildLocation(payload: PayloadWithType, apiType: ApiType): Record<string, string> | undefined {

@@ -1,8 +1,8 @@
 ﻿// Copyright IBM Corp. 2025
 
-import { genericApiCall } from "./generic-api-call";
-import { factorSearch } from "./factorSearchHelper";
 import { factorHelper } from "./factorHelper";
+import { factorSearch } from "./factorSearchHelper";
+import { genericApiCall } from "./generic-api-call";
 
 /**
  * Calculates location-based emissions.
@@ -334,4 +334,102 @@ export async function factor(
  */
 export async function factor_by_id(factorId: number, unit?: string): Promise<any[][]> {
   return factorHelper(factorId, unit);
+}
+
+/**
+ * Calculates emissions using the economic activity endpoint.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#economic-activity
+ * @param type Activity type
+ * @param value Numeric activity value
+ * @param unit Unit of measurement
+ * @param country ISO alpha-3 country code
+ * @param stateProvince Geographic state or province
+ * @param date Activity date
+ */
+export async function economic_activity(
+  type: string,
+  value: number,
+  unit: string,
+  country: string,
+  stateProvince?: string,
+  date?: string
+): Promise<any[][]> {
+  return genericApiCall("economic_activity", {
+    type,
+    value,
+    unit,
+    country,
+    stateProvince,
+    date,
+  });
+}
+
+/**
+ * Calculates emissions using the economic activity endpoint.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#economic-activity
+ * @param factorId Emission factor ID
+ * @param value Numeric activity value
+ * @param unit Unit of measurement
+ */
+export async function economic_activity_by_factorId(
+  factorId: number,
+  value: number,
+  unit: string
+): Promise<any[][]> {
+  return genericApiCall("economic_activity", {
+    factorId,
+    value,
+    unit,
+  });
+}
+
+/**
+ * Calculates emissions using the real estate endpoint.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#real-estate
+ * @param type Activity type
+ * @param value Numeric activity value
+ * @param unit Unit of measurement
+ * @param country ISO alpha-3 country code
+ * @param stateProvince Geographic state or province
+ * @param date Activity date
+ */
+export async function real_estate(
+  type: string,
+  value: number,
+  unit: string,
+  country: string,
+  stateProvince?: string,
+  date?: string
+): Promise<any[][]> {
+  return genericApiCall("real_estate", {
+    type,
+    value,
+    unit,
+    country,
+    stateProvince,
+    date,
+  });
+}
+
+/**
+ * Calculates emissions using the real estate endpoint.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#real-estate
+ * @param factorId Emission factor ID
+ * @param value Numeric activity value
+ * @param unit Unit of measurement
+ */
+export async function real_estate_by_factorId(
+  factorId: number,
+  value: number,
+  unit: string
+): Promise<any[][]> {
+  return genericApiCall("real_estate", {
+    factorId,
+    value,
+    unit,
+  });
 }
