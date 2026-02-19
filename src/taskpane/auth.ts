@@ -10,7 +10,10 @@ export function displayLoginDialog(
   onClose: () => void
 ): void {
   // Use the Office dialog API to open the login page
-  const loginUrl = `${window.location.origin}/login.html`;
+  // Extract the root path from the current URL (e.g., /excel-addin when deployed)
+  const currentPath = window.location.pathname;
+  const rootPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
+  const loginUrl = `${window.location.origin}${rootPath}/login.html`;
   const uiContext = Office.context.ui;
   uiContext.displayDialogAsync(
     loginUrl,
