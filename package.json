@@ -86,5 +86,8 @@
   "browserslist": [
     "last 2 versions",
     "ie 11"
-  ]
+  ],
+  "overrides": {
+    "ajv":">=8.18.0"
+  }
 }
