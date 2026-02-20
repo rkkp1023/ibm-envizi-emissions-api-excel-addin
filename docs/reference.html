@@ -762,6 +762,170 @@
 </div>
 <p>—</p>
 </section>
+<section id="economic-activity">
+<h3>Economic Activity<a class="headerlink" href="#economic-activity" title="Link to this heading">¶</a></h3>
+<p><strong>Syntax</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.ECONOMIC_ACTIVITY(type, value, unit, country, [stateProvince], [date])
+</pre></div>
+</div>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> – Activity type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> – Numeric activity value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span></code> – Unit of measurement</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">country</span></code> – ISO alpha-3 country code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stateProvince</span></code> <em>(optional)</em> – Geographic state or province</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> <em>(optional)</em> – Activity date</p></li>
+</ul>
+<p>—</p>
+<p><strong>Alternate Syntax (factorId)</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.ECONOMIC_ACTIVITY_BY_FACTORID(factorId, value, unit)
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">factorId</span></code> – Factor ID from Envizi</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> – Numeric activity value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span></code> – Unit of measurement</p></li>
+</ul>
+<p><strong>Outputs</strong></p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Total</span> <span class="pre">CO2e</span></code></p></td>
+<td><p>The total emissions expressed as carbon dioxide equivalent (CO2e). This is the sum of all GHGs weighted by their global warming potential (GWP).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CO2</span></code></p></td>
+<td><p>Direct carbon dioxide (CO2) emissions reported separately.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CH4</span></code></p></td>
+<td><p>Methane (CH4) emissions reported separately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">N2O</span></code></p></td>
+<td><p>Nitrous oxide (N2O) emissions reported separately.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HFC</span></code></p></td>
+<td><p>Hydrofluorocarbon (HFC) emissions reported separately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PFC</span></code></p></td>
+<td><p>Perfluorocarbon (PFC) emissions reported separately.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SF6</span></code></p></td>
+<td><p>Sulfur hexafluoride (SF6) emissions reported separately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NF3</span></code></p></td>
+<td><p>Nitrogen trifluoride (NF3) emissions reported separately.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bioCO2</span></code></p></td>
+<td><p>Biogenic carbon dioxide (bioCO2) emissions, if applicable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">directCO2</span></code></p></td>
+<td><p>Direct CO2 emissions explicitly reported when available.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Unit</span></code></p></td>
+<td><p>Unit of measurement for the emissions result.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Description</span></code></p></td>
+<td><p>Provides details on the factor set used in the calculation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Transaction</span> <span class="pre">Id</span></code></p></td>
+<td><p>Unique identifier for the calculation transaction, used for reference and auditing.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+<section id="real-estate">
+<h3>Real Estate<a class="headerlink" href="#real-estate" title="Link to this heading">¶</a></h3>
+<p><strong>Syntax</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.REAL_ESTATE(type, value, unit, country, [stateProvince], [date])
+</pre></div>
+</div>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> – Activity type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> – Numeric activity value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span></code> – Unit of measurement</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">country</span></code> – ISO alpha-3 country code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stateProvince</span></code> <em>(optional)</em> – Geographic state or province</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> <em>(optional)</em> – Activity date</p></li>
+</ul>
+<p>—</p>
+<p><strong>Alternate Syntax (factorId)</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.REAL_ESTATE_BY_FACTORID(factorId, value, unit)
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">factorId</span></code> – Factor ID from Envizi</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> – Numeric activity value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span></code> – Unit of measurement</p></li>
+</ul>
+<p><strong>Outputs</strong></p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Total</span> <span class="pre">CO2e</span></code></p></td>
+<td><p>The total emissions expressed as carbon dioxide equivalent (CO2e). This is the sum of all GHGs weighted by their global warming potential (GWP).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CO2</span></code></p></td>
+<td><p>Direct carbon dioxide (CO2) emissions reported separately.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CH4</span></code></p></td>
+<td><p>Methane (CH4) emissions reported separately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">N2O</span></code></p></td>
+<td><p>Nitrous oxide (N2O) emissions reported separately.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HFC</span></code></p></td>
+<td><p>Hydrofluorocarbon (HFC) emissions reported separately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PFC</span></code></p></td>
+<td><p>Perfluorocarbon (PFC) emissions reported separately.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SF6</span></code></p></td>
+<td><p>Sulfur hexafluoride (SF6) emissions reported separately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NF3</span></code></p></td>
+<td><p>Nitrogen trifluoride (NF3) emissions reported separately.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bioCO2</span></code></p></td>
+<td><p>Biogenic carbon dioxide (bioCO2) emissions, if applicable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">directCO2</span></code></p></td>
+<td><p>Direct CO2 emissions explicitly reported when available.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Unit</span></code></p></td>
+<td><p>Unit of measurement for the emissions result.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Description</span></code></p></td>
+<td><p>Provides details on the factor set used in the calculation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Transaction</span> <span class="pre">Id</span></code></p></td>
+<td><p>Unique identifier for the calculation transaction, used for reference and auditing.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
 <section id="factor-search">
 <h3>Factor Search<a class="headerlink" href="#factor-search" title="Link to this heading">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [date])
@@ -870,6 +1034,8 @@
 <li><a class="reference internal" href="#transportation-and-distribution">Transportation and Distribution</a></li>
 <li><a class="reference internal" href="#calculation">Calculation</a></li>
 <li><a class="reference internal" href="#factor">Factor</a></li>
+<li><a class="reference internal" href="#economic-activity">Economic Activity</a></li>
+<li><a class="reference internal" href="#real-estate">Real Estate</a></li>
 <li><a class="reference internal" href="#factor-search">Factor Search</a></li>
 </ul>
 </li>
