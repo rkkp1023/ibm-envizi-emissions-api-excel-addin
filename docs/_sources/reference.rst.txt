@@ -393,6 +393,140 @@ Factor
 
 ---
 
+Economic Activity
+~~~~~~~~~~~~~~~~~
+
+**Syntax**
+
+.. code-block:: none
+
+   =ENVIZI.ECONOMIC_ACTIVITY(type, value, unit, country, [stateProvince], [date])
+
+**Parameters**
+
+- ``type`` – Activity type
+- ``value`` – Numeric activity value
+- ``unit`` – Unit of measurement
+- ``country`` – ISO alpha-3 country code
+- ``stateProvince`` *(optional)* – Geographic state or province
+- ``date`` *(optional)* – Activity date
+
+---
+
+**Alternate Syntax (factorId)**
+
+.. code-block:: none
+
+   =ENVIZI.ECONOMIC_ACTIVITY_BY_FACTORID(factorId, value, unit)
+
+- ``factorId`` – Factor ID from Envizi
+- ``value`` – Numeric activity value
+- ``unit`` – Unit of measurement
+
+**Outputs**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Column
+     - Description
+   * - ``Total CO2e``
+     - The total emissions expressed as carbon dioxide equivalent (CO2e). This is the sum of all GHGs weighted by their global warming potential (GWP).
+   * - ``CO2``
+     - Direct carbon dioxide (CO2) emissions reported separately.
+   * - ``CH4``
+     - Methane (CH4) emissions reported separately.
+   * - ``N2O``
+     - Nitrous oxide (N2O) emissions reported separately.
+   * - ``HFC``
+     - Hydrofluorocarbon (HFC) emissions reported separately.
+   * - ``PFC``
+     - Perfluorocarbon (PFC) emissions reported separately.
+   * - ``SF6``
+     - Sulfur hexafluoride (SF6) emissions reported separately.
+   * - ``NF3``
+     - Nitrogen trifluoride (NF3) emissions reported separately.
+   * - ``bioCO2``
+     - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
+   * - ``directCO2``
+     - Direct CO2 emissions explicitly reported when available.
+   * - ``Unit``
+     - Unit of measurement for the emissions result.
+   * - ``Description``
+     - Provides details on the factor set used in the calculation.
+   * - ``Transaction Id``
+     - Unique identifier for the calculation transaction, used for reference and auditing.
+
+---
+
+Real Estate
+~~~~~~~~~~~
+
+**Syntax**
+
+.. code-block:: none
+
+   =ENVIZI.REAL_ESTATE(type, value, unit, country, [stateProvince], [date])
+
+**Parameters**
+
+- ``type`` – Activity type
+- ``value`` – Numeric activity value
+- ``unit`` – Unit of measurement
+- ``country`` – ISO alpha-3 country code
+- ``stateProvince`` *(optional)* – Geographic state or province
+- ``date`` *(optional)* – Activity date
+
+---
+
+**Alternate Syntax (factorId)**
+
+.. code-block:: none
+
+   =ENVIZI.REAL_ESTATE_BY_FACTORID(factorId, value, unit)
+
+- ``factorId`` – Factor ID from Envizi
+- ``value`` – Numeric activity value
+- ``unit`` – Unit of measurement
+
+**Outputs**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Column
+     - Description
+   * - ``Total CO2e``
+     - The total emissions expressed as carbon dioxide equivalent (CO2e). This is the sum of all GHGs weighted by their global warming potential (GWP).
+   * - ``CO2``
+     - Direct carbon dioxide (CO2) emissions reported separately.
+   * - ``CH4``
+     - Methane (CH4) emissions reported separately.
+   * - ``N2O``
+     - Nitrous oxide (N2O) emissions reported separately.
+   * - ``HFC``
+     - Hydrofluorocarbon (HFC) emissions reported separately.
+   * - ``PFC``
+     - Perfluorocarbon (PFC) emissions reported separately.
+   * - ``SF6``
+     - Sulfur hexafluoride (SF6) emissions reported separately.
+   * - ``NF3``
+     - Nitrogen trifluoride (NF3) emissions reported separately.
+   * - ``bioCO2``
+     - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
+   * - ``directCO2``
+     - Direct CO2 emissions explicitly reported when available.
+   * - ``Unit``
+     - Unit of measurement for the emissions result.
+   * - ``Description``
+     - Provides details on the factor set used in the calculation.
+   * - ``Transaction Id``
+     - Unique identifier for the calculation transaction, used for reference and auditing.
+
+---
+
 Factor Search
 ~~~~~~~~~~~~~
 
