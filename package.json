@@ -87,7 +87,9 @@
     "last 2 versions",
     "ie 11"
   ],
-  "overrides": {
-    "ajv":">=8.18.0"
+  "resolutions": {
+    "ajv":">=8.18.0",
+    "minimatch": "^10.2.1",
+    "test-exclude": "^7.0.1"
   }
 }
