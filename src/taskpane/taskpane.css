@@ -86,6 +86,13 @@ b {
   font-weight: bold;
 }
 
+.welcome-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
 .welcome-page .ms-List {
   margin-inline-start: 24px;
 }
@@ -106,6 +113,8 @@ b {
 
 .welcome-body {
   padding: 20px;
+  flex: 1;
+  padding-bottom: 60px;
 }
 
 .welcome-bottom {
