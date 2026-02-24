@@ -1,8 +1,18 @@
-# IBM Envizi - Emissions API Excel Add-in
+# IBM Envizi - Emissions Calculations in Excel
+
+The `Emissions Calculations in Excel` is an Excel Add-in for automating carbon emissions calculations within your Excel workflow. Backed by [IBM Envizi - Emissions API](https://www.ibm.com/products/envizi/emissions-api); the Add-in is available to download in the [Microsoft AppSource Marketplace](https://marketplace.microsoft.com/en-us/product/WA200009598?tab=Overview) and signing up for a trial is free!
+
+## Sign up for the Preview
+
+To get started, follow these steps:
+
+- Sign up for the preview [IBMid sign up](https://www.ibm.com/account/reg/us-en/signup?formid=urx-53999) page.
+- You will be sent an invite email to join to create an account.
+- Read the [Getting Started](https://www.ibm.com/docs/en/envizi-esg-suite?topic=api-getting-started) page to get an overview of the `Emissions Calculations in Excel`.
 
 ## Overview
 
-This Excel Add-in provides seamless integration with IBM Envizi's Carbon Engine, allowing users to:
+This Excel Add-in provides seamless integration with IBM Envizi's Emissions API, allowing users to:
 
 - Access emission factors directly from Excel
 - Perform carbon calculations without leaving your spreadsheet
