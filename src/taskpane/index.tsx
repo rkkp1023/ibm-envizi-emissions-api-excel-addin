@@ -3,6 +3,7 @@
  * Licensed Materials - Property of IBM
  */
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { TaskpaneApp } from "./TaskpaneApp";
@@ -10,6 +11,9 @@ import "./reset.css";
 import "./taskpane.css";
 
 /* global Office */
+
+// Create a QueryClient instance
+const queryClient = new QueryClient({});
 
 /**
  * Hides the sideload message once the app is ready
@@ -37,7 +41,9 @@ function initializeApp() {
 
   root.render(
     <React.StrictMode>
-      <TaskpaneApp />
+      <QueryClientProvider client={queryClient}>
+        <TaskpaneApp />
+      </QueryClientProvider>
     </React.StrictMode>
   );
 }
