@@ -188,7 +188,7 @@ describe("ENVIZI.HEADERS function", () => {
 
     it("should return input headers for factor endpoint", async () => {
       const result = await headers("factor", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["type", "unit", "country", "stateProvince", "date"]]);
     });
 
     it("should return input headers for factor_search endpoint", async () => {
@@ -607,7 +607,7 @@ describe("ENVIZI.HEADERS function", () => {
 
     it("should return input headers for factor endpoint", async () => {
       const result = await headers("factor", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["type", "unit", "country", "stateProvince", "date"]]);
     });
 
     it("should return input headers for factor_search endpoint", async () => {
