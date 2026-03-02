@@ -3,6 +3,7 @@
 import { Factor } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
+import { formatRow } from "./headers-config";
 import { convertExcelDateToISO } from "./utils";
 
 export async function factorHelper(
@@ -40,42 +41,5 @@ export async function factorHelper(
     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, "Invalid API response");
   }
 
-  // Handle activityUnit as array (join with ", " to maintain single column)
-  const activityUnit = Array.isArray(response.activityUnit)
-    ? response.activityUnit.join(", ")
-    : (response.activityUnit ?? "");
-
-  // Handle scope as array (join with ", " to maintain single column)
-  const scope = Array.isArray(response.scope)
-    ? response.scope.join(", ")
-    : (response.scope ?? "");
-
-  return [
-    [
-      response.factorSet ?? "",
-      response.source ?? "",
-      response.methodology ?? "",
-      scope,
-      response.activityType ?? "",
-      activityUnit,
-      response.name ?? "",
-      response.description ?? "",
-      response.publishedFrom ?? "",
-      response.publishedTo ?? "",
-      response.region ?? "",
-      response.totalCO2e ?? 0,
-      response.CO2 ?? 0,
-      response.CH4 ?? 0,
-      response.N2O ?? 0,
-      response.HFC ?? 0,
-      response.PFC ?? 0,
-      response.SF6 ?? 0,
-      response.NF3 ?? 0,
-      response.bioCO2 ?? 0,
-      response.indirectCO2e ?? 0,
-      response.unit ?? "",
-      response.factorId ?? "",
-      response.transactionId ?? "",
-    ],
-  ];
+  return [formatRow(response, "factor")];
 }
