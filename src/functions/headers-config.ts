@@ -30,9 +30,9 @@ const BASE_INPUT_HEADERS = [
 ] as const;
 
 /**
- * Base output headers common to all calculation endpoints
+ * Gas emission fields — the numeric core of every calculation output
  */
-const BASE_OUTPUT_HEADERS = [
+const BASE_OUTPUT_GAS_HEADERS = [
   "totalCO2e",
   "CO2",
   "CH4",
@@ -43,9 +43,26 @@ const BASE_OUTPUT_HEADERS = [
   "NF3",
   "bioCO2",
   "indirectCO2e",
-  "unit",
-  "description",
-  "transactionId",
+] as const;
+
+/**
+ * Trailing metadata fields that follow the gas fields in every calculation output
+ */
+const BASE_OUTPUT_TAIL_HEADERS = ["unit", "description", "transactionId"] as const;
+
+/**
+ * Base output headers common to most calculation endpoints
+ */
+const BASE_OUTPUT_HEADERS = [...BASE_OUTPUT_GAS_HEADERS, ...BASE_OUTPUT_TAIL_HEADERS] as const;
+
+/**
+ * Output headers for endpoints that also return energy consumption in MWh
+ * (currently: calculation, real_estate)
+ */
+const BASE_OUTPUT_HEADERS_WITH_ENERGY = [
+  ...BASE_OUTPUT_GAS_HEADERS,
+  "energy(MWh)",
+  ...BASE_OUTPUT_TAIL_HEADERS,
 ] as const;
 
 /**
@@ -136,7 +153,7 @@ const ENDPOINT_CONFIGS: Record<EndpointType, EndpointConfig> = {
   },
   calculation: {
     inputHeaders: [...BASE_INPUT_HEADERS, "powerGrid"],
-    outputHeaders: BASE_OUTPUT_HEADERS,
+    outputHeaders: BASE_OUTPUT_HEADERS_WITH_ENERGY,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   economic_activity: {
@@ -146,7 +163,7 @@ const ENDPOINT_CONFIGS: Record<EndpointType, EndpointConfig> = {
   },
   real_estate: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: BASE_OUTPUT_HEADERS,
+    outputHeaders: BASE_OUTPUT_HEADERS_WITH_ENERGY,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   factor: {
@@ -205,4 +222,30 @@ export function getOutputHeaders(endpoint: EndpointType): string[] {
  */
 export function isValidEndpoint(endpoint: string): endpoint is EndpointType {
   return VALID_ENDPOINTS.includes(endpoint as EndpointType);
+}
+
+/**
+ * Normalize a single response field value for Excel output:
+ * - Arrays are joined with ", " (e.g. activityUnit: ["kg", "L"] → "kg, L")
+ * - null / undefined → "" (empty cell)
+ * - numbers and strings are returned as-is
+ */
+export function formatValue(val: unknown): string | number {
+  if (Array.isArray(val)) return val.join(", ");
+  if (val === null || val === undefined) return "";
+  return val as string | number;
+}
+
+/**
+ * Build a single data row from a response object driven by the endpoint's output headers.
+ * This is the single source of truth for field ordering — if you add/remove/reorder
+ * a field in ENDPOINT_CONFIGS outputHeaders, the data row updates automatically.
+ *
+ * @param response - The raw API response object
+ * @param endpoint - The endpoint type (used to look up output headers)
+ * @returns A flat array of cell values in the same order as the output headers
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function formatRow(response: any, endpoint: EndpointType): (string | number)[] {
+  return getOutputHeaders(endpoint).map((key) => formatValue(response[key]));
 }
