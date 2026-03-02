@@ -91,6 +91,11 @@ const mockResponse = {
   transactionId: "txn-123",
 };
 
+const mockRealEstateResponse = {
+  ...mockResponse,
+  "energy(MWh)": 42,
+};
+
 type ApiCase = {
   name: string;
   apiType:
@@ -103,7 +108,13 @@ type ApiCase = {
     | "economic_activity"
     | "real_estate";
   emissionMock: jest.Mock;
+  expectedResult?: (string | number)[];
 };
+
+const baseExpectedResult = [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
+// calculation and real_estate: energy(MWh) is inserted between indirectCO2e and unit
+const withEnergy = (energyVal: string | number) =>
+  [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, energyVal, "kgCO2e", "Mock description", "txn-123"];
 
 const apiCases: ApiCase[] = [
   { name: "Location", apiType: "location", emissionMock: Location.calculate as jest.Mock },
@@ -118,6 +129,7 @@ const apiCases: ApiCase[] = [
     name: "Generic Calculation",
     apiType: "calculation",
     emissionMock: Calculation.calculate as jest.Mock,
+    expectedResult: withEnergy(""),  // calculation returns energy(MWh) but mock has no value → ""
   },
   {
     name: "Transportation & Distribution",
@@ -133,16 +145,22 @@ const apiCases: ApiCase[] = [
     name: "Real Estate",
     apiType: "real_estate",
     emissionMock: RealEstate.calculate as jest.Mock,
+    expectedResult: withEnergy(42),
   },
 ];
 
 describe("genericApiCall", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    apiCases.forEach((c) => c.emissionMock.mockResolvedValue(mockResponse));
+    apiCases.forEach((c) => {
+      const response = c.apiType === "real_estate" ? mockRealEstateResponse : mockResponse;
+      c.emissionMock.mockResolvedValue(response);
+    });
   });
 
-  describe.each(apiCases)("$name API", ({ apiType, emissionMock }) => {
+  describe.each(apiCases)("$name API", ({ apiType, emissionMock, expectedResult }) => {
+    const expected = expectedResult ?? baseExpectedResult;
+
     it("should call the correct emission API and return excelResponse (type-based payload)", async () => {
       const payload = {
         value: 100,
@@ -169,9 +187,7 @@ describe("genericApiCall", () => {
         })
       );
 
-      expect(result).toEqual([
-        [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"],
-      ]);
+      expect(result).toEqual([expected]);
     });
 
     it("should call the correct emission API and return excelResponse (factorId-based payload)", async () => {
@@ -194,9 +210,7 @@ describe("genericApiCall", () => {
         })
       );
       // No location or time for factorId case
-      expect(result).toEqual([
-        [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"],
-      ]);
+      expect(result).toEqual([expected]);
     });
   });
 
