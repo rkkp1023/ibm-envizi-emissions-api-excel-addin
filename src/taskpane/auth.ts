@@ -20,6 +20,7 @@ export function displayLoginDialog(
     {
       height: 75,
       width: 75,
+      promptBeforeOpen: false,
     },
     (asyncResult) => {
       const dialog = asyncResult.value;
