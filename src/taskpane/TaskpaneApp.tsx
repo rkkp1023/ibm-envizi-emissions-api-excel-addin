@@ -4,6 +4,7 @@
  */
 
 import { FluentProvider } from "@fluentui/react-components";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import { LoginPage } from "./components/LoginPage";
@@ -12,6 +13,9 @@ import { WelcomePage } from "./components/WelcomePage";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { useAuth, useTheme } from "./hooks";
+
+// Create a QueryClient instance
+const queryClient = new QueryClient({});
 
 function AppContent() {
   const { enableEnviziLogin, state, displayLogin } = useAuth();
@@ -64,8 +68,10 @@ function AppWithTheme() {
 
 export function TaskpaneApp() {
   return (
-    <ThemeProvider>
-      <AppWithTheme />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AppWithTheme />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }

@@ -4,6 +4,8 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+
 import { UserCredentials } from "../../common/credentials";
 import { UserInfo, UserInfoResponse } from "../types/user.types";
 import { useAuth } from "./useAuth";
@@ -35,28 +37,24 @@ const fetchUserInfo = async (token: string): Promise<UserInfo> => {
   // const uiEndpoint = `${getApiUrl("saascore", "prod")}/ui/graphql`;
   const uiEndpoint = "https://us006t.envizi.com/graphqlapi-dev/ui/graphql";
 
-  const response = await fetch(uiEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
+  const response = await axios.post<UserInfoResponse>(
+    uiEndpoint,
+    {
       query: userInfoQuery,
-    }),
-  });
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch user info: ${response.statusText}`);
-  }
-
-  const result: UserInfoResponse = await response.json();
-  const { me, user } = result.data;
+  const { me, user } = response.data.data;
 
   return {
     firstName: me.contact.firstName,
     lastName: me.contact.lastName,
-    fullName: `${me.contact.firstName} ${me.contact.lastName}`,
     email: me.contact.emailAddress,
     orgName: user.associateName,
     orgId: me.tenantId.toString(),

@@ -5,9 +5,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useMemo } from "react";
 
+import { CoreToken, UserCredentials } from "../../common/credentials";
 import { SubscriptionType } from "../types/product-subscriptions.types";
-import { useCoreToken } from "./useCoreToken";
+import { useAuth } from "./useAuth";
 
 const subscriptionTypes = {
   EMISSIONS_TRIAL: "trial",
@@ -50,12 +53,40 @@ export async function getAccountSubscriptionData(
 }
 
 export function useAccountSubscription() {
-  const coreToken = useCoreToken();
+  const { state } = useAuth();
 
-  // Extract token properties
-  const token = coreToken?.raw ?? null;
-  const tenantId = coreToken?.tenantId ?? null;
-  const orgId = (coreToken?.decoded?.organizationId as string) ?? null;
+  // Decode coreToken and extract properties
+  const coreTokenData = useMemo(() => {
+    if (!state.isAuthenticated || !state.credentials || !("coreToken" in state.credentials)) {
+      return null;
+    }
+
+    const userCredentials = state.credentials as UserCredentials;
+    const coreToken = userCredentials.coreToken;
+
+    if (!coreToken) {
+      return null;
+    }
+
+    try {
+      const decoded = jwtDecode<CoreToken & { organizationId?: string; [key: string]: any }>(
+        coreToken
+      );
+
+      return {
+        token: coreToken,
+        tenantId: decoded.tenantId,
+        orgId: decoded.organizationId as string,
+      };
+    } catch (error) {
+      console.error("Failed to decode coreToken:", error);
+      return null;
+    }
+  }, [state.isAuthenticated, state.credentials]);
+
+  const token = coreTokenData?.token ?? null;
+  const tenantId = coreTokenData?.tenantId ?? null;
+  const orgId = coreTokenData?.orgId ?? null;
 
   return useQuery({
     queryKey: ["account-subscription", token],

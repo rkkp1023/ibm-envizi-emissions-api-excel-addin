@@ -6,7 +6,6 @@
 export interface UserInfo {
   firstName: string;
   lastName: string;
-  fullName: string;
   email: string;
   orgName: string;
   orgId: string;
