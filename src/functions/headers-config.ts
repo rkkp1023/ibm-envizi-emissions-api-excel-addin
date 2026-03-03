@@ -30,39 +30,75 @@ const BASE_INPUT_HEADERS = [
 ] as const;
 
 /**
- * Gas emission fields — the numeric core of every calculation output
+ * Common gas emission fields for all endpoints
  */
-const BASE_OUTPUT_GAS_HEADERS = [
+const COMMON_GAS_HEADERS = [
   "totalCO2e",
   "CO2",
   "CH4",
   "N2O",
+  "bioCO2",
+  "indirectCO2e",
+] as const;
+/**
+ * Additional fluorinated gases for fugitive and calculation endpoints
+ */
+const FLUORINATED_GASES = [
   "HFC",
   "PFC",
   "SF6",
   "NF3",
+] as const;
+
+/**
+ * Fugitive gas headers (common gases + fluorinated gases)
+ */
+const FUGITIVE_GAS_HEADERS = [
+  "totalCO2e",
+  "CO2",
+  "CH4",
+  "N2O",
+  ...FLUORINATED_GASES,
   "bioCO2",
   "indirectCO2e",
 ] as const;
 
 /**
- * Trailing metadata fields that follow the gas fields in every calculation output
+ * Energy consumption field
  */
-const BASE_OUTPUT_TAIL_HEADERS = ["unit", "description", "transactionId"] as const;
+const ENERGY_HEADER = "energy(MWh)" as const;
 
 /**
- * Base output headers common to most calculation endpoints
+ * Trailing metadata fields that appear at the end of output headers
  */
-const BASE_OUTPUT_HEADERS = [...BASE_OUTPUT_GAS_HEADERS, ...BASE_OUTPUT_TAIL_HEADERS] as const;
+const OUTPUT_TAIL_HEADERS = ["unit", "description", "transactionId"] as const;
 
 /**
- * Output headers for endpoints that also return energy consumption in MWh
- * (currently: calculation, real_estate)
+ * Standard output headers (for most endpoints)
  */
-const BASE_OUTPUT_HEADERS_WITH_ENERGY = [
-  ...BASE_OUTPUT_GAS_HEADERS,
-  "energy(MWh)",
-  ...BASE_OUTPUT_TAIL_HEADERS,
+const STANDARD_OUTPUT_HEADERS = [...COMMON_GAS_HEADERS, ...OUTPUT_TAIL_HEADERS] as const;
+
+/**
+ * Fugitive output headers
+ */
+const FUGITIVE_OUTPUT_HEADERS = [...FUGITIVE_GAS_HEADERS, ...OUTPUT_TAIL_HEADERS] as const;
+
+/**
+ * Real estate output headers (standard + energy)
+ */
+const REAL_ESTATE_OUTPUT_HEADERS = [
+  ...COMMON_GAS_HEADERS,
+  ENERGY_HEADER,
+  ...OUTPUT_TAIL_HEADERS,
+] as const;
+
+/**
+ * Calculation output headers (fugitive gases + energy)
+ */
+const CALCULATION_OUTPUT_HEADERS = [
+  ...FUGITIVE_GAS_HEADERS,
+  ENERGY_HEADER,
+  ...OUTPUT_TAIL_HEADERS,
 ] as const;
 
 /**
@@ -128,42 +164,42 @@ interface EndpointConfig {
 const ENDPOINT_CONFIGS: Record<EndpointType, EndpointConfig> = {
   location: {
     inputHeaders: [...BASE_INPUT_HEADERS, "powerGrid"],
-    outputHeaders: BASE_OUTPUT_HEADERS,
+    outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   stationary: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: BASE_OUTPUT_HEADERS,
+    outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   fugitive: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: BASE_OUTPUT_HEADERS,
+    outputHeaders: FUGITIVE_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   mobile: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: BASE_OUTPUT_HEADERS,
+    outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   transportation_and_distribution: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: BASE_OUTPUT_HEADERS,
+    outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   calculation: {
     inputHeaders: [...BASE_INPUT_HEADERS, "powerGrid"],
-    outputHeaders: BASE_OUTPUT_HEADERS_WITH_ENERGY,
+    outputHeaders: CALCULATION_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   economic_activity: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: BASE_OUTPUT_HEADERS,
+    outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   real_estate: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: BASE_OUTPUT_HEADERS_WITH_ENERGY,
+    outputHeaders: REAL_ESTATE_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   factor: {
@@ -183,15 +219,15 @@ const ENDPOINT_CONFIGS: Record<EndpointType, EndpointConfig> = {
 export const VALID_ENDPOINTS = Object.keys(ENDPOINT_CONFIGS) as EndpointType[];
 
 /**
- * Get input headers for a specific endpoint
- * @param endpoint - The endpoint type
+ * Get input headers for a specific function
+ * @param functionName - The function name
  * @param useFactorId - Whether to return factorId-based headers (default: false)
  * @returns Array of input header names
  */
-export function getInputHeaders(endpoint: EndpointType, useFactorId: boolean = false): string[] {
-  const config = ENDPOINT_CONFIGS[endpoint];
+export function getInputHeaders(functionName: EndpointType, useFactorId: boolean = false): string[] {
+  const config = ENDPOINT_CONFIGS[functionName];
   if (!config) {
-    throw new Error(`Invalid endpoint: ${endpoint}`);
+    throw new Error(`Invalid function: ${functionName}`);
   }
 
   if (useFactorId && config.factorIdInputHeaders) {
@@ -202,26 +238,26 @@ export function getInputHeaders(endpoint: EndpointType, useFactorId: boolean = f
 }
 
 /**
- * Get output headers for a specific endpoint
- * @param endpoint - The endpoint type
+ * Get output headers for a specific function
+ * @param functionName - The function name
  * @returns Array of output header names
  */
-export function getOutputHeaders(endpoint: EndpointType): string[] {
-  const config = ENDPOINT_CONFIGS[endpoint];
+export function getOutputHeaders(functionName: EndpointType): string[] {
+  const config = ENDPOINT_CONFIGS[functionName];
   if (!config) {
-    throw new Error(`Invalid endpoint: ${endpoint}`);
+    throw new Error(`Invalid function: ${functionName}`);
   }
 
   return [...config.outputHeaders];
 }
 
 /**
- * Validate if an endpoint is supported
- * @param endpoint - The endpoint to validate
+ * Validate if a function is supported
+ * @param functionName - The function to validate
  * @returns true if valid, false otherwise
  */
-export function isValidEndpoint(endpoint: string): endpoint is EndpointType {
-  return VALID_ENDPOINTS.includes(endpoint as EndpointType);
+export function isValidEndpoint(functionName: string): functionName is EndpointType {
+  return VALID_ENDPOINTS.includes(functionName as EndpointType);
 }
 
 /**
@@ -237,15 +273,15 @@ export function formatValue(val: unknown): string | number {
 }
 
 /**
- * Build a single data row from a response object driven by the endpoint's output headers.
+ * Build a single data row from a response object driven by the function's output headers.
  * This is the single source of truth for field ordering — if you add/remove/reorder
  * a field in ENDPOINT_CONFIGS outputHeaders, the data row updates automatically.
  *
  * @param response - The raw API response object
- * @param endpoint - The endpoint type (used to look up output headers)
+ * @param functionName - The function name (used to look up output headers)
  * @returns A flat array of cell values in the same order as the output headers
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatRow(response: any, endpoint: EndpointType): (string | number)[] {
-  return getOutputHeaders(endpoint).map((key) => formatValue(response[key]));
+export function formatRow(response: any, functionName: EndpointType): (string | number)[] {
+  return getOutputHeaders(functionName).map((key) => formatValue(response[key]));
 }
