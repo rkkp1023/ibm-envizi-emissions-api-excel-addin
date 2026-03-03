@@ -6,7 +6,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-import { UserCredentials } from "../../common/credentials";
 import { UserInfo, UserInfoResponse } from "../types/user.types";
 import { useAuth } from "./useAuth";
 
@@ -74,14 +73,14 @@ export function useUserInfo() {
 
   const userCredentials =
     state.isAuthenticated && state.credentials && "token" in state.credentials
-      ? (state.credentials as UserCredentials)
+      ? state.credentials
       : null;
 
   const token = userCredentials?.token;
 
   return useQuery({
     queryKey: ["userInfo", token],
-    queryFn: () => fetchUserInfo(token!),
+    queryFn: () => fetchUserInfo(token),
     enabled: !!token, // Only run query if token exists
     staleTime: Infinity,
   });

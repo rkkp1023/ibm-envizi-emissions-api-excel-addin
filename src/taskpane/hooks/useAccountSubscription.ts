@@ -8,11 +8,11 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useMemo } from "react";
 
-import { CoreToken, UserCredentials } from "../../common/credentials";
+import { CoreToken } from "../../common/credentials";
 import { SubscriptionType } from "../types/product-subscriptions.types";
 import { useAuth } from "./useAuth";
 
-const subscriptionTypes = {
+const subscriptionTypes: Record<string, SubscriptionType> = {
   EMISSIONS_TRIAL: "trial",
   EMISSIONS_FREE: "basic",
   D11IQZX: "marketplace",
@@ -43,12 +43,12 @@ export async function getAccountSubscriptionData(
     `https://api.ibm.com/saascore/run/rolodex-registration/na/api/v1/organizations/${orgId}/ghgapiallotment`,
     { headers }
   );
-  const subscriptionType =
-    response.data.partNumber === "D09SJZX"
-      ? response.data.edition
-        ? "basic"
-        : "premium"
-      : subscriptionTypes[response.data.partNumber];
+  let subscriptionType: SubscriptionType;
+  if (response.data.partNumber === "D09SJZX") {
+    subscriptionType = response.data.edition ? "basic" : "premium";
+  } else {
+    subscriptionType = subscriptionTypes[response.data.partNumber];
+  }
   return { ...response.data, subscriptionType };
 }
 
@@ -61,7 +61,7 @@ export function useAccountSubscription() {
       return null;
     }
 
-    const userCredentials = state.credentials as UserCredentials;
+    const userCredentials = state.credentials;
     const coreToken = userCredentials.coreToken;
 
     if (!coreToken) {
@@ -76,7 +76,7 @@ export function useAccountSubscription() {
       return {
         token: coreToken,
         tenantId: decoded.tenantId,
-        orgId: decoded.organizationId as string,
+        orgId: decoded.organizationId,
       };
     } catch (error) {
       console.error("Failed to decode coreToken:", error);
@@ -90,7 +90,7 @@ export function useAccountSubscription() {
 
   return useQuery({
     queryKey: ["account-subscription", token],
-    queryFn: () => getAccountSubscriptionData(token!, tenantId!, orgId!),
+    queryFn: () => getAccountSubscriptionData(token, tenantId, orgId),
     enabled: !!token && !!tenantId && !!orgId,
     staleTime: Infinity,
   });
