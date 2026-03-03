@@ -436,35 +436,35 @@ export async function real_estate_by_factorId(
 }
 
 /**
- * Returns the input or output headers for a specific endpoint.
+ * Returns the input or output headers for a specific function.
  * @customfunction
  * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#headers
- * @param endpoint Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search)
+ * @param functionName Function name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search)
  * @param input Whether to return input headers (true) or output headers (false). Default is false.
  * @returns Array of header names as a single row
  */
-export async function headers(endpoint?: string, input?: boolean | string): Promise<string[][]> {
+export async function headers(functionName?: string, input?: boolean | string): Promise<string[][]> {
   try {
-    // Default to "calculation" if no endpoint provided
-    const selectedEndpoint = endpoint?.trim().toLowerCase() || "calculation";
+    // Default to "calculation" if no function name provided
+    const selectedFunction = functionName?.trim().toLowerCase() || "calculation";
     
     // Handle boolean parameter - support both boolean and string inputs (case-insensitive)
     const isInput = typeof input === "string"
       ? input.trim().toLowerCase() === "true"
       : input === true;
 
-    // Validate endpoint
-    if (!isValidEndpoint(selectedEndpoint)) {
+    // Validate function
+    if (!isValidEndpoint(selectedFunction)) {
       throw new CustomFunctions.Error(
         CustomFunctions.ErrorCode.invalidValue,
-        `Invalid endpoint: "${selectedEndpoint}". Valid endpoints are: ${VALID_ENDPOINTS.join(", ")}`
+        `Invalid function: "${selectedFunction}". Valid functions are: ${VALID_ENDPOINTS.join(", ")}`
       );
     }
 
     // Get the appropriate headers
-    const headersList = isInput 
-      ? getInputHeaders(selectedEndpoint) 
-      : getOutputHeaders(selectedEndpoint);
+    const headersList = isInput
+      ? getInputHeaders(selectedFunction)
+      : getOutputHeaders(selectedFunction);
 
     // Return as a single row array
     return [headersList];
@@ -485,40 +485,40 @@ export async function headers(endpoint?: string, input?: boolean | string): Prom
  * Returns the input or output headers for factorId-based calculations.
  * @customfunction
  * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#headers-by-factorid
- * @param endpoint Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor)
+ * @param functionName Function name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor)
  * @param input Whether to return input headers (true) or output headers (false). Default is false.
  * @returns Array of header names as a single row
  */
-export async function headers_by_factorid(endpoint?: string, input?: boolean | string): Promise<string[][]> {
+export async function headers_by_factorid(functionName?: string, input?: boolean | string): Promise<string[][]> {
   try {
-    // Default to "calculation" if no endpoint provided
-    const selectedEndpoint = endpoint?.trim().toLowerCase() || "calculation";
+    // Default to "calculation" if no function name provided
+    const selectedFunction = functionName?.trim().toLowerCase() || "calculation";
     
     // Handle boolean parameter - support both boolean and string inputs (case-insensitive)
-    const isInput = typeof input === "string" 
-      ? input.trim().toLowerCase() === "true" 
+    const isInput = typeof input === "string"
+      ? input.trim().toLowerCase() === "true"
       : input === true;
 
-    // Validate endpoint
-    if (!isValidEndpoint(selectedEndpoint)) {
+    // Validate function
+    if (!isValidEndpoint(selectedFunction)) {
       throw new CustomFunctions.Error(
         CustomFunctions.ErrorCode.invalidValue,
-        `Invalid endpoint: "${selectedEndpoint}". Valid endpoints are: ${VALID_ENDPOINTS.join(", ")}`
+        `Invalid function: "${selectedFunction}". Valid functions are: ${VALID_ENDPOINTS.join(", ")}`
       );
     }
 
     // factor_search doesn't support factorId-based calls
-    if (selectedEndpoint === "factor_search") {
+    if (selectedFunction === "factor_search") {
       throw new CustomFunctions.Error(
         CustomFunctions.ErrorCode.invalidValue,
-        `Endpoint "factor_search" does not support factorId-based calls`
+        `Function "factor_search" does not support factorId-based calls`
       );
     }
 
     // Get the appropriate headers
-    const headersList = isInput 
-      ? getInputHeaders(selectedEndpoint, true) // true = use factorId headers
-      : getOutputHeaders(selectedEndpoint);
+    const headersList = isInput
+      ? getInputHeaders(selectedFunction, true) // true = use factorId headers
+      : getOutputHeaders(selectedFunction);
 
     // Return as a single row array
     return [headersList];
