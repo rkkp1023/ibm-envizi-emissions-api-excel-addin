@@ -3,12 +3,56 @@
  * Licensed Materials - Property of IBM
  */
 
-import { Button, Field, Input } from "@fluentui/react-components";
+import { Button, Field, Input, Spinner } from "@fluentui/react-components";
 import React from "react";
 
 import { ApiCredentials } from "../../common/credentials";
 import { getOverviewDashboardUrl } from "../../common/env";
-import { useAuth } from "../hooks/useAuth";
+import { useAccountSubscription, useAuth, useUserInfo } from "../hooks";
+import { subscriptionTypeKeyMap } from "../types/product-subscriptions.types";
+
+function AccountInformation() {
+  const { isLoading: isLoadingUser, isError: isErrorUser, data: userInfo } = useUserInfo();
+  const {
+    isLoading: isLoadingSubscription,
+    isError: isErrorAccount,
+    data: subscriptionData,
+  } = useAccountSubscription();
+  const subscriptionType = subscriptionData?.subscriptionType;
+  const fullName = userInfo?.firstName + " " + userInfo?.lastName;
+
+  if (isLoadingUser || isLoadingSubscription) {
+    return (
+      <div className="credentials-section">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isErrorUser || isErrorAccount) {
+    return null;
+  }
+
+  return (
+    <form className="form">
+      <div className="form-grid">
+        <Field label="Name">
+          <Input type="text" appearance="underline" value={fullName || ""} readOnly />
+        </Field>
+        <Field label="Username">
+          <Input appearance="underline" value={userInfo.email || ""} readOnly />
+        </Field>
+        <Field label="Account type">
+          <Input
+            appearance="underline"
+            value={subscriptionTypeKeyMap[subscriptionType] || ""}
+            readOnly
+          />
+        </Field>
+      </div>
+    </form>
+  );
+}
 
 function ApiCredentialsForm() {
   const { state } = useAuth();
@@ -41,7 +85,7 @@ export const AccountPage: React.FC = () => {
 
   return (
     <div className="account-panel">
-      {state.credentials["apiKey"] && <ApiCredentialsForm></ApiCredentialsForm>}
+      {state.credentials["apiKey"] ? <ApiCredentialsForm /> : <AccountInformation />}
       <div className="account-buttons">
         <Button appearance="primary" onClick={handleViewDashboard}>
           View dashboard
