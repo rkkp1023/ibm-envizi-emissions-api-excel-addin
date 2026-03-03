@@ -11,24 +11,71 @@ import { AccountPage } from "./AccountPage";
 
 // Mock the useAuth hook
 const mockLogout = jest.fn();
-const mockCredentials = {
+const mockApiCredentials = {
   apiKey: "test-api-key-12345",
   tenantId: "test-tenant-id",
   orgId: "test-org-id",
 };
 
+const mockUserCredentials = {
+  token: "test-token",
+  refreshToken: "test-refresh-token",
+  coreToken: "test-core-token",
+};
+
+let mockUseAuthReturn = {
+  state: {
+    credentials: mockApiCredentials as any,
+    isAuthenticated: true,
+    isLoading: false,
+    error: null,
+  },
+  login: jest.fn(),
+  logout: mockLogout,
+  clearError: jest.fn(),
+};
+
 jest.mock("../hooks/useAuth", () => ({
-  useAuth: () => ({
-    state: {
-      credentials: mockCredentials,
-      isAuthenticated: true,
-      isLoading: false,
-      error: null,
-    },
-    login: jest.fn(),
-    logout: mockLogout,
-    clearError: jest.fn(),
-  }),
+  useAuth: () => mockUseAuthReturn,
+}));
+
+// Mock useUserInfo hook
+let mockUserInfoReturn = {
+  isLoading: false,
+  isError: false,
+  data: {
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    orgName: "Test Organization",
+    orgId: "123",
+    languageCode: "en",
+    timeZoneId: "America/New_York",
+  },
+};
+
+jest.mock("../hooks/useUserInfo", () => ({
+  useUserInfo: () => mockUserInfoReturn,
+}));
+
+// Mock useAccountSubscription hook
+let mockAccountSubscriptionReturn = {
+  isLoading: false,
+  isError: false,
+  data: {
+    subscriptionType: "premium",
+    organizationId: "123",
+    totalApiCalls: 1000,
+    billingCycleMonths: 12,
+    partNumber: "D09SJZX",
+    ssmCreationDate: "2024-01-01",
+    ssmExpirationDate: "2025-01-01",
+    edition: "",
+  },
+};
+
+jest.mock("../hooks/useAccountSubscription", () => ({
+  useAccountSubscription: () => mockAccountSubscriptionReturn,
 }));
 
 // Mock the env module
@@ -43,10 +90,11 @@ jest.mock("../../common/env", () => ({
 const mockWindowOpen = jest.fn();
 global.window.open = mockWindowOpen;
 
-describe("AccountPage - Basic Tests", () => {
+describe("AccountPage - API Credentials Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWindowOpen.mockClear();
+    mockUseAuthReturn.state.credentials = mockApiCredentials;
   });
 
   describe("Rendering", () => {
@@ -89,19 +137,19 @@ describe("AccountPage - Basic Tests", () => {
       render(<AccountPage />);
       const apiKeyInput = screen.getByLabelText(/API key/i) as HTMLInputElement;
       expect(apiKeyInput).toHaveAttribute("type", "password");
-      expect(apiKeyInput.value).toBe(mockCredentials.apiKey);
+      expect(apiKeyInput.value).toBe(mockApiCredentials.apiKey);
     });
 
     it("should display Tenant ID", () => {
       render(<AccountPage />);
       const tenantIdInput = screen.getByLabelText(/Tenant ID/i) as HTMLInputElement;
-      expect(tenantIdInput.value).toBe(mockCredentials.tenantId);
+      expect(tenantIdInput.value).toBe(mockApiCredentials.tenantId);
     });
 
     it("should display Organization ID", () => {
       render(<AccountPage />);
       const orgIdInput = screen.getByLabelText(/Organization ID/i) as HTMLInputElement;
-      expect(orgIdInput.value).toBe(mockCredentials.orgId);
+      expect(orgIdInput.value).toBe(mockApiCredentials.orgId);
     });
 
     it("should have all input fields as read-only", () => {
@@ -252,7 +300,7 @@ describe("AccountPage - Basic Tests", () => {
       fireEvent.change(apiKeyInput, { target: { value: "new-value" } });
 
       // Value should not change because field is readonly
-      expect(apiKeyInput.value).toBe(mockCredentials.apiKey);
+      expect(apiKeyInput.value).toBe(mockApiCredentials.apiKey);
     });
 
     it("should render form element", () => {
@@ -277,3 +325,125 @@ describe("AccountPage - Basic Tests", () => {
     });
   });
 });
+
+describe("AccountPage - User Credentials Tests", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockWindowOpen.mockClear();
+    mockUseAuthReturn.state.credentials = mockUserCredentials;
+    mockUserInfoReturn.isLoading = false;
+    mockUserInfoReturn.isError = false;
+    mockAccountSubscriptionReturn.isLoading = false;
+    mockAccountSubscriptionReturn.isError = false;
+  });
+
+  describe("Rendering with User Credentials", () => {
+    it("should render the account panel container", () => {
+      render(<AccountPage />);
+      const accountPanel = document.querySelector(".account-panel");
+      expect(accountPanel).toBeInTheDocument();
+    });
+
+    it("should render user information fields instead of API credentials", () => {
+      render(<AccountPage />);
+      expect(screen.getByLabelText(/^Name$/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/^Username$/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/Account type/i)).toBeInTheDocument();
+    });
+
+    it("should not render API credential fields", () => {
+      render(<AccountPage />);
+      expect(screen.queryByLabelText(/API key/i)).not.toBeInTheDocument();
+      expect(screen.queryByLabelText(/Tenant ID/i)).not.toBeInTheDocument();
+      expect(screen.queryByLabelText(/Organization ID/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe("User Information Display", () => {
+    it("should display user's full name", () => {
+      render(<AccountPage />);
+      const nameInput = screen.getByLabelText(/^Name$/i) as HTMLInputElement;
+      expect(nameInput.value).toBe("John Doe");
+    });
+
+    it("should display user's email as username", () => {
+      render(<AccountPage />);
+      const usernameInput = screen.getByLabelText(/^Username$/i) as HTMLInputElement;
+      expect(usernameInput.value).toBe("john.doe@example.com");
+    });
+
+    it("should display account type", () => {
+      render(<AccountPage />);
+      const accountTypeInput = screen.getByLabelText(/Account type/i) as HTMLInputElement;
+      expect(accountTypeInput.value).toBe("Premium");
+    });
+
+    it("should have all input fields as read-only", () => {
+      render(<AccountPage />);
+      const nameInput = screen.getByLabelText(/^Name$/i) as HTMLInputElement;
+      const usernameInput = screen.getByLabelText(/^Username$/i) as HTMLInputElement;
+      const accountTypeInput = screen.getByLabelText(/Account type/i) as HTMLInputElement;
+
+      expect(nameInput).toHaveAttribute("readonly");
+      expect(usernameInput).toHaveAttribute("readonly");
+      expect(accountTypeInput).toHaveAttribute("readonly");
+    });
+  });
+
+  describe("Buttons with User Credentials", () => {
+    it("should render View dashboard button", () => {
+      render(<AccountPage />);
+      expect(screen.getByRole("button", { name: /View dashboard/i })).toBeInTheDocument();
+    });
+
+    it("should render Logout button", () => {
+      render(<AccountPage />);
+      expect(
+        screen.getByRole("button", { name: /Logout and switch accounts/i })
+      ).toBeInTheDocument();
+    });
+
+    it("should call logout when Logout button is clicked", () => {
+      render(<AccountPage />);
+      const logoutButton = screen.getByRole("button", { name: /Logout and switch accounts/i });
+
+      fireEvent.click(logoutButton);
+
+      expect(mockLogout).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("Loading States", () => {
+    it("should show spinner when user info is loading", () => {
+      mockUserInfoReturn.isLoading = true;
+
+      render(<AccountPage />);
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
+    });
+
+    it("should show spinner when subscription data is loading", () => {
+      mockAccountSubscriptionReturn.isLoading = true;
+
+      render(<AccountPage />);
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
+    });
+  });
+
+  describe("Error States", () => {
+    it("should not render user info when there is an error", () => {
+      mockUserInfoReturn.isError = true;
+
+      render(<AccountPage />);
+      expect(screen.queryByLabelText(/^Name$/i)).not.toBeInTheDocument();
+    });
+
+    it("should not render user info when subscription data has error", () => {
+      mockAccountSubscriptionReturn.isError = true;
+
+      render(<AccountPage />);
+      expect(screen.queryByLabelText(/^Name$/i)).not.toBeInTheDocument();
+    });
+  });
+});
+
+// Made with Bob
