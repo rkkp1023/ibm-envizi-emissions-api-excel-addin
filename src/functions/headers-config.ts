@@ -66,7 +66,7 @@ const FUGITIVE_GAS_HEADERS = [
 /**
  * Energy consumption field
  */
-const ENERGY_HEADER = "energy(MWh)" as const;
+const ENERGY_HEADER = "energy(MWh)";
 
 /**
  * Trailing metadata fields that appear at the end of output headers
