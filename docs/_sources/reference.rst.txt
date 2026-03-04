@@ -565,25 +565,25 @@ Returns the input or output column headers for a specific endpoint. Useful for s
 
 .. code-block:: none
 
-   =ENVIZI.HEADERS([functionName], [input])
+   =ENVIZI.HEADERS([endpoint], [input])
 
 **Parameters**
 
-- ``functionName`` *(optional)* – Function name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation
+- ``endpoint`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation
 - ``input`` *(optional)* – TRUE for input headers, FALSE for output headers. Default: FALSE
 
 **Examples**
 
 .. code-block:: none
 
-   =ENVIZI.HEADERS()                          // Returns output headers for calculation function
-   =ENVIZI.HEADERS("location")                // Returns output headers for location function
-   =ENVIZI.HEADERS("stationary", TRUE)        // Returns input headers for stationary function
-   =ENVIZI.HEADERS("factor", FALSE)           // Returns output headers for factor function
+   =ENVIZI.HEADERS()                          // Returns output headers for calculation endpoint
+   =ENVIZI.HEADERS("location")                // Returns output headers for location endpoint
+   =ENVIZI.HEADERS("stationary", TRUE)        // Returns input headers for stationary endpoint
+   =ENVIZI.HEADERS("factor", FALSE)           // Returns output headers for factor endpoint
 
 **Output**
 
-Returns a single row array containing the header names for the specified function and type (input/output).
+Returns a single row array containing the header names for the specified endpoint and type (input/output).
 
 ---
 
@@ -596,14 +596,14 @@ Returns the input or output column headers for factorId-based calculations. Use 
 
 .. code-block:: none
 
-   =ENVIZI.HEADERS_BY_FACTORID([functionName], [input])
+   =ENVIZI.HEADERS_BY_FACTORID([endpoint], [input])
 
 **Parameters**
 
-- ``functionName`` *(optional)* – Function name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation
+- ``endpoint`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation
 - ``input`` *(optional)* – TRUE for input headers, FALSE for output headers. Default: FALSE
 
-**Note:** The ``factor_search`` function does not support factorId-based calls.
+**Note:** The ``factor_search`` endpoint does not support factorId-based calls.
 
 **Examples**
 

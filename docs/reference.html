@@ -938,38 +938,38 @@
 <h3>Headers<a class="headerlink" href="#headers" title="Link to this heading">¶</a></h3>
 <p>Returns the input or output column headers for a specific endpoint. Useful for setting up spreadsheet templates.</p>
 <p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS([functionName], [input])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS([endpoint], [input])
 </pre></div>
 </div>
 <p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">functionName</span></code> <em>(optional)</em> – Function name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">endpoint</span></code> <em>(optional)</em> – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> <em>(optional)</em> – TRUE for input headers, FALSE for output headers. Default: FALSE</p></li>
 </ul>
 <p><strong>Examples</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS()                          // Returns output headers for calculation function
-=ENVIZI.HEADERS(&quot;location&quot;)                // Returns output headers for location function
-=ENVIZI.HEADERS(&quot;stationary&quot;, TRUE)        // Returns input headers for stationary function
-=ENVIZI.HEADERS(&quot;factor&quot;, FALSE)           // Returns output headers for factor function
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS()                          // Returns output headers for calculation endpoint
+=ENVIZI.HEADERS(&quot;location&quot;)                // Returns output headers for location endpoint
+=ENVIZI.HEADERS(&quot;stationary&quot;, TRUE)        // Returns input headers for stationary endpoint
+=ENVIZI.HEADERS(&quot;factor&quot;, FALSE)           // Returns output headers for factor endpoint
 </pre></div>
 </div>
 <p><strong>Output</strong></p>
-<p>Returns a single row array containing the header names for the specified function and type (input/output).</p>
+<p>Returns a single row array containing the header names for the specified endpoint and type (input/output).</p>
 <p>—</p>
 </section>
 <section id="headers-by-factorid">
 <h3>Headers by FactorId<a class="headerlink" href="#headers-by-factorid" title="Link to this heading">¶</a></h3>
 <p>Returns the input or output column headers for factorId-based calculations. Use this when working with factorId instead of type-based parameters.</p>
 <p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS_BY_FACTORID([functionName], [input])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS_BY_FACTORID([endpoint], [input])
 </pre></div>
 </div>
 <p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">functionName</span></code> <em>(optional)</em> – Function name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">endpoint</span></code> <em>(optional)</em> – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> <em>(optional)</em> – TRUE for input headers, FALSE for output headers. Default: FALSE</p></li>
 </ul>
-<p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">factor_search</span></code> function does not support factorId-based calls.</p>
+<p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">factor_search</span></code> endpoint does not support factorId-based calls.</p>
 <p><strong>Examples</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS_BY_FACTORID(&quot;location&quot;, TRUE)     // Returns: factorId, value, unit
 =ENVIZI.HEADERS_BY_FACTORID(&quot;factor&quot;, TRUE)       // Returns: factorId, unit

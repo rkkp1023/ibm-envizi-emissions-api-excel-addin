@@ -219,15 +219,15 @@ const ENDPOINT_CONFIGS: Record<EndpointType, EndpointConfig> = {
 export const VALID_ENDPOINTS = Object.keys(ENDPOINT_CONFIGS) as EndpointType[];
 
 /**
- * Get input headers for a specific function
- * @param functionName - The function name
+ * Get input headers for a specific endpoint
+ * @param endpoint - The endpoint type
  * @param useFactorId - Whether to return factorId-based headers (default: false)
  * @returns Array of input header names
  */
-export function getInputHeaders(functionName: EndpointType, useFactorId: boolean = false): string[] {
-  const config = ENDPOINT_CONFIGS[functionName];
+export function getInputHeaders(endpoint: EndpointType, useFactorId: boolean = false): string[] {
+  const config = ENDPOINT_CONFIGS[endpoint];
   if (!config) {
-    throw new Error(`Invalid function: ${functionName}`);
+    throw new Error(`Invalid endpoint: ${endpoint}`);
   }
 
   if (useFactorId && config.factorIdInputHeaders) {
@@ -238,26 +238,26 @@ export function getInputHeaders(functionName: EndpointType, useFactorId: boolean
 }
 
 /**
- * Get output headers for a specific function
- * @param functionName - The function name
+ * Get output headers for a specific endpoint
+ * @param endpoint - The endpoint type
  * @returns Array of output header names
  */
-export function getOutputHeaders(functionName: EndpointType): string[] {
-  const config = ENDPOINT_CONFIGS[functionName];
+export function getOutputHeaders(endpoint: EndpointType): string[] {
+  const config = ENDPOINT_CONFIGS[endpoint];
   if (!config) {
-    throw new Error(`Invalid function: ${functionName}`);
+    throw new Error(`Invalid endpoint: ${endpoint}`);
   }
 
   return [...config.outputHeaders];
 }
 
 /**
- * Validate if a function is supported
- * @param functionName - The function to validate
+ * Validate if an endpoint is supported
+ * @param endpoint - The endpoint to validate
  * @returns true if valid, false otherwise
  */
-export function isValidEndpoint(functionName: string): functionName is EndpointType {
-  return VALID_ENDPOINTS.includes(functionName as EndpointType);
+export function isValidEndpoint(endpoint: string): endpoint is EndpointType {
+  return VALID_ENDPOINTS.includes(endpoint as EndpointType);
 }
 
 /**
@@ -273,15 +273,15 @@ export function formatValue(val: unknown): string | number {
 }
 
 /**
- * Build a single data row from a response object driven by the function's output headers.
+ * Build a single data row from a response object driven by the endpoint's output headers.
  * This is the single source of truth for field ordering — if you add/remove/reorder
  * a field in ENDPOINT_CONFIGS outputHeaders, the data row updates automatically.
  *
  * @param response - The raw API response object
- * @param functionName - The function name (used to look up output headers)
+ * @param endpoint - The endpoint type (used to look up output headers)
  * @returns A flat array of cell values in the same order as the output headers
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatRow(response: any, functionName: EndpointType): (string | number)[] {
-  return getOutputHeaders(functionName).map((key) => formatValue(response[key]));
+export function formatRow(response: any, endpoint: EndpointType): (string | number)[] {
+  return getOutputHeaders(endpoint).map((key) => formatValue(response[key]));
 }
