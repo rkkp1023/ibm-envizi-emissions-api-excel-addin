@@ -54,13 +54,8 @@ const FLUORINATED_GASES = [
  * Fugitive gas headers (common gases + fluorinated gases)
  */
 const FUGITIVE_GAS_HEADERS = [
-  "totalCO2e",
-  "CO2",
-  "CH4",
-  "N2O",
+  ...COMMON_GAS_HEADERS,
   ...FLUORINATED_GASES,
-  "bioCO2",
-  "indirectCO2e",
 ] as const;
 
 /**
