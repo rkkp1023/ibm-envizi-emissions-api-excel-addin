@@ -3,6 +3,7 @@
 import { factorHelper } from "./factorHelper";
 import { factorSearch } from "./factorSearchHelper";
 import { genericApiCall } from "./generic-api-call";
+import { getInputHeaders, getOutputHeaders, isValidEndpoint, VALID_ENDPOINTS } from "./headers-config";
 
 /**
  * Calculates location-based emissions.
@@ -432,4 +433,104 @@ export async function real_estate_by_factorId(
     value,
     unit,
   });
+}
+
+/**
+ * Returns the input or output headers for a specific endpoint.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#headers
+ * @param endpoint Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search)
+ * @param input Whether to return input headers (true) or output headers (false). Default is false.
+ * @returns Array of header names as a single row
+ */
+export async function headers(endpoint?: string, input?: boolean | string): Promise<string[][]> {
+  try {
+    // Default to "calculation" if no endpoint provided
+    const selectedEndpoint = endpoint?.trim().toLowerCase() || "calculation";
+    
+    // Handle boolean parameter - support both boolean and string inputs (case-insensitive)
+    const isInput = typeof input === "string"
+      ? input.trim().toLowerCase() === "true"
+      : input === true;
+
+    // Validate endpoint
+    if (!isValidEndpoint(selectedEndpoint)) {
+      throw new CustomFunctions.Error(
+        CustomFunctions.ErrorCode.invalidValue,
+        `Invalid endpoint: "${selectedEndpoint}". Valid endpoints are: ${VALID_ENDPOINTS.join(", ")}`
+      );
+    }
+
+    // Get the appropriate headers
+    const headersList = isInput
+      ? getInputHeaders(selectedEndpoint)
+      : getOutputHeaders(selectedEndpoint);
+
+    // Return as a single row array
+    return [headersList];
+  } catch (e: any) {
+    if (e instanceof CustomFunctions.Error) throw e;
+
+    const message = e?.message || "Unknown error";
+    console.error("Headers function failed: ", message);
+
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.notAvailable,
+      message
+    );
+  }
+}
+
+/**
+ * Returns the input or output headers for factorId-based calculations.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#headers-by-factorid
+ * @param endpoint Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor)
+ * @param input Whether to return input headers (true) or output headers (false). Default is false.
+ * @returns Array of header names as a single row
+ */
+export async function headers_by_factorid(endpoint?: string, input?: boolean | string): Promise<string[][]> {
+  try {
+    // Default to "calculation" if no endpoint provided
+    const selectedEndpoint = endpoint?.trim().toLowerCase() || "calculation";
+    
+    // Handle boolean parameter - support both boolean and string inputs (case-insensitive)
+    const isInput = typeof input === "string"
+      ? input.trim().toLowerCase() === "true"
+      : input === true;
+
+    // Validate endpoint
+    if (!isValidEndpoint(selectedEndpoint)) {
+      throw new CustomFunctions.Error(
+        CustomFunctions.ErrorCode.invalidValue,
+        `Invalid endpoint: "${selectedEndpoint}". Valid endpoints are: ${VALID_ENDPOINTS.join(", ")}`
+      );
+    }
+
+    // factor_search doesn't support factorId-based calls
+    if (selectedEndpoint === "factor_search") {
+      throw new CustomFunctions.Error(
+        CustomFunctions.ErrorCode.invalidValue,
+        `Endpoint "factor_search" does not support factorId-based calls`
+      );
+    }
+
+    // Get the appropriate headers
+    const headersList = isInput
+      ? getInputHeaders(selectedEndpoint, true) // true = use factorId headers
+      : getOutputHeaders(selectedEndpoint);
+
+    // Return as a single row array
+    return [headersList];
+  } catch (e: any) {
+    if (e instanceof CustomFunctions.Error) throw e;
+
+    const message = e?.message || "Unknown error";
+    console.error("Headers by factorId function failed: ", message);
+
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.notAvailable,
+      message
+    );
+  }
 }
