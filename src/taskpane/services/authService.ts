@@ -88,7 +88,7 @@ async function logoutUser(): Promise<boolean> {
   const userCredentials = getUserCredentials();
 
   // Only attempt GraphQL logout if user has token-based credentials
-  if (!userCredentials || !userCredentials.token) {
+  if (!userCredentials?.token) {
     return true; // Skip GraphQL logout for API key users
   }
 

@@ -10,7 +10,6 @@ import {
   Credentials,
   loadCredentialsFromStorage,
   setUserCredentials,
-  UserCredentials,
 } from "../../common/credentials";
 import { getEnableEnviziLogin } from "../../common/env";
 import { ensureClient } from "../../functions/client";
@@ -55,7 +54,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       (credentials) => {
         // OAuth/token-based login: Set user credentials globally for logout access
         // Note: API key login uses setApiCredentials via performLogin() instead
-        setUserCredentials(credentials as UserCredentials);
+        setUserCredentials(credentials);
         ensureClient(credentials);
         dispatch({
           type: "loginSuccess",
