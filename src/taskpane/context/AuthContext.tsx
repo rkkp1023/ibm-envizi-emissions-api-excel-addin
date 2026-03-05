@@ -5,7 +5,13 @@
 
 import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
 
-import { ApiCredentials, Credentials, loadCredentialsFromStorage } from "../../common/credentials";
+import {
+  ApiCredentials,
+  Credentials,
+  loadCredentialsFromStorage,
+  setUserCredentials,
+  UserCredentials,
+} from "../../common/credentials";
 import { getEnableEnviziLogin } from "../../common/env";
 import { ensureClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
@@ -47,6 +53,9 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const displayLogin = useCallback(() => {
     displayLoginDialog(
       (credentials) => {
+        // OAuth/token-based login: Set user credentials globally for logout access
+        // Note: API key login uses setApiCredentials via performLogin() instead
+        setUserCredentials(credentials as UserCredentials);
         ensureClient(credentials);
         dispatch({
           type: "loginSuccess",
@@ -81,7 +90,9 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     try {
       // Perform logout and reset client
       await performLogout();
-    } catch (error) {}
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
 
     dispatch({ type: "logout" });
   }, []);

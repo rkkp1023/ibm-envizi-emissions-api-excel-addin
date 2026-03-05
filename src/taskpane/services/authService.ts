@@ -3,14 +3,29 @@
  * Licensed Materials - Property of IBM
  */
 
+import axios from "axios";
+
 import {
   ApiCredentials,
+  getUserCredentials,
   removeApiCredentialsFromStorage,
   removeCredentialsFromStorage,
   saveApiCredentialsToStorage,
   setApiCredentials,
 } from "../../common/credentials";
 import { ensureClient, resetClient } from "../../functions/client";
+
+interface LogoutUserResponse {
+  data: {
+    logout: boolean;
+  };
+}
+
+const logoutUserMutation = `
+  mutation logoutUser {
+    logout
+  }
+`;
 
 /**
  * Validates credentials by attempting to initialize the API client
@@ -66,11 +81,53 @@ export async function performLogin(
 }
 
 /**
+ * Executes GraphQL logout mutation to log out the user on the server
+ * @returns Promise<boolean> indicating if logout was successful
+ */
+async function logoutUser(): Promise<boolean> {
+  const userCredentials = getUserCredentials();
+
+  // Only attempt GraphQL logout if user has token-based credentials
+  if (!userCredentials || !userCredentials.token) {
+    return true; // Skip GraphQL logout for API key users
+  }
+
+  try {
+    // TODO: Replace hardcoded endpoint with dynamic endpoint based on environment
+    const uiEndpoint = "https://us006t.envizi.com/graphqlapi-dev/ui/graphql";
+
+    const response = await axios.post<LogoutUserResponse>(
+      uiEndpoint,
+      {
+        query: logoutUserMutation,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userCredentials.token}`,
+        },
+      }
+    );
+
+    return response.data.data.logout;
+  } catch (error) {
+    console.error("Failed to execute logout mutation:", error);
+    // Return true to continue with local logout even if server logout fails
+    return true;
+  }
+}
+
+/**
  * Performs logout by clearing credentials and resetting client
  * @returns Promise that resolves when logout is complete
  */
 export async function performLogout(): Promise<void> {
+  // Execute GraphQL logout mutation if user has token-based credentials
+  await logoutUser();
+
+  // Reset client instance
   resetClient();
+
   // Try to remove from storage, but don't fail if it errors
   try {
     await removeCredentialsFromStorage();
