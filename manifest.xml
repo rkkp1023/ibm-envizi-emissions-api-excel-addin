@@ -90,11 +90,11 @@
                   <bt:Image size="32" resid="Icon.32x32"/>
                   <bt:Image size="80" resid="Icon.80x80"/>
                 </Icon>
-                <Control xsi:type="Button" id="TaskpaneButton">
-                  <Label resid="TaskpaneButton.Label"/>
+                <Control xsi:type="Button" id="EnviziTaskpaneButton">
+                  <Label resid="EnviziTaskpaneButton.Label"/>
                   <Supertip>
-                    <Title resid="TaskpaneButton.Label"/>
-                    <Description resid="TaskpaneButton.Tooltip"/>
+                    <Title resid="EnviziTaskpaneButton.Label"/>
+                    <Description resid="EnviziTaskpaneButton.Tooltip"/>
                   </Supertip>
                   <Icon>
                     <bt:Image size="16" resid="Icon.16x16"/>
@@ -330,6 +330,7 @@
         <bt:String id="AreaGroup.Label" DefaultValue="Area"/>
         <bt:String id="UnitsGroup.Label" DefaultValue="Units"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="IBM Envizi Emissions Calculations"/>
+        <bt:String id="EnviziTaskpaneButton.Label" DefaultValue="Open Taskpane"/>
         <bt:String id="ActivityTypesMenu.Label" DefaultValue="Insert Activity Types"/>
         <bt:String id="AreaMenu.Label" DefaultValue="Insert Area"/>
         <bt:String id="UnitsButton.Label" DefaultValue="Insert Units"/>
@@ -349,6 +350,7 @@
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Seamlessly integrate emissions data into your workflows. Open the 'IBM Envizi Emissions Calculations' task pane to get started."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Seamlessly integrate emissions data into your workflows."/>
+        <bt:String id="EnviziTaskpaneButton.Tooltip" DefaultValue="Open the IBM Envizi Emissions Calculations task pane"/>
         <bt:String id="ActivityTypesMenu.Tooltip" DefaultValue="Insert data validation for activity types on selected cells"/>
         <bt:String id="AreaMenu.Tooltip" DefaultValue="Insert data validation for geographic areas on selected cells"/>
         <bt:String id="UnitsButton.Tooltip" DefaultValue="Insert data validation for units on selected cells"/>
