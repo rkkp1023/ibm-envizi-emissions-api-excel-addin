@@ -17,6 +17,7 @@ jest.mock("../src/functions/client", () => ({
 
 jest.mock("../src/functions/utils", () => ({
   convertExcelDateToISO: jest.fn((d) => d), // pass-through
+  extractSymbolFromDisplay: jest.fn((value) => value), // pass-through by default
 }));
 
 describe("factorSearch", () => {
