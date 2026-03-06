@@ -6,6 +6,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+import { getEnviziUrl } from "../../common/env";
 import { UserInfo, UserInfoResponse } from "../types/user.types";
 import { useAuth } from "./useAuth";
 
@@ -32,12 +33,10 @@ const userInfoQuery = `
  * Fetches user info from Envizi UI GraphQL API
  */
 const fetchUserInfo = async (token: string): Promise<UserInfo> => {
-  // TODO: Replace hardcoded endpoint with dynamic endpoint based on environment
-  // const uiEndpoint = `${getApiUrl("saascore", "prod")}/ui/graphql`;
-  const uiEndpoint = "https://us006t.envizi.com/graphqlapi-dev/ui/graphql";
+  const graphqlUrl = `${getEnviziUrl()}/graphqlapi-dev/ui/graphql`;
 
   const response = await axios.post<UserInfoResponse>(
-    uiEndpoint,
+    graphqlUrl,
     {
       query: userInfoQuery,
     },
