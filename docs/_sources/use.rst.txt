@@ -25,6 +25,39 @@ Once your credentials are validated, the **main interface** of the add-in become
    :alt: Main interface of the add-in
    :align: center
 
+Using Data Validation Helpers
+------------------------------
+
+The add-in provides ribbon buttons to quickly add dropdown lists for valid values in your cells.
+
+**Insert Activity Types**
+
+Click the **Activity Types** button to add a dropdown list of valid activity types:
+
+- **All** – All available activity types
+- **Location** – Location-based activities
+- **Stationary** – Stationary combustion activities
+- **Mobile** – Mobile combustion activities
+- **Fugitive** – Fugitive emissions
+- **Transportation & Distribution** – Transport activities
+- **Economic Activity** – Economic-based activities
+- **Real Estate** – Real estate activities
+
+**Insert Area**
+
+Click the **Area** button to add location dropdowns:
+
+- **Country** – ISO alpha-3 country codes
+- **State/Province** – State or province identifiers
+- **Power Grid** – Power grid identifiers
+
+**Insert Units**
+
+Click the **Units** button to add a dropdown list of valid measurement units (e.g., kWh, kg, L).
+
+.. note::
+   Select the cells where you want the dropdown before clicking the button. The validation will be applied to all selected cells.
+
 Working with Functions
 ----------------------
 
