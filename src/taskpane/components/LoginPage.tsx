@@ -53,8 +53,11 @@ function EnviziLogin() {
       </div>
 
       <div className="envizi-footer-link">
-        <Link href="https://www.ibm.com/products/envizi" target="_blank">
-          Learn about Envizi Emissions calculations in Excel <Open16Regular />
+        <Link
+          href="https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+          target="_blank"
+        >
+          Learn about Envizi Emissions Calculations in Excel <Open16Regular />
         </Link>
       </div>
       <div className="envizi-copyright">

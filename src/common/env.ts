@@ -29,10 +29,22 @@ export const apiHomeUrls: Record<EnvType, string> = {
   local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
 };
 
-export const enviziUrl: Record<EnvType, string> = {
+export const enviziUiOrigins: Record<EnvType, string> = {
   prod: "https://envizi.ibm.com",
   np: "https://pentest.envizi.ibm.com",
   local: "https://local.us006t.envizi.com",
+};
+
+export const enviziApiOrigins: Record<EnvType, string> = {
+  prod: "https://envizi.ibm.com",
+  np: "https://pentest.envizi.ibm.com",
+  local: "https://us006t.envizi.com",
+};
+
+export const enviziGraphQLUrls: Record<string, string> = {
+  "https://envizi.ibm.com": "https://envizi.ibm.com/graphqlapi-uxm",
+  "https://pentest.envizi.ibm.com": "https://pentest.envizi.ibm.com/graphqlapi-uxm",
+  "https://us006t.envizi.com": "https://us006t.envizi.com/graphqlapi-dev",
 };
 
 function detectEnvType(): EnvType {
@@ -67,8 +79,17 @@ export function getOverviewDashboardUrl(): string {
   return `${getApiHomeUrl()}/overview`;
 }
 
-export function getEnviziUrl(envType?: EnvType): string {
-  return enviziUrl[envType || getEnvType()];
+export function getEnviziUiOrigin(envType?: EnvType): string {
+  return enviziUiOrigins[envType || getEnvType()];
+}
+
+export function getEnviziApiOrigin(envType?: EnvType): string {
+  return enviziApiOrigins[envType || getEnvType()];
+}
+
+export function getEnviziGraphQLUrl(envType?: EnvType): string {
+  const apiOrigin = getEnviziApiOrigin(envType);
+  return enviziGraphQLUrls[apiOrigin];
 }
 
 export function getEnableEnviziLogin(): boolean {

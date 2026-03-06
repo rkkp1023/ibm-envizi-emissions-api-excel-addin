@@ -4,7 +4,7 @@
  */
 
 import { ApiCredentials, UserCredentials } from "../../common/credentials";
-import { getEnviziUrl } from "../../common/env";
+import { getEnviziGraphQLUrl } from "../../common/env";
 import { performLogin, performLogout, validateCredentials } from "./authService";
 
 // Mock axios
@@ -221,7 +221,7 @@ describe("authService", () => {
       await performLogout();
 
       expect(mockAxiosPost).toHaveBeenCalledWith(
-        `${getEnviziUrl()}/graphqlapi-dev/ui/graphql`,
+        `${getEnviziGraphQLUrl()}/ui/graphql`,
         {
           query: expect.stringContaining("mutation logoutUser"),
         },

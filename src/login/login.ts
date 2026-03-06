@@ -2,15 +2,15 @@
 
 import axios from "axios";
 
-import { EnvType, getEnviziUrl, getEnvType } from "../common/env";
+import { EnvType, getEnviziUiOrigin, getEnvType } from "../common/env";
 import { LoginDialogMessage } from "./login-dialog-message";
 
 /* global Office */
 
 export const loginUrls: Record<EnvType, string> = {
-  prod: `${getEnviziUrl("prod")}/emissions-excel-login/login`,
-  np: `${getEnviziUrl("np")}/emissions-excel-login/login`,
-  local: `${getEnviziUrl("local")}/emissions-bridge/login`,
+  prod: `${getEnviziUiOrigin("prod")}/emissions-excel-login/login`,
+  np: `${getEnviziUiOrigin("np")}/emissions-excel-login/login`,
+  local: `${getEnviziUiOrigin("local")}/emissions-bridge/login`,
 };
 
 Office.onReady(() => {
