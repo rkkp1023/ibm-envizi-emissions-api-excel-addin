@@ -4,6 +4,7 @@
  */
 
 import { ApiCredentials } from "../../common/credentials";
+import { getEnviziUrl } from "../../common/env";
 import { performLogin, performLogout, validateCredentials } from "./authService";
 
 // Define UserCredentials interface for testing
@@ -227,7 +228,7 @@ describe("authService", () => {
       await performLogout();
 
       expect(mockAxiosPost).toHaveBeenCalledWith(
-        "https://us006t.envizi.com/graphqlapi-dev/ui/graphql",
+        `${getEnviziUrl()}/graphqlapi-dev/ui/graphql`,
         {
           query: expect.stringContaining("mutation logoutUser"),
         },

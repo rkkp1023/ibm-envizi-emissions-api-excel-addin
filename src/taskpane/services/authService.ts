@@ -5,6 +5,7 @@
 
 import axios from "axios";
 
+import { getEnviziUrl } from "src/common/env";
 import {
   ApiCredentials,
   getUserCredentials,
@@ -93,11 +94,10 @@ async function logoutUser(): Promise<boolean> {
   }
 
   try {
-    // TODO: Replace hardcoded endpoint with dynamic endpoint based on environment
-    const uiEndpoint = "https://us006t.envizi.com/graphqlapi-dev/ui/graphql";
+    const graphqlUrl = `${getEnviziUrl()}/graphqlapi-dev/ui/graphql`;
 
     const response = await axios.post<LogoutUserResponse>(
-      uiEndpoint,
+      graphqlUrl,
       {
         query: logoutUserMutation,
       },
