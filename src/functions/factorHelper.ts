@@ -4,7 +4,7 @@ import { Factor } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
 import { formatRow } from "./headers-config";
-import { convertExcelDateToISO } from "./utils";
+import { convertExcelDateToISO, extractSymbolFromDisplay } from "./utils";
 
 export async function factorHelper(
   typeOrId: string | number,
@@ -15,15 +15,20 @@ export async function factorHelper(
 ): Promise<any[][]> {
   await ensureClient();
 
+  // Extract unit symbol from display format: "kilogram (kg)" → "kg"
+  const unitSymbol = extractSymbolFromDisplay(unit) || unit;
+
   let apiParams: any = {
-    activity: { unit },
+    activity: { unit: unitSymbol },
   };
 
   if (typeof typeOrId === "string") {
     apiParams.activity.type = typeOrId;
 
     if (country) {
-      apiParams.location = { country };
+      // Extract country code from display format: "USA(United States)" → "USA"
+      const countryCode = extractSymbolFromDisplay(country) || country;
+      apiParams.location = { country: countryCode };
       if (stateProvince) apiParams.location.stateProvince = stateProvince;
     }
 
