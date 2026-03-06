@@ -12,10 +12,13 @@ import { LoginPage } from "./LoginPage";
 
 // Mock the credentials module
 const mockLoadApiCredentialsFromStorage = jest.fn();
+const mockSaveUserCredentialsToStorage = jest.fn();
 jest.mock("../../common/credentials", () => ({
   loadCredentialsFromStorage: mockLoadApiCredentialsFromStorage,
   saveApiCredentialsToStorage: jest.fn(),
+  saveUserCredentialsToStorage: (...args: any[]) => mockSaveUserCredentialsToStorage(...args),
   removeApiCredentialsFromStorage: jest.fn(),
+  removeCredentialsFromStorage: jest.fn(),
   setApiCredentials: jest.fn(),
 }));
 
@@ -34,6 +37,12 @@ jest.mock("../services/authService", () => ({
   performLogin: (...args: any[]) => mockPerformLogin(...args),
   performLogout: (...args: any[]) => mockPerformLogout(...args),
   validateCredentials: (...args: any[]) => mockValidateCredentials(...args),
+}));
+
+// Mock the auth dialog
+const mockDisplayLoginDialog = jest.fn();
+jest.mock("../auth", () => ({
+  displayLoginDialog: (...args: any[]) => mockDisplayLoginDialog(...args),
 }));
 
 describe("LoginPage", () => {
@@ -157,5 +166,81 @@ describe("LoginPage", () => {
         screen.getByText(/Invalid credentials. Please enter your credentials and try again./i)
       ).toBeInTheDocument();
     });
+  });
+
+  it("should toggle save credentials checkbox", () => {
+    renderLoginPage();
+
+    const checkbox = screen.getByLabelText(/Save credentials/i) as HTMLInputElement;
+    expect(checkbox).toBeChecked();
+
+    fireEvent.click(checkbox);
+    expect(checkbox).not.toBeChecked();
+
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
+  });
+
+  it("should submit with saveCredentials false when checkbox is unchecked", async () => {
+    mockPerformLogin.mockResolvedValue(undefined);
+
+    renderLoginPage();
+
+    const apiKeyInput = screen.getByLabelText(/API key/i);
+    const tenantIdInput = screen.getByLabelText(/Tenant ID/i);
+    const orgIdInput = screen.getByLabelText(/Organization ID/i);
+    const checkbox = screen.getByLabelText(/Save credentials/i);
+    const submitButton = screen.getByRole("button", { name: /Login/i });
+
+    fireEvent.change(apiKeyInput, { target: { value: "test-key" } });
+    fireEvent.change(tenantIdInput, { target: { value: "test-tenant" } });
+    fireEvent.change(orgIdInput, { target: { value: "test-org" } });
+    fireEvent.click(checkbox); // Uncheck the checkbox
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockPerformLogin).toHaveBeenCalledWith(
+        {
+          apiKey: "test-key",
+          tenantId: "test-tenant",
+          orgId: "test-org",
+        },
+        false
+      );
+    });
+  });
+
+  it("should disable inputs during loading", async () => {
+    mockPerformLogin.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
+
+    renderLoginPage();
+
+    const apiKeyInput = screen.getByLabelText(/API key/i) as HTMLInputElement;
+    const tenantIdInput = screen.getByLabelText(/Tenant ID/i) as HTMLInputElement;
+    const orgIdInput = screen.getByLabelText(/Organization ID/i) as HTMLInputElement;
+    const checkbox = screen.getByLabelText(/Save credentials/i) as HTMLInputElement;
+    const submitButton = screen.getByRole("button", { name: /Login/i });
+
+    fireEvent.change(apiKeyInput, { target: { value: "test-key" } });
+    fireEvent.change(tenantIdInput, { target: { value: "test-tenant" } });
+    fireEvent.change(orgIdInput, { target: { value: "test-org" } });
+    fireEvent.click(submitButton);
+
+    expect(apiKeyInput).toBeDisabled();
+    expect(tenantIdInput).toBeDisabled();
+    expect(orgIdInput).toBeDisabled();
+    expect(checkbox).toBeDisabled();
+
+    await waitFor(() => {
+      expect(apiKeyInput).not.toBeDisabled();
+    });
+  });
+
+  it("should render link to overview dashboard", () => {
+    renderLoginPage();
+
+    const link = screen.getByText(/Emissions API overview dashboard/i);
+    expect(link).toBeInTheDocument();
+    expect(link.closest("a")).toHaveAttribute("target", "_blank");
   });
 });

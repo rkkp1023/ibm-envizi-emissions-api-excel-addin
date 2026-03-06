@@ -17,12 +17,12 @@ function EnviziLogin() {
     <div className="envizi-login-page" id="login-page">
       <div className="envizi-login-content">
         <Text className="envizi-welcome-text" as="h2">
-          {state.justLoggedOut ? "You are now logged out" : "Welcome back!"}
+          {state.isLoggedOut ? "You are now logged out" : "Welcome back!"}
         </Text>
 
         <div>
           <img
-            src="/assets/envizi-usecase-report-progress.png"
+            src="assets/envizi-usecase-report-progress.png"
             alt="Envizi usecase report progress"
             className="envizi-illustration"
           />
@@ -59,7 +59,7 @@ function EnviziLogin() {
       </div>
       <div className="envizi-copyright">
         <img
-          src="/assets/footer-icon.png"
+          src="assets/footer-icon.png"
           alt="Envizi usecase report progress"
           className="envizi-footer-image"
         />

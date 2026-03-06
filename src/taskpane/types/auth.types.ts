@@ -9,5 +9,5 @@ export interface AuthState {
   credentials: Credentials | null;
   isInitialized: boolean;
   isAuthenticated: boolean;
-  justLoggedOut: boolean;
+  isLoggedOut: boolean;
 }
