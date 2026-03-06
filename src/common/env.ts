@@ -29,6 +29,12 @@ export const apiHomeUrls: Record<EnvType, string> = {
   local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
 };
 
+export const enviziUrl: Record<EnvType, string> = {
+  prod: "https://envizi.ibm.com",
+  np: "https://pentest.envizi.ibm.com",
+  local: "https://local.us006t.envizi.com",
+};
+
 function detectEnvType(): EnvType {
   const origin = window.location.origin;
   if (origin === "https://plugins.app.ibm.com") {
@@ -59,6 +65,10 @@ export function getApiHomeUrl(): string {
 
 export function getOverviewDashboardUrl(): string {
   return `${getApiHomeUrl()}/overview`;
+}
+
+export function getEnviziUrl(envType?: EnvType): string {
+  return enviziUrl[envType || getEnvType()];
 }
 
 export function getEnableEnviziLogin(): boolean {
