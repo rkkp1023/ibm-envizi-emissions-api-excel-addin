@@ -19,6 +19,7 @@ export const initialAuthState: AuthState = {
   credentials: null,
   isInitialized: false,
   isAuthenticated: false,
+  justLoggedOut: false,
 };
 
 export function authReducer(state: AuthState, action: AuthAction): AuthState {
@@ -29,6 +30,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         credentials: action.payload.credentials,
         isInitialized: true,
         isAuthenticated: !!action.payload.credentials,
+        justLoggedOut: false,
       };
 
     case "loginSuccess":
@@ -36,6 +38,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         ...state,
         credentials: action.payload.credentials,
         isAuthenticated: true,
+        justLoggedOut: false,
       };
 
     case "loginFailed":
@@ -43,6 +46,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         ...state,
         credentials: null,
         isAuthenticated: false,
+        justLoggedOut: false,
       };
 
     case "logout":
@@ -50,6 +54,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         ...state,
         credentials: null,
         isAuthenticated: false,
+        justLoggedOut: true,
       };
 
     default:
