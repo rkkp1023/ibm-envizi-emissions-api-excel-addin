@@ -8,7 +8,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import axios from "axios";
 import React from "react";
 
-import { getEnviziUrl } from "../../common/env";
+import { getEnviziGraphQLUrl } from "../../common/env";
 import { useUserInfo } from "./useUserInfo";
 
 // Mock dependencies
@@ -112,7 +112,7 @@ describe("useUserInfo", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      `${getEnviziUrl()}/graphqlapi-dev/ui/graphql`,
+      `${getEnviziGraphQLUrl()}/ui/graphql`,
       {
         query: expect.stringContaining("query User"),
       },
