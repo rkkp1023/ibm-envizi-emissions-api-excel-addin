@@ -4,7 +4,7 @@ import { Factor } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
 import { formatRow } from "./headers-config";
-import { convertExcelDateToISO } from "./utils";
+import { convertExcelDateToISO, extractSymbolFromDisplay } from "./utils";
 
 function buildFactorSearchParams(
   search: string,
@@ -14,9 +14,12 @@ function buildFactorSearchParams(
   page?: number,
   size?: number
 ): any {
+  // Extract country code from display format: "USA(United States)" → "USA"
+  const countryCode = extractSymbolFromDisplay(country) || country;
+  
   const params: any = {
     activity: { search },
-    location: { country },
+    location: { country: countryCode },
   };
 
   if (stateProvince) {
