@@ -3,16 +3,9 @@
  * Licensed Materials - Property of IBM
  */
 
-import { ApiCredentials } from "../../common/credentials";
+import { ApiCredentials, UserCredentials } from "../../common/credentials";
 import { getEnviziUrl } from "../../common/env";
 import { performLogin, performLogout, validateCredentials } from "./authService";
-
-// Define UserCredentials interface for testing
-interface UserCredentials {
-  token: string;
-  refreshToken: string;
-  coreToken: string;
-}
 
 // Mock axios
 const mockAxiosPost = jest.fn();

@@ -9,7 +9,7 @@ import {
   ApiCredentials,
   Credentials,
   loadCredentialsFromStorage,
-  setUserCredentials,
+  saveUserCredentialsToStorage,
 } from "../../common/credentials";
 import { getEnableEnviziLogin } from "../../common/env";
 import { ensureClient } from "../../functions/client";
@@ -51,10 +51,10 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   const displayLogin = useCallback(() => {
     displayLoginDialog(
-      (credentials) => {
-        // OAuth/token-based login: Set user credentials globally for logout access
-        // Note: API key login uses setApiCredentials via performLogin() instead
-        setUserCredentials(credentials);
+      async (credentials) => {
+        // OAuth/token-based login: Save user credentials to storage for persistence
+        // Note: API key login uses saveApiCredentialsToStorage via performLogin() instead
+        await saveUserCredentialsToStorage(credentials);
         ensureClient(credentials);
         dispatch({
           type: "loginSuccess",

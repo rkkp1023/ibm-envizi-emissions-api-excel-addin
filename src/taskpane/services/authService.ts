@@ -5,7 +5,6 @@
 
 import axios from "axios";
 
-import { getEnviziUrl } from "src/common/env";
 import {
   ApiCredentials,
   getUserCredentials,
@@ -14,6 +13,7 @@ import {
   saveApiCredentialsToStorage,
   setApiCredentials,
 } from "../../common/credentials";
+import { getEnviziUrl } from "../../common/env";
 import { ensureClient, resetClient } from "../../functions/client";
 
 interface LogoutUserResponse {
@@ -122,15 +122,13 @@ async function logoutUser(): Promise<boolean> {
  * @returns Promise that resolves when logout is complete
  */
 export async function performLogout(): Promise<void> {
-  // Execute GraphQL logout mutation if user has token-based credentials
-  await logoutUser();
-
   // Reset client instance
   resetClient();
 
   // Try to remove from storage, but don't fail if it errors
   try {
     await removeCredentialsFromStorage();
+    await logoutUser();
   } catch (error) {
     // Log error but continue with logout
     console.error("Failed to remove credentials from storage:", error);
