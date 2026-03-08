@@ -1,7 +1,6 @@
 // Copyright IBM Corp. 2026
 
-import axios from "axios";
-
+import { coreEnviziAuth } from "../api/coreEnviziAuth";
 import { EnvType, getEnviziUiOrigin, getEnvType } from "../common/env";
 import { LoginDialogMessage } from "./login-dialog-message";
 
@@ -18,7 +17,7 @@ Office.onReady(() => {
   const token = window.localStorage.getItem("tokenForLogin");
   const refreshToken = window.localStorage.getItem("refreshTokenForLogin");
   if (token && refreshToken) {
-    exchangeToken(token).then((coreToken) => {
+    coreEnviziAuth.exchangeToken(token).then((coreToken) => {
       const dialogMessage: LoginDialogMessage = { token, refreshToken, coreToken };
       Office.context.ui.messageParent(JSON.stringify(dialogMessage));
     });
@@ -26,14 +25,3 @@ Office.onReady(() => {
     window.location.href = loginUrls[getEnvType()];
   }
 });
-
-async function exchangeToken(token: string): Promise<string> {
-  // Using prod URL since the test accounts were created on prod
-  const tokenExchangeUrl = "https://api.ibm.com/saascore/bluerun/envizi-auth/exchange";
-  const enviziTokenExchangeClientId = "f3d0be6fd3fb3d938b748fe18612cf92";
-  const response = await axios.post<string>(tokenExchangeUrl, null, {
-    headers: { authorization: `Bearer ${token}`, "x-ibm-client-id": enviziTokenExchangeClientId },
-    responseType: "text",
-  });
-  return response.data;
-}

@@ -8,6 +8,7 @@ import { AuthState } from "../types/auth.types";
 
 export type AuthAction =
   | { type: "initialize"; payload: { credentials: Credentials } }
+  | { type: "refreshCredentials"; payload: { credentials: Credentials } }
   | {
       type: "loginSuccess";
       payload: { credentials: Credentials };
@@ -31,6 +32,12 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         isInitialized: true,
         isAuthenticated: !!action.payload.credentials,
         isLoggedOut: false,
+      };
+
+    case "refreshCredentials":
+      return {
+        ...state,
+        credentials: action.payload.credentials,
       };
 
     case "loginSuccess":
