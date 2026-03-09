@@ -31,6 +31,9 @@ const mockContext = {
         getItemOrNullObject: jest.fn(),
       },
     },
+    application: {
+      suspendScreenUpdatingUntilNextSync: jest.fn(),
+    },
   },
   sync: jest.fn().mockResolvedValue(undefined),
 };
@@ -118,11 +121,17 @@ describe("metadata-sheet-manager", () => {
     });
 
     it("should return false on error", async () => {
+      // Suppress expected console.error
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      
       mockContext.sync.mockRejectedValueOnce(new Error("Test error"));
 
       const result = await metadataSheetExists();
 
       expect(result).toBe(false);
+      
+      // Restore console.error
+      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -144,9 +153,15 @@ describe("metadata-sheet-manager", () => {
     });
 
     it("should handle errors gracefully", async () => {
+      // Suppress expected console.error
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      
       mockContext.sync.mockRejectedValueOnce(new Error("Test error"));
 
       await expect(deleteMetadataSheet()).resolves.not.toThrow();
+      
+      // Restore console.error
+      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -238,6 +253,44 @@ describe("metadata-sheet-manager", () => {
 
       expect(mockRange.clear).toHaveBeenCalled();
     });
+
+    it("should use suspendScreenUpdatingUntilNextSync for performance", async () => {
+      const metadata: CompleteMetadata = {
+        activityTypes: {},
+        areas: { countries: [], stateProvinces: [], powerGrids: [] },
+        units: { units: [] },
+        timestamp: new Date().toISOString(),
+      };
+
+      const mockApplication = {
+        suspendScreenUpdatingUntilNextSync: jest.fn(),
+      };
+      mockContext.workbook.application = mockApplication;
+
+      await writeMetadataToSheet(metadata);
+
+      expect(mockApplication.suspendScreenUpdatingUntilNextSync).toHaveBeenCalled();
+    });
+
+    it("should minimize sync calls for better performance", async () => {
+      const metadata: CompleteMetadata = {
+        activityTypes: {
+          location: ["Type1"],
+        },
+        areas: { countries: ["USA(United States)"], stateProvinces: [], powerGrids: [] },
+        units: { units: ["kg(kilogram)"] },
+        timestamp: new Date().toISOString(),
+      };
+
+      mockContext.sync.mockClear();
+
+      await writeMetadataToSheet(metadata);
+
+      // Verify sync was called (exact count depends on implementation details)
+      // The key is that it's batched, not called for each individual operation
+      expect(mockContext.sync).toHaveBeenCalled();
+      expect(mockContext.sync.mock.calls.length).toBeLessThan(10); // Much less than unbatched
+    });
   });
 
   describe("createNamedRanges", () => {
@@ -264,6 +317,28 @@ describe("metadata-sheet-manager", () => {
 
       expect(mockNamedRange.delete).toHaveBeenCalled();
       expect(mockContext.workbook.names.add).toHaveBeenCalled();
+    });
+
+    it("should use suspendScreenUpdatingUntilNextSync for performance", async () => {
+      mockSheet.isNullObject = false;
+      mockContext.workbook.worksheets.getItem = jest.fn().mockReturnValue(mockSheet);
+      mockRange.values = [["Type1"]];
+
+      await createNamedRanges();
+
+      expect(mockContext.workbook.application.suspendScreenUpdatingUntilNextSync).toHaveBeenCalled();
+    });
+
+    it("should batch load operations for better performance", async () => {
+      mockSheet.isNullObject = false;
+      mockContext.workbook.worksheets.getItem = jest.fn().mockReturnValue(mockSheet);
+      mockRange.values = [["Type1"]];
+      mockContext.sync.mockClear();
+
+      await createNamedRanges();
+
+      // Should have optimized sync calls (batch loading)
+      expect(mockContext.sync).toHaveBeenCalledTimes(3); // Load cells, load ranges, apply changes
     });
   });
 

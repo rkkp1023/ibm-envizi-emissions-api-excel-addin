@@ -2,10 +2,10 @@
 
 import { Metadata } from "emissions-api-sdk";
 import {
-    ACTIVITY_TYPE_ENDPOINTS,
-    fetchAllMetadata,
-    fetchAreaMetadata,
-    fetchUnitMetadata,
+  ACTIVITY_TYPE_ENDPOINTS,
+  fetchAllMetadata,
+  fetchAreaMetadata,
+  fetchUnitMetadata,
 } from "../../src/commands/metadata-service";
 import { ensureClient } from "../../src/functions/client";
 
@@ -54,7 +54,7 @@ describe("metadata-service", () => {
       expect(result.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     });
 
-    it("should fetch activity types for all endpoints", async () => {
+    it("should fetch activity types for all endpoints in parallel", async () => {
       mockMetadata.getTypes = jest.fn().mockResolvedValue({
         types: ["Type1"],
       });
@@ -63,8 +63,40 @@ describe("metadata-service", () => {
 
       const result = await fetchAllMetadata();
 
+      // Verify all endpoints were called
       expect(mockMetadata.getTypes).toHaveBeenCalledTimes(ACTIVITY_TYPE_ENDPOINTS.length);
       expect(Object.keys(result.activityTypes)).toHaveLength(ACTIVITY_TYPE_ENDPOINTS.length);
+    });
+
+    it("should use Promise.all for parallel execution", async () => {
+      const mockPromiseAll = jest.spyOn(Promise, 'all');
+      
+      mockMetadata.getTypes = jest.fn().mockResolvedValue({
+        types: ["Type1"],
+      });
+      mockMetadata.getArea = jest.fn().mockResolvedValue({ locations: [] });
+      mockMetadata.getUnits = jest.fn().mockResolvedValue({ units: [] });
+
+      await fetchAllMetadata();
+
+      // Verify Promise.all was used (indicates parallel execution)
+      expect(mockPromiseAll).toHaveBeenCalled();
+      
+      mockPromiseAll.mockRestore();
+    });
+
+    it("should handle partial failures in parallel calls", async () => {
+      mockMetadata.getTypes = jest.fn()
+        .mockResolvedValueOnce({ types: ["Type1"] })
+        .mockRejectedValueOnce(new Error("API Error"))
+        .mockResolvedValue({ types: ["Type2"] });
+      mockMetadata.getArea = jest.fn().mockResolvedValue({ locations: [] });
+      mockMetadata.getUnits = jest.fn().mockResolvedValue({ units: [] });
+
+      // Should not throw, failed endpoints return empty arrays
+      const result = await fetchAllMetadata();
+      
+      expect(result.activityTypes).toBeDefined();
     });
   });
 

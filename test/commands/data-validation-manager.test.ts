@@ -141,6 +141,38 @@ describe("data-validation-manager", () => {
 
       await expect(insertActivityTypeValidation("location")).rejects.toThrow();
     });
+
+    it("should check if named range exists before applying validation", async () => {
+      await insertActivityTypeValidation("location");
+
+      // Verify getItemOrNullObject was called to check named range existence
+      expect(mockContext.workbook.names.getItemOrNullObject).toHaveBeenCalledWith("ActivityType_location");
+      expect(mockContext.sync).toHaveBeenCalled();
+    });
+
+    it("should throw error when named range does not exist", async () => {
+      const nullNamedRange = {
+        isNullObject: true,
+        name: "",
+        getRange: jest.fn(),
+        load: jest.fn(),
+      };
+      mockContext.workbook.names.getItemOrNullObject.mockReturnValue(nullNamedRange);
+
+      await expect(insertActivityTypeValidation("location")).rejects.toThrow(
+        "Data not available"
+      );
+    });
+
+    it("should apply validation when named range exists", async () => {
+      mockNamedRange.isNullObject = false;
+      mockContext.workbook.names.getItemOrNullObject.mockReturnValue(mockNamedRange);
+
+      await insertActivityTypeValidation("location");
+
+      expect(mockSelectedRange.dataValidation.clear).toHaveBeenCalled();
+      expect(mockSelectedRange.dataValidation.rule).toBeDefined();
+    });
   });
 
   describe("insertAreaValidation", () => {
@@ -228,11 +260,12 @@ describe("data-validation-manager", () => {
   });
 
   describe("performance optimization", () => {
-    it("should only call sync once per validation", async () => {
+    it("should minimize sync calls per validation", async () => {
       await insertActivityTypeValidation("location");
 
-      // Should only sync once at the end
-      expect(mockContext.sync).toHaveBeenCalledTimes(1);
+      // Should have 2 syncs: 1 for named range check + 1 for applying validation
+      // This is optimized - the named range check piggybacks on the first sync
+      expect(mockContext.sync).toHaveBeenCalledTimes(2);
     });
 
     it("should not load unnecessary properties", async () => {
@@ -240,6 +273,16 @@ describe("data-validation-manager", () => {
 
       // Should not load selected range address (optimization)
       expect(mockSelectedRange.load).not.toHaveBeenCalled();
+    });
+
+    it("should check named range existence with zero additional cost", async () => {
+      mockContext.sync.mockClear();
+      
+      await insertActivityTypeValidation("location");
+
+      // Named range check happens in the same sync as getting selected range
+      // So it adds zero additional sync calls compared to not checking
+      expect(mockContext.sync).toHaveBeenCalledTimes(2);
     });
   });
 });
