@@ -1,11 +1,11 @@
 // Copyright IBM Corp. 2025
 
 /**
- * Centralized configuration for API endpoint headers
- * This file defines input and output headers for all emission calculation endpoints
+ * Centralized configuration for API function headers
+ * This file defines input and output headers for all emission calculation functions
  */
 
-export type EndpointType =
+export type FunctionNameType =
   | "location"
   | "stationary"
   | "fugitive"
@@ -18,7 +18,7 @@ export type EndpointType =
   | "factor_search";
 
 /**
- * Base input headers common to most calculation endpoints
+ * Base input headers common to most calculation functions
  */
 const BASE_INPUT_HEADERS = [
   "type",
@@ -30,7 +30,7 @@ const BASE_INPUT_HEADERS = [
 ] as const;
 
 /**
- * Common gas emission fields for all endpoints
+ * Common gas emission fields for all functions
  */
 const COMMON_GAS_HEADERS = [
   "totalCO2e",
@@ -41,7 +41,7 @@ const COMMON_GAS_HEADERS = [
   "indirectCO2e",
 ] as const;
 /**
- * Additional fluorinated gases for fugitive and calculation endpoints
+ * Additional fluorinated gases for fugitive and calculation functions
  */
 const FLUORINATED_GASES = [
   "HFC",
@@ -69,7 +69,7 @@ const ENERGY_HEADER = "energy(MWh)";
 const OUTPUT_TAIL_HEADERS = ["unit", "description", "transactionId"] as const;
 
 /**
- * Standard output headers (for most endpoints)
+ * Standard output headers (for most functions)
  */
 const STANDARD_OUTPUT_HEADERS = [...COMMON_GAS_HEADERS, ...OUTPUT_TAIL_HEADERS] as const;
 
@@ -102,7 +102,7 @@ const CALCULATION_OUTPUT_HEADERS = [
 const FACTOR_ID_INPUT_HEADERS = ["factorId", "value", "unit"] as const;
 
 /**
- * Output headers for factor retrieval endpoint
+ * Output headers for factor retrieval function
  */
 const FACTOR_OUTPUT_HEADERS = [
   "factorSet",
@@ -132,7 +132,7 @@ const FACTOR_OUTPUT_HEADERS = [
 ] as const;
 
 /**
- * Output headers for factor search endpoint
+ * Output headers for factor search function
  */
 const FACTOR_SEARCH_OUTPUT_HEADERS = [
   "factorSet",
@@ -148,15 +148,15 @@ const FACTOR_SEARCH_OUTPUT_HEADERS = [
 ] as const;
 
 /**
- * Configuration mapping for each endpoint type
+ * Configuration mapping for each function name type
  */
-interface EndpointConfig {
+interface FunctionNameConfig {
   inputHeaders: readonly string[];
   outputHeaders: readonly string[];
   factorIdInputHeaders?: readonly string[];
 }
 
-const ENDPOINT_CONFIGS: Record<EndpointType, EndpointConfig> = {
+const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
   location: {
     inputHeaders: [...BASE_INPUT_HEADERS, "powerGrid"],
     outputHeaders: STANDARD_OUTPUT_HEADERS,
@@ -209,20 +209,20 @@ const ENDPOINT_CONFIGS: Record<EndpointType, EndpointConfig> = {
 };
 
 /**
- * Valid endpoint types for validation
+ * Valid function name types for validation
  */
-export const VALID_ENDPOINTS = Object.keys(ENDPOINT_CONFIGS) as EndpointType[];
+export const VALID_FUNCTION_NAMES = Object.keys(FUNCTION_NAME_CONFIGS) as FunctionNameType[];
 
 /**
- * Get input headers for a specific endpoint
- * @param endpoint - The endpoint type
+ * Get input headers for a specific function
+ * @param functionName - The function name type
  * @param useFactorId - Whether to return factorId-based headers (default: false)
  * @returns Array of input header names
  */
-export function getInputHeaders(endpoint: EndpointType, useFactorId: boolean = false): string[] {
-  const config = ENDPOINT_CONFIGS[endpoint];
+export function getInputHeaders(functionName: FunctionNameType, useFactorId: boolean = false): string[] {
+  const config = FUNCTION_NAME_CONFIGS[functionName];
   if (!config) {
-    throw new Error(`Invalid endpoint: ${endpoint}`);
+    throw new Error(`Invalid function name: ${functionName}`);
   }
 
   if (useFactorId && config.factorIdInputHeaders) {
@@ -233,26 +233,26 @@ export function getInputHeaders(endpoint: EndpointType, useFactorId: boolean = f
 }
 
 /**
- * Get output headers for a specific endpoint
- * @param endpoint - The endpoint type
+ * Get output headers for a specific function
+ * @param functionName - The function name type
  * @returns Array of output header names
  */
-export function getOutputHeaders(endpoint: EndpointType): string[] {
-  const config = ENDPOINT_CONFIGS[endpoint];
+export function getOutputHeaders(functionName: FunctionNameType): string[] {
+  const config = FUNCTION_NAME_CONFIGS[functionName];
   if (!config) {
-    throw new Error(`Invalid endpoint: ${endpoint}`);
+    throw new Error(`Invalid function name: ${functionName}`);
   }
 
   return [...config.outputHeaders];
 }
 
 /**
- * Validate if an endpoint is supported
- * @param endpoint - The endpoint to validate
+ * Validate if a function name is supported
+ * @param functionName - The function name to validate
  * @returns true if valid, false otherwise
  */
-export function isValidEndpoint(endpoint: string): endpoint is EndpointType {
-  return VALID_ENDPOINTS.includes(endpoint as EndpointType);
+export function isValidFunctionName(functionName: string): functionName is FunctionNameType {
+  return VALID_FUNCTION_NAMES.includes(functionName as FunctionNameType);
 }
 
 /**
@@ -268,15 +268,15 @@ export function formatValue(val: unknown): string | number {
 }
 
 /**
- * Build a single data row from a response object driven by the endpoint's output headers.
+ * Build a single data row from a response object driven by the function's output headers.
  * This is the single source of truth for field ordering — if you add/remove/reorder
- * a field in ENDPOINT_CONFIGS outputHeaders, the data row updates automatically.
+ * a field in FUNCTION_NAME_CONFIGS outputHeaders, the data row updates automatically.
  *
  * @param response - The raw API response object
- * @param endpoint - The endpoint type (used to look up output headers)
+ * @param functionName - The function name type (used to look up output headers)
  * @returns A flat array of cell values in the same order as the output headers
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatRow(response: any, endpoint: EndpointType): (string | number)[] {
-  return getOutputHeaders(endpoint).map((key) => formatValue(response[key]));
+export function formatRow(response: any, functionName: FunctionNameType): (string | number)[] {
+  return getOutputHeaders(functionName).map((key) => formatValue(response[key]));
 }
