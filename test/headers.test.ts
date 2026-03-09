@@ -223,7 +223,7 @@ describe("ENVIZI.HEADERS function", () => {
 
   describe("Error handling", () => {
     it("should throw error for invalid endpoint", async () => {
-      await expect(headers("invalid_endpoint")).rejects.toThrow(/Invalid endpoint/);
+      await expect(headers("invalid_endpoint")).rejects.toThrow(/Invalid function name/);
     });
 
     it("should throw error with list of valid endpoints", async () => {
@@ -231,7 +231,7 @@ describe("ENVIZI.HEADERS function", () => {
         await headers("bad_endpoint");
         fail("Should have thrown an error");
       } catch (e: any) {
-        expect(e.message).toContain("Invalid endpoint");
+        expect(e.message).toContain("Invalid function name");
         expect(e.message).toContain("location");
         expect(e.message).toContain("stationary");
         expect(e.message).toContain("calculation");
@@ -243,7 +243,7 @@ describe("ENVIZI.HEADERS function", () => {
         await headers("unknown");
         fail("Should have thrown an error");
       } catch (e: any) {
-        expect(e.message).toContain("Invalid endpoint");
+        expect(e.message).toContain("Invalid function name");
         expect(e.code).toBeDefined();
       }
     });
@@ -620,7 +620,7 @@ describe("ENVIZI.HEADERS function", () => {
 
   describe("Error handling", () => {
     it("should throw error for invalid endpoint", async () => {
-      await expect(headers("invalid_endpoint")).rejects.toThrow(/Invalid endpoint/);
+      await expect(headers("invalid_endpoint")).rejects.toThrow(/Invalid function name/);
     });
 
     it("should throw error with list of valid endpoints", async () => {
@@ -628,7 +628,7 @@ describe("ENVIZI.HEADERS function", () => {
         await headers("bad_endpoint");
         fail("Should have thrown an error");
       } catch (e: any) {
-        expect(e.message).toContain("Invalid endpoint");
+        expect(e.message).toContain("Invalid function name");
         expect(e.message).toContain("location");
         expect(e.message).toContain("stationary");
         expect(e.message).toContain("calculation");
@@ -640,7 +640,7 @@ describe("ENVIZI.HEADERS function", () => {
         await headers("unknown");
         fail("Should have thrown an error");
       } catch (e: any) {
-        expect(e.message).toContain("Invalid endpoint");
+        expect(e.message).toContain("Invalid function name");
         expect(e.code).toBeDefined();
       }
     });
@@ -868,7 +868,7 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
     });
 
     it("should throw error for invalid endpoint", async () => {
-      await expect(headers_by_factorid("invalid", true)).rejects.toThrow(/Invalid endpoint/);
+      await expect(headers_by_factorid("invalid", true)).rejects.toThrow(/Invalid function name/);
     });
   });
 

@@ -938,12 +938,12 @@
 <h3>Headers<a class="headerlink" href="#headers" title="Link to this heading">¶</a></h3>
 <p>Returns the input or output column headers for a specific endpoint. Useful for setting up spreadsheet templates.</p>
 <p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS([endpoint], [input])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS([functionName], [input])
 </pre></div>
 </div>
 <p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">endpoint</span></code> <em>(optional)</em> – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">functionName</span></code> <em>(optional)</em> – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> <em>(optional)</em> – TRUE for input headers, FALSE for output headers. Default: FALSE</p></li>
 </ul>
 <p><strong>Examples</strong></p>
@@ -961,12 +961,12 @@
 <h3>Headers by FactorId<a class="headerlink" href="#headers-by-factorid" title="Link to this heading">¶</a></h3>
 <p>Returns the input or output column headers for factorId-based calculations. Use this when working with factorId instead of type-based parameters.</p>
 <p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS_BY_FACTORID([endpoint], [input])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS_BY_FACTORID([functionName], [input])
 </pre></div>
 </div>
 <p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">endpoint</span></code> <em>(optional)</em> – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">functionName</span></code> <em>(optional)</em> – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> <em>(optional)</em> – TRUE for input headers, FALSE for output headers. Default: FALSE</p></li>
 </ul>
 <p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">factor_search</span></code> endpoint does not support factorId-based calls.</p>

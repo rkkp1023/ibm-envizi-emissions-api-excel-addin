@@ -12,12 +12,12 @@ import {
 } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
-import { EndpointType, formatRow } from "./headers-config";
+import { FunctionNameType, formatRow } from "./headers-config";
 import { convertExcelDateToISO, extractSymbolFromDisplay } from "./utils";
 
 
 type ApiType = Extract<
-  EndpointType,
+  FunctionNameType,
   | "location"
   | "stationary"
   | "fugitive"

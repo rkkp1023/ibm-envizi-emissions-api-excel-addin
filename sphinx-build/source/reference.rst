@@ -565,11 +565,11 @@ Returns the input or output column headers for a specific endpoint. Useful for s
 
 .. code-block:: none
 
-   =ENVIZI.HEADERS([endpoint], [input])
+   =ENVIZI.HEADERS([functionName], [input])
 
 **Parameters**
 
-- ``endpoint`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation
+- ``functionName`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation
 - ``input`` *(optional)* – TRUE for input headers, FALSE for output headers. Default: FALSE
 
 **Examples**
@@ -596,11 +596,11 @@ Returns the input or output column headers for factorId-based calculations. Use 
 
 .. code-block:: none
 
-   =ENVIZI.HEADERS_BY_FACTORID([endpoint], [input])
+   =ENVIZI.HEADERS_BY_FACTORID([functionName], [input])
 
 **Parameters**
 
-- ``endpoint`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation
+- ``functionName`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation
 - ``input`` *(optional)* – TRUE for input headers, FALSE for output headers. Default: FALSE
 
 **Note:** The ``factor_search`` endpoint does not support factorId-based calls.
