@@ -107,6 +107,11 @@ module.exports = async (env, options) => {
         template: "./src/commands/commands.html",
         chunks: ["polyfill", "commands"],
       }),
+      new HtmlWebpackPlugin({
+        filename: "commands/notification.html",
+        template: "./src/commands/notification.html",
+        chunks: [],
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {

@@ -27,7 +27,7 @@ export type AreaTypeOption = "country" | "stateprovince" | "powergrid";
 
 /**
  * Applies data validation to the selected range using a named range
- * Optimized for speed - assumes named range exists
+ * Includes zero-cost error checking for better UX
  */
 async function applyDataValidationFromNamedRange(
   rangeName: string,
@@ -36,8 +36,23 @@ async function applyDataValidationFromNamedRange(
   return new Promise((resolve, reject) => {
     Excel.run(async (context) => {
       try {
-        // Get the selected range
+        // Get the selected range and check if named range exists
+        // Both loaded in parallel - no extra sync cost
         const selectedRange = context.workbook.getSelectedRange();
+        const namedItem = context.workbook.names.getItemOrNullObject(rangeName);
+
+        // Single sync for both operations
+        await context.sync();
+
+        // Check if named range exists before applying validation
+        if (namedItem.isNullObject) {
+          reject(
+            new Error(
+              `Data not available. check if you are logged in and try again.`
+            )
+          );
+          return;
+        }
 
         // Clear any existing validation
         selectedRange.dataValidation.clear();
@@ -108,3 +123,4 @@ export async function insertUnitValidation(): Promise<void> {
 }
 
 // Made with Bob
+

@@ -16,22 +16,51 @@ import { ActivityTypeOption, AreaTypeOption } from "./data-validation-manager";
 
 /**
  * Shows a notification message to the user
+ * Only shows dialog for errors (stays open until user clicks OK)
+ * Success messages only go to console
  */
 function showNotification(message: string, type: "info" | "error" = "info"): void {
-  Office.context.ui.displayDialogAsync(
-    `data:text/html,<html><body style="font-family: Arial; padding: 20px; text-align: center;">
-      <h3 style="color: ${type === "error" ? "#d32f2f" : "#1976d2"};">${type === "error" ? "Error" : "Success"}</h3>
-      <p>${message}</p>
-    </body></html>`,
-    { height: 30, width: 30 },
-    (result) => {
-      if (result.status === Office.AsyncResultStatus.Succeeded) {
-        setTimeout(() => {
-          result.value.close();
-        }, 2000);
-      }
+  // Always log to console for debugging (F12 developer tools)
+  const prefix = type === "error" ? "❌ ERROR" : "✅ SUCCESS";
+  const logMessage = `[Add-in ${prefix}] ${message}`;
+  
+  if (type === "error") {
+    console.error(logMessage);
+  } else {
+    console.log(logMessage);
+  }
+  
+  // Only show dialog for errors
+  if (type === "error") {
+    try {
+      const encodedMessage = encodeURIComponent(message);
+      const notificationUrl = `${window.location.origin}/commands/notification.html?message=${encodedMessage}`;
+      
+      Office.context.ui.displayDialogAsync(
+        notificationUrl,
+        { height: 40, width: 40 },
+        (result) => {
+          if (result.status === Office.AsyncResultStatus.Succeeded) {
+            // Listen for close message from dialog
+            result.value.addEventHandler(Office.EventType.DialogMessageReceived, () => {
+              try {
+                result.value.close();
+              } catch (e) {
+                // Dialog already closed, ignore
+              }
+            });
+          } else {
+            // Dialog failed, but error is already in console
+            console.error("Failed to show error dialog:", result.error);
+          }
+        }
+      );
+    } catch (error) {
+      // Dialog API failed, error already in console
+      console.error("Error dialog error:", error);
     }
-  );
+  }
+  // Success messages only go to console (no popup)
 }
 
 /**
