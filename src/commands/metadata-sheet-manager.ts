@@ -215,11 +215,15 @@ function calculateColumnMapping(): ColumnMapping {
 
 /**
  * Writes metadata to the hidden sheet (no headers, data only)
+ * Optimized to minimize context.sync() calls for better performance
  */
 export async function writeMetadataToSheet(metadata: CompleteMetadata): Promise<void> {
   return new Promise((resolve, reject) => {
     Excel.run(async (context) => {
       try {
+        // Suspend screen updating for better performance
+        context.workbook.application.suspendScreenUpdatingUntilNextSync();
+        
         const sheet = await getOrCreateMetadataSheet(context);
         const columnMapping = calculateColumnMapping();
 
@@ -230,6 +234,7 @@ export async function writeMetadataToSheet(metadata: CompleteMetadata): Promise<
           usedRange.clear();
         }
 
+        // Batch all write operations before syncing
         // Write timestamp in column A, row 1
         const timestampCell = sheet.getRange("A1");
         timestampCell.values = [[metadata.timestamp]];
@@ -273,6 +278,7 @@ export async function writeMetadataToSheet(metadata: CompleteMetadata): Promise<
           dataRange.values = units.map((u) => [u]);
         }
 
+        // Single sync for all write operations - major performance improvement
         await context.sync();
 
         // Update metadata state
@@ -291,11 +297,15 @@ export async function writeMetadataToSheet(metadata: CompleteMetadata): Promise<
 /**
  * Creates named ranges for all metadata columns using entire column references
  * Only creates named range if column has data
+ * Optimized to batch operations and minimize sync calls
  */
 export async function createNamedRanges(): Promise<void> {
   return new Promise((resolve, reject) => {
     Excel.run(async (context) => {
       try {
+        // Suspend screen updating for better performance
+        context.workbook.application.suspendScreenUpdatingUntilNextSync();
+        
         const sheet = context.workbook.worksheets.getItem(METADATA_SHEET_NAME);
         const namedItems = context.workbook.names;
         const columnMapping = calculateColumnMapping();
@@ -312,59 +322,66 @@ export async function createNamedRanges(): Promise<void> {
           return letter;
         };
 
-        // Helper function to create or update a named range for entire column
-        const createOrUpdateNamedRange = async (
-          name: string,
-          columnIndex: number
-        ) => {
-          try {
-            // Check if column has any data by reading first cell
-            const firstCell = sheet.getRangeByIndexes(0, columnIndex, 1, 1);
-            firstCell.load("values");
-            await context.sync();
-
-            // Only create named range if column has data
-            // Use optional chaining for cleaner null checks
-            if (firstCell.values?.[0]?.[0] === "" || firstCell.values?.[0]?.[0] === null) {
-              return;
-            }
-
-            // Use entire column reference (e.g., "B:B", "C:C")
-            const columnLetter = getColumnLetter(columnIndex);
-            const columnRange = sheet.getRange(`${columnLetter}:${columnLetter}`);
-            
-            // Delete existing named range if it exists
-            const existingRange = namedItems.getItemOrNullObject(name);
-            await context.sync();
-            if (!existingRange.isNullObject) {
-              existingRange.delete();
-              await context.sync();
-            }
-
-            // Create new named range for entire column
-            namedItems.add(name, columnRange);
-          } catch (error) {
-            console.error(`Failed to create named range ${name}:`, error);
-            // Don't throw - continue with other ranges
-          }
-        };
-
-        // Create named ranges for activity types
+        // Collect all column indices to check
+        const columnsToCheck: Array<{ name: string; columnIndex: number }> = [];
+        
+        // Activity types
         for (const endpoint of ACTIVITY_TYPE_ENDPOINTS) {
           const col = columnMapping.activityTypes[endpoint];
-          // Use replaceAll for better clarity
           const rangeName = `ActivityType_${endpoint.replaceAll("-", "_")}`;
-          await createOrUpdateNamedRange(rangeName, col);
+          columnsToCheck.push({ name: rangeName, columnIndex: col });
+        }
+        
+        // Areas
+        columnsToCheck.push(
+          { name: "Area_Country", columnIndex: columnMapping.countries },
+          { name: "Area_StateProvince", columnIndex: columnMapping.stateProvinces },
+          { name: "Area_PowerGrid", columnIndex: columnMapping.powerGrids }
+        );
+        
+        // Units
+        columnsToCheck.push({ name: "Units_All", columnIndex: columnMapping.units });
+
+        // Load all first cells in one batch
+        const firstCells = columnsToCheck.map(({ columnIndex }) => {
+          const cell = sheet.getRangeByIndexes(0, columnIndex, 1, 1);
+          cell.load("values");
+          return cell;
+        });
+        
+        await context.sync();
+
+        // Load all existing named ranges in one batch
+        const existingRanges = columnsToCheck.map(({ name }) => {
+          const range = namedItems.getItemOrNullObject(name);
+          return range;
+        });
+        
+        await context.sync();
+
+        // Process each column and create named ranges
+        for (let i = 0; i < columnsToCheck.length; i++) {
+          const { name, columnIndex } = columnsToCheck[i];
+          const firstCell = firstCells[i];
+          const existingRange = existingRanges[i];
+
+          // Only create named range if column has data
+          if (firstCell.values?.[0]?.[0] === "" || firstCell.values?.[0]?.[0] === null) {
+            continue;
+          }
+
+          // Delete existing named range if it exists
+          if (!existingRange.isNullObject) {
+            existingRange.delete();
+          }
+
+          // Create new named range for entire column
+          const columnLetter = getColumnLetter(columnIndex);
+          const columnRange = sheet.getRange(`${columnLetter}:${columnLetter}`);
+          namedItems.add(name, columnRange);
         }
 
-        // Create named ranges for areas
-        await createOrUpdateNamedRange("Area_Country", columnMapping.countries);
-        await createOrUpdateNamedRange("Area_StateProvince", columnMapping.stateProvinces);
-        await createOrUpdateNamedRange("Area_PowerGrid", columnMapping.powerGrids);
-
-        // Create named range for units
-        await createOrUpdateNamedRange("Units_All", columnMapping.units);
-
+        // Single sync for all named range operations
         await context.sync();
         resolve();
       } catch (error) {
