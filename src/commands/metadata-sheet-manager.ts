@@ -82,7 +82,7 @@ async function setMetadataState(state: MetadataState): Promise<void> {
         await context.sync();
         resolve();
       } catch (error) {
-        reject(error);
+        reject(error instanceof Error ? error : new Error(String(error)));
       }
     });
   });
@@ -177,8 +177,7 @@ async function getOrCreateMetadataSheet(context: Excel.RequestContext): Promise<
 
   if (metadataSheet.isNullObject) {
     metadataSheet = sheets.add(METADATA_SHEET_NAME);
-    // TODO: Uncomment this line to hide the sheet in production
-    // metadataSheet.visibility = Excel.SheetVisibility.hidden;
+    metadataSheet.visibility = Excel.SheetVisibility.hidden;
     await context.sync();
   }
 
@@ -283,7 +282,7 @@ export async function writeMetadataToSheet(metadata: CompleteMetadata): Promise<
         });
         resolve();
       } catch (error) {
-        reject(error);
+        reject(error instanceof Error ? error : new Error(String(error)));
       }
     });
   });
@@ -369,7 +368,7 @@ export async function createNamedRanges(): Promise<void> {
         await context.sync();
         resolve();
       } catch (error) {
-        reject(error);
+        reject(error instanceof Error ? error : new Error(String(error)));
       }
     });
   });

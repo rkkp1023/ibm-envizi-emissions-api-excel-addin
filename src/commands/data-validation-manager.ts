@@ -67,7 +67,7 @@ async function applyDataValidationFromNamedRange(
         await context.sync();
         resolve();
       } catch (error) {
-        reject(error);
+        reject(error instanceof Error ? error : new Error(String(error)));
       }
     });
   });
