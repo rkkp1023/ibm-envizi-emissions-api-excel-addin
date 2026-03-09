@@ -94,7 +94,7 @@ export function getEnviziGraphQLUrl(envType?: EnvType): string {
 
 export function getEnableEnviziLogin(): boolean {
   if (window.enableEnviziLogin === undefined) {
-    window.enableEnviziLogin = window.localStorage.getItem("enableEnviziLogin") === "true";
+    window.enableEnviziLogin = window.localStorage.getItem("enableEnviziLogin") !== "false";
   }
   return window.enableEnviziLogin;
 }
