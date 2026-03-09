@@ -78,13 +78,22 @@ async function fetchActivityTypesForEndpoint(endpoint: ActivityTypeEndpoint): Pr
 }
 
 /**
- * Fetches all activity types for all endpoints
+ * Fetches all activity types for all endpoints in parallel
+ * Uses Promise.all for optimal performance
  */
 export async function fetchAllActivityTypes(): Promise<ActivityTypesMetadata> {
   const activityTypes: ActivityTypesMetadata = {};
   
-  for (const endpoint of ACTIVITY_TYPE_ENDPOINTS) {
-    activityTypes[endpoint] = await fetchActivityTypesForEndpoint(endpoint);
+  // Fetch all endpoints in parallel for better performance
+  const promises = ACTIVITY_TYPE_ENDPOINTS.map((endpoint) =>
+    fetchActivityTypesForEndpoint(endpoint).then((types) => ({ endpoint, types }))
+  );
+  
+  const results = await Promise.all(promises);
+  
+  // Map results back to the activityTypes object
+  for (const { endpoint, types } of results) {
+    activityTypes[endpoint] = types;
   }
   
   return activityTypes;
