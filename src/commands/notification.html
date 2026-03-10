@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error</title>
+    <!-- Note: SRI is intentionally not used for Office.js as per Microsoft's official guidance.
+         Office.js is a dynamic library updated by Microsoft, and SRI would break compatibility.
+         The library is loaded from Microsoft's trusted CDN and versioned via URL path. -->
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <style>
         body {

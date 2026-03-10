@@ -1,15 +1,15 @@
 // Copyright IBM Corp. 2025
 
 /**
- * Extracts symbol/code from display format "Name (Symbol)" or returns as-is
+ * Extracts symbol/code from display format "Symbol (Name)" or returns as-is
  * This function handles both display format and direct symbol input for backward compatibility
  *
- * @param displayValue The value to extract from (e.g., "kilogram (kg)" or "kg")
+ * @param displayValue The value to extract from (e.g., "kg(kilogram)" or "kg")
  * @returns The extracted symbol (e.g., "kg") or the original value if no parentheses found
  *
  * @example
- * extractSymbolFromDisplay("kilogram (kg)") // Returns: "kg"
- * extractSymbolFromDisplay("United States (USA)") // Returns: "USA"
+ * extractSymbolFromDisplay("kg(kilogram)") // Returns: "kg"
+ * extractSymbolFromDisplay("USA(United States)") // Returns: "USA"
  * extractSymbolFromDisplay("kg") // Returns: "kg" (backward compatible)
  * extractSymbolFromDisplay("USA") // Returns: "USA" (backward compatible)
  */
@@ -20,17 +20,17 @@ export function extractSymbolFromDisplay(displayValue: string | undefined): stri
   
   const trimmed = displayValue.trim();
   
-  // Extract symbol from "Name (Symbol)" format using string operations
+  // Extract symbol from "Symbol(Name)" format using string operations
   // This approach is safe from ReDoS attacks and more performant
-  const lastOpenParen = trimmed.lastIndexOf('(');
+  const firstOpenParen = trimmed.indexOf('(');
   const lastCloseParen = trimmed.lastIndexOf(')');
   
-  // Check if we have valid parentheses at the end: "something (symbol)"
-  if (lastOpenParen > 0 &&
+  // Check if we have valid parentheses: "symbol(name)"
+  if (firstOpenParen > 0 &&
       lastCloseParen === trimmed.length - 1 &&
-      lastOpenParen < lastCloseParen) {
-    // Extract and return the content between parentheses
-    return trimmed.substring(lastOpenParen + 1, lastCloseParen).trim();
+      firstOpenParen < lastCloseParen) {
+    // Extract and return the content BEFORE the opening parenthesis
+    return trimmed.substring(0, firstOpenParen).trim();
   }
   
   // No valid parentheses pattern found, return original (backward compatible)
