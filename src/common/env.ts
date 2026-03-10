@@ -23,6 +23,12 @@ export const apiUrls: Record<ApiId, Record<EnvType, string>> = {
   },
 };
 
+export const apiHomeUrls: Record<EnvType, string> = {
+  prod: "https://www.app.ibm.com/envizi/emissions-api-home",
+  np: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
+  local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
+};
+
 export const enviziUiOrigins: Record<EnvType, string> = {
   prod: "https://envizi.ibm.com",
   np: "https://pentest.envizi.ibm.com",
@@ -35,16 +41,16 @@ export const enviziApiOrigins: Record<EnvType, string> = {
   local: "https://us006t.envizi.com",
 };
 
-export const apiHomeUrls: Record<EnvType, string> = {
-  prod: `${getEnviziUiOrigin("prod")}/emissions`,
-  np: `${getEnviziUiOrigin("np")}/emissions`,
-  local: `${getEnviziUiOrigin("local")}/emissions-bridge`,
-};
-
 export const enviziGraphQLUrls: Record<string, string> = {
   "https://envizi.ibm.com": "https://envizi.ibm.com/graphqlapi-uxm",
   "https://pentest.envizi.ibm.com": "https://pentest.envizi.ibm.com/graphqlapi-uxm",
   "https://us006t.envizi.com": "https://us006t.envizi.com/graphqlapi-dev",
+};
+
+export const enviziApiHomeUrls: Record<EnvType, string> = {
+  prod: `${getEnviziUiOrigin("prod")}/emissions/plugins-overview`,
+  np: `${getEnviziUiOrigin("np")}/emissions/plugins-overview`,
+  local: `${getEnviziUiOrigin("local")}/emissions-bridge/plugins-overview`,
 };
 
 function detectEnvType(): EnvType {
@@ -75,8 +81,30 @@ export function getApiHomeUrl(): string {
   return apiHomeUrls[envType];
 }
 
+/**
+ * Determines if the current user is using token-based authentication (Envizi GA)
+ * @returns true if user has token credentials, false if using API key or no credentials
+ */
+function isTokenBasedAuth(): boolean {
+  // Check if user credentials (token-based) exist in memory
+  const userCredentials = window.userCredentials;
+  return !!userCredentials?.token;
+}
+
+/**
+ * Gets the overview dashboard URL
+ * - For Envizi GA (token-based): returns the plugins-overview page directly
+ * - For Preview/CUI (API key): returns emissions/api-overview page
+ */
 export function getOverviewDashboardUrl(): string {
-  return `${getApiHomeUrl()}/api-overview`;
+  const envType = getEnvType();
+
+  // For token-based auth, return plugins-overview directly
+  if (isTokenBasedAuth() || getEnableEnviziLogin()) {
+    return enviziApiHomeUrls[envType];
+  }
+
+  return `${apiHomeUrls[envType]}/api-overview`;
 }
 
 export function getEnviziUiOrigin(envType?: EnvType): string {
