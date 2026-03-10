@@ -31,12 +31,6 @@ function AppContent() {
       // User is authenticated, hide welcome and mark as seen
       localStorage.setItem(getStartedClicked, "true");
       setShowWelcome(false);
-    } else {
-      // User explicitly logged out - check if we should show welcome page
-      const hasSeenWelcome = localStorage.getItem(getStartedClicked) === "true";
-      if (!hasSeenWelcome) {
-        setShowWelcome(true);
-      }
     }
   }, [state.isAuthenticated]);
 
