@@ -126,9 +126,7 @@ describe("AccountPage - API Credentials Tests", () => {
 
     it("should render Logout button", () => {
       render(<AccountPage />);
-      expect(
-        screen.getByRole("button", { name: /Logout and switch accounts/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /^Logout$/i })).toBeInTheDocument();
     });
   });
 
@@ -218,13 +216,13 @@ describe("AccountPage - API Credentials Tests", () => {
   describe("Logout Button", () => {
     it("should have outline appearance", () => {
       render(<AccountPage />);
-      const button = screen.getByRole("button", { name: /Logout and switch accounts/i });
+      const button = screen.getByRole("button", { name: /^Logout$/i });
       expect(button).toHaveClass("fui-Button");
     });
 
     it("should call logout function when clicked", () => {
       render(<AccountPage />);
-      const button = screen.getByRole("button", { name: /Logout and switch accounts/i });
+      const button = screen.getByRole("button", { name: /^Logout$/i });
 
       fireEvent.click(button);
 
@@ -233,7 +231,7 @@ describe("AccountPage - API Credentials Tests", () => {
 
     it("should not call logout multiple times on single click", () => {
       render(<AccountPage />);
-      const button = screen.getByRole("button", { name: /Logout and switch accounts/i });
+      const button = screen.getByRole("button", { name: /^Logout$/i });
 
       fireEvent.click(button);
 
@@ -286,9 +284,7 @@ describe("AccountPage - API Credentials Tests", () => {
     it("should have descriptive button text", () => {
       render(<AccountPage />);
       expect(screen.getByRole("button", { name: /View dashboard/i })).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: /Logout and switch accounts/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /^Logout$/i })).toBeInTheDocument();
     });
   });
 
@@ -315,7 +311,7 @@ describe("AccountPage - API Credentials Tests", () => {
     it("should handle multiple button clicks correctly", () => {
       render(<AccountPage />);
       const viewDashboardButton = screen.getByRole("button", { name: /View dashboard/i });
-      const logoutButton = screen.getByRole("button", { name: /Logout and switch accounts/i });
+      const logoutButton = screen.getByRole("button", { name: /^Logout$/i });
 
       fireEvent.click(viewDashboardButton);
       fireEvent.click(logoutButton);
@@ -398,14 +394,12 @@ describe("AccountPage - User Credentials Tests", () => {
 
     it("should render Logout button", () => {
       render(<AccountPage />);
-      expect(
-        screen.getByRole("button", { name: /Logout and switch accounts/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /^Logout$/i })).toBeInTheDocument();
     });
 
     it("should call logout when Logout button is clicked", () => {
       render(<AccountPage />);
-      const logoutButton = screen.getByRole("button", { name: /Logout and switch accounts/i });
+      const logoutButton = screen.getByRole("button", { name: /^Logout$/i });
 
       fireEvent.click(logoutButton);
 
