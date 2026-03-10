@@ -46,6 +46,10 @@ jest.mock("../auth", () => ({
 }));
 
 describe("LoginPage", () => {
+  beforeAll(() => {
+    window.localStorage.setItem('enableEnviziLogin', 'false');
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockLoadApiCredentialsFromStorage.mockResolvedValue(null);

@@ -33,13 +33,23 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+class RefreshTokenError extends Error {
+  errors: Record<string, any>[]; // GraphQL errors
+
+  constructor(message: string, errors: Record<string, any>[]) {
+    super(message);
+    this.name = "RefreshTokenError";
+    this.errors = errors;
+  }
+}
+
 async function refreshToken(userCredentials: UserCredentials): Promise<UserCredentials> {
   const renewResponse = await enviziUiGraphQL.renewToken({
     token: userCredentials.token,
     refreshToken: userCredentials.refreshToken,
   });
   if (!renewResponse.data?.renewToken) {
-    throw new Error("Failed to refresh token.");
+    throw new RefreshTokenError("Failed to refresh token.", renewResponse.errors);
   }
   const newCoreToken = await coreEnviziAuth.exchangeToken(renewResponse.data.renewToken.token);
   return {
@@ -52,6 +62,13 @@ async function refreshToken(userCredentials: UserCredentials): Promise<UserCrede
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const enableEnviziLogin = getEnableEnviziLogin();
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
+  const msPerMinute = 60 * 1000;
+
+  const autoLogout = () => {
+    console.log("Automatically logging out");
+    performLogout();
+    dispatch({ type: "logout" });
+  };
 
   // Initialize on mount
   useEffect(() => {
@@ -82,35 +99,57 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     initialize();
   }, []);
 
+  // Automatically refresh token
   useEffect(() => {
     if (!state.credentials?.["token"]) {
       return;
     }
 
     const refreshTimeoutMinutes = 10;
-    console.log(`Setting a ${refreshTimeoutMinutes}‑minute token refresh timer`);
+    console.log(`Setting a ${refreshTimeoutMinutes}-minute token refresh timer`);
 
-    const timerId = setTimeout(
-      () => {
-        if (state.credentials?.["token"]) {
-          console.log("Refreshing token...");
-          refreshToken(state.credentials as UserCredentials).then(
-            (newCredentials) => {
-              console.log("Received new credentials:", newCredentials);
-              saveUserCredentialsToStorage(newCredentials);
-              dispatch({
-                type: "refreshCredentials",
-                payload: { credentials: newCredentials },
-              });
-            },
-            (error) => {
-              console.error("Failed to refresh token:", error);
-            }
-          );
+    let intervalId = setInterval(() => {
+      console.log("Refreshing token...");
+      refreshToken(state.credentials as UserCredentials).then(
+        (newCredentials) => {
+          console.log("Received new credentials:", newCredentials);
+          saveUserCredentialsToStorage(newCredentials);
+          dispatch({
+            type: "refreshCredentials",
+            payload: { credentials: newCredentials },
+          });
+        },
+        (error) => {
+          console.error("Failed to refresh token:", error);
+          // Automatically log out on authentication and refresh error
+          if (error.response?.status === 401 || error instanceof RefreshTokenError) {
+            clearInterval(intervalId);
+            intervalId = undefined;
+            autoLogout();
+          }
         }
-      },
-      refreshTimeoutMinutes * 60 * 1000
-    );
+      );
+    }, refreshTimeoutMinutes * msPerMinute);
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [state.credentials]);
+
+  // Automatically log out
+  useEffect(() => {
+    if (!state.credentials?.["refreshToken"]) {
+      return;
+    }
+
+    const decodedToken = jwtDecode(state.credentials["refreshToken"]);
+    const expiry = decodedToken.exp * 1000;
+    const delay = expiry - Date.now();
+    console.log(`Setting a ${(delay / msPerMinute).toFixed(2)}-minute logout timer`);
+
+    const timerId = setTimeout(autoLogout, delay);
 
     return () => {
       clearTimeout(timerId);
