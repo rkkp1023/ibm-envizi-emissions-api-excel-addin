@@ -17,15 +17,19 @@ import { useAuth, useTheme } from "./hooks";
 // Create a QueryClient instance
 const queryClient = new QueryClient({});
 
+const getStartedClicked = "getStartedClicked";
+
 function AppContent() {
   const { enableEnviziLogin, state, displayLogin } = useAuth();
   const [showWelcome, setShowWelcome] = useState(() => {
-    const hasSeenWelcome = localStorage.getItem("getStartedClicked") === "true";
+    const hasSeenWelcome = localStorage.getItem(getStartedClicked) === "true";
     return !hasSeenWelcome;
   });
 
   useEffect(() => {
     if (state.isAuthenticated) {
+      // User is authenticated, hide welcome and mark as seen
+      localStorage.setItem(getStartedClicked, "true");
       setShowWelcome(false);
     }
   }, [state.isAuthenticated]);
@@ -36,8 +40,6 @@ function AppContent() {
 
   if (showWelcome) {
     const handleGetStarted = () => {
-      localStorage.setItem("getStartedClicked", "true");
-      setShowWelcome(false);
       // Check if Envizi login is enabled
       if (enableEnviziLogin) {
         displayLogin();
