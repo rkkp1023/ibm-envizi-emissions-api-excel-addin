@@ -82,11 +82,10 @@ export function getApiHomeUrl(): string {
 }
 
 /**
- * Determines if the current user is using token-based authentication (Envizi GA)
+ * Determines if the current user is using token-based authentication
  * @returns true if user has token credentials, false if using API key or no credentials
  */
 function isTokenBasedAuth(): boolean {
-  // Check if user credentials (token-based) exist in memory
   const userCredentials = window.userCredentials;
   return !!userCredentials?.token;
 }
@@ -99,7 +98,6 @@ function isTokenBasedAuth(): boolean {
 export function getOverviewDashboardUrl(): string {
   const envType = getEnvType();
 
-  // For token-based auth, return plugins-overview directly
   if (isTokenBasedAuth() || getEnableEnviziLogin()) {
     return enviziApiHomeUrls[envType];
   }
