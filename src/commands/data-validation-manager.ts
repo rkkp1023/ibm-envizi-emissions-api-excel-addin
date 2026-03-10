@@ -31,7 +31,9 @@ export type AreaTypeOption = "country" | "stateprovince" | "powergrid";
  */
 async function applyDataValidationFromNamedRange(
   rangeName: string,
-  errorMessage: string
+  errorMessage: string,
+  promptMessage: string,
+  promptTitle: string
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     Excel.run(async (context) => {
@@ -73,9 +75,9 @@ async function applyDataValidationFromNamedRange(
         };
 
         selectedRange.dataValidation.prompt = {
-          message: `Select a value from the dropdown list`,
+          message: promptMessage,
           showPrompt: true,
-          title: "Data Validation",
+          title: promptTitle,
         };
 
         // Single sync call for maximum performance
@@ -98,8 +100,10 @@ export async function insertActivityTypeValidation(
   
   const typeLabel = activityType === "all" ? "any activity type" : activityType;
   const errorMessage = `Please select a valid ${typeLabel} from the dropdown list.`;
+  const promptMessage = "Select an activity type from the dropdown or start typing to search the list.";
+  const promptTitle = "Activity Type";
 
-  await applyDataValidationFromNamedRange(rangeName, errorMessage);
+  await applyDataValidationFromNamedRange(rangeName, errorMessage, promptMessage, promptTitle);
 }
 
 /**
@@ -108,8 +112,23 @@ export async function insertActivityTypeValidation(
 export async function insertAreaValidation(areaType: AreaTypeOption): Promise<void> {
   const rangeName = getAreaRangeName(areaType);
   const errorMessage = `Please select a valid ${areaType} from the dropdown list.`;
+  
+  let promptMessage: string;
+  let promptTitle: string;
+  
+  if (areaType === "country") {
+    promptMessage = "Select a country from the dropdown or start typing to search the list.";
+    promptTitle = "Country";
+  } else if (areaType === "stateprovince") {
+    promptMessage = "Select a state/province from the dropdown or start typing to search the list.";
+    promptTitle = "State/Province";
+  } else {
+    // areaType === "powergrid"
+    promptMessage = "Select a power grid from the dropdown or start typing to search the list.";
+    promptTitle = "Power Grid";
+  }
 
-  await applyDataValidationFromNamedRange(rangeName, errorMessage);
+  await applyDataValidationFromNamedRange(rangeName, errorMessage, promptMessage, promptTitle);
 }
 
 /**
@@ -118,8 +137,10 @@ export async function insertAreaValidation(areaType: AreaTypeOption): Promise<vo
 export async function insertUnitValidation(): Promise<void> {
   const rangeName = getUnitsRangeName();
   const errorMessage = "Please select a valid unit from the dropdown list.";
+  const promptMessage = "Select a unit of measurement from the dropdown or start typing to search the list.";
+  const promptTitle = "Unit";
 
-  await applyDataValidationFromNamedRange(rangeName, errorMessage);
+  await applyDataValidationFromNamedRange(rangeName, errorMessage, promptMessage, promptTitle);
 }
 
 // Made with Bob
