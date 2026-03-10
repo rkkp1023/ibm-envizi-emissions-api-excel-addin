@@ -6,6 +6,7 @@
 import { Button, Field, Input, Spinner } from "@fluentui/react-components";
 import React from "react";
 
+import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
 import { ApiCredentials } from "../../common/credentials";
 import { getOverviewDashboardUrl } from "../../common/env";
 import { useAccountSubscription, useAuth, useUserInfo } from "../hooks";
@@ -87,11 +88,21 @@ export const AccountPage: React.FC = () => {
     <div className="account-panel">
       {state.credentials["apiKey"] ? <ApiCredentialsForm /> : <AccountInformation />}
       <div className="account-buttons">
-        <Button appearance="primary" onClick={handleViewDashboard}>
+        <Button
+          appearance="primary"
+          icon={<Open16Regular />}
+          iconPosition="after"
+          onClick={handleViewDashboard}
+        >
           View dashboard
         </Button>
-        <Button appearance="outline" onClick={logout}>
-          Logout and switch accounts
+        <Button
+          appearance="outline"
+          icon={<ArrowExitRegular />}
+          iconPosition="after"
+          onClick={logout}
+        >
+          Logout
         </Button>
       </div>
     </div>

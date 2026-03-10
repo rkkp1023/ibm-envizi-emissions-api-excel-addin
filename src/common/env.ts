@@ -23,12 +23,6 @@ export const apiUrls: Record<ApiId, Record<EnvType, string>> = {
   },
 };
 
-export const apiHomeUrls: Record<EnvType, string> = {
-  prod: "https://www.app.ibm.com/envizi/emissions-api-home",
-  np: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
-  local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
-};
-
 export const enviziUiOrigins: Record<EnvType, string> = {
   prod: "https://envizi.ibm.com",
   np: "https://pentest.envizi.ibm.com",
@@ -39,6 +33,12 @@ export const enviziApiOrigins: Record<EnvType, string> = {
   prod: "https://envizi.ibm.com",
   np: "https://pentest.envizi.ibm.com",
   local: "https://us006t.envizi.com",
+};
+
+export const apiHomeUrls: Record<EnvType, string> = {
+  prod: `${getEnviziUiOrigin("prod")}/emissions`,
+  np: `${getEnviziUiOrigin("np")}/emissions`,
+  local: `${getEnviziUiOrigin("local")}/emissions-bridge`,
 };
 
 export const enviziGraphQLUrls: Record<string, string> = {
@@ -76,7 +76,7 @@ export function getApiHomeUrl(): string {
 }
 
 export function getOverviewDashboardUrl(): string {
-  return `${getApiHomeUrl()}/overview`;
+  return `${getApiHomeUrl()}/api-overview`;
 }
 
 export function getEnviziUiOrigin(envType?: EnvType): string {
