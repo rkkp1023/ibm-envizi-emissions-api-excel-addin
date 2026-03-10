@@ -252,9 +252,9 @@ describe("data-validation-manager", () => {
       await insertActivityTypeValidation("location");
 
       expect(mockSelectedRange.dataValidation.prompt).toEqual({
-        message: "Select a value from the dropdown list",
+        message: "Select an activity type from the dropdown or start typing to search the list.",
         showPrompt: true,
-        title: "Data Validation",
+        title: "Activity Type",
       });
     });
   });
