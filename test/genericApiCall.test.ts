@@ -25,7 +25,7 @@
 jest.mock("../src/functions/utils", () => ({
   convertExcelDateToISO: jest.fn().mockReturnValue("2025-08-23"),
   extractSymbolFromDisplay: jest.fn((value) => {
-    // Mock implementation: extract symbol from "Name (Symbol)" or return as-is
+    // Mock implementation: extract symbol from "Symbol(Name)" or return as-is
     if (!value) return value;
     const match = value.match(/\(([^)]+)\)$/);
     return match ? match[1] : value;

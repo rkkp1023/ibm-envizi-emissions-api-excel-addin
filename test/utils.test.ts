@@ -14,14 +14,14 @@ describe("convertExcelDateToISO", () => {
 
 describe("extractSymbolFromDisplay", () => {
   describe("unit extraction", () => {
-    it("should extract unit symbol from display format", () => {
-      expect(extractSymbolFromDisplay("kilogram (kg)")).toBe("kg");
-      expect(extractSymbolFromDisplay("gram (g)")).toBe("g");
-      expect(extractSymbolFromDisplay("metric ton (t)")).toBe("t");
-      expect(extractSymbolFromDisplay("pound (lb)")).toBe("lb");
-      expect(extractSymbolFromDisplay("thousand pounds (thousand lb)")).toBe("thousand lb");
-      expect(extractSymbolFromDisplay("million pounds (million lb)")).toBe("million lb");
-      expect(extractSymbolFromDisplay("short ton (st)")).toBe("st");
+    it("should extract unit symbol from display format (symbol before parentheses)", () => {
+      expect(extractSymbolFromDisplay("kg(kilogram)")).toBe("kg");
+      expect(extractSymbolFromDisplay("g(gram)")).toBe("g");
+      expect(extractSymbolFromDisplay("t(metric ton)")).toBe("t");
+      expect(extractSymbolFromDisplay("lb(pound)")).toBe("lb");
+      expect(extractSymbolFromDisplay("thousand lb(thousand pounds)")).toBe("thousand lb");
+      expect(extractSymbolFromDisplay("million lb(million pounds)")).toBe("million lb");
+      expect(extractSymbolFromDisplay("st(short ton)")).toBe("st");
     });
 
     it("should handle direct unit symbol input (backward compatible)", () => {
@@ -34,11 +34,11 @@ describe("extractSymbolFromDisplay", () => {
   });
 
   describe("country extraction", () => {
-    it("should extract country alpha3 from display format", () => {
-      expect(extractSymbolFromDisplay("United States (USA)")).toBe("USA");
-      expect(extractSymbolFromDisplay("Canada (CAN)")).toBe("CAN");
-      expect(extractSymbolFromDisplay("United Kingdom (GBR)")).toBe("GBR");
-      expect(extractSymbolFromDisplay("Australia (AUS)")).toBe("AUS");
+    it("should extract country alpha3 from display format (code before parentheses)", () => {
+      expect(extractSymbolFromDisplay("USA(United States)")).toBe("USA");
+      expect(extractSymbolFromDisplay("CAN(Canada)")).toBe("CAN");
+      expect(extractSymbolFromDisplay("GBR(United Kingdom)")).toBe("GBR");
+      expect(extractSymbolFromDisplay("AUS(Australia)")).toBe("AUS");
     });
 
     it("should handle direct alpha3 input (backward compatible)", () => {
@@ -59,12 +59,12 @@ describe("extractSymbolFromDisplay", () => {
     });
 
     it("should handle strings with whitespace", () => {
-      expect(extractSymbolFromDisplay("  kilogram (kg)  ")).toBe("kg");
+      expect(extractSymbolFromDisplay("  kg(kilogram)  ")).toBe("kg");
       expect(extractSymbolFromDisplay("  kg  ")).toBe("kg");
     });
 
-    it("should handle strings with multiple parentheses (extracts last one)", () => {
-      expect(extractSymbolFromDisplay("Some (text) with (kg)")).toBe("kg");
+    it("should handle strings with multiple parentheses (extracts first symbol)", () => {
+      expect(extractSymbolFromDisplay("Some(text) with (kg)")).toBe("Some");
     });
 
     it("should handle strings without parentheses", () => {
@@ -73,8 +73,8 @@ describe("extractSymbolFromDisplay", () => {
     });
 
     it("should trim extracted symbols", () => {
-      expect(extractSymbolFromDisplay("kilogram ( kg )")).toBe("kg");
-      expect(extractSymbolFromDisplay("United States ( USA )")).toBe("USA");
+      expect(extractSymbolFromDisplay("kg ( kilogram )")).toBe("kg");
+      expect(extractSymbolFromDisplay("USA ( United States )")).toBe("USA");
     });
   });
 });
