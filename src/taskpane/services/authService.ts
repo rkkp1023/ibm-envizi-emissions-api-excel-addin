@@ -135,4 +135,14 @@ export async function performLogout(): Promise<void> {
     // Log error but continue with logout
     console.error("Failed to remove credentials from storage:", error);
   }
+
+  // Clear all localStorage items related to authentication
+  try {
+    // Clear development tokens (used in local development)
+    localStorage.removeItem("tokenForLogin");
+    localStorage.removeItem("refreshTokenForLogin");
+  } catch (error) {
+    // Log error but continue with logout
+    console.error("Failed to clear localStorage items");
+  }
 }
