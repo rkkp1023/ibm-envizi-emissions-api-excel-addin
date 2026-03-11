@@ -121,12 +121,12 @@ describe("metadata-service", () => {
 
       const result = await fetchAreaMetadata();
 
-      expect(result.countries).toContain("USA(United States)");
-      expect(result.countries).toContain("CAN(Canada)");
-      expect(result.stateProvinces).toContain("California");
-      expect(result.stateProvinces).toContain("Ontario");
-      expect(result.powerGrids).toContain("WECC");
-      expect(result.powerGrids).toContain("NPCC");
+      expect(result.countries).toContain("USA (United States)");
+      expect(result.countries).toContain("CAN (Canada)");
+      expect(result.stateProvinces).toContain("USA - California");
+      expect(result.stateProvinces).toContain("CAN - Ontario");
+      expect(result.powerGrids).toContain("USA - WECC");
+      expect(result.powerGrids).toContain("CAN - NPCC");
     });
 
     it("should remove duplicates and sort results", async () => {
@@ -143,7 +143,7 @@ describe("metadata-service", () => {
 
       const result = await fetchAreaMetadata();
 
-      expect(result.stateProvinces).toEqual(["California", "Texas"]);
+      expect(result.stateProvinces).toEqual(["USA - California", "USA - Texas"]);
       expect(result.stateProvinces.length).toBe(2);
     });
 
@@ -190,9 +190,9 @@ describe("metadata-service", () => {
 
       const result = await fetchUnitMetadata();
 
-      expect(result.units).toContain("kg(kilogram)");
-      expect(result.units).toContain("t(metric ton)");
-      expect(result.units).toContain("lb(pound)");
+      expect(result.units).toContain("kg (kilogram)");
+      expect(result.units).toContain("t (metric ton)");
+      expect(result.units).toContain("lb (pound)");
       expect(result.units.length).toBe(3);
     });
 
@@ -207,7 +207,7 @@ describe("metadata-service", () => {
 
       const result = await fetchUnitMetadata();
 
-      expect(result.units).toEqual(["kg(kilogram)", "t(metric ton)"]);
+      expect(result.units).toEqual(["kg (kilogram)", "t (metric ton)"]);
       expect(result.units.length).toBe(2);
     });
 
@@ -247,7 +247,7 @@ describe("metadata-service", () => {
 
       const result = await fetchUnitMetadata();
 
-      expect(result.units).toEqual(["kg(kilogram)", "lb(pound)"]);
+      expect(result.units).toEqual(["kg (kilogram)", "lb (pound)"]);
       expect(result.units.length).toBe(2);
     });
   });

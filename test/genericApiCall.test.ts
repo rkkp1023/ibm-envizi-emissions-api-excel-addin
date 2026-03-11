@@ -30,6 +30,7 @@ jest.mock("../src/functions/utils", () => ({
     const match = value.match(/\(([^)]+)\)$/);
     return match ? match[1] : value;
   }),
+  extractValueAfterDash: jest.fn((value) => value), // pass-through by default
 }));
 
 jest.mock("../src/functions/client", () => ({
@@ -111,19 +112,8 @@ type ApiCase = {
   expectedResult?: (string | number)[];
 };
 
-// Standard result: totalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, bioCO2, indirectCO2e, unit, description, transactionId
+// All APIs use STANDARD_OUTPUT_HEADERS: totalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, bioCO2, indirectCO2e, unit, description, transactionId
 const standardExpectedResult = [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
-
-// Note: All endpoints now return the same gas headers in the same order
-const extendedExpectedResult = standardExpectedResult;
-
-// Standard with energy: totalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, bioCO2, indirectCO2e, unit, description, transactionId
-const standardWithEnergy = (energyVal: string | number) =>
-  [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
-
-// Extended with energy: totalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, bioCO2, indirectCO2e, unit, description, transactionId
-const extendedWithEnergy = (energyVal: string | number) =>
-  [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
 
 const apiCases: ApiCase[] = [
   { name: "Location", apiType: "location", emissionMock: Location.calculate as jest.Mock, expectedResult: standardExpectedResult },
@@ -133,13 +123,13 @@ const apiCases: ApiCase[] = [
     emissionMock: Stationary.calculate as jest.Mock,
     expectedResult: standardExpectedResult,
   },
-  { name: "Fugitive", apiType: "fugitive", emissionMock: Fugitive.calculate as jest.Mock, expectedResult: extendedExpectedResult },
+  { name: "Fugitive", apiType: "fugitive", emissionMock: Fugitive.calculate as jest.Mock, expectedResult: standardExpectedResult },
   { name: "Mobile", apiType: "mobile", emissionMock: Mobile.calculate as jest.Mock, expectedResult: standardExpectedResult },
   {
     name: "Generic Calculation",
     apiType: "calculation",
     emissionMock: Calculation.calculate as jest.Mock,
-    expectedResult: extendedWithEnergy(""),  // calculation returns energy(MWh) but mock has no value → ""
+    expectedResult: standardExpectedResult,
   },
   {
     name: "Transportation & Distribution",
@@ -157,7 +147,7 @@ const apiCases: ApiCase[] = [
     name: "Real Estate",
     apiType: "real_estate",
     emissionMock: RealEstate.calculate as jest.Mock,
-    expectedResult: standardWithEnergy(42),
+    expectedResult: standardExpectedResult,
   },
 ];
 
