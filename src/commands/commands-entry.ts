@@ -33,20 +33,26 @@ function showNotification(message: string, type: "info" | "error" = "info"): voi
   // Only show dialog for errors
   if (type === "error") {
     try {
-      const encodedMessage = encodeURIComponent(message);
+      // Ensure message is a string and not undefined/null
+      const safeMessage = message || "An error occurred";
+      const encodedMessage = encodeURIComponent(safeMessage);
       const notificationUrl = `${window.location.origin}/commands/notification.html?message=${encodedMessage}`;
+      
+      console.log("Opening notification dialog with URL:", notificationUrl);
       
       Office.context.ui.displayDialogAsync(
         notificationUrl,
         { height: 40, width: 40 },
         (result) => {
           if (result.status === Office.AsyncResultStatus.Succeeded) {
+            console.log("Notification dialog opened successfully");
             // Listen for close message from dialog
             result.value.addEventHandler(Office.EventType.DialogMessageReceived, () => {
               try {
                 result.value.close();
               } catch (e) {
                 // Dialog already closed, ignore
+                console.log("Dialog already closed");
               }
             });
           } else {
@@ -88,7 +94,9 @@ async function actionInsertActivityType(
     showNotification(`Activity type validation (${activityType}) applied successfully!`);
     event.completed();
   } catch (error) {
-    showNotification(`Error: ${error.message || "Failed to apply validation"}`, "error");
+    // Handle both standard Error and CustomFunctions.Error
+    const errorMessage = error?.message || error?.toString() || "Failed to apply validation";
+    showNotification(`Error: ${errorMessage}`, "error");
     event.completed();
   }
 }
@@ -105,7 +113,9 @@ async function actionInsertArea(
     showNotification(`Area validation (${areaType}) applied successfully!`);
     event.completed();
   } catch (error) {
-    showNotification(`Error: ${error.message || "Failed to apply validation"}`, "error");
+    // Handle both standard Error and CustomFunctions.Error
+    const errorMessage = error?.message || error?.toString() || "Failed to apply validation";
+    showNotification(`Error: ${errorMessage}`, "error");
     event.completed();
   }
 }
@@ -119,7 +129,9 @@ async function actionInsertUnits(event: Office.AddinCommands.Event): Promise<voi
     showNotification("Unit validation applied successfully!");
     event.completed();
   } catch (error) {
-    showNotification(`Error: ${error.message || "Failed to apply validation"}`, "error");
+    // Handle both standard Error and CustomFunctions.Error
+    const errorMessage = error?.message || error?.toString() || "Failed to apply validation";
+    showNotification(`Error: ${errorMessage}`, "error");
     event.completed();
   }
 }

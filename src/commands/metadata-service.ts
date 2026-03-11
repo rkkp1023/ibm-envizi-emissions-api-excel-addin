@@ -124,19 +124,34 @@ export async function fetchAreaMetadata(): Promise<AreaMetadata> {
       
       const { alpha3, countryName, stateProvinces: stateProvList, powerGrids: powerGridList } = location;
       
-      // Add country in format: "alpha3code(countryName)"
+      // Add country in format: "alpha3code (countryName)" with single space
+      // Trim all values to remove any leading/trailing spaces
       if (alpha3 && countryName) {
-        countries.push(`${alpha3}(${countryName})`);
+        const trimmedAlpha3 = alpha3.trim();
+        const trimmedCountryName = countryName.trim();
+        countries.push(`${trimmedAlpha3} (${trimmedCountryName})`);
       }
       
-      // Add state/provinces if present
-      if (stateProvList && Array.isArray(stateProvList)) {
-        stateProvinces.push(...stateProvList);
+      // Add state/provinces with country code prefix: "countryCode - stateprovince"
+      if (alpha3 && stateProvList && Array.isArray(stateProvList)) {
+        const trimmedAlpha3 = alpha3.trim();
+        for (const stateProv of stateProvList) {
+          if (stateProv) {
+            const trimmedStateProv = stateProv.trim();
+            stateProvinces.push(`${trimmedAlpha3} - ${trimmedStateProv}`);
+          }
+        }
       }
       
-      // Add power grids if present
-      if (powerGridList && Array.isArray(powerGridList)) {
-        powerGrids.push(...powerGridList);
+      // Add power grids with country code prefix: "countryCode - powergrid"
+      if (alpha3 && powerGridList && Array.isArray(powerGridList)) {
+        const trimmedAlpha3 = alpha3.trim();
+        for (const powerGrid of powerGridList) {
+          if (powerGrid) {
+            const trimmedPowerGrid = powerGrid.trim();
+            powerGrids.push(`${trimmedAlpha3} - ${trimmedPowerGrid}`);
+          }
+        }
       }
     }
     
@@ -178,9 +193,12 @@ export async function fetchUnitMetadata(): Promise<UnitMetadata> {
       
       const { unit, unitName } = unitEntry;
       
-      // Add unit in format: "unitSymbol(unitName)"
+      // Add unit in format: "unitSymbol (unitName)" with single space
+      // Trim all values to remove any leading/trailing spaces
       if (unit && unitName) {
-        units.push(`${unit}(${unitName})`);
+        const trimmedUnit = unit.trim();
+        const trimmedUnitName = unitName.trim();
+        units.push(`${trimmedUnit} (${trimmedUnitName})`);
       }
     }
     
