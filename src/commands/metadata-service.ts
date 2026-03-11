@@ -100,6 +100,46 @@ export async function fetchAllActivityTypes(): Promise<ActivityTypesMetadata> {
 }
 
 /**
+ * Helper function to format country string
+ */
+function formatCountry(alpha3: string, countryName: string): string {
+  const trimmedAlpha3 = alpha3.trim();
+  const trimmedCountryName = countryName.trim();
+  return `${trimmedAlpha3} (${trimmedCountryName})`;
+}
+
+/**
+ * Helper function to process state/province list
+ */
+function processStateProvinces(alpha3: string, stateProvList: string[]): string[] {
+  if (!Array.isArray(stateProvList)) return [];
+  
+  const trimmedAlpha3 = alpha3.trim();
+  return stateProvList
+    .filter(stateProv => stateProv)
+    .map(stateProv => `${trimmedAlpha3} - ${stateProv.trim()}`);
+}
+
+/**
+ * Helper function to process power grid list
+ */
+function processPowerGrids(alpha3: string, powerGridList: string[]): string[] {
+  if (!Array.isArray(powerGridList)) return [];
+  
+  const trimmedAlpha3 = alpha3.trim();
+  return powerGridList
+    .filter(powerGrid => powerGrid)
+    .map(powerGrid => `${trimmedAlpha3} - ${powerGrid.trim()}`);
+}
+
+/**
+ * Helper function to deduplicate and sort array
+ */
+function deduplicateAndSort(items: string[]): string[] {
+  return Array.from(new Set(items)).sort((a, b) => a.localeCompare(b));
+}
+
+/**
  * Fetches area metadata (countries, states, powergrids)
  */
 export async function fetchAreaMetadata(): Promise<AreaMetadata> {
@@ -109,7 +149,6 @@ export async function fetchAreaMetadata(): Promise<AreaMetadata> {
     const response = await Metadata.getArea();
     
     // Response structure: { locations: Location[] }
-    // Use optional chaining for cleaner null checks
     if (!response?.locations || !Array.isArray(response.locations)) {
       return { countries: [], stateProvinces: [], powerGrids: [] };
     }
@@ -124,46 +163,27 @@ export async function fetchAreaMetadata(): Promise<AreaMetadata> {
       
       const { alpha3, countryName, stateProvinces: stateProvList, powerGrids: powerGridList } = location;
       
-      // Add country in format: "alpha3code (countryName)" with single space
-      // Trim all values to remove any leading/trailing spaces
+      // Add country in format: "alpha3code (countryName)"
       if (alpha3 && countryName) {
-        const trimmedAlpha3 = alpha3.trim();
-        const trimmedCountryName = countryName.trim();
-        countries.push(`${trimmedAlpha3} (${trimmedCountryName})`);
+        countries.push(formatCountry(alpha3, countryName));
       }
       
-      // Add state/provinces with country code prefix: "countryCode - stateprovince"
-      if (alpha3 && stateProvList && Array.isArray(stateProvList)) {
-        const trimmedAlpha3 = alpha3.trim();
-        for (const stateProv of stateProvList) {
-          if (stateProv) {
-            const trimmedStateProv = stateProv.trim();
-            stateProvinces.push(`${trimmedAlpha3} - ${trimmedStateProv}`);
-          }
-        }
+      // Add state/provinces with country code prefix
+      if (alpha3 && stateProvList) {
+        stateProvinces.push(...processStateProvinces(alpha3, stateProvList));
       }
       
-      // Add power grids with country code prefix: "countryCode - powergrid"
-      if (alpha3 && powerGridList && Array.isArray(powerGridList)) {
-        const trimmedAlpha3 = alpha3.trim();
-        for (const powerGrid of powerGridList) {
-          if (powerGrid) {
-            const trimmedPowerGrid = powerGrid.trim();
-            powerGrids.push(`${trimmedAlpha3} - ${trimmedPowerGrid}`);
-          }
-        }
+      // Add power grids with country code prefix
+      if (alpha3 && powerGridList) {
+        powerGrids.push(...processPowerGrids(alpha3, powerGridList));
       }
     }
     
-    // Remove duplicates and sort using Array.from instead of spread
-    // Use localeCompare for reliable alphabetical sorting
-    const result = {
-      countries: Array.from(new Set(countries)).sort((a, b) => a.localeCompare(b)),
-      stateProvinces: Array.from(new Set(stateProvinces)).sort((a, b) => a.localeCompare(b)),
-      powerGrids: Array.from(new Set(powerGrids)).sort((a, b) => a.localeCompare(b)),
+    return {
+      countries: deduplicateAndSort(countries),
+      stateProvinces: deduplicateAndSort(stateProvinces),
+      powerGrids: deduplicateAndSort(powerGrids),
     };
-    
-    return result;
   } catch (error) {
     console.error("Failed to fetch area metadata:", error);
     return { countries: [], stateProvinces: [], powerGrids: [] };
