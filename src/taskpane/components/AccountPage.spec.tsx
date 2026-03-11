@@ -84,6 +84,9 @@ jest.mock("../../common/env", () => ({
   getOverviewDashboardUrl: jest.fn(
     () => "https://www-dev.app.ibm.com/envizi/emissions-api-home/overview"
   ),
+  getEnviziPluginsOverviewUrl: jest.fn(
+    () => "https://pentest.envizi.ibm.com/emissions/plugins-overview"
+  ),
 }));
 
 // Mock window.open
@@ -169,7 +172,7 @@ describe("AccountPage - API Credentials Tests", () => {
       expect(button).toHaveClass("fui-Button");
     });
 
-    it("should open dashboard URL in new window when clicked", () => {
+    it("should open API key dashboard URL in new window when clicked", () => {
       render(<AccountPage />);
       const button = screen.getByRole("button", { name: /View dashboard/i });
 
@@ -182,7 +185,7 @@ describe("AccountPage - API Credentials Tests", () => {
       );
     });
 
-    it("should open correct URL for production environment", () => {
+    it("should open correct API key URL for production environment", () => {
       const { getEnvType, getOverviewDashboardUrl } = require("../../common/env");
       getEnvType.mockReturnValue("prod");
       getOverviewDashboardUrl.mockReturnValue(
@@ -404,6 +407,38 @@ describe("AccountPage - User Credentials Tests", () => {
       fireEvent.click(logoutButton);
 
       expect(mockLogout).toHaveBeenCalledTimes(1);
+    });
+
+    it("should open Envizi plugins overview URL for token-based auth", () => {
+      render(<AccountPage />);
+      const button = screen.getByRole("button", { name: /View dashboard/i });
+
+      fireEvent.click(button);
+
+      expect(mockWindowOpen).toHaveBeenCalledWith(
+        "https://pentest.envizi.ibm.com/emissions/plugins-overview",
+        "_blank",
+        "noopener"
+      );
+    });
+
+    it("should open correct Envizi URL for production environment with token auth", () => {
+      const { getEnvType, getEnviziPluginsOverviewUrl } = require("../../common/env");
+      getEnvType.mockReturnValue("prod");
+      getEnviziPluginsOverviewUrl.mockReturnValue(
+        "https://envizi.ibm.com/emissions/plugins-overview"
+      );
+
+      render(<AccountPage />);
+      const button = screen.getByRole("button", { name: /View dashboard/i });
+
+      fireEvent.click(button);
+
+      expect(mockWindowOpen).toHaveBeenCalledWith(
+        "https://envizi.ibm.com/emissions/plugins-overview",
+        "_blank",
+        "noopener"
+      );
     });
   });
 
