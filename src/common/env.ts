@@ -48,9 +48,9 @@ export const enviziGraphQLUrls: Record<string, string> = {
 };
 
 export const enviziApiHomeUrls: Record<EnvType, string> = {
-  prod: `${getEnviziUiOrigin("prod")}/emissions/plugins-overview`,
-  np: `${getEnviziUiOrigin("np")}/emissions/plugins-overview`,
-  local: `${getEnviziUiOrigin("local")}/emissions-bridge/plugins-overview`,
+  prod: `${getEnviziUiOrigin("prod")}/emissions`,
+  np: `${getEnviziUiOrigin("np")}/emissions`,
+  local: `${getEnviziUiOrigin("local")}/emissions-bridge`,
 };
 
 function detectEnvType(): EnvType {
@@ -81,28 +81,24 @@ export function getApiHomeUrl(): string {
   return apiHomeUrls[envType];
 }
 
-/**
- * Determines if the current user is using token-based authentication
- * @returns true if user has token credentials, false if using API key or no credentials
- */
-function isTokenBasedAuth(): boolean {
-  const userCredentials = window.userCredentials;
-  return !!userCredentials?.token;
+export function getEnviziApiHomeUrl(): string {
+  const envType = getEnvType();
+  return enviziApiHomeUrls[envType];
 }
 
 /**
- * Gets the overview dashboard URL
- * - For Envizi GA (token-based): returns the plugins-overview page directly
- * - For Preview/CUI (API key): returns emissions/api-overview page
+ * Gets the CUI overview dashboard URL for API key authentication
+ * @deprecated This function will be removed once Preview is over
  */
 export function getOverviewDashboardUrl(): string {
-  const envType = getEnvType();
+  return `${getApiHomeUrl()}/overview`;
+}
 
-  if (isTokenBasedAuth() || getEnableEnviziLogin()) {
-    return enviziApiHomeUrls[envType];
-  }
-
-  return `${apiHomeUrls[envType]}/api-overview`;
+/**
+ * Gets the Envizi plugins overview URL for token-based authentication (GA)
+ */
+export function getEnviziPluginsOverviewUrl(): string {
+  return `${getEnviziApiHomeUrl()}/plugins-overview`;
 }
 
 export function getEnviziUiOrigin(envType?: EnvType): string {

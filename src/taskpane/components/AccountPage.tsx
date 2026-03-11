@@ -8,7 +8,7 @@ import React from "react";
 
 import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
 import { ApiCredentials } from "../../common/credentials";
-import { getOverviewDashboardUrl } from "../../common/env";
+import { getEnviziPluginsOverviewUrl, getOverviewDashboardUrl } from "../../common/env";
 import { useAccountSubscription, useAuth, useUserInfo } from "../hooks";
 import { subscriptionTypeKeyMap } from "../types/product-subscriptions.types";
 
@@ -78,7 +78,11 @@ function ApiCredentialsForm() {
 
 export const AccountPage: React.FC = () => {
   const { state, logout } = useAuth();
-  const overviewDashboardUrl = getOverviewDashboardUrl();
+
+  const isTokenAuth = state.credentials && "token" in state.credentials;
+  const overviewDashboardUrl = isTokenAuth
+    ? getEnviziPluginsOverviewUrl()
+    : getOverviewDashboardUrl();
 
   const handleViewDashboard = () => {
     window.open(overviewDashboardUrl, "_blank", "noopener");
