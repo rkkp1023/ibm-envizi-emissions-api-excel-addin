@@ -4,7 +4,7 @@
  */
 
 import { Button, Checkbox, Field, Input, Link, Text } from "@fluentui/react-components";
-import { ArrowEnterFilled, Open16Regular } from "@fluentui/react-icons";
+import { ArrowEnterRegular, Open16Regular } from "@fluentui/react-icons";
 import { useState } from "react";
 
 import { getOverviewDashboardUrl } from "../../common/env";
@@ -31,7 +31,7 @@ function EnviziLogin() {
         <div className="envizi-login-actions">
           <Button
             appearance="primary"
-            icon={<ArrowEnterFilled />}
+            icon={<ArrowEnterRegular />}
             iconPosition="after"
             onClick={displayLogin}
             size="medium"

@@ -47,6 +47,12 @@ export const enviziGraphQLUrls: Record<string, string> = {
   "https://us006t.envizi.com": "https://us006t.envizi.com/graphqlapi-dev",
 };
 
+export const enviziApiHomeUrls: Record<EnvType, string> = {
+  prod: `${getEnviziUiOrigin("prod")}/emissions`,
+  np: `${getEnviziUiOrigin("np")}/emissions`,
+  local: `${getEnviziUiOrigin("local")}/emissions-bridge`,
+};
+
 function detectEnvType(): EnvType {
   const origin = window.location.origin;
   if (origin === "https://plugins.app.ibm.com") {
@@ -75,8 +81,24 @@ export function getApiHomeUrl(): string {
   return apiHomeUrls[envType];
 }
 
+export function getEnviziApiHomeUrl(): string {
+  const envType = getEnvType();
+  return enviziApiHomeUrls[envType];
+}
+
+/**
+ * Gets the CUI overview dashboard URL for API key authentication
+ * @deprecated This function will be removed once Preview is over
+ */
 export function getOverviewDashboardUrl(): string {
   return `${getApiHomeUrl()}/overview`;
+}
+
+/**
+ * Gets the Envizi plugins overview URL for token-based authentication (GA)
+ */
+export function getEnviziPluginsOverviewUrl(): string {
+  return `${getEnviziApiHomeUrl()}/plugins-overview`;
 }
 
 export function getEnviziUiOrigin(envType?: EnvType): string {
