@@ -102,11 +102,13 @@ export function getEnviziPluginsOverviewUrl(): string {
 }
 
 export function getEnviziUiOrigin(envType?: EnvType): string {
-  return enviziUiOrigins[envType || getEnvType()];
+  const override = window.localStorage.getItem("enviziUiOrigin");
+  return override || enviziUiOrigins[envType || getEnvType()];
 }
 
 export function getEnviziApiOrigin(envType?: EnvType): string {
-  return enviziApiOrigins[envType || getEnvType()];
+  const override = window.localStorage.getItem("enviziApiOrigin");
+  return override || enviziApiOrigins[envType || getEnvType()];
 }
 
 export function getEnviziGraphQLUrl(envType?: EnvType): string {
