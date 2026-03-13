@@ -37,31 +37,13 @@ const COMMON_GAS_HEADERS = [
   "CO2",
   "CH4",
   "N2O",
-  "bioCO2",
-  "indirectCO2e",
-] as const;
-/**
- * Additional fluorinated gases for fugitive and calculation functions
- */
-const FLUORINATED_GASES = [
   "HFC",
   "PFC",
   "SF6",
   "NF3",
+  "bioCO2",
+  "indirectCO2e",
 ] as const;
-
-/**
- * Fugitive gas headers (common gases + fluorinated gases)
- */
-const FUGITIVE_GAS_HEADERS = [
-  ...COMMON_GAS_HEADERS,
-  ...FLUORINATED_GASES,
-] as const;
-
-/**
- * Energy consumption field
- */
-const ENERGY_HEADER = "energy(MWh)";
 
 /**
  * Trailing metadata fields that appear at the end of output headers
@@ -73,28 +55,7 @@ const OUTPUT_TAIL_HEADERS = ["unit", "description", "transactionId"] as const;
  */
 const STANDARD_OUTPUT_HEADERS = [...COMMON_GAS_HEADERS, ...OUTPUT_TAIL_HEADERS] as const;
 
-/**
- * Fugitive output headers
- */
-const FUGITIVE_OUTPUT_HEADERS = [...FUGITIVE_GAS_HEADERS, ...OUTPUT_TAIL_HEADERS] as const;
 
-/**
- * Real estate output headers (standard + energy)
- */
-const REAL_ESTATE_OUTPUT_HEADERS = [
-  ...COMMON_GAS_HEADERS,
-  ENERGY_HEADER,
-  ...OUTPUT_TAIL_HEADERS,
-] as const;
-
-/**
- * Calculation output headers (fugitive gases + energy)
- */
-const CALCULATION_OUTPUT_HEADERS = [
-  ...FUGITIVE_GAS_HEADERS,
-  ENERGY_HEADER,
-  ...OUTPUT_TAIL_HEADERS,
-] as const;
 
 /**
  * Input headers for factor-based calculations (using factorId instead of type)
@@ -169,7 +130,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
   },
   fugitive: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: FUGITIVE_OUTPUT_HEADERS,
+    outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   mobile: {
@@ -184,7 +145,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
   },
   calculation: {
     inputHeaders: [...BASE_INPUT_HEADERS, "powerGrid"],
-    outputHeaders: CALCULATION_OUTPUT_HEADERS,
+    outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   economic_activity: {
@@ -194,7 +155,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
   },
   real_estate: {
     inputHeaders: BASE_INPUT_HEADERS,
-    outputHeaders: REAL_ESTATE_OUTPUT_HEADERS,
+    outputHeaders:STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   factor: {
