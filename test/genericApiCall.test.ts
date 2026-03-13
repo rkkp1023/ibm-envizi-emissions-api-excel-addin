@@ -111,19 +111,19 @@ type ApiCase = {
   expectedResult?: (string | number)[];
 };
 
-// Standard result (without fluorinated gases): totalCO2e, CO2, CH4, N2O, bioCO2, indirectCO2e, unit, description, transactionId
-const standardExpectedResult = [100, 50, 10, 5, 0, 2, "kgCO2e", "Mock description", "txn-123"];
+// Standard result: totalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, bioCO2, indirectCO2e, unit, description, transactionId
+const standardExpectedResult = [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
 
-// Extended result (with fluorinated gases): totalCO2e, CO2, CH4, N2O, bioCO2, indirectCO2e, HFC, PFC, SF6, NF3, unit, description, transactionId
-const extendedExpectedResult = [100, 50, 10, 5, 0, 2, 0, 0, 0, 0, "kgCO2e", "Mock description", "txn-123"];
+// Note: All endpoints now return the same gas headers in the same order
+const extendedExpectedResult = standardExpectedResult;
 
-// Standard with energy: totalCO2e, CO2, CH4, N2O, bioCO2, indirectCO2e, energy(MWh), unit, description, transactionId
+// Standard with energy: totalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, bioCO2, indirectCO2e, unit, description, transactionId
 const standardWithEnergy = (energyVal: string | number) =>
-  [100, 50, 10, 5, 0, 2, energyVal, "kgCO2e", "Mock description", "txn-123"];
+  [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
 
-// Extended with energy: totalCO2e, CO2, CH4, N2O, bioCO2, indirectCO2e, HFC, PFC, SF6, NF3, energy(MWh), unit, description, transactionId
+// Extended with energy: totalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, bioCO2, indirectCO2e, unit, description, transactionId
 const extendedWithEnergy = (energyVal: string | number) =>
-  [100, 50, 10, 5, 0, 2, 0, 0, 0, 0, energyVal, "kgCO2e", "Mock description", "txn-123"];
+  [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
 
 const apiCases: ApiCase[] = [
   { name: "Location", apiType: "location", emissionMock: Location.calculate as jest.Mock, expectedResult: standardExpectedResult },
