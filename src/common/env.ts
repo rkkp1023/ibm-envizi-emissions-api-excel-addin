@@ -29,6 +29,30 @@ export const apiHomeUrls: Record<EnvType, string> = {
   local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
 };
 
+export const enviziUiOrigins: Record<EnvType, string> = {
+  prod: "https://envizi.ibm.com",
+  np: "https://pentest.envizi.ibm.com",
+  local: "https://local.us006t.envizi.com",
+};
+
+export const enviziApiOrigins: Record<EnvType, string> = {
+  prod: "https://envizi.ibm.com",
+  np: "https://pentest.envizi.ibm.com",
+  local: "https://us006t.envizi.com",
+};
+
+export const enviziGraphQLUrls: Record<string, string> = {
+  "https://envizi.ibm.com": "https://envizi.ibm.com/graphqlapi-uxm",
+  "https://pentest.envizi.ibm.com": "https://pentest.envizi.ibm.com/graphqlapi-uxm",
+  "https://us006t.envizi.com": "https://us006t.envizi.com/graphqlapi-dev",
+};
+
+export const enviziApiHomeUrls: Record<EnvType, string> = {
+  prod: `${getEnviziUiOrigin("prod")}/emissions`,
+  np: `${getEnviziUiOrigin("np")}/emissions`,
+  local: `${getEnviziUiOrigin("local")}/emissions-bridge`,
+};
+
 function detectEnvType(): EnvType {
   const origin = window.location.origin;
   if (origin === "https://plugins.app.ibm.com") {
@@ -57,13 +81,44 @@ export function getApiHomeUrl(): string {
   return apiHomeUrls[envType];
 }
 
+export function getEnviziApiHomeUrl(): string {
+  const envType = getEnvType();
+  return enviziApiHomeUrls[envType];
+}
+
+/**
+ * Gets the CUI overview dashboard URL for API key authentication
+ * @deprecated This function will be removed once Preview is over
+ */
 export function getOverviewDashboardUrl(): string {
   return `${getApiHomeUrl()}/overview`;
 }
 
+/**
+ * Gets the Envizi plugins overview URL for token-based authentication (GA)
+ */
+export function getEnviziPluginsOverviewUrl(): string {
+  return `${getEnviziApiHomeUrl()}/plugins-overview`;
+}
+
+export function getEnviziUiOrigin(envType?: EnvType): string {
+  const override = window.localStorage.getItem("enviziUiOrigin");
+  return override || enviziUiOrigins[envType || getEnvType()];
+}
+
+export function getEnviziApiOrigin(envType?: EnvType): string {
+  const override = window.localStorage.getItem("enviziApiOrigin");
+  return override || enviziApiOrigins[envType || getEnvType()];
+}
+
+export function getEnviziGraphQLUrl(envType?: EnvType): string {
+  const apiOrigin = getEnviziApiOrigin(envType);
+  return enviziGraphQLUrls[apiOrigin];
+}
+
 export function getEnableEnviziLogin(): boolean {
   if (window.enableEnviziLogin === undefined) {
-    window.enableEnviziLogin = window.localStorage.getItem("enableEnviziLogin") === "true";
+    window.enableEnviziLogin = window.localStorage.getItem("enableEnviziLogin") !== "false";
   }
   return window.enableEnviziLogin;
 }

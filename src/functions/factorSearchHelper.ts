@@ -3,6 +3,7 @@
 import { Factor } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
+import { formatRow } from "./headers-config";
 import { convertExcelDateToISO } from "./utils";
 
 function buildFactorSearchParams(
@@ -37,31 +38,8 @@ function buildFactorSearchParams(
 
 
 
-function formatFactorSearchResponse(response: any): (string | number | null)[][] {
-  return response.factors.map((factor: any) => {
-    // Handle activityUnit as array (join with ", " to maintain single column)
-    const activityUnit = Array.isArray(factor.activityUnit)
-      ? factor.activityUnit.join(", ")
-      : (factor.activityUnit ?? "");
-    
-    // Handle scope as array (join with ", " to maintain single column)
-    const scope = Array.isArray(factor.scope)
-      ? factor.scope.join(", ")
-      : (factor.scope ?? "");
-    
-    return [
-      factor.factorSet ?? "",
-      factor.source ?? "",
-      factor.methodology ?? "",
-      scope,
-      factor.activityType ?? "",
-      activityUnit,
-      factor.region ?? "",
-      factor.factorId ?? "",
-      factor.publishedFrom ?? "",
-      factor.publishedTo ?? ""
-    ];
-  });
+function formatFactorSearchResponse(response: any): (string | number)[][] {
+  return response.factors.map((factor: any) => formatRow(factor, "factor_search"));
 }
 
 export async function factorSearch(

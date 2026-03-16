@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@fluentui/react-components": "^9.72.9",
+    "@tanstack/react-query": "^5.62.14",
     "axios": "^1.13.5",
     "buffer": "^6.0.3",
     "core-js": "^3.36.0",
@@ -88,7 +89,7 @@
     "ie 11"
   ],
   "resolutions": {
-    "ajv":">=8.18.0",
+    "ajv": ">=8.18.0",
     "minimatch": "^10.2.3",
     "test-exclude": "^7.0.1",
     "serialize-javascript" : "^7.0.3",

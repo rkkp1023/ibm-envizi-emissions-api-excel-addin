@@ -1,0 +1,964 @@
+// Copyright IBM Corp. 2025
+
+(global as any).CustomFunctions = {
+  Error: class extends Error {
+    code: string;
+    constructor(code: string, message: string) {
+      super(message);
+      this.code = code;
+      this.name = "CustomFunctions.Error";
+    }
+  },
+  ErrorCode: {
+    notAvailable: "NotAvailable",
+    invalidValue: "InvalidValue",
+  },
+};
+
+import { headers } from "../src/functions/functions";
+
+describe("ENVIZI.HEADERS function", () => {
+  beforeAll(() => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  describe("Output headers (default)", () => {
+    it("should return output headers for calculation endpoint (default)", async () => {
+      const result = await headers();
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should return output headers for location endpoint", async () => {
+      const result = await headers("location", false);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should return output headers for stationary endpoint", async () => {
+      const result = await headers("stationary");
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should return output headers for factor endpoint", async () => {
+      const result = await headers("factor");
+      expect(result).toEqual([
+        [
+          "factorSet",
+          "source",
+          "methodology",
+          "scope",
+          "activityType",
+          "activityUnit",
+          "name",
+          "description",
+          "publishedFrom",
+          "publishedTo",
+          "region",
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "factorId",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should return output headers for factor_search endpoint", async () => {
+      const result = await headers("factor_search");
+      expect(result).toEqual([
+        [
+          "factorSet",
+          "source",
+          "methodology",
+          "scope",
+          "activityType",
+          "activityUnit",
+          "region",
+          "factorId",
+          "publishedFrom",
+          "publishedTo",
+        ],
+      ]);
+    });
+  });
+
+  describe("Input headers", () => {
+    it("should return input headers for calculation endpoint", async () => {
+      const result = await headers("calculation", true);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it("should return input headers for location endpoint (includes powerGrid)", async () => {
+      const result = await headers("location", true);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it("should return input headers for stationary endpoint (no powerGrid)", async () => {
+      const result = await headers("stationary", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for fugitive endpoint", async () => {
+      const result = await headers("fugitive", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for mobile endpoint", async () => {
+      const result = await headers("mobile", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for transportation_and_distribution endpoint", async () => {
+      const result = await headers("transportation_and_distribution", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for economic_activity endpoint", async () => {
+      const result = await headers("economic_activity", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for real_estate endpoint", async () => {
+      const result = await headers("real_estate", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for factor endpoint", async () => {
+      const result = await headers("factor", true);
+      expect(result).toEqual([["type", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for factor_search endpoint", async () => {
+      const result = await headers("factor_search", true);
+      expect(result).toEqual([["search", "country", "stateProvince", "date", "page", "size"]]);
+    });
+  });
+
+  describe("Case insensitivity and whitespace handling", () => {
+    it("should handle uppercase endpoint names", async () => {
+      const result = await headers("LOCATION", true);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it("should handle mixed case endpoint names", async () => {
+      const result = await headers("StAtIoNaRy", false);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should handle endpoint names with whitespace", async () => {
+      const result = await headers("  fugitive  ", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+  });
+
+  describe("Error handling", () => {
+    it("should throw error for invalid endpoint", async () => {
+      await expect(headers("invalid_endpoint")).rejects.toThrow(/Invalid function name/);
+    });
+
+    it("should throw error with list of valid endpoints", async () => {
+      try {
+        await headers("bad_endpoint");
+        fail("Should have thrown an error");
+      } catch (e: any) {
+        expect(e.message).toContain("Invalid function name");
+        expect(e.message).toContain("location");
+        expect(e.message).toContain("stationary");
+        expect(e.message).toContain("calculation");
+      }
+    });
+
+    it("should throw error for invalid endpoint with proper message", async () => {
+      try {
+        await headers("unknown");
+        fail("Should have thrown an error");
+      } catch (e: any) {
+        expect(e.message).toContain("Invalid function name");
+        expect(e.code).toBeDefined();
+      }
+    });
+  });
+
+  describe("Boolean parameter case insensitivity", () => {
+    it('should handle string "true" (lowercase)', async () => {
+      const result = await headers("location", "true" as any);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it('should handle string "TRUE" (uppercase)', async () => {
+      const result = await headers("stationary", "TRUE" as any);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it('should handle string "false" (lowercase)', async () => {
+      const result = await headers("mobile", "false" as any);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it('should handle string "FALSE" (uppercase)', async () => {
+      const result = await headers("fugitive", "FALSE" as any);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it('should handle string "TrUe" (mixed case)', async () => {
+      const result = await headers("calculation", "TrUe" as any);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it('should handle string with whitespace " true "', async () => {
+      const result = await headers("economic_activity", " true " as any);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it('should treat non-"true" strings as false', async () => {
+      const result = await headers("real_estate", "yes" as any);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+  });
+
+  describe("Default parameter behavior", () => {
+    it("should default to calculation endpoint when no endpoint provided", async () => {
+      const result = await headers();
+      const calculationResult = await headers("calculation");
+      expect(result).toEqual(calculationResult);
+    });
+
+    it("should default to output headers when input parameter not provided", async () => {
+      const result = await headers("location");
+      const outputResult = await headers("location", false);
+      expect(result).toEqual(outputResult);
+    });
+
+    it("should default to output headers when input is undefined", async () => {
+      const result = await headers("mobile", undefined);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+  });
+
+  describe("All endpoints coverage", () => {
+    const allEndpoints = [
+      "location",
+      "stationary",
+      "fugitive",
+      "mobile",
+      "transportation_and_distribution",
+      "calculation",
+      "economic_activity",
+      "real_estate",
+      "factor",
+      "factor_search",
+    ];
+
+    it.each(allEndpoints)("should return valid input headers for %s", async (endpoint) => {
+      const result = await headers(endpoint, true);
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(1);
+      expect(Array.isArray(result[0])).toBe(true);
+      expect(result[0].length).toBeGreaterThan(0);
+    });
+
+    it.each(allEndpoints)("should return valid output headers for %s", async (endpoint) => {
+      const result = await headers(endpoint, false);
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(1);
+      expect(Array.isArray(result[0])).toBe(true);
+      expect(result[0].length).toBeGreaterThan(0);
+    });
+  });
+});
+// Copyright IBM Corp. 2025
+
+(global as any).CustomFunctions = {
+  Error: class extends Error {
+    code: string;
+    constructor(code: string, message: string) {
+      super(message);
+      this.code = code;
+      this.name = "CustomFunctions.Error";
+    }
+  },
+  ErrorCode: {
+    notAvailable: "NotAvailable",
+    invalidValue: "InvalidValue",
+  },
+};
+
+import { headers_by_factorid } from "../src/functions/functions";
+
+describe("ENVIZI.HEADERS function", () => {
+  beforeAll(() => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  describe("Output headers (default)", () => {
+    it("should return output headers for calculation endpoint (default)", async () => {
+      const result = await headers();
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should return output headers for location endpoint", async () => {
+      const result = await headers("location", false);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should return output headers for stationary endpoint", async () => {
+      const result = await headers("stationary");
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should return output headers for factor endpoint", async () => {
+      const result = await headers("factor");
+      expect(result).toEqual([
+        [
+          "factorSet",
+          "source",
+          "methodology",
+          "scope",
+          "activityType",
+          "activityUnit",
+          "name",
+          "description",
+          "publishedFrom",
+          "publishedTo",
+          "region",
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "factorId",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should return output headers for factor_search endpoint", async () => {
+      const result = await headers("factor_search");
+      expect(result).toEqual([
+        [
+          "factorSet",
+          "source",
+          "methodology",
+          "scope",
+          "activityType",
+          "activityUnit",
+          "region",
+          "factorId",
+          "publishedFrom",
+          "publishedTo",
+        ],
+      ]);
+    });
+  });
+
+  describe("Input headers", () => {
+    it("should return input headers for calculation endpoint", async () => {
+      const result = await headers("calculation", true);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it("should return input headers for location endpoint (includes powerGrid)", async () => {
+      const result = await headers("location", true);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it("should return input headers for stationary endpoint (no powerGrid)", async () => {
+      const result = await headers("stationary", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for fugitive endpoint", async () => {
+      const result = await headers("fugitive", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for mobile endpoint", async () => {
+      const result = await headers("mobile", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for transportation_and_distribution endpoint", async () => {
+      const result = await headers("transportation_and_distribution", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for economic_activity endpoint", async () => {
+      const result = await headers("economic_activity", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for real_estate endpoint", async () => {
+      const result = await headers("real_estate", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for factor endpoint", async () => {
+      const result = await headers("factor", true);
+      expect(result).toEqual([["type", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it("should return input headers for factor_search endpoint", async () => {
+      const result = await headers("factor_search", true);
+      expect(result).toEqual([["search", "country", "stateProvince", "date", "page", "size"]]);
+    });
+  });
+
+  describe("Case insensitivity and whitespace handling", () => {
+    it("should handle uppercase endpoint names", async () => {
+      const result = await headers("LOCATION", true);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it("should handle mixed case endpoint names", async () => {
+      const result = await headers("StAtIoNaRy", false);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should handle endpoint names with whitespace", async () => {
+      const result = await headers("  fugitive  ", true);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+  });
+
+  describe("Error handling", () => {
+    it("should throw error for invalid endpoint", async () => {
+      await expect(headers("invalid_endpoint")).rejects.toThrow(/Invalid function name/);
+    });
+
+    it("should throw error with list of valid endpoints", async () => {
+      try {
+        await headers("bad_endpoint");
+        fail("Should have thrown an error");
+      } catch (e: any) {
+        expect(e.message).toContain("Invalid function name");
+        expect(e.message).toContain("location");
+        expect(e.message).toContain("stationary");
+        expect(e.message).toContain("calculation");
+      }
+    });
+
+    it("should throw error for invalid endpoint with proper message", async () => {
+      try {
+        await headers("unknown");
+        fail("Should have thrown an error");
+      } catch (e: any) {
+        expect(e.message).toContain("Invalid function name");
+        expect(e.code).toBeDefined();
+      }
+    });
+  });
+
+  describe("Boolean parameter case insensitivity", () => {
+    it('should handle string "true" (lowercase)', async () => {
+      const result = await headers("location", "true" as any);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it('should handle string "TRUE" (uppercase)', async () => {
+      const result = await headers("stationary", "TRUE" as any);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it('should handle string "false" (lowercase)', async () => {
+      const result = await headers("mobile", "false" as any);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it('should handle string "FALSE" (uppercase)', async () => {
+      const result = await headers("fugitive", "FALSE" as any);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it('should handle string "TrUe" (mixed case)', async () => {
+      const result = await headers("calculation", "TrUe" as any);
+      expect(result).toEqual([
+        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+      ]);
+    });
+
+    it('should handle string with whitespace " true "', async () => {
+      const result = await headers("economic_activity", " true " as any);
+      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+    });
+
+    it('should treat non-"true" strings as false', async () => {
+      const result = await headers("real_estate", "yes" as any);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+  });
+
+  describe("Default parameter behavior", () => {
+    it("should default to calculation endpoint when no endpoint provided", async () => {
+      const result = await headers();
+      const calculationResult = await headers("calculation");
+      expect(result).toEqual(calculationResult);
+    });
+
+    it("should default to output headers when input parameter not provided", async () => {
+      const result = await headers("location");
+      const outputResult = await headers("location", false);
+      expect(result).toEqual(outputResult);
+    });
+
+    it("should default to output headers when input is undefined", async () => {
+      const result = await headers("mobile", undefined);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+  });
+
+  describe("All endpoints coverage", () => {
+    const allEndpoints = [
+      "location",
+      "stationary",
+      "fugitive",
+      "mobile",
+      "transportation_and_distribution",
+      "calculation",
+      "economic_activity",
+      "real_estate",
+      "factor",
+      "factor_search",
+    ];
+
+    it.each(allEndpoints)("should return valid input headers for %s", async (endpoint) => {
+      const result = await headers(endpoint, true);
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(1);
+      expect(Array.isArray(result[0])).toBe(true);
+      expect(result[0].length).toBeGreaterThan(0);
+    });
+
+    it.each(allEndpoints)("should return valid output headers for %s", async (endpoint) => {
+      const result = await headers(endpoint, false);
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(1);
+      expect(Array.isArray(result[0])).toBe(true);
+      expect(result[0].length).toBeGreaterThan(0);
+    });
+  });
+});
+
+describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
+  beforeAll(() => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  describe("FactorId input headers", () => {
+    it("should return factorId input headers for location endpoint", async () => {
+      const result = await headers_by_factorid("location", true);
+      expect(result).toEqual([["factorId", "value", "unit"]]);
+    });
+
+    it("should return factorId input headers for stationary endpoint", async () => {
+      const result = await headers_by_factorid("stationary", true);
+      expect(result).toEqual([["factorId", "value", "unit"]]);
+    });
+
+    it("should return factorId input headers for calculation endpoint", async () => {
+      const result = await headers_by_factorid("calculation", true);
+      expect(result).toEqual([["factorId", "value", "unit"]]);
+    });
+
+    it("should return factorId input headers for factor endpoint", async () => {
+      const result = await headers_by_factorid("factor", true);
+      expect(result).toEqual([["factorId", "unit"]]);
+    });
+  });
+
+  describe("Output headers (same as regular headers)", () => {
+    it("should return output headers for location endpoint", async () => {
+      const result = await headers_by_factorid("location", false);
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+
+    it("should default to output headers when input not specified", async () => {
+      const result = await headers_by_factorid("mobile");
+      expect(result).toEqual([
+        [
+          "totalCO2e",
+          "CO2",
+          "CH4",
+          "N2O",
+          "HFC",
+          "PFC",
+          "SF6",
+          "NF3",
+          "bioCO2",
+          "indirectCO2e",
+          "unit",
+          "description",
+          "transactionId",
+        ],
+      ]);
+    });
+  });
+
+  describe("Error handling", () => {
+    it("should throw error for factor_search endpoint", async () => {
+      await expect(headers_by_factorid("factor_search", true)).rejects.toThrow(
+        /does not support factorId-based calls/
+      );
+    });
+
+    it("should throw error for invalid endpoint", async () => {
+      await expect(headers_by_factorid("invalid", true)).rejects.toThrow(/Invalid function name/);
+    });
+  });
+
+  describe("Case insensitivity", () => {
+    it("should handle uppercase endpoint names", async () => {
+      const result = await headers_by_factorid("LOCATION", true);
+      expect(result).toEqual([["factorId", "value", "unit"]]);
+    });
+
+    it('should handle string "TRUE" for input parameter', async () => {
+      const result = await headers_by_factorid("stationary", "TRUE" as any);
+      expect(result).toEqual([["factorId", "value", "unit"]]);
+    });
+  });
+
+  describe("All supported endpoints", () => {
+    const supportedEndpoints = [
+      "location",
+      "stationary",
+      "fugitive",
+      "mobile",
+      "transportation_and_distribution",
+      "calculation",
+      "economic_activity",
+      "real_estate",
+      "factor",
+    ];
+
+    it.each(supportedEndpoints)(
+      "should return factorId input headers for %s",
+      async (endpoint) => {
+        const result = await headers_by_factorid(endpoint, true);
+        expect(result).toBeDefined();
+        expect(Array.isArray(result)).toBe(true);
+        expect(result.length).toBe(1);
+        expect(Array.isArray(result[0])).toBe(true);
+        expect(result[0]).toContain("factorId");
+      }
+    );
+  });
+});

@@ -12,10 +12,12 @@ import {
 } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
+import { FunctionNameType, formatRow } from "./headers-config";
 import { convertExcelDateToISO, extractSymbolFromDisplay } from "./utils";
 
 
-type ApiType =
+type ApiType = Extract<
+  FunctionNameType,
   | "location"
   | "stationary"
   | "fugitive"
@@ -23,7 +25,8 @@ type ApiType =
   | "transportation_and_distribution"
   | "calculation"
   | "economic_activity"
-  | "real_estate";
+  | "real_estate"
+>;
 
 interface BasePayload {
   value: number;
@@ -107,23 +110,8 @@ function buildApiParams(apiType: ApiType, payload: Payload): any {
   return apiParams;
 }
 
-function formatResponse(response: any): (string | number | null)[][] {
-  
-  return [[
-    response.totalCO2e ?? 0,
-    response.CO2 ?? 0,
-    response.CH4 ?? 0,
-    response.N2O ?? 0,
-    response.HFC ?? 0,
-    response.PFC ?? 0,
-    response.SF6 ?? 0,
-    response.NF3 ?? 0,
-    response.bioCO2 ?? 0,
-    response.indirectCO2e ?? 0,
-    response.unit ?? "",
-    response.description ?? "",
-    response.transactionId ?? "",
-  ]];
+function formatResponse(response: any, apiType: ApiType): (string | number)[][] {
+  return [formatRow(response, apiType)];
 }
 
 export async function genericApiCall(apiType: ApiType, payload: Payload): Promise<any[][]> {
@@ -145,7 +133,7 @@ export async function genericApiCall(apiType: ApiType, payload: Payload): Promis
       throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, "Invalid API response");
     }
 
-    return formatResponse(response);
+    return formatResponse(response, apiType);
   } catch (e: any) {
     if (e instanceof CustomFunctions.Error) throw e;
 

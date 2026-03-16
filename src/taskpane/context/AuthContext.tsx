@@ -3,9 +3,19 @@
  * Licensed Materials - Property of IBM
  */
 
+import { jwtDecode } from "jwt-decode";
 import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
 
-import { ApiCredentials, Credentials, loadCredentialsFromStorage } from "../../common/credentials";
+import { coreEnviziAuth } from "../../api/coreEnviziAuth";
+import { enviziUiGraphQL } from "../../api/enviziUiGraphQL";
+import {
+  ApiCredentials,
+  Credentials,
+  loadCredentialsFromStorage,
+  removeCredentialsFromStorage,
+  saveUserCredentialsToStorage,
+  UserCredentials,
+} from "../../common/credentials";
 import { getEnableEnviziLogin } from "../../common/env";
 import { ensureClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
@@ -23,9 +33,42 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+class RefreshTokenError extends Error {
+  errors: Record<string, any>[]; // GraphQL errors
+
+  constructor(message: string, errors: Record<string, any>[]) {
+    super(message);
+    this.name = "RefreshTokenError";
+    this.errors = errors;
+  }
+}
+
+async function refreshToken(userCredentials: UserCredentials): Promise<UserCredentials> {
+  const renewResponse = await enviziUiGraphQL.renewToken({
+    token: userCredentials.token,
+    refreshToken: userCredentials.refreshToken,
+  });
+  if (!renewResponse.data?.renewToken) {
+    throw new RefreshTokenError("Failed to refresh token.", renewResponse.errors);
+  }
+  const newCoreToken = await coreEnviziAuth.exchangeToken(renewResponse.data.renewToken.token);
+  return {
+    token: renewResponse.data.renewToken.token,
+    refreshToken: renewResponse.data.renewToken.refreshToken,
+    coreToken: newCoreToken,
+  };
+}
+
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const enableEnviziLogin = getEnableEnviziLogin();
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
+  const msPerMinute = 60 * 1000;
+
+  const autoLogout = () => {
+    console.log("Automatically logging out");
+    performLogout();
+    dispatch({ type: "logout" });
+  };
 
   // Initialize on mount
   useEffect(() => {
@@ -34,6 +77,18 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       try {
         credentials = await loadCredentialsFromStorage();
       } catch (error) {}
+      console.log("Credentials loaded from storage:", credentials);
+
+      // Check token expiry
+      if (credentials?.["token"]) {
+        const decodedToken = jwtDecode(credentials["token"]);
+        if (Date.now() >= decodedToken.exp * 1000) {
+          // Token expired, discard it
+          console.log("Token has expired; removing from storage.");
+          credentials = null;
+          removeCredentialsFromStorage();
+        }
+      }
 
       dispatch({
         type: "initialize",
@@ -44,9 +99,69 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     initialize();
   }, []);
 
+  // Automatically refresh token
+  useEffect(() => {
+    if (!state.credentials?.["token"]) {
+      return;
+    }
+
+    const refreshTimeoutMinutes = 10;
+    console.log(`Setting a ${refreshTimeoutMinutes}-minute token refresh timer`);
+
+    let intervalId = setInterval(() => {
+      console.log("Refreshing token...");
+      refreshToken(state.credentials as UserCredentials).then(
+        (newCredentials) => {
+          console.log("Received new credentials:", newCredentials);
+          saveUserCredentialsToStorage(newCredentials);
+          dispatch({
+            type: "refreshCredentials",
+            payload: { credentials: newCredentials },
+          });
+        },
+        (error) => {
+          console.error("Failed to refresh token:", error);
+          // Automatically log out on authentication and refresh error
+          if (error.response?.status === 401 || error instanceof RefreshTokenError) {
+            clearInterval(intervalId);
+            intervalId = undefined;
+            autoLogout();
+          }
+        }
+      );
+    }, refreshTimeoutMinutes * msPerMinute);
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [state.credentials]);
+
+  // Automatically log out
+  useEffect(() => {
+    if (!state.credentials?.["refreshToken"]) {
+      return;
+    }
+
+    const decodedToken = jwtDecode(state.credentials["refreshToken"]);
+    const expiry = decodedToken.exp * 1000;
+    const delay = expiry - Date.now();
+    console.log(`Setting a ${(delay / msPerMinute).toFixed(2)}-minute logout timer`);
+
+    const timerId = setTimeout(autoLogout, delay);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [state.credentials]);
+
   const displayLogin = useCallback(() => {
     displayLoginDialog(
-      (credentials) => {
+      async (credentials) => {
+        // Token-based login: Save user credentials to storage for persistence
+        // Note: API key login uses saveApiCredentialsToStorage via performLogin() instead
+        saveUserCredentialsToStorage(credentials);
         ensureClient(credentials);
         dispatch({
           type: "loginSuccess",
@@ -81,7 +196,9 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     try {
       // Perform logout and reset client
       await performLogout();
-    } catch (error) {}
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
 
     dispatch({ type: "logout" });
   }, []);

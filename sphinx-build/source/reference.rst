@@ -553,4 +553,67 @@ Factor Search
    * - ``region``
      - Geographic region where the factor applies.
    * - ``factorId``
+
+---
+
+Headers
+~~~~~~~
+
+Returns the input or output column headers for a specific endpoint. Useful for setting up spreadsheet templates.
+
+**Syntax**
+
+.. code-block:: none
+
+   =ENVIZI.HEADERS([functionName], [input])
+
+**Parameters**
+
+- ``functionName`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation
+- ``input`` *(optional)* – TRUE for input headers, FALSE for output headers. Default: FALSE
+
+**Examples**
+
+.. code-block:: none
+
+   =ENVIZI.HEADERS()                          // Returns output headers for calculation endpoint
+   =ENVIZI.HEADERS("location")                // Returns output headers for location endpoint
+   =ENVIZI.HEADERS("stationary", TRUE)        // Returns input headers for stationary endpoint
+   =ENVIZI.HEADERS("factor", FALSE)           // Returns output headers for factor endpoint
+
+**Output**
+
+Returns a single row array containing the header names for the specified endpoint and type (input/output).
+
+---
+
+Headers by FactorId
+~~~~~~~~~~~~~~~~~~~
+
+Returns the input or output column headers for factorId-based calculations. Use this when working with factorId instead of type-based parameters.
+
+**Syntax**
+
+.. code-block:: none
+
+   =ENVIZI.HEADERS_BY_FACTORID([functionName], [input])
+
+**Parameters**
+
+- ``functionName`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor). Default: calculation
+- ``input`` *(optional)* – TRUE for input headers, FALSE for output headers. Default: FALSE
+
+**Note:** The ``factor_search`` endpoint does not support factorId-based calls.
+
+**Examples**
+
+.. code-block:: none
+
+   =ENVIZI.HEADERS_BY_FACTORID("location", TRUE)     // Returns: factorId, value, unit
+   =ENVIZI.HEADERS_BY_FACTORID("factor", TRUE)       // Returns: factorId, unit
+   =ENVIZI.HEADERS_BY_FACTORID("calculation")        // Returns output headers (same as regular HEADERS)
+
+**Output**
+
+Returns a single row array containing the factorId-based header names for the specified endpoint.
      - Factor ID from Envizi.

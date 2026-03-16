@@ -228,3 +228,55 @@ b {
 .account-buttons button {
   width: 256px;
 }
+
+/* Envizi Login Page Styles */
+.envizi-login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.envizi-login-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
+  flex-grow: 1;
+}
+
+.envizi-welcome-text {
+  padding-top: 20px;
+}
+
+.envizi-illustration {
+  width: 100%;
+  display: block;
+}
+
+.envizi-login-actions {
+  width: 100%;
+  max-width: 200px;
+}
+
+.envizi-login-button {
+  width: 100%;
+}
+
+.envizi-footer-link {
+  text-align: center;
+}
+
+.envizi-copyright {
+  display: flex;
+  justify-content: center;
+}
+
+.envizi-copyright-text {
+  align-content: center;
+}
+
+.envizi-footer-image {
+  width: 48px;
+  height: 32px;
+}

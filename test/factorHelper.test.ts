@@ -200,16 +200,16 @@ describe("factorHelper", () => {
       "",
       "",
       "",
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
+      "",             // totalCO2e (null → "")
+      "",             // CO2 (null → "")
+      "",             // CH4 (null → "")
+      "",             // N2O (null → "")
+      "",             // HFC (null → "")
+      "",             // PFC (null → "")
+      "",             // SF6 (null → "")
+      "",             // NF3 (null → "")
+      "",             // bioCO2 (null → "")
+      "",             // indirectCO2e (null → "")
       "L",
       "",
       "",
