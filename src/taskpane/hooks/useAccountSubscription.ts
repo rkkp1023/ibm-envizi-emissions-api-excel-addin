@@ -13,7 +13,8 @@ import { SubscriptionType } from "../types/product-subscriptions.types";
 import { useAuth } from "./useAuth";
 
 const subscriptionTypes: Record<string, SubscriptionType> = {
-  EMISSIONS_TRIAL: "trial",
+  EMISSIONS_TRIAL: "trial", // Preview
+  EMISSIONS_TRIAL_GA: "trial", // GA trial
   EMISSIONS_FREE: "basic",
   D11IQZX: "marketplace",
 };
