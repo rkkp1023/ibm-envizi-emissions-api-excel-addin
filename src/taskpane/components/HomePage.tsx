@@ -10,6 +10,7 @@ import {
   AccordionPanel,
   Link,
 } from "@fluentui/react-components";
+import { MessageBanner } from "./MessageBanner";
 
 interface StepItemProps {
   title: string;
@@ -110,6 +111,7 @@ const resourceSections = [
 export function HomePage() {
   return (
     <div className="home-panel">
+      <MessageBanner />
       <Accordion multiple collapsible defaultOpenItems={["getting-started", "resources"]}>
         <AccordionItem value="getting-started">
           <AccordionHeader>Getting started</AccordionHeader>
