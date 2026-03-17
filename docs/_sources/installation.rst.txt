@@ -10,7 +10,7 @@ Before installing the add-in, ensure the following requirements are met:
 
 - Microsoft Excel (Office 365 Online, Mac or Windows)
 - Active internet connection
-- API credentials (``apiKey``, ``tenantId``, ``orgId``), are available on the `Overview Dashboard <https://www.app.ibm.com/envizi/emissions-api-home/overview?cuiURL=%2Femissions-api-home%2Foverview>`_ after `sign up <https://www.ibm.com/account/reg/us-en/signup?formid=urx-53999>`_.
+- API credentials (``apiKey``, ``tenantId``, ``orgId``), are available on the `Overview Dashboard <https://www.app.ibm.com/envizi/emissions-api-home/overview?cuiURL=%2Femissions-api-home%2Foverview>`_ after `sign up <https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313>`_.
 
 -------
 Install 
