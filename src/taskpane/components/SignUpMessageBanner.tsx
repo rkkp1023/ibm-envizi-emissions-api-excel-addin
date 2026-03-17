@@ -11,23 +11,27 @@ import {
   MessageBarTitle,
 } from "@fluentui/react-components";
 
-export function MessageBanner() {
+export function SignUpMessageBanner() {
   const handleExtendTrial = () => {
     window.open(
-      "https://www.ibm.com/account/reg/us-en/signup?formid=urx-53999",
+      "https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313",
       "_blank",
       "noopener,noreferrer"
     );
   };
 
   const handleBuyNow = () => {
-    window.open("https://www.ibm.com/products/envizi", "_blank", "noopener,noreferrer");
+    window.open(
+      "https://www.ibm.com/products/envizi/emissions-calculations",
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   return (
     <MessageBar>
       <MessageBarBody>
-        <MessageBarTitle>Great news! This add-on is now live.</MessageBarTitle>
+        <MessageBarTitle>Great news! This add-in is now live.</MessageBarTitle>
         <p>To continue, either extend your trial or buy now to access more features.</p>
       </MessageBarBody>
 

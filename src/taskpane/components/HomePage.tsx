@@ -10,7 +10,9 @@ import {
   AccordionPanel,
   Link,
 } from "@fluentui/react-components";
-import { MessageBanner } from "./MessageBanner";
+import { useState } from "react";
+
+import { SignUpMessageBanner } from "./SignUpMessageBanner";
 
 interface StepItemProps {
   title: string;
@@ -108,10 +110,16 @@ const resourceSections = [
   },
 ];
 
+const getInitialBannerState = (): boolean => {
+  return localStorage.getItem("showSignUpBanner") === "true";
+};
+
 export function HomePage() {
+  const [showSignUpBanner] = useState<boolean>(getInitialBannerState);
+
   return (
     <div className="home-panel">
-      <MessageBanner />
+      {showSignUpBanner && <SignUpMessageBanner />}
       <Accordion multiple collapsible defaultOpenItems={["getting-started", "resources"]}>
         <AccordionItem value="getting-started">
           <AccordionHeader>Getting started</AccordionHeader>
