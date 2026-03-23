@@ -43,6 +43,9 @@ function AppContent() {
       // Check if Envizi login is enabled
       if (enableEnviziLogin) {
         displayLogin();
+      } else {
+        localStorage.setItem(getStartedClicked, "true");
+        setShowWelcome(false);
       }
     };
 
