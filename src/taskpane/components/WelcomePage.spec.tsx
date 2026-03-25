@@ -37,10 +37,10 @@ describe("WelcomePage", () => {
     });
 
     it.each([
-      "Automate data integration",
-      "Access real-time emissions insights",
-      "Get auto-selected emissions factors",
-      "Export your results quickly & easily",
+      "Apply GHG Protocol‑aligned templates",
+      "Calculate Scope 1, 2, or 3 emissions",
+      "Use auto-selected emissions factors",
+      "Reduce manual errors and improve accuracy",
     ])("should render feature: %s", (feature) => {
       renderWelcomePage();
 
