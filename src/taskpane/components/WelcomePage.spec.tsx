@@ -6,6 +6,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 
+import * as env from "../../common/env";
 import { WelcomePage } from "./WelcomePage";
 
 describe("WelcomePage", () => {
@@ -14,17 +15,20 @@ describe("WelcomePage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset window state to ensure clean test environment
+    delete window.enableEnviziLogin;
   });
 
   afterEach(() => {
     document.body.innerHTML = "";
+    jest.restoreAllMocks();
   });
 
   describe("Rendering", () => {
     it("should render the welcome page with header", () => {
       renderWelcomePage();
 
-      expect(screen.getByText("Welcome to the Envizi Emissions Calculations")).toBeInTheDocument();
+      expect(screen.getByText("Welcome to Envizi Emissions Calculations")).toBeInTheDocument();
       expect(screen.getByAltText("IBM Envizi Emissions Calculations")).toBeInTheDocument();
     });
 
@@ -73,6 +77,28 @@ describe("WelcomePage", () => {
       const button = screen.getByRole("button", { name: /Get started/i });
       expect(button).toHaveAttribute("id", "get-started-button");
       expect(button).toHaveClass("fui-Button");
+    });
+
+    it("should render signup link with GA form ID when enableEnviziLogin is true", () => {
+      jest.spyOn(env, "getEnableEnviziLogin").mockReturnValue(true);
+      renderWelcomePage();
+
+      const link = screen.getByRole("link", { name: /complete the sign-up form/i });
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/account/reg/signup?formid=urx-54313"
+      );
+    });
+
+    it("should render signup link with Preview form ID when enableEnviziLogin is false", () => {
+      jest.spyOn(env, "getEnableEnviziLogin").mockReturnValue(false);
+      renderWelcomePage();
+
+      const link = screen.getByRole("link", { name: /complete the sign-up form/i });
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/account/reg/signup?formid=urx-53999"
+      );
     });
   });
 
