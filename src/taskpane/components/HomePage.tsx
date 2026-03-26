@@ -12,6 +12,9 @@ import {
 } from "@fluentui/react-components";
 import { useState } from "react";
 
+import { ApiCredentials } from "../../common/credentials";
+import { getEnableEnviziLogin } from "../../common/env";
+import { useAuth } from "../hooks";
 import { SignUpMessageBanner } from "./SignUpMessageBanner";
 
 interface StepItemProps {
@@ -110,12 +113,11 @@ const resourceSections = [
   },
 ];
 
-const getInitialBannerState = (): boolean => {
-  return localStorage.getItem("showSignUpBanner") === "true";
-};
-
 export function HomePage() {
-  const [showSignUpBanner] = useState<boolean>(getInitialBannerState);
+  const { state } = useAuth();
+  const [showSignUpBanner] = useState(
+    () => getEnableEnviziLogin() && (state.credentials as ApiCredentials).apiKey
+  );
 
   return (
     <div className="home-panel">
