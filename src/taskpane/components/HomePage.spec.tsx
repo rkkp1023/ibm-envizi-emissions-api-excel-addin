@@ -8,6 +8,25 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { HomePage } from "./HomePage";
 
+const mockApiCredentials = {
+  apiKey: "test-api-key",
+  tenantId: "test-tenant-id",
+  orgId: "test-org-id",
+};
+
+const mockUseAuthReturn = {
+  state: {
+    credentials: mockApiCredentials,
+    isInitialized: true,
+    isAuthenticated: true,
+    isLoggedOut: false,
+  },
+};
+
+jest.mock("../hooks/useAuth", () => ({
+  useAuth: () => mockUseAuthReturn,
+}));
+
 describe("HomePage", () => {
   beforeEach(() => {
     render(<HomePage />);

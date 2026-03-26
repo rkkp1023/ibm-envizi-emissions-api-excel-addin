@@ -8,7 +8,7 @@ import React from "react";
 
 import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
 import { ApiCredentials } from "../../common/credentials";
-import { getEnviziPluginsOverviewUrl, getOverviewDashboardUrl } from "../../common/env";
+import { getEnviziExcelAddInOverviewUrl, getOverviewDashboardUrl } from "../../common/env";
 import { useAccountSubscription, useAuth, useUserInfo } from "../hooks";
 import { subscriptionTypeKeyMap } from "../types/product-subscriptions.types";
 
@@ -81,7 +81,7 @@ export const AccountPage: React.FC = () => {
 
   const isTokenAuth = state.credentials && "token" in state.credentials;
   const overviewDashboardUrl = isTokenAuth
-    ? getEnviziPluginsOverviewUrl()
+    ? getEnviziExcelAddInOverviewUrl()
     : getOverviewDashboardUrl();
 
   const handleViewDashboard = () => {

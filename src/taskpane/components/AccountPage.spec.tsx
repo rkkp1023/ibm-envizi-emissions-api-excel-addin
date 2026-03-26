@@ -84,8 +84,8 @@ jest.mock("../../common/env", () => ({
   getOverviewDashboardUrl: jest.fn(
     () => "https://www-dev.app.ibm.com/envizi/emissions-api-home/overview"
   ),
-  getEnviziPluginsOverviewUrl: jest.fn(
-    () => "https://pentest.envizi.ibm.com/emissions/plugins-overview"
+  getEnviziExcelAddInOverviewUrl: jest.fn(
+    () => "https://pentest.envizi.ibm.com/emissions/excel-add-in-overview"
   ),
 }));
 
@@ -416,17 +416,17 @@ describe("AccountPage - User Credentials Tests", () => {
       fireEvent.click(button);
 
       expect(mockWindowOpen).toHaveBeenCalledWith(
-        "https://pentest.envizi.ibm.com/emissions/plugins-overview",
+        "https://pentest.envizi.ibm.com/emissions/excel-add-in-overview",
         "_blank",
         "noopener"
       );
     });
 
     it("should open correct Envizi URL for production environment with token auth", () => {
-      const { getEnvType, getEnviziPluginsOverviewUrl } = require("../../common/env");
+      const { getEnvType, getEnviziExcelAddInOverviewUrl } = require("../../common/env");
       getEnvType.mockReturnValue("prod");
-      getEnviziPluginsOverviewUrl.mockReturnValue(
-        "https://envizi.ibm.com/emissions/plugins-overview"
+      getEnviziExcelAddInOverviewUrl.mockReturnValue(
+        "https://envizi.ibm.com/emissions/excel-add-in-overview"
       );
 
       render(<AccountPage />);
@@ -435,7 +435,7 @@ describe("AccountPage - User Credentials Tests", () => {
       fireEvent.click(button);
 
       expect(mockWindowOpen).toHaveBeenCalledWith(
-        "https://envizi.ibm.com/emissions/plugins-overview",
+        "https://envizi.ibm.com/emissions/excel-add-in-overview",
         "_blank",
         "noopener"
       );

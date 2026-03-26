@@ -95,10 +95,10 @@ export function getOverviewDashboardUrl(): string {
 }
 
 /**
- * Gets the Envizi plugins overview URL for token-based authentication (GA)
+ * Gets the Envizi Excel add-in overview URL for token-based authentication (GA)
  */
-export function getEnviziPluginsOverviewUrl(): string {
-  return `${getEnviziApiHomeUrl()}/plugins-overview`;
+export function getEnviziExcelAddInOverviewUrl(): string {
+  return `${getEnviziApiHomeUrl()}/excel-add-in-overview`;
 }
 
 export function getEnviziUiOrigin(envType?: EnvType): string {
@@ -118,7 +118,8 @@ export function getEnviziGraphQLUrl(envType?: EnvType): string {
 
 export function getEnableEnviziLogin(): boolean {
   if (window.enableEnviziLogin === undefined) {
-    window.enableEnviziLogin = window.localStorage.getItem("enableEnviziLogin") !== "false";
+    const enableOverride = window.localStorage.getItem("enableEnviziLogin");
+    window.enableEnviziLogin = enableOverride ? enableOverride === "true" : getEnvType() !== "prod";
   }
   return window.enableEnviziLogin;
 }
