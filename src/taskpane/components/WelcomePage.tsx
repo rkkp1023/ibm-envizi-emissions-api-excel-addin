@@ -60,6 +60,7 @@ export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
             <Link href={signupUrl} target="_blank">
               complete the sign-up form
             </Link>
+            .
           </span>
         </div>
       </div>
