@@ -27,6 +27,14 @@ jest.mock("../hooks/useAuth", () => ({
   useAuth: () => mockUseAuthReturn,
 }));
 
+jest.mock("../hooks/useAccountSubscription", () => ({
+  useAccountSubscription: () => ({
+    data: undefined,
+    isLoading: false,
+    isError: false,
+  }),
+}));
+
 describe("HomePage", () => {
   beforeEach(() => {
     render(<HomePage />);

@@ -14,7 +14,7 @@ import { useState } from "react";
 
 import { ApiCredentials } from "../../common/credentials";
 import { getEnableEnviziLogin } from "../../common/env";
-import { useAuth } from "../hooks";
+import { useAccountSubscription, useAuth } from "../hooks";
 import { SignUpMessageBanner } from "./SignUpMessageBanner";
 
 interface StepItemProps {
@@ -71,7 +71,7 @@ const gettingStartedSteps = [
   },
 ];
 
-const resourceSections = [
+const getResourceSections = (supportLink: string) => [
   {
     title: "Documentation",
     links: [
@@ -106,7 +106,7 @@ const resourceSections = [
         text: "Provide feedback",
       },
       {
-        href: "mailto:enviziemissionsapi@ibm.com",
+        href: supportLink,
         text: "Contact IBM",
       },
     ],
@@ -115,9 +115,17 @@ const resourceSections = [
 
 export function HomePage() {
   const { state } = useAuth();
+  const { data: subscriptionData } = useAccountSubscription();
   const [showSignUpBanner] = useState(
     () => getEnableEnviziLogin() && (state.credentials as ApiCredentials).apiKey
   );
+
+  const supportLink =
+    !subscriptionData || subscriptionData.subscriptionType === "trial"
+      ? "mailto:enviziemissionsapi@ibm.com"
+      : "https://www.ibm.com/mysupport";
+
+  const resourceSections = getResourceSections(supportLink);
 
   return (
     <div className="home-panel">
