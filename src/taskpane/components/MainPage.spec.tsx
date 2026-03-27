@@ -9,12 +9,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MainPage } from "./MainPage";
 
 // Mock child components
-jest.mock("./HomePage", () => ({
-  HomePage: () => <div data-testid="home-page">Home Page Content</div>,
+jest.mock("./tabs/QuickHelpTab", () => ({
+  QuickHelpTab: () => <div data-testid="quick-help-tab">Quick Help Content</div>,
 }));
 
-jest.mock("./AccountPage", () => ({
-  AccountPage: () => <div data-testid="account-page">Account Page Content</div>,
+jest.mock("./tabs/AccountTab", () => ({
+  AccountTab: () => <div data-testid="account-tab">Account Tab Content</div>,
 }));
 
 describe("MainPage", () => {
@@ -33,22 +33,22 @@ describe("MainPage", () => {
       expect(mainPage).toBeInTheDocument();
     });
 
-    it("should render tab list with Home and Account tabs", () => {
+    it("should render tab list with Quick help and Account tabs", () => {
       renderMainPage();
-      expect(screen.getByRole("tab", { name: /Home/i })).toBeInTheDocument();
+      expect(screen.getByRole("tab", { name: /Quick help/i })).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Account/i })).toBeInTheDocument();
     });
 
-    it("should render Home tab as selected by default", () => {
+    it("should render Quick help tab as selected by default", () => {
       renderMainPage();
-      const homeTab = screen.getByRole("tab", { name: /Home/i });
-      expect(homeTab).toHaveAttribute("aria-selected", "true");
+      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
+      expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
     });
 
-    it("should render HomePage component by default", () => {
+    it("should render QuickHelpTab component by default", () => {
       renderMainPage();
-      expect(screen.getByTestId("home-page")).toBeInTheDocument();
-      expect(screen.queryByTestId("account-page")).not.toBeInTheDocument();
+      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
     });
   });
 
@@ -60,24 +60,24 @@ describe("MainPage", () => {
       fireEvent.click(accountTab);
 
       expect(accountTab).toHaveAttribute("aria-selected", "true");
-      expect(screen.getByTestId("account-page")).toBeInTheDocument();
-      expect(screen.queryByTestId("home-page")).not.toBeInTheDocument();
+      expect(screen.getByTestId("account-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("quick-help-tab")).not.toBeInTheDocument();
     });
 
-    it("should switch back to Home tab when clicked", () => {
+    it("should switch back to Quick help tab when clicked", () => {
       renderMainPage();
-      const homeTab = screen.getByRole("tab", { name: /Home/i });
+      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
 
       // Switch to Account
       fireEvent.click(accountTab);
-      expect(screen.getByTestId("account-page")).toBeInTheDocument();
+      expect(screen.getByTestId("account-tab")).toBeInTheDocument();
 
-      // Switch back to Home
-      fireEvent.click(homeTab);
-      expect(homeTab).toHaveAttribute("aria-selected", "true");
-      expect(screen.getByTestId("home-page")).toBeInTheDocument();
-      expect(screen.queryByTestId("account-page")).not.toBeInTheDocument();
+      // Switch back to Quick help
+      fireEvent.click(quickHelpTab);
+      expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
+      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
     });
 
     it("should maintain tab selection state", () => {
@@ -87,7 +87,10 @@ describe("MainPage", () => {
       fireEvent.click(accountTab);
 
       expect(accountTab).toHaveAttribute("aria-selected", "true");
-      expect(screen.getByRole("tab", { name: /Home/i })).toHaveAttribute("aria-selected", "false");
+      expect(screen.getByRole("tab", { name: /Quick help/i })).toHaveAttribute(
+        "aria-selected",
+        "false"
+      );
     });
   });
 
@@ -101,14 +104,14 @@ describe("MainPage", () => {
     it("should only render one tab content at a time", () => {
       renderMainPage();
 
-      // Initially Home is shown
-      expect(screen.getByTestId("home-page")).toBeInTheDocument();
-      expect(screen.queryByTestId("account-page")).not.toBeInTheDocument();
+      // Initially Quick help is shown
+      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
 
       // Switch to Account
       fireEvent.click(screen.getByRole("tab", { name: /Account/i }));
-      expect(screen.queryByTestId("home-page")).not.toBeInTheDocument();
-      expect(screen.getByTestId("account-page")).toBeInTheDocument();
+      expect(screen.queryByTestId("quick-help-tab")).not.toBeInTheDocument();
+      expect(screen.getByTestId("account-tab")).toBeInTheDocument();
     });
   });
 
@@ -121,48 +124,51 @@ describe("MainPage", () => {
 
     it("should have proper aria-selected attributes", () => {
       renderMainPage();
-      const homeTab = screen.getByRole("tab", { name: /Home/i });
+      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
 
-      expect(homeTab).toHaveAttribute("aria-selected", "true");
+      expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
       expect(accountTab).toHaveAttribute("aria-selected", "false");
     });
 
     it("should update aria-selected when switching tabs", () => {
       renderMainPage();
-      const homeTab = screen.getByRole("tab", { name: /Home/i });
+      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
 
       fireEvent.click(accountTab);
 
-      expect(homeTab).toHaveAttribute("aria-selected", "false");
+      expect(quickHelpTab).toHaveAttribute("aria-selected", "false");
       expect(accountTab).toHaveAttribute("aria-selected", "true");
     });
   });
 
   describe("State Management", () => {
-    it("should initialize with home tab selected", () => {
+    it("should initialize with quick help tab selected", () => {
       renderMainPage();
-      expect(screen.getByRole("tab", { name: /Home/i })).toHaveAttribute("aria-selected", "true");
-      expect(screen.getByTestId("home-page")).toBeInTheDocument();
+      expect(screen.getByRole("tab", { name: /Quick help/i })).toHaveAttribute(
+        "aria-selected",
+        "true"
+      );
+      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
     });
 
     it("should handle multiple tab switches correctly", () => {
       renderMainPage();
-      const homeTab = screen.getByRole("tab", { name: /Home/i });
+      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
 
       // Switch to Account
       fireEvent.click(accountTab);
-      expect(screen.getByTestId("account-page")).toBeInTheDocument();
+      expect(screen.getByTestId("account-tab")).toBeInTheDocument();
 
-      // Switch to Home
-      fireEvent.click(homeTab);
-      expect(screen.getByTestId("home-page")).toBeInTheDocument();
+      // Switch to Quick help
+      fireEvent.click(quickHelpTab);
+      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
 
       // Switch to Account again
       fireEvent.click(accountTab);
-      expect(screen.getByTestId("account-page")).toBeInTheDocument();
+      expect(screen.getByTestId("account-tab")).toBeInTheDocument();
     });
   });
 });
