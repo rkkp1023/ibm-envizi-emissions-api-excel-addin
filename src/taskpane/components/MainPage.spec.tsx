@@ -17,6 +17,10 @@ jest.mock("./AccountPage", () => ({
   AccountPage: () => <div data-testid="account-page">Account Page Content</div>,
 }));
 
+jest.mock("./tabs/ResourcesTab", () => ({
+  ResourcesTab: () => <div data-testid="resources-tab">Resources Tab Content</div>,
+}));
+
 describe("MainPage", () => {
   const renderMainPage = () => {
     return render(<MainPage />);
@@ -33,9 +37,10 @@ describe("MainPage", () => {
       expect(mainPage).toBeInTheDocument();
     });
 
-    it("should render tab list with Home and Account tabs", () => {
+    it("should render tab list with Home, Resources, and Account tabs", () => {
       renderMainPage();
       expect(screen.getByRole("tab", { name: /Home/i })).toBeInTheDocument();
+      expect(screen.getByRole("tab", { name: /Resources/i })).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Account/i })).toBeInTheDocument();
     });
 
@@ -62,6 +67,19 @@ describe("MainPage", () => {
       expect(accountTab).toHaveAttribute("aria-selected", "true");
       expect(screen.getByTestId("account-page")).toBeInTheDocument();
       expect(screen.queryByTestId("home-page")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
+    });
+
+    it("should switch to Resources tab when clicked", () => {
+      renderMainPage();
+      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
+
+      fireEvent.click(resourcesTab);
+
+      expect(resourcesTab).toHaveAttribute("aria-selected", "true");
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("home-page")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("account-page")).not.toBeInTheDocument();
     });
 
     it("should switch back to Home tab when clicked", () => {
@@ -88,6 +106,10 @@ describe("MainPage", () => {
 
       expect(accountTab).toHaveAttribute("aria-selected", "true");
       expect(screen.getByRole("tab", { name: /Home/i })).toHaveAttribute("aria-selected", "false");
+      expect(screen.getByRole("tab", { name: /Resources/i })).toHaveAttribute(
+        "aria-selected",
+        "false"
+      );
     });
   });
 
@@ -103,11 +125,19 @@ describe("MainPage", () => {
 
       // Initially Home is shown
       expect(screen.getByTestId("home-page")).toBeInTheDocument();
+      expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("account-page")).not.toBeInTheDocument();
+
+      // Switch to Resources
+      fireEvent.click(screen.getByRole("tab", { name: /Resources/i }));
+      expect(screen.queryByTestId("home-page")).not.toBeInTheDocument();
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
       expect(screen.queryByTestId("account-page")).not.toBeInTheDocument();
 
       // Switch to Account
       fireEvent.click(screen.getByRole("tab", { name: /Account/i }));
       expect(screen.queryByTestId("home-page")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
       expect(screen.getByTestId("account-page")).toBeInTheDocument();
     });
   });
@@ -116,26 +146,30 @@ describe("MainPage", () => {
     it("should have proper ARIA roles for tabs", () => {
       renderMainPage();
       expect(screen.getByRole("tablist")).toBeInTheDocument();
-      expect(screen.getAllByRole("tab")).toHaveLength(2);
+      expect(screen.getAllByRole("tab")).toHaveLength(3);
     });
 
     it("should have proper aria-selected attributes", () => {
       renderMainPage();
       const homeTab = screen.getByRole("tab", { name: /Home/i });
+      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
 
       expect(homeTab).toHaveAttribute("aria-selected", "true");
+      expect(resourcesTab).toHaveAttribute("aria-selected", "false");
       expect(accountTab).toHaveAttribute("aria-selected", "false");
     });
 
     it("should update aria-selected when switching tabs", () => {
       renderMainPage();
       const homeTab = screen.getByRole("tab", { name: /Home/i });
+      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
 
       fireEvent.click(accountTab);
 
       expect(homeTab).toHaveAttribute("aria-selected", "false");
+      expect(resourcesTab).toHaveAttribute("aria-selected", "false");
       expect(accountTab).toHaveAttribute("aria-selected", "true");
     });
   });
@@ -150,7 +184,12 @@ describe("MainPage", () => {
     it("should handle multiple tab switches correctly", () => {
       renderMainPage();
       const homeTab = screen.getByRole("tab", { name: /Home/i });
+      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
+
+      // Switch to Resources
+      fireEvent.click(resourcesTab);
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
 
       // Switch to Account
       fireEvent.click(accountTab);
@@ -160,9 +199,9 @@ describe("MainPage", () => {
       fireEvent.click(homeTab);
       expect(screen.getByTestId("home-page")).toBeInTheDocument();
 
-      // Switch to Account again
-      fireEvent.click(accountTab);
-      expect(screen.getByTestId("account-page")).toBeInTheDocument();
+      // Switch to Resources again
+      fireEvent.click(resourcesTab);
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
     });
   });
 });
