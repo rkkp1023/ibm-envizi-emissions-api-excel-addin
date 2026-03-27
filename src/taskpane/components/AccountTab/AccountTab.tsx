@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import { Button, Field, Input, Spinner } from "@fluentui/react-components";
 import React from "react";

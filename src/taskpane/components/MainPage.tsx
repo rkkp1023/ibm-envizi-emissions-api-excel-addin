@@ -1,13 +1,10 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import { Tab, TabList } from "@fluentui/react-components";
 import { useState } from "react";
 
-import { AccountTab } from "./tabs/AccountTab";
-import { QuickHelpTab } from "./tabs/QuickHelpTab";
+import { AccountTab } from "./AccountTab/AccountTab";
+import { QuickHelpTab } from "./QuickHelpTab/QuickHelpTab";
 
 type TabValue = "quickHelp" | "account";
 

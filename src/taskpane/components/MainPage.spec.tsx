@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import "@testing-library/jest-dom";
 
@@ -9,11 +6,11 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MainPage } from "./MainPage";
 
 // Mock child components
-jest.mock("./tabs/QuickHelpTab", () => ({
+jest.mock("./QuickHelpTab/QuickHelpTab", () => ({
   QuickHelpTab: () => <div data-testid="quick-help-tab">Quick Help Content</div>,
 }));
 
-jest.mock("./tabs/AccountTab", () => ({
+jest.mock("./AccountTab/AccountTab", () => ({
   AccountTab: () => <div data-testid="account-tab">Account Tab Content</div>,
 }));
 
