@@ -12,10 +12,10 @@ import {
 } from "@fluentui/react-components";
 import { useState } from "react";
 
-import { ApiCredentials } from "../../common/credentials";
-import { getEnableEnviziLogin } from "../../common/env";
-import { useAccountSubscription, useAuth } from "../hooks";
-import { SignUpMessageBanner } from "./SignUpMessageBanner";
+import { ApiCredentials } from "../../../common/credentials";
+import { getEnableEnviziLogin } from "../../../common/env";
+import { useAccountSubscription, useAuth } from "../../hooks";
+import { SignUpMessageBanner } from "../SignUpMessageBanner";
 
 interface StepItemProps {
   title: string;
@@ -113,7 +113,7 @@ const getResourceSections = (supportLink: string) => [
   },
 ];
 
-export function HomePage() {
+export function QuickHelpTab() {
   const { state } = useAuth();
   const { data: subscriptionData } = useAccountSubscription();
   const [showSignUpBanner] = useState(

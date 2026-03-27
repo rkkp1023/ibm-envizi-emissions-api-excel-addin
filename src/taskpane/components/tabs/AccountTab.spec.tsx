@@ -7,7 +7,7 @@ import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import { AccountPage } from "./AccountPage";
+import { AccountPage } from "./AccountTab";
 
 // Mock the useAuth hook
 const mockLogout = jest.fn();

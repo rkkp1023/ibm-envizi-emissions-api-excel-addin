@@ -6,7 +6,7 @@
 import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
-import { HomePage } from "./HomePage";
+import { HomePage } from "./QuickHelpTab";
 
 const mockApiCredentials = {
   apiKey: "test-api-key",

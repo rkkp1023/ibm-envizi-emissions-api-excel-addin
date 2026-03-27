@@ -7,10 +7,10 @@ import { Button, Field, Input, Spinner } from "@fluentui/react-components";
 import React from "react";
 
 import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
-import { ApiCredentials } from "../../common/credentials";
-import { getEnviziExcelAddInOverviewUrl, getOverviewDashboardUrl } from "../../common/env";
-import { useAccountSubscription, useAuth, useUserInfo } from "../hooks";
-import { subscriptionTypeKeyMap } from "../types/product-subscriptions.types";
+import { ApiCredentials } from "../../../common/credentials";
+import { getEnviziExcelAddInOverviewUrl, getOverviewDashboardUrl } from "../../../common/env";
+import { useAccountSubscription, useAuth, useUserInfo } from "../../hooks";
+import { subscriptionTypeKeyMap } from "../../types/product-subscriptions.types";
 
 function AccountInformation() {
   const { isLoading: isLoadingUser, isError: isErrorUser, data: userInfo } = useUserInfo();
@@ -76,7 +76,7 @@ function ApiCredentialsForm() {
   );
 }
 
-export const AccountPage: React.FC = () => {
+export const AccountTab: React.FC = () => {
   const { state, logout } = useAuth();
 
   const isTokenAuth = state.credentials && "token" in state.credentials;
