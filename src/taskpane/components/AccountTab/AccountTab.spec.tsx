@@ -1,13 +1,10 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import { AccountPage } from "./AccountPage";
+import { AccountTab } from "../AccountTab/AccountTab";
 
 // Mock the useAuth hook
 const mockLogout = jest.fn();
@@ -35,7 +32,7 @@ let mockUseAuthReturn = {
   clearError: jest.fn(),
 };
 
-jest.mock("../hooks/useAuth", () => ({
+jest.mock("../../hooks/useAuth", () => ({
   useAuth: () => mockUseAuthReturn,
 }));
 
@@ -54,7 +51,7 @@ let mockUserInfoReturn = {
   },
 };
 
-jest.mock("../hooks/useUserInfo", () => ({
+jest.mock("../../hooks/useUserInfo", () => ({
   useUserInfo: () => mockUserInfoReturn,
 }));
 
@@ -74,12 +71,12 @@ let mockAccountSubscriptionReturn = {
   },
 };
 
-jest.mock("../hooks/useAccountSubscription", () => ({
+jest.mock("../../hooks/useAccountSubscription", () => ({
   useAccountSubscription: () => mockAccountSubscriptionReturn,
 }));
 
 // Mock the env module
-jest.mock("../../common/env", () => ({
+jest.mock("../../../common/env", () => ({
   getEnvType: jest.fn(() => "np"),
   getOverviewDashboardUrl: jest.fn(
     () => "https://www-dev.app.ibm.com/envizi/emissions-api-home/overview"
@@ -93,7 +90,7 @@ jest.mock("../../common/env", () => ({
 const mockWindowOpen = jest.fn();
 global.window.open = mockWindowOpen;
 
-describe("AccountPage - API Credentials Tests", () => {
+describe("AccountTab - API Credentials Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWindowOpen.mockClear();
@@ -102,13 +99,13 @@ describe("AccountPage - API Credentials Tests", () => {
 
   describe("Rendering", () => {
     it("should render the account panel container", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const accountPanel = document.querySelector(".account-panel");
       expect(accountPanel).toBeInTheDocument();
     });
 
     it("should render form with form-grid class", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const form = document.querySelector(".form");
       const formGrid = document.querySelector(".form-grid");
       expect(form).toBeInTheDocument();
@@ -116,45 +113,45 @@ describe("AccountPage - API Credentials Tests", () => {
     });
 
     it("should render all three credential fields", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByLabelText(/API key/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Tenant ID/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Organization ID/i)).toBeInTheDocument();
     });
 
     it("should render View dashboard button", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByRole("button", { name: /View dashboard/i })).toBeInTheDocument();
     });
 
     it("should render Logout button", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByRole("button", { name: /^Logout$/i })).toBeInTheDocument();
     });
   });
 
   describe("Credential Display", () => {
     it("should display API key as password field", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const apiKeyInput = screen.getByLabelText(/API key/i) as HTMLInputElement;
       expect(apiKeyInput).toHaveAttribute("type", "password");
       expect(apiKeyInput.value).toBe(mockApiCredentials.apiKey);
     });
 
     it("should display Tenant ID", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const tenantIdInput = screen.getByLabelText(/Tenant ID/i) as HTMLInputElement;
       expect(tenantIdInput.value).toBe(mockApiCredentials.tenantId);
     });
 
     it("should display Organization ID", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const orgIdInput = screen.getByLabelText(/Organization ID/i) as HTMLInputElement;
       expect(orgIdInput.value).toBe(mockApiCredentials.orgId);
     });
 
     it("should have all input fields as read-only", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const apiKeyInput = screen.getByLabelText(/API key/i) as HTMLInputElement;
       const tenantIdInput = screen.getByLabelText(/Tenant ID/i) as HTMLInputElement;
       const orgIdInput = screen.getByLabelText(/Organization ID/i) as HTMLInputElement;
@@ -167,13 +164,13 @@ describe("AccountPage - API Credentials Tests", () => {
 
   describe("View Dashboard Button", () => {
     it("should have primary appearance", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /View dashboard/i });
       expect(button).toHaveClass("fui-Button");
     });
 
     it("should open API key dashboard URL in new window when clicked", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /View dashboard/i });
 
       fireEvent.click(button);
@@ -186,13 +183,13 @@ describe("AccountPage - API Credentials Tests", () => {
     });
 
     it("should open correct API key URL for production environment", () => {
-      const { getEnvType, getOverviewDashboardUrl } = require("../../common/env");
+      const { getEnvType, getOverviewDashboardUrl } = require("../../../common/env");
       getEnvType.mockReturnValue("prod");
       getOverviewDashboardUrl.mockReturnValue(
         "https://www.app.ibm.com/envizi/emissions-api-home/overview"
       );
 
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /View dashboard/i });
 
       fireEvent.click(button);
@@ -205,7 +202,7 @@ describe("AccountPage - API Credentials Tests", () => {
     });
 
     it("should allow clicking View dashboard multiple times", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /View dashboard/i });
 
       fireEvent.click(button);
@@ -218,13 +215,13 @@ describe("AccountPage - API Credentials Tests", () => {
 
   describe("Logout Button", () => {
     it("should have outline appearance", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /^Logout$/i });
       expect(button).toHaveClass("fui-Button");
     });
 
     it("should call logout function when clicked", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /^Logout$/i });
 
       fireEvent.click(button);
@@ -233,7 +230,7 @@ describe("AccountPage - API Credentials Tests", () => {
     });
 
     it("should not call logout multiple times on single click", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /^Logout$/i });
 
       fireEvent.click(button);
@@ -244,7 +241,7 @@ describe("AccountPage - API Credentials Tests", () => {
 
   describe("Component Structure", () => {
     it("should have correct CSS classes", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(document.querySelector(".account-panel")).toBeInTheDocument();
       expect(document.querySelector(".form")).toBeInTheDocument();
       expect(document.querySelector(".form-grid")).toBeInTheDocument();
@@ -252,7 +249,7 @@ describe("AccountPage - API Credentials Tests", () => {
     });
 
     it("should render buttons in account-buttons container", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const buttonsContainer = document.querySelector(".account-buttons");
       expect(buttonsContainer).toBeInTheDocument();
 
@@ -261,7 +258,7 @@ describe("AccountPage - API Credentials Tests", () => {
     });
 
     it("should render fields in form-grid container", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const formGrid = document.querySelector(".form-grid");
       expect(formGrid).toBeInTheDocument();
 
@@ -272,20 +269,20 @@ describe("AccountPage - API Credentials Tests", () => {
 
   describe("Accessibility", () => {
     it("should have proper labels for all input fields", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByLabelText(/API key/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Tenant ID/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Organization ID/i)).toBeInTheDocument();
     });
 
     it("should have proper button roles", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const buttons = screen.getAllByRole("button");
       expect(buttons).toHaveLength(2);
     });
 
     it("should have descriptive button text", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByRole("button", { name: /View dashboard/i })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /^Logout$/i })).toBeInTheDocument();
     });
@@ -293,7 +290,7 @@ describe("AccountPage - API Credentials Tests", () => {
 
   describe("Form Behavior", () => {
     it("should not allow editing of credential fields", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const apiKeyInput = screen.getByLabelText(/API key/i) as HTMLInputElement;
 
       fireEvent.change(apiKeyInput, { target: { value: "new-value" } });
@@ -303,7 +300,7 @@ describe("AccountPage - API Credentials Tests", () => {
     });
 
     it("should render form element", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const form = document.querySelector("form");
       expect(form).toBeInTheDocument();
       expect(form).toHaveClass("form");
@@ -312,7 +309,7 @@ describe("AccountPage - API Credentials Tests", () => {
 
   describe("Button Interactions", () => {
     it("should handle multiple button clicks correctly", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const viewDashboardButton = screen.getByRole("button", { name: /View dashboard/i });
       const logoutButton = screen.getByRole("button", { name: /^Logout$/i });
 
@@ -325,7 +322,7 @@ describe("AccountPage - API Credentials Tests", () => {
   });
 });
 
-describe("AccountPage - User Credentials Tests", () => {
+describe("AccountTab - User Credentials Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWindowOpen.mockClear();
@@ -338,20 +335,20 @@ describe("AccountPage - User Credentials Tests", () => {
 
   describe("Rendering with User Credentials", () => {
     it("should render the account panel container", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const accountPanel = document.querySelector(".account-panel");
       expect(accountPanel).toBeInTheDocument();
     });
 
     it("should render user information fields instead of API credentials", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByLabelText(/^Name$/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^Username$/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Account type/i)).toBeInTheDocument();
     });
 
     it("should not render API credential fields", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.queryByLabelText(/API key/i)).not.toBeInTheDocument();
       expect(screen.queryByLabelText(/Tenant ID/i)).not.toBeInTheDocument();
       expect(screen.queryByLabelText(/Organization ID/i)).not.toBeInTheDocument();
@@ -360,25 +357,25 @@ describe("AccountPage - User Credentials Tests", () => {
 
   describe("User Information Display", () => {
     it("should display user's full name", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const nameInput = screen.getByLabelText(/^Name$/i) as HTMLInputElement;
       expect(nameInput.value).toBe("John Doe");
     });
 
     it("should display user's email as username", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const usernameInput = screen.getByLabelText(/^Username$/i) as HTMLInputElement;
       expect(usernameInput.value).toBe("john.doe@example.com");
     });
 
     it("should display account type", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const accountTypeInput = screen.getByLabelText(/Account type/i) as HTMLInputElement;
       expect(accountTypeInput.value).toBe("Premium");
     });
 
     it("should have all input fields as read-only", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const nameInput = screen.getByLabelText(/^Name$/i) as HTMLInputElement;
       const usernameInput = screen.getByLabelText(/^Username$/i) as HTMLInputElement;
       const accountTypeInput = screen.getByLabelText(/Account type/i) as HTMLInputElement;
@@ -391,17 +388,17 @@ describe("AccountPage - User Credentials Tests", () => {
 
   describe("Buttons with User Credentials", () => {
     it("should render View dashboard button", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByRole("button", { name: /View dashboard/i })).toBeInTheDocument();
     });
 
     it("should render Logout button", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByRole("button", { name: /^Logout$/i })).toBeInTheDocument();
     });
 
     it("should call logout when Logout button is clicked", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const logoutButton = screen.getByRole("button", { name: /^Logout$/i });
 
       fireEvent.click(logoutButton);
@@ -410,7 +407,7 @@ describe("AccountPage - User Credentials Tests", () => {
     });
 
     it("should open Envizi plugins overview URL for token-based auth", () => {
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /View dashboard/i });
 
       fireEvent.click(button);
@@ -423,13 +420,13 @@ describe("AccountPage - User Credentials Tests", () => {
     });
 
     it("should open correct Envizi URL for production environment with token auth", () => {
-      const { getEnvType, getEnviziExcelAddInOverviewUrl } = require("../../common/env");
+      const { getEnvType, getEnviziExcelAddInOverviewUrl } = require("../../../common/env");
       getEnvType.mockReturnValue("prod");
       getEnviziExcelAddInOverviewUrl.mockReturnValue(
         "https://envizi.ibm.com/emissions/excel-add-in-overview"
       );
 
-      render(<AccountPage />);
+      render(<AccountTab />);
       const button = screen.getByRole("button", { name: /View dashboard/i });
 
       fireEvent.click(button);
@@ -446,14 +443,14 @@ describe("AccountPage - User Credentials Tests", () => {
     it("should show spinner when user info is loading", () => {
       mockUserInfoReturn.isLoading = true;
 
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByRole("progressbar")).toBeInTheDocument();
     });
 
     it("should show spinner when subscription data is loading", () => {
       mockAccountSubscriptionReturn.isLoading = true;
 
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.getByRole("progressbar")).toBeInTheDocument();
     });
   });
@@ -462,14 +459,14 @@ describe("AccountPage - User Credentials Tests", () => {
     it("should not render user info when there is an error", () => {
       mockUserInfoReturn.isError = true;
 
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.queryByLabelText(/^Name$/i)).not.toBeInTheDocument();
     });
 
     it("should not render user info when subscription data has error", () => {
       mockAccountSubscriptionReturn.isError = true;
 
-      render(<AccountPage />);
+      render(<AccountTab />);
       expect(screen.queryByLabelText(/^Name$/i)).not.toBeInTheDocument();
     });
   });

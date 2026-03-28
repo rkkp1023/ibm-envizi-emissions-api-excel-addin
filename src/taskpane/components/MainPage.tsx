@@ -1,18 +1,15 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import { Tab, TabList } from "@fluentui/react-components";
 import { useState } from "react";
 
-import { AccountPage } from "./AccountPage";
-import { HomePage } from "./HomePage";
+import { AccountTab } from "./AccountTab/AccountTab";
+import { QuickHelpTab } from "./QuickHelpTab/QuickHelpTab";
 
-type TabValue = "home" | "account";
+type TabValue = "quickHelp" | "account";
 
 export function MainPage() {
-  const [selectedTab, setSelectedTab] = useState<TabValue>("home");
+  const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
 
   return (
     <div className="page main-page">
@@ -20,12 +17,12 @@ export function MainPage() {
         selectedValue={selectedTab}
         onTabSelect={(_, data) => setSelectedTab(data.value as TabValue)}
       >
-        <Tab value="home">Home</Tab>
+        <Tab value="quickHelp">Quick help</Tab>
         <Tab value="account">Account</Tab>
       </TabList>
       <div className="tab-content">
-        {selectedTab === "home" && <HomePage />}
-        {selectedTab === "account" && <AccountPage />}
+        {selectedTab === "quickHelp" && <QuickHelpTab />}
+        {selectedTab === "account" && <AccountTab />}
       </div>
     </div>
   );
