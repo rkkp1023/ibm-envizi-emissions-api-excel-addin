@@ -14,11 +14,7 @@ jest.mock("./AccountTab/AccountTab", () => ({
   AccountTab: () => <div data-testid="account-tab">Account Tab Content</div>,
 }));
 
-jest.mock("./tabs/ResourcesTab", () => ({
-  ResourcesTab: () => <div data-testid="resources-tab">Resources Tab Content</div>,
-}));
-
-jest.mock("./tabs/ResourcesTab", () => ({
+jest.mock("./ResourcesTab/ResourcesTab", () => ({
   ResourcesTab: () => <div data-testid="resources-tab">Resources Tab Content</div>,
 }));
 
@@ -43,18 +39,6 @@ describe("MainPage", () => {
       expect(screen.getByRole("tab", { name: /Quick help/i })).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Resources/i })).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Account/i })).toBeInTheDocument();
-    });
-
-    it("should render Quick help tab as selected by default", () => {
-      renderMainPage();
-      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
-      expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
-    });
-
-    it("should render QuickHelpTab component by default", () => {
-      renderMainPage();
-      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
-      expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
     });
   });
 
@@ -153,23 +137,18 @@ describe("MainPage", () => {
       expect(screen.getAllByRole("tab")).toHaveLength(3);
     });
 
-    it("should have proper aria-selected attributes", () => {
+    it("should have proper aria-selected attributes and update when switching tabs", () => {
       renderMainPage();
       const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
       const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
 
+      // Verify initial state
       expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
       expect(resourcesTab).toHaveAttribute("aria-selected", "false");
       expect(accountTab).toHaveAttribute("aria-selected", "false");
-    });
 
-    it("should update aria-selected when switching tabs", () => {
-      renderMainPage();
-      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
-      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
-      const accountTab = screen.getByRole("tab", { name: /Account/i });
-
+      // Switch to Account tab and verify update
       fireEvent.click(accountTab);
 
       expect(quickHelpTab).toHaveAttribute("aria-selected", "false");

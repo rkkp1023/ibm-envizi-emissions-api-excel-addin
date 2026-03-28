@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { AccountTab } from "./AccountTab/AccountTab";
 import { QuickHelpTab } from "./QuickHelpTab/QuickHelpTab";
-import { ResourcesTab } from "./tabs/ResourcesTab";
+import { ResourcesTab } from "./ResourcesTab/ResourcesTab";
 
 type TabValue = "quickHelp" | "account" | "resources";
 
