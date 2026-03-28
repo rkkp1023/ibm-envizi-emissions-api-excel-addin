@@ -1,12 +1,9 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
-import { HomePage } from "./HomePage";
+import { QuickHelpTab } from "./QuickHelpTab";
 
 const mockApiCredentials = {
   apiKey: "test-api-key",
@@ -23,11 +20,11 @@ const mockUseAuthReturn = {
   },
 };
 
-jest.mock("../hooks/useAuth", () => ({
+jest.mock("../../hooks/useAuth", () => ({
   useAuth: () => mockUseAuthReturn,
 }));
 
-jest.mock("../hooks/useAccountSubscription", () => ({
+jest.mock("../../hooks/useAccountSubscription", () => ({
   useAccountSubscription: () => ({
     data: undefined,
     isLoading: false,
@@ -35,9 +32,9 @@ jest.mock("../hooks/useAccountSubscription", () => ({
   }),
 }));
 
-describe("HomePage", () => {
+describe("QuickHelpTab", () => {
   beforeEach(() => {
-    render(<HomePage />);
+    render(<QuickHelpTab />);
   });
 
   describe("Rendering", () => {
