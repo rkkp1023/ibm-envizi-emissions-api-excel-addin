@@ -14,6 +14,10 @@ jest.mock("./AccountTab/AccountTab", () => ({
   AccountTab: () => <div data-testid="account-tab">Account Tab Content</div>,
 }));
 
+jest.mock("./ResourcesTab/ResourcesTab", () => ({
+  ResourcesTab: () => <div data-testid="resources-tab">Resources Tab Content</div>,
+}));
+
 describe("MainPage", () => {
   const renderMainPage = () => {
     return render(<MainPage />);
@@ -30,22 +34,11 @@ describe("MainPage", () => {
       expect(mainPage).toBeInTheDocument();
     });
 
-    it("should render tab list with Quick help and Account tabs", () => {
+    it("should render tab list with Quick help, Resources, and Account tabs", () => {
       renderMainPage();
       expect(screen.getByRole("tab", { name: /Quick help/i })).toBeInTheDocument();
+      expect(screen.getByRole("tab", { name: /Resources/i })).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Account/i })).toBeInTheDocument();
-    });
-
-    it("should render Quick help tab as selected by default", () => {
-      renderMainPage();
-      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
-      expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
-    });
-
-    it("should render QuickHelpTab component by default", () => {
-      renderMainPage();
-      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
-      expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
     });
   });
 
@@ -59,6 +52,19 @@ describe("MainPage", () => {
       expect(accountTab).toHaveAttribute("aria-selected", "true");
       expect(screen.getByTestId("account-tab")).toBeInTheDocument();
       expect(screen.queryByTestId("quick-help-tab")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
+    });
+
+    it("should switch to Resources tab when clicked", () => {
+      renderMainPage();
+      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
+
+      fireEvent.click(resourcesTab);
+
+      expect(resourcesTab).toHaveAttribute("aria-selected", "true");
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("home-page")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("account-page")).not.toBeInTheDocument();
     });
 
     it("should switch back to Quick help tab when clicked", () => {
@@ -88,6 +94,10 @@ describe("MainPage", () => {
         "aria-selected",
         "false"
       );
+      expect(screen.getByRole("tab", { name: /Resources/i })).toHaveAttribute(
+        "aria-selected",
+        "false"
+      );
     });
   });
 
@@ -103,11 +113,19 @@ describe("MainPage", () => {
 
       // Initially Quick help is shown
       expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("account-page")).not.toBeInTheDocument();
+
+      // Switch to Resources
+      fireEvent.click(screen.getByRole("tab", { name: /Resources/i }));
+      expect(screen.queryByTestId("home-page")).not.toBeInTheDocument();
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
       expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
 
       // Switch to Account
       fireEvent.click(screen.getByRole("tab", { name: /Account/i }));
       expect(screen.queryByTestId("quick-help-tab")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
       expect(screen.getByTestId("account-tab")).toBeInTheDocument();
     });
   });
@@ -116,26 +134,25 @@ describe("MainPage", () => {
     it("should have proper ARIA roles for tabs", () => {
       renderMainPage();
       expect(screen.getByRole("tablist")).toBeInTheDocument();
-      expect(screen.getAllByRole("tab")).toHaveLength(2);
+      expect(screen.getAllByRole("tab")).toHaveLength(3);
     });
 
-    it("should have proper aria-selected attributes", () => {
+    it("should have proper aria-selected attributes and update when switching tabs", () => {
       renderMainPage();
       const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
+      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
 
+      // Verify initial state
       expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
+      expect(resourcesTab).toHaveAttribute("aria-selected", "false");
       expect(accountTab).toHaveAttribute("aria-selected", "false");
-    });
 
-    it("should update aria-selected when switching tabs", () => {
-      renderMainPage();
-      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
-      const accountTab = screen.getByRole("tab", { name: /Account/i });
-
+      // Switch to Account tab and verify update
       fireEvent.click(accountTab);
 
       expect(quickHelpTab).toHaveAttribute("aria-selected", "false");
+      expect(resourcesTab).toHaveAttribute("aria-selected", "false");
       expect(accountTab).toHaveAttribute("aria-selected", "true");
     });
   });
@@ -153,7 +170,12 @@ describe("MainPage", () => {
     it("should handle multiple tab switches correctly", () => {
       renderMainPage();
       const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
+      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
       const accountTab = screen.getByRole("tab", { name: /Account/i });
+
+      // Switch to Resources
+      fireEvent.click(resourcesTab);
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
 
       // Switch to Account
       fireEvent.click(accountTab);
@@ -163,9 +185,9 @@ describe("MainPage", () => {
       fireEvent.click(quickHelpTab);
       expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
 
-      // Switch to Account again
-      fireEvent.click(accountTab);
-      expect(screen.getByTestId("account-tab")).toBeInTheDocument();
+      // Switch to Resources again
+      fireEvent.click(resourcesTab);
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
     });
   });
 });

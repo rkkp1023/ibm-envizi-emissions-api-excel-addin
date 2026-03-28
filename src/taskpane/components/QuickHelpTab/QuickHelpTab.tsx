@@ -5,13 +5,12 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
-  Link,
 } from "@fluentui/react-components";
 import { useState } from "react";
 
 import { ApiCredentials } from "../../../common/credentials";
 import { getEnableEnviziLogin } from "../../../common/env";
-import { useAccountSubscription, useAuth } from "../../hooks";
+import { useAuth } from "../../hooks";
 import { SignUpMessageBanner } from "../SignUpMessageBanner";
 
 interface StepItemProps {
@@ -19,34 +18,11 @@ interface StepItemProps {
   description: string;
 }
 
-interface ResourceSectionProps {
-  title: string;
-  links: Array<{
-    href: string;
-    text: string;
-  }>;
-}
-
 function StepItem({ title, description }: Readonly<StepItemProps>) {
   return (
     <div className="text-block">
       <p className="text-header">{title}</p>
       <p>{description}</p>
-    </div>
-  );
-}
-
-function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
-  return (
-    <div>
-      <p className="block-header">{title}</p>
-      <div className="stack-gap-8">
-        {links.map((link) => (
-          <Link key={link.href} href={link.href} target="_blank">
-            {link.text}
-          </Link>
-        ))}
-      </div>
     </div>
   );
 }
@@ -68,61 +44,11 @@ const gettingStartedSteps = [
   },
 ];
 
-const getResourceSections = (supportLink: string) => [
-  {
-    title: "Documentation",
-    links: [
-      {
-        href: "https://www.ibm.com/docs/en/envizi-esg-suite?topic=modules-trial-user-only-envizi-ghg-emissions-api",
-        text: "IBM product documentation",
-      },
-      {
-        href: "https://ibm.github.io/ibm-envizi-emissions-api-excel-addin",
-        text: "Excel add-in documentation",
-      },
-    ],
-  },
-  {
-    title: "Community",
-    links: [
-      {
-        href: "https://community.ibm.com/community/user/communities/community-home?CommunityKey=6853271a-0a5c-45f9-a9a2-0186706f68ec",
-        text: "IBM Envizi Community",
-      },
-      {
-        href: "https://www.ibm.com/think/author/envizi",
-        text: "IBM Envizi blog",
-      },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      {
-        href: "https://your.feedback.ibm.com/jfe/form/SV_7Vh96izZeRghY34",
-        text: "Provide feedback",
-      },
-      {
-        href: supportLink,
-        text: "Contact IBM",
-      },
-    ],
-  },
-];
-
 export function QuickHelpTab() {
   const { state } = useAuth();
-  const { data: subscriptionData } = useAccountSubscription();
   const [showSignUpBanner] = useState(
     () => getEnableEnviziLogin() && (state.credentials as ApiCredentials).apiKey
   );
-
-  const supportLink =
-    !subscriptionData || subscriptionData.subscriptionType === "trial"
-      ? "mailto:enviziemissionsapi@ibm.com"
-      : "https://www.ibm.com/mysupport";
-
-  const resourceSections = getResourceSections(supportLink);
 
   return (
     <div className="home-panel">
@@ -139,27 +65,6 @@ export function QuickHelpTab() {
               {gettingStartedSteps.map((step) => (
                 <StepItem key={step.title} title={step.title} description={step.description} />
               ))}
-            </section>
-          </AccordionPanel>
-        </AccordionItem>
-
-        <AccordionItem value="resources">
-          <AccordionHeader>Resources</AccordionHeader>
-          <AccordionPanel>
-            <section className="accordion-content">
-              <p>
-                Everything you need to get started, build, and succeed with the Envizi Emissions API
-                Excel add-in.
-              </p>
-              <div className="stack-gap-16">
-                {resourceSections.map((section) => (
-                  <ResourceSection
-                    key={section.title}
-                    title={section.title}
-                    links={section.links}
-                  />
-                ))}
-              </div>
             </section>
           </AccordionPanel>
         </AccordionItem>

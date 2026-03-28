@@ -281,3 +281,8 @@ b {
   width: 48px;
   height: 32px;
 }
+
+.resouce {
+  padding-inline: 8px;
+  padding-block: 20px;
+}
