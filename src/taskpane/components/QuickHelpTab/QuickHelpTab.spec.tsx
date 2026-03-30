@@ -61,34 +61,57 @@ describe("QuickHelpTab", () => {
 
     it("should render getting started description", () => {
       expect(
-        screen.getByText(/Get started with the Emissions API Excel add-in/i)
+        screen.getByText(/Calculate greenhouse gas \(GHG\) emissions directly in your spreadsheet/i)
       ).toBeInTheDocument();
     });
 
     it("should render all three getting started steps", () => {
-      expect(screen.getByText("1. Choose a template (optional)")).toBeInTheDocument();
+      expect(screen.getByText("1. Select a sheet")).toBeInTheDocument();
       expect(screen.getByText("2. Enter your activity data")).toBeInTheDocument();
       expect(screen.getByText("3. Calculate emissions")).toBeInTheDocument();
     });
 
     it("should render step 1 description", () => {
       expect(
-        screen.getByText(
-          /In the Excel template, select the appropriate tab for your emissions type/i
-        )
+        screen.getByText(/Select the sheet for your emissions type, for example, S1. Stationary/i)
       ).toBeInTheDocument();
     });
 
     it("should render step 2 description", () => {
       expect(
-        screen.getByText(/In the input table, add data like fuel use and type/i)
+        screen.getByText(
+          /In the input table, add data like fuel use and type, location, and date range/i
+        )
       ).toBeInTheDocument();
     });
 
     it("should render step 3 description", () => {
       expect(
-        screen.getByText(/Once you've inputted your data, you can use the add-in functions/i)
+        screen.getByText(
+          /After you add your data, your emissions are calculated in the output table/i
+        )
       ).toBeInTheDocument();
+    });
+
+    it("should render image with play button overlay", () => {
+      const imageWrapper = document.querySelector(".image-wrapper");
+      expect(imageWrapper).toBeInTheDocument();
+
+      const playButtonOverlay = document.querySelector(".play-button-overlay");
+      expect(playButtonOverlay).toBeInTheDocument();
+    });
+
+    it("should render image placeholder text", () => {
+      expect(screen.getByText(/How to use excel add-in \(placeholder\)/i)).toBeInTheDocument();
+    });
+
+    it("should render documentation link", () => {
+      const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
+      expect(docLink).toBeInTheDocument();
+      expect(docLink).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+      );
     });
 
     it("should collapse getting started section when clicked", () => {
@@ -156,9 +179,24 @@ describe("QuickHelpTab", () => {
   });
 
   describe("Content Validation", () => {
-    it("should render step items with headers and descriptions", () => {
-      const textHeaders = document.querySelectorAll(".text-header");
-      expect(textHeaders).toHaveLength(3);
+    it("should render image container with proper structure", () => {
+      const imageContainer = document.querySelector(".image-container");
+      expect(imageContainer).toBeInTheDocument();
+    });
+
+    it("should render image wrapper inside image container", () => {
+      const imageWrapper = document.querySelector(".image-wrapper");
+      expect(imageWrapper).toBeInTheDocument();
+    });
+
+    it("should render play button overlay inside image wrapper", () => {
+      const playButtonOverlay = document.querySelector(".play-button-overlay");
+      expect(playButtonOverlay).toBeInTheDocument();
+    });
+
+    it("should render image placeholder", () => {
+      const imagePlaceholder = document.querySelector(".image-placeholder");
+      expect(imagePlaceholder).toBeInTheDocument();
     });
   });
 });
