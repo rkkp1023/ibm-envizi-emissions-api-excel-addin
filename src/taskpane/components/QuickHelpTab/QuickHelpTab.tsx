@@ -9,17 +9,12 @@ import {
   Image,
   Text,
 } from "@fluentui/react-components";
-import { useState } from "react";
 
 import {
   Open16Regular,
   PanelSeparateWindow20Regular,
   PlayCircleFilled,
 } from "@fluentui/react-icons";
-import { ApiCredentials } from "../../../common/credentials";
-import { getEnableEnviziLogin } from "../../../common/env";
-import { useAuth } from "../../hooks";
-import { SignUpMessageBanner } from "../SignUpMessageBanner";
 
 interface StepItemProps {
   title: string;
@@ -65,18 +60,21 @@ export function QuickHelpTab() {
                 your data, and Microsoft Excel uses verified emission factors to automatically
                 calculate emissions in tonnes of CO₂ equivalent. No extra tools or steps needed.
               </p>
-              <div className="image-wrapper">
-                <div className="image-container">
-                  <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
-                  <div className="play-button-overlay">
-                    <PlayCircleFilled />
+
+              {false && (
+                <div className="image-wrapper">
+                  <div className="image-container">
+                    <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
+                    <div className="play-button-overlay">
+                      <PlayCircleFilled />
+                    </div>
+                  </div>
+                  <div className="image-placeholder">
+                    <Text>How to use excel add-in (placeholder)</Text>
+                    <PanelSeparateWindow20Regular />
                   </div>
                 </div>
-                <div className="image-placeholder">
-                  <Text>How to use excel add-in (placeholder)</Text>
-                  <PanelSeparateWindow20Regular />
-                </div>
-              </div>
+              )}
 
               <Text size={400} weight="semibold">
                 Using the Envizi template
@@ -88,7 +86,7 @@ export function QuickHelpTab() {
                 as="a"
                 iconPosition="after"
                 icon={<Open16Regular />}
-                href="https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+                href="https://ibm.github.io/ibm-envizi-emissions-api-excel-addin"
               >
                 Excel add-in documentation
               </Button>
