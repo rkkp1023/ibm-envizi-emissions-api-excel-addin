@@ -314,3 +314,8 @@ b {
   height: 1px;
   background-color: var(--colorNeutralStroke2);
 }
+
+.resouce {
+  padding-inline: 8px;
+  padding-block: 20px;
+}

@@ -45,15 +45,12 @@ describe("QuickHelpTab", () => {
 
     it("should render accordion component", () => {
       expect(screen.getByRole("button", { name: /Getting started/i })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /Resources/i })).toBeInTheDocument();
     });
 
-    it("should have both accordion items expanded by default", () => {
+    it("should have getting started accordion item expanded by default", () => {
       const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
-      const resourcesButton = screen.getByRole("button", { name: /Resources/i });
 
       expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
-      expect(resourcesButton).toHaveAttribute("aria-expanded", "true");
     });
   });
 
@@ -115,163 +112,50 @@ describe("QuickHelpTab", () => {
     });
   });
 
-  describe("Resources Section", () => {
-    it("should render resources header", () => {
-      expect(screen.getByText(/Resources/i)).toBeInTheDocument();
-    });
-
-    it("should render resources description", () => {
-      expect(
-        screen.getByText(/Everything you need to get started, build, and succeed/i)
-      ).toBeInTheDocument();
-    });
-
-    it("should render Documentation section header", () => {
-      expect(screen.getByText("Documentation")).toBeInTheDocument();
-    });
-
-    it("should render Community section header", () => {
-      expect(screen.getByText("Community")).toBeInTheDocument();
-    });
-
-    it("should render Support section header", () => {
-      expect(screen.getByText("Support")).toBeInTheDocument();
-    });
-
-    it("should collapse resources section when clicked", () => {
-      const resourcesButton = screen.getByRole("button", { name: /Resources/i });
-
-      fireEvent.click(resourcesButton);
-
-      expect(resourcesButton).toHaveAttribute("aria-expanded", "false");
-    });
-  });
-
-  describe("Documentation Links", () => {
-    it("should render IBM product documentation link", () => {
-      const link = screen.getByRole("link", { name: /IBM product documentation/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute(
-        "href",
-        "https://www.ibm.com/docs/en/envizi-esg-suite?topic=modules-trial-user-only-envizi-ghg-emissions-api"
-      );
-      expect(link).toHaveAttribute("target", "_blank");
-    });
-
-    it("should render Excel add-in documentation link", () => {
-      const link = screen.getByRole("link", { name: /Excel add-in documentation/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute(
-        "href",
-        "https://ibm.github.io/ibm-envizi-emissions-api-excel-addin"
-      );
-      expect(link).toHaveAttribute("target", "_blank");
-    });
-  });
-
-  describe("Community Links", () => {
-    it("should render IBM Envizi Community link", () => {
-      const link = screen.getByRole("link", { name: /IBM Envizi Community/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute(
-        "href",
-        "https://community.ibm.com/community/user/communities/community-home?CommunityKey=6853271a-0a5c-45f9-a9a2-0186706f68ec"
-      );
-      expect(link).toHaveAttribute("target", "_blank");
-    });
-
-    it("should render IBM Envizi blog link", () => {
-      const link = screen.getByRole("link", { name: /IBM Envizi blog/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute("href", "https://www.ibm.com/think/author/envizi");
-      expect(link).toHaveAttribute("target", "_blank");
-    });
-  });
-
-  describe("Support Links", () => {
-    it("should render Provide feedback link", () => {
-      const link = screen.getByRole("link", { name: /Provide feedback/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute(
-        "href",
-        "https://your.feedback.ibm.com/jfe/form/SV_7Vh96izZeRghY34"
-      );
-      expect(link).toHaveAttribute("target", "_blank");
-    });
-
-    it("should render Contact IBM link", () => {
-      const link = screen.getByRole("link", { name: /Contact IBM/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute("href", "mailto:enviziemissionsapi@ibm.com");
-      expect(link).toHaveAttribute("target", "_blank");
-    });
-  });
-
   describe("Component Structure", () => {
     it("should have correct CSS classes", () => {
       const homePanel = document.querySelector(".home-panel");
       expect(homePanel).toHaveClass("home-panel");
     });
 
-    it("should render accordion content sections", () => {
+    it("should render accordion content section", () => {
       const accordionContent = document.querySelectorAll(".accordion-content");
-      expect(accordionContent).toHaveLength(2);
+      expect(accordionContent).toHaveLength(1);
     });
 
     it("should render text blocks for steps", () => {
       const textBlocks = document.querySelectorAll(".text-block");
       expect(textBlocks).toHaveLength(3);
     });
-
-    it("should render block headers for resource sections", () => {
-      const blockHeaders = document.querySelectorAll(".block-header");
-      expect(blockHeaders).toHaveLength(3);
-    });
   });
 
   describe("Accordion Behavior", () => {
-    it("should allow multiple accordion items to be open simultaneously", () => {
+    it("should have getting started section expanded by default", () => {
       const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
-      const resourcesButton = screen.getByRole("button", { name: /Resources/i });
 
       expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
-      expect(resourcesButton).toHaveAttribute("aria-expanded", "true");
     });
 
-    it("should allow collapsing one section while keeping other open", () => {
+    it("should allow collapsing the getting started section", () => {
       const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
-      const resourcesButton = screen.getByRole("button", { name: /Resources/i });
 
       fireEvent.click(gettingStartedButton);
 
       expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
-      expect(resourcesButton).toHaveAttribute("aria-expanded", "true");
     });
 
-    it("should allow collapsing both sections", () => {
+    it("should allow expanding the getting started section after collapsing", () => {
       const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
-      const resourcesButton = screen.getByRole("button", { name: /Resources/i });
 
       fireEvent.click(gettingStartedButton);
-      fireEvent.click(resourcesButton);
-
       expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
-      expect(resourcesButton).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.click(gettingStartedButton);
+      expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
     });
   });
 
   describe("Content Validation", () => {
-    it("should render all 6 external links", () => {
-      const links = screen.getAllByRole("link");
-      expect(links).toHaveLength(6);
-    });
-
-    it("should have correct number of resource sections", () => {
-      expect(screen.getByText("Documentation")).toBeInTheDocument();
-      expect(screen.getByText("Community")).toBeInTheDocument();
-      expect(screen.getByText("Support")).toBeInTheDocument();
-    });
-
     it("should render step items with headers and descriptions", () => {
       const textHeaders = document.querySelectorAll(".text-header");
       expect(textHeaders).toHaveLength(3);
