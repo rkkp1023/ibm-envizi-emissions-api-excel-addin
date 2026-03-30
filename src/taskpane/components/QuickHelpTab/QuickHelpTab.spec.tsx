@@ -37,27 +37,19 @@ describe("QuickHelpTab", () => {
     render(<QuickHelpTab />);
   });
 
-  describe("Rendering", () => {
-    it("should render the home panel container", () => {
-      const homePanel = document.querySelector(".home-panel");
-      expect(homePanel).toBeInTheDocument();
-    });
-
-    it("should render accordion component", () => {
-      expect(screen.getByRole("button", { name: /Getting started/i })).toBeInTheDocument();
-    });
-
-    it("should have getting started accordion item expanded by default", () => {
-      const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
-
-      expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
-    });
+  it("should render the home panel container", () => {
+    const homePanel = document.querySelector(".home-panel");
+    expect(homePanel).toBeInTheDocument();
   });
 
-  describe("Getting Started Section", () => {
-    it("should render getting started header", () => {
-      expect(screen.getByRole("button", { name: /Getting started/i })).toBeInTheDocument();
-    });
+  it("should render accordion component", () => {
+    expect(screen.getByRole("button", { name: /Getting started/i })).toBeInTheDocument();
+  });
+
+  it("should have getting started accordion item expanded by default", () => {
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
+  });
 
     it("should render getting started description", () => {
       expect(
@@ -125,9 +117,9 @@ describe("QuickHelpTab", () => {
     it("should expand getting started section when clicked again", () => {
       const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
 
-      // Collapse
-      fireEvent.click(gettingStartedButton);
-      expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
+    // Collapse
+    fireEvent.click(gettingStartedButton);
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
 
       // Expand
       fireEvent.click(gettingStartedButton);

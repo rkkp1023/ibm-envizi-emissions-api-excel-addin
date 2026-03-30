@@ -53,14 +53,8 @@ const gettingStartedSteps = [
 ];
 
 export function QuickHelpTab() {
-  const { state } = useAuth();
-  const [showSignUpBanner] = useState(
-    () => getEnableEnviziLogin() && (state.credentials as ApiCredentials).apiKey
-  );
-
   return (
     <div className="home-panel">
-      {showSignUpBanner && <SignUpMessageBanner />}
       <Accordion multiple collapsible defaultOpenItems={["getting-started", "resources"]}>
         <AccordionItem value="getting-started">
           <AccordionHeader>Getting started</AccordionHeader>

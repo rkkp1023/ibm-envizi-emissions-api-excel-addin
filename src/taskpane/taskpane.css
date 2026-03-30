@@ -277,6 +277,39 @@ b {
   height: 32px;
 }
 
+/* Emission Scope Section Styles */
+
+.scope-header {
+  display: flex;
+  padding-block-start: 12px;
+  gap: 12px;
+}
+
+.formulas-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.emission-formula-item {
+  padding-block: 12px;
+}
+
+.formula-category-section {
+  margin-block-end: 8px;
+}
+
+.formula-syntax code {
+  font-size: 14px;
+  color: #24a148;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.formula-divider {
+  height: 1px;
+  background-color: var(--colorNeutralStroke2);
+}
+
 .resouce {
   padding-inline: 8px;
   padding-block: 20px;
