@@ -6,12 +6,6 @@ import {
   AccordionItem,
   AccordionPanel,
 } from "@fluentui/react-components";
-import { useState } from "react";
-
-import { ApiCredentials } from "../../../common/credentials";
-import { getEnableEnviziLogin } from "../../../common/env";
-import { useAuth } from "../../hooks";
-import { SignUpMessageBanner } from "../SignUpMessageBanner";
 
 interface StepItemProps {
   title: string;
@@ -45,14 +39,8 @@ const gettingStartedSteps = [
 ];
 
 export function QuickHelpTab() {
-  const { state } = useAuth();
-  const [showSignUpBanner] = useState(
-    () => getEnableEnviziLogin() && (state.credentials as ApiCredentials).apiKey
-  );
-
   return (
     <div className="home-panel">
-      {showSignUpBanner && <SignUpMessageBanner />}
       <Accordion multiple collapsible defaultOpenItems={["getting-started", "resources"]}>
         <AccordionItem value="getting-started">
           <AccordionHeader>Getting started</AccordionHeader>
