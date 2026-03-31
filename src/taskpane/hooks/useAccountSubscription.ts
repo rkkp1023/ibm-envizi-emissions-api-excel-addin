@@ -12,11 +12,15 @@ import { CoreToken } from "../../common/credentials";
 import { SubscriptionType } from "../types/product-subscriptions.types";
 import { useAuth } from "./useAuth";
 
-const subscriptionTypes: Record<string, SubscriptionType> = {
+const subscriptionTypes: Record<string, SubscriptionType | Record<string, SubscriptionType>> = {
   EMISSIONS_TRIAL: "trial", // Preview
   EMISSIONS_TRIAL_GA: "trial", // GA trial
   EMISSIONS_FREE: "basic",
   D11IQZX: "marketplace",
+  D09SJZX: {
+    standard: "basic",
+    premium: "premium",
+  },
 };
 
 export interface AccountSubscriptionData {
@@ -44,11 +48,10 @@ export async function getAccountSubscriptionData(
     `https://api.ibm.com/saascore/run/rolodex-registration/na/api/v1/organizations/${orgId}/ghgapiallotment`,
     { headers }
   );
-  let subscriptionType: SubscriptionType;
-  if (response.data.partNumber === "D09SJZX") {
-    subscriptionType = response.data.edition ? "basic" : "premium";
-  } else {
-    subscriptionType = subscriptionTypes[response.data.partNumber];
+  let subscriptionType = subscriptionTypes[response.data.partNumber];
+  if (typeof subscriptionType === "object") {
+    subscriptionType =
+      subscriptionType[response.data.edition || "standard"] || Object.values(subscriptionType)[0];
   }
   return { ...response.data, subscriptionType };
 }
