@@ -49,6 +49,7 @@ async function ensureMetadataLoaded(): Promise<void> {
     const needsRefresh = await needsMetadataRefresh(METADATA_REFRESH_DAYS);
 
     if (needsRefresh) {
+      console.log("Creating/updating metadata...");
       await refreshMetadata();
     }
   } catch (error) {
@@ -68,6 +69,7 @@ async function refreshMetadata(): Promise<void> {
     const metadata = await fetchAllMetadata();
     await writeMetadataToSheet(metadata);
     await createNamedRanges();
+    console.log("Metadata refreshed successfully");
   } catch (error) {
     throw new Error(`Failed to refresh metadata: ${error.message || "Unknown error"}`);
   }
@@ -129,6 +131,7 @@ export async function refreshMetadataOnLogin(): Promise<void> {
     
     // Only refresh if sheet exists
     if (sheetExists) {
+      console.log("Refreshing metadata on login...");
       await refreshMetadata();
     }
   } catch (error) {
