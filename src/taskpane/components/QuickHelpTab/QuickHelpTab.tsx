@@ -137,50 +137,52 @@ function UsefulFeaturesAccordionItem() {
 }
 
 function gettingStartedAccordionItem() {
-  <AccordionItem value="getting-started">
-    <AccordionHeader>Getting started</AccordionHeader>
-    <AccordionPanel>
-      <section className="accordion-content">
-        <p>
-          Calculate greenhouse gas (GHG) emissions directly in your spreadsheet. You enter your
-          data, and Microsoft Excel uses verified emission factors to automatically calculate
-          emissions in tonnes of CO₂ equivalent. No extra tools or steps needed.
-        </p>
+  return (
+    <AccordionItem value="getting-started">
+      <AccordionHeader>Getting started</AccordionHeader>
+      <AccordionPanel>
+        <section className="accordion-content">
+          <p>
+            Calculate greenhouse gas (GHG) emissions directly in your spreadsheet. You enter your
+            data, and Microsoft Excel uses verified emission factors to automatically calculate
+            emissions in tonnes of CO₂ equivalent. No extra tools or steps needed.
+          </p>
 
-        {false && (
-          <div className="image-wrapper">
-            <div className="image-container">
-              <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
-              <div className="play-button-overlay">
-                <PlayCircleFilled />
+          {false && (
+            <div className="image-wrapper">
+              <div className="image-container">
+                <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
+                <div className="play-button-overlay">
+                  <PlayCircleFilled />
+                </div>
+              </div>
+              <div className="image-placeholder">
+                <Text>How to use excel add-in (placeholder)</Text>
+                <PanelSeparateWindow20Regular />
               </div>
             </div>
-            <div className="image-placeholder">
-              <Text>How to use excel add-in (placeholder)</Text>
-              <PanelSeparateWindow20Regular />
-            </div>
-          </div>
-        )}
+          )}
 
-        <Text size={400} weight="semibold">
-          Using the Envizi template
-        </Text>
-        {gettingStartedSteps.map((step) => (
-          <StepItem key={step.title} title={step.title} description={step.description} />
-        ))}
-        <Button
-          as="a"
-          iconPosition="after"
-          icon={<Open16Regular />}
-          href="https://ibm.github.io/ibm-envizi-emissions-api-excel-addin"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Excel add-in documentation
-        </Button>
-      </section>
-    </AccordionPanel>
-  </AccordionItem>;
+          <Text size={400} weight="semibold">
+            Using the Envizi template
+          </Text>
+          {gettingStartedSteps.map((step) => (
+            <StepItem key={step.title} title={step.title} description={step.description} />
+          ))}
+          <Button
+            as="a"
+            iconPosition="after"
+            icon={<Open16Regular />}
+            href="https://ibm.github.io/ibm-envizi-emissions-api-excel-addin"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Excel add-in documentation
+          </Button>
+        </section>
+      </AccordionPanel>
+    </AccordionItem>
+  );
 }
 
 export function QuickHelpTab() {

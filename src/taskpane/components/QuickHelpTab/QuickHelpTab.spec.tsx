@@ -137,9 +137,9 @@ describe("Component Structure", () => {
     expect(homePanel).toHaveClass("home-panel");
   });
 
-  it("should render accordion content section", () => {
+  it("should render accordion content sections", () => {
     const accordionContent = document.querySelectorAll(".accordion-content");
-    expect(accordionContent).toHaveLength(1);
+    expect(accordionContent).toHaveLength(2);
   });
 
   it("should render text blocks for steps", () => {
