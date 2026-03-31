@@ -1,6 +1,6 @@
 // Copyright IBM Corp. 2026
 
-import { Text } from "@fluentui/react-components";
+import { Link, Text } from "@fluentui/react-components";
 import { EmissionFormulaItemProps } from "./types";
 
 export function EmissionFormulaItem({ formula }: Readonly<EmissionFormulaItemProps>) {
@@ -10,9 +10,16 @@ export function EmissionFormulaItem({ formula }: Readonly<EmissionFormulaItemPro
         {formula?.category && <Text weight="semibold">{formula.category}: </Text>}
         <Text>{formula.description}</Text>
       </div>
-      <div className="formula-syntax">
-        <code>{formula.formulaSyntax}</code>
-      </div>
+      {formula?.formulaSyntax && (
+        <div className="formula-syntax">
+          <code>{formula.formulaSyntax}</code>
+        </div>
+      )}
+      {formula?.link && (
+        <Link href={formula.link.href} target="_blank">
+          {formula.link.title}
+        </Link>
+      )}
     </div>
   );
 }

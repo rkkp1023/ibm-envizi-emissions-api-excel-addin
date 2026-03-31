@@ -279,9 +279,17 @@ b {
 
 /* Emission Scope Section Styles */
 
+.accordion-content > .emission-scope:first-of-type {
+  padding-block-start: 12px;
+}
+
+.emission-scope {
+  padding-block-end: 12px;
+}
+
 .scope-header {
   display: flex;
-  padding-block-start: 12px;
+  align-items: center;
   gap: 12px;
 }
 
@@ -291,6 +299,9 @@ b {
 }
 
 .emission-formula-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   padding-block: 12px;
 }
 
@@ -341,6 +352,11 @@ b {
 }
 
 .image-placeholder {
+  display: flex;
+  justify-content: center;
+}
+
+.learn-more-btn {
   display: flex;
   justify-content: center;
 }

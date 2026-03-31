@@ -41,6 +41,8 @@ export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
           iconPosition="after"
           icon={<Open16Regular />}
           href="https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+          rel="noopener noreferrer"
+          target="_blank"
         >
           Learn more
         </Button>
