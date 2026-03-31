@@ -4,7 +4,6 @@ import { factorHelper } from "./factorHelper";
 import { factorSearch } from "./factorSearchHelper";
 import { genericApiCall } from "./generic-api-call";
 import { getInputHeaders, getOutputHeaders, isValidFunctionName, VALID_FUNCTION_NAMES } from "./headers-config";
-import { recommend as recommendHelper } from "./recommendHelper";
 
 /**
  * Calculates location-based emissions.
@@ -305,28 +304,6 @@ export async function factor_search(
   size?: number
 ): Promise<any[][]> {
   return factorSearch(search, country, stateProvince, date, page, size);
-}
-
-/**
- * Recommends activity types based on search criteria.
- * @customfunction
- * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#recommend
- * @param search Search query string for activity type
- * @param country ISO alpha-3 country code
- * @param stateProvince Geographic state or province
- * @param date Activity date
- * @param page Page number for pagination (default: 1)
- * @param size Number of results per page (default: 1)
- */
-export async function recommend(
-  search: string,
-  country: string,
-  stateProvince?: string,
-  date?: string,
-  page?: number,
-  size?: number
-): Promise<any[][]> {
-  return recommendHelper(search, country, stateProvince, date, page, size);
 }
 
 /**
