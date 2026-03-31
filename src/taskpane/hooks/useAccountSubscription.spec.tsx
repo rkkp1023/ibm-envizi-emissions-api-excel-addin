@@ -71,12 +71,12 @@ describe("useAccountSubscription", () => {
       });
     });
 
-    it("should map D09SJZX with edition to basic", async () => {
+    it("should map D09SJZX with standard edition to basic", async () => {
       const mockResponse = {
         data: {
           organizationId: "org-123",
           partNumber: "D09SJZX",
-          edition: "some-edition",
+          edition: "standard",
           totalApiCalls: 1000,
           billingCycleMonths: 12,
           ssmCreationDate: "2024-01-01",
@@ -91,12 +91,12 @@ describe("useAccountSubscription", () => {
       expect(result.subscriptionType).toBe("basic");
     });
 
-    it("should map D09SJZX without edition to premium", async () => {
+    it("should map D09SJZX with premium edition to premium", async () => {
       const mockResponse = {
         data: {
           organizationId: "org-123",
           partNumber: "D09SJZX",
-          edition: "",
+          edition: "premium",
           totalApiCalls: 1000,
           billingCycleMonths: 12,
           ssmCreationDate: "2024-01-01",
