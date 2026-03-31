@@ -36,7 +36,9 @@ function showNotification(message: string, type: "info" | "error" = "info"): voi
       // Ensure message is a string and not undefined/null
       const safeMessage = message || "An error occurred";
       const encodedMessage = encodeURIComponent(safeMessage);
-      const notificationUrl = `${window.location.origin}/commands/notification.html?message=${encodedMessage}`;
+      // Use /excel-addin root path for server deployment
+      const basePath = window.location.origin.includes('localhost') ? '' : '/excel-addin';
+      const notificationUrl = `${window.location.origin}${basePath}/commands/notification.html?message=${encodedMessage}`;
       
       console.log("Opening notification dialog with URL:", notificationUrl);
       

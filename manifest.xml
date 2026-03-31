@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>90ef193d-e53e-4f93-b280-39e2dc609661</Id>
-  <Version>1.0.3</Version>
+  <Version>1.1.0</Version>
   <ProviderName>IBM</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="IBM Envizi Emissions Calculations"/>
@@ -325,12 +325,12 @@
         <bt:String id="GetStarted.Title" DefaultValue="Get started with IBM Envizi Emissions Calculations"/>
         <bt:String id="EnviziTab.Label" DefaultValue="IBM Envizi"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="IBM Envizi"/>
-        <bt:String id="TaskpaneGroup.Label" DefaultValue="Taskpane"/>
+        <bt:String id="TaskpaneGroup.Label" DefaultValue="Task pane"/>
         <bt:String id="ActivityTypesGroup.Label" DefaultValue="Activity Types"/>
         <bt:String id="AreaGroup.Label" DefaultValue="Area"/>
         <bt:String id="UnitsGroup.Label" DefaultValue="Units"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="IBM Envizi Emissions Calculations"/>
-        <bt:String id="EnviziTaskpaneButton.Label" DefaultValue="Open Taskpane"/>
+        <bt:String id="EnviziTaskpaneButton.Label" DefaultValue="Open Task pane"/>
         <bt:String id="ActivityTypesMenu.Label" DefaultValue="Insert Activity Types"/>
         <bt:String id="AreaMenu.Label" DefaultValue="Insert Area"/>
         <bt:String id="UnitsButton.Label" DefaultValue="Insert Units"/>

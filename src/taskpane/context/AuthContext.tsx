@@ -8,6 +8,7 @@ import { createContext, ReactNode, useCallback, useEffect, useReducer } from "re
 
 import { coreEnviziAuth } from "../../api/coreEnviziAuth";
 import { enviziUiGraphQL } from "../../api/enviziUiGraphQL";
+import { refreshMetadataOnLogin } from "../../commands/commands";
 import {
   ApiCredentials,
   Credentials,
@@ -163,6 +164,12 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
         // Note: API key login uses saveApiCredentialsToStorage via performLogin() instead
         saveUserCredentialsToStorage(credentials);
         ensureClient(credentials);
+        
+        // Refresh metadata on login (non-blocking) - needed for Envizi login
+        refreshMetadataOnLogin().catch((error) => {
+          console.error("Failed to refresh metadata on login:", error);
+        });
+        
         dispatch({
           type: "loginSuccess",
           payload: { credentials },

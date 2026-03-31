@@ -103,11 +103,6 @@ module.exports = async (env, options) => {
         chunks: ["login-callback"],
       }),
       new HtmlWebpackPlugin({
-        filename: "commands.html",
-        template: "./src/commands/commands.html",
-        chunks: ["polyfill", "commands"],
-      }),
-      new HtmlWebpackPlugin({
         filename: "commands/notification.html",
         template: "./src/commands/notification.html",
         chunks: [],
