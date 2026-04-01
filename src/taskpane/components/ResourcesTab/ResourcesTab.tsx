@@ -59,7 +59,7 @@ const getResourceSections = (supportLink: string) => [
     title: "Support",
     links: [
       {
-        href: "https://your.feedback.ibm.com/jfe/form/SV_7Vh96izZeRghY34",
+        href: "https://your.feedback.ibm.com/jfe/form/SV_1YXxfTEf9MKci8u",
         text: "Provide feedback",
       },
       {

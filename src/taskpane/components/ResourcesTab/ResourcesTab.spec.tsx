@@ -145,7 +145,7 @@ describe("ResourcesTab", () => {
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute(
         "href",
-        "https://your.feedback.ibm.com/jfe/form/SV_7Vh96izZeRghY34"
+        "https://your.feedback.ibm.com/jfe/form/SV_1YXxfTEf9MKci8u"
       );
       expect(link).toHaveAttribute("target", "_blank");
     });
