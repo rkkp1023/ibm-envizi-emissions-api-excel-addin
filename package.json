@@ -79,7 +79,7 @@
     "style-loader": "^4.0.0",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.2",
-    "webpack": "^5.95.0",
+    "webpack": "^5.105.4",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "5.2.3"
   },
@@ -90,8 +90,12 @@
   ],
   "resolutions": {
     "ajv": ">=8.18.0",
-    "flatted": "^3.4.0",
+    "flatted": "^3.4.2",
+    "handlebars": "^4.7.9",
     "minimatch": "^10.2.5",
-    "test-exclude": "^7.0.1"
+    "node-forge": "^1.4.0",
+    "path-to-regexp": "^0.1.13",
+    "test-exclude": "^7.0.1",
+    "yaml": "^1.10.3"
   }
 }
