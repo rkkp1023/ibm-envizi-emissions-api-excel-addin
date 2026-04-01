@@ -5164,10 +5164,10 @@ embla-carousel@^8.5.1:
   resolved "https://registry.yarnpkg.com/embla-carousel/-/embla-carousel-8.6.0.tgz#abcedff2bff36992ea8ac27cd30080ca5b6a3f58"
   integrity sha512-SjWyZBHJPbqxHOzckOfo8lHisEaJWmwd23XppYFYVh10bU66/Pn5tkVkbkCMZVdbUE5eTCI2nD8OyIP4Z+uwkA==
 
-emissions-api-sdk@1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/emissions-api-sdk/-/emissions-api-sdk-1.0.5.tgz#f7072e53ddaf3d1cfcf56b43fe80f2f663f9612f"
-  integrity sha512-DKBDSFI6pNxZUgVk195RNSvgIJPCt4vxyZr5VYDY36iVnuW/5zoOrfYnHKRDy1zepUbHy8WRG9F566ScyIp6HA==
+emissions-api-sdk@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/emissions-api-sdk/-/emissions-api-sdk-1.0.6.tgz#a920ce96116e424bf56c3745f1de24d4df40f4cf"
+  integrity sha512-dmfciDGlnABmKT/vMsUT8OfVxDLDELF2X5jrWYwifgHacpdgDOXWI0kKadE38qB/OhfGgWCV3r6aRJAKvmg7QA==
   dependencies:
     axios "^1.13.5"
 
