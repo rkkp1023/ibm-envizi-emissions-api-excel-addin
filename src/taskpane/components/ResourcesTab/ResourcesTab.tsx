@@ -3,6 +3,7 @@
  */
 
 import { Link } from "@fluentui/react-components";
+import { getEnableEnviziLogin } from "../../../common/env";
 import { useAccountSubscription } from "../../hooks";
 
 interface ResourceSectionProps {
@@ -28,7 +29,7 @@ function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
   );
 }
 
-const getResourceSections = (supportLink: string) => [
+const getResourceSections = (supportLink: string, formId: string) => [
   {
     title: "Documentation",
     links: [
@@ -59,7 +60,7 @@ const getResourceSections = (supportLink: string) => [
     title: "Support",
     links: [
       {
-        href: "https://your.feedback.ibm.com/jfe/form/SV_1YXxfTEf9MKci8u",
+        href: `https://your.feedback.ibm.com/jfe/form/${formId}`,
         text: "Provide feedback",
       },
       {
@@ -78,7 +79,9 @@ export function ResourcesTab() {
       ? "mailto:enviziemissionsapi@ibm.com"
       : "https://www.ibm.com/mysupport";
 
-  const resourceSections = getResourceSections(supportLink);
+  const formId = getEnableEnviziLogin() ? "SV_1YXxfTEf9MKci8u" : "SV_7Vh96izZeRghY34";
+
+  const resourceSections = getResourceSections(supportLink, formId);
 
   return (
     <div className="resouce">
