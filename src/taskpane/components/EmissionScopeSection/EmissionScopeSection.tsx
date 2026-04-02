@@ -10,7 +10,7 @@ export function EmissionScopeSection({
   formulas,
 }: Readonly<EmissionScopeSectionProps>) {
   return (
-    <>
+    <div className="emission-scope">
       <div className="scope-header">
         {icon}
         <Text size={400} weight="semibold">
@@ -23,6 +23,6 @@ export function EmissionScopeSection({
           <div className="formula-divider" />
         </div>
       ))}
-    </>
+    </div>
   );
 }

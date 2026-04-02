@@ -42,19 +42,27 @@ describe("QuickHelpTab", () => {
     expect(homePanel).toBeInTheDocument();
   });
 
-  it("should render accordion component", () => {
+  it("should render accordion component with both sections", () => {
     expect(screen.getByRole("button", { name: /Getting started/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Useful features/i })).toBeInTheDocument();
   });
 
-  it("should have getting started accordion item expanded by default", () => {
+  it("should have both accordion items expanded by default", () => {
     const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
+
     expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
   });
 
   it("should render getting started description", () => {
     expect(
       screen.getByText(/Calculate greenhouse gas \(GHG\) emissions directly in your spreadsheet/i)
     ).toBeInTheDocument();
+  });
+
+  it("should render 'Using the Envizi template' heading", () => {
+    expect(screen.getByText("Using the Envizi template")).toBeInTheDocument();
   });
 
   it("should render all three getting started steps", () => {
@@ -127,6 +135,100 @@ describe("QuickHelpTab", () => {
   });
 });
 
+describe("Useful Features Section", () => {
+  beforeEach(() => {
+    render(<QuickHelpTab />);
+  });
+
+  it("should render useful features accordion item", () => {
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
+    expect(usefulFeaturesButton).toBeInTheDocument();
+  });
+
+  it("should have useful features section expanded by default", () => {
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("should render useful features description", () => {
+    expect(
+      screen.getByText(
+        /Get AI help to select a data type, ensure that you enter valid activity data/i
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("should render all three useful features", () => {
+    expect(screen.getByText("Get a recommended data type")).toBeInTheDocument();
+    expect(screen.getByText("Ensure values are valid")).toBeInTheDocument();
+    expect(screen.getByText("Match column titles to the template")).toBeInTheDocument();
+  });
+
+  it("should render AI recommendation feature description", () => {
+    const description = screen.getByText(/You then review the recommended data type/i);
+    expect(description).toBeInTheDocument();
+    expect(description.textContent).toContain("Get AI to help select a data type");
+    expect(description.textContent).toContain("decide whether it is appropriate to your activity");
+  });
+
+  it("should render AI recommendation formula syntax", () => {
+    expect(
+      screen.getByText(
+        /=ENVIZI\.RECOMMEND\(search,country,\[stateProvince\],\[data\],\[page\],\[size\]\)/i
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("should render valid values feature description", () => {
+    expect(
+      screen.getByText(/Ensure that you select valid and up-to-date input values/i)
+    ).toBeInTheDocument();
+  });
+
+  it("should render column titles feature description", () => {
+    expect(
+      screen.getByText(
+        /If you use your own template, you can add the input and output column titles/i
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("should render headers formula syntax", () => {
+    expect(
+      screen.getByText(/=ENVIZI\.HEADERS\(\(function Name\),\[input\]\)/i)
+    ).toBeInTheDocument();
+  });
+
+  it("should render learn more about features link", () => {
+    const learnMoreLink = screen.getByRole("link", { name: /Learn more about features/i });
+    expect(learnMoreLink).toBeInTheDocument();
+    expect(learnMoreLink).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+    );
+  });
+
+  it("should collapse useful features section when clicked", () => {
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
+
+    fireEvent.click(usefulFeaturesButton);
+
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("should expand useful features section when clicked again", () => {
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
+
+    // Collapse
+    fireEvent.click(usefulFeaturesButton);
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "false");
+
+    // Expand
+    fireEvent.click(usefulFeaturesButton);
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
+  });
+});
+
 describe("Component Structure", () => {
   beforeEach(() => {
     render(<QuickHelpTab />);
@@ -137,14 +239,19 @@ describe("Component Structure", () => {
     expect(homePanel).toHaveClass("home-panel");
   });
 
-  it("should render accordion content section", () => {
+  it("should render accordion content sections for both accordion items", () => {
     const accordionContent = document.querySelectorAll(".accordion-content");
-    expect(accordionContent).toHaveLength(1);
+    expect(accordionContent).toHaveLength(2);
   });
 
-  it("should render text blocks for steps", () => {
+  it("should render text blocks for getting started steps", () => {
     const textBlocks = document.querySelectorAll(".text-block");
     expect(textBlocks).toHaveLength(3);
+  });
+
+  it("should render learn more button container", () => {
+    const learnMoreBtn = document.querySelector(".learn-more-btn");
+    expect(learnMoreBtn).toBeInTheDocument();
   });
 });
 
@@ -153,10 +260,12 @@ describe("Accordion Behavior", () => {
     render(<QuickHelpTab />);
   });
 
-  it("should have getting started section expanded by default", () => {
+  it("should have both sections expanded by default", () => {
     const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
 
     expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
   });
 
   it("should allow collapsing the getting started section", () => {
@@ -175,5 +284,26 @@ describe("Accordion Behavior", () => {
 
     fireEvent.click(gettingStartedButton);
     expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("should allow independent accordion behavior for both sections", () => {
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
+
+    // Collapse getting started
+    fireEvent.click(gettingStartedButton);
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
+
+    // Collapse useful features
+    fireEvent.click(usefulFeaturesButton);
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "false");
+
+    // Expand both
+    fireEvent.click(gettingStartedButton);
+    fireEvent.click(usefulFeaturesButton);
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
   });
 });

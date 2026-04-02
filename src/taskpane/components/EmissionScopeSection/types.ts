@@ -1,9 +1,15 @@
 // Copyright IBM Corp. 2026
 
 export interface EmissionFormula {
-  category: string;
   description: string;
-  formulaSyntax: string;
+  category?: string;
+  link?: Link;
+  formulaSyntax?: string;
+}
+
+export interface Link {
+  title: string;
+  href: string;
 }
 
 export interface EmissionScopeSectionProps {
@@ -14,4 +20,10 @@ export interface EmissionScopeSectionProps {
 
 export interface EmissionFormulaItemProps {
   formula: EmissionFormula;
+}
+
+export interface EmissionScopeConfig {
+  title: string;
+  formulas: EmissionFormula[];
+  iconName?: string;
 }
