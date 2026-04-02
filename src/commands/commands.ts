@@ -24,41 +24,41 @@ import {
 const METADATA_REFRESH_DAYS = 3;
 
 /**
- * Flag to track if metadata is being initialized
+ * Promise to track metadata initialization
  */
-let isInitializingMetadata = false;
+let initializeMetadataPromise: Promise<void> | null = null;
 
 /**
  * Ensures metadata is loaded and up-to-date
  * This is called before any data validation operation
  */
 async function ensureMetadataLoaded(): Promise<void> {
-  // Prevent concurrent initialization
-  if (isInitializingMetadata) {
-    // Wait for the current initialization to complete
-    while (isInitializingMetadata) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-    return;
+  // If initialization is not in progress, start it
+  if (!initializeMetadataPromise) {
+    initializeMetadataPromise = (async () => {
+      try {
+        // Check if metadata needs refresh
+        const needsRefresh = await needsMetadataRefresh(METADATA_REFRESH_DAYS);
+
+        if (needsRefresh) {
+          console.log("Creating/updating metadata...");
+          await refreshMetadata();
+        }
+      } catch (error) {
+        // On any error, cleanup the metadata sheet
+        await deleteMetadataSheet();
+        throw error;
+      }
+    })();
+
+    // Once complete, set to resolved promise so we don't need to do it again
+    initializeMetadataPromise = initializeMetadataPromise.then(() => {
+      initializeMetadataPromise = Promise.resolve();
+    });
   }
 
-  try {
-    isInitializingMetadata = true;
-
-    // Check if metadata needs refresh
-    const needsRefresh = await needsMetadataRefresh(METADATA_REFRESH_DAYS);
-
-    if (needsRefresh) {
-      console.log("Creating/updating metadata...");
-      await refreshMetadata();
-    }
-  } catch (error) {
-    // On any error, cleanup the metadata sheet
-    await deleteMetadataSheet();
-    throw error;
-  } finally {
-    isInitializingMetadata = false;
-  }
+  // Wait for initialization to complete (or return immediately if already resolved)
+  await initializeMetadataPromise;
 }
 
 /**
