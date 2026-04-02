@@ -31,13 +31,13 @@ export const apiHomeUrls: Record<EnvType, string> = {
 
 export const enviziUiOrigins: Record<EnvType, string> = {
   prod: "https://envizi.ibm.com",
-  np: "https://pentest.envizi.ibm.com",
+  np: "https://us006t.envizi.com",
   local: "https://local.us006t.envizi.com",
 };
 
 export const enviziApiOrigins: Record<EnvType, string> = {
   prod: "https://envizi.ibm.com",
-  np: "https://pentest.envizi.ibm.com",
+  np: "https://us006t.envizi.com",
   local: "https://us006t.envizi.com",
 };
 
