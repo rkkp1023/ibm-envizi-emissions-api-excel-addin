@@ -1,6 +1,13 @@
 // Copyright IBM Corp. 2026
 
-import { AiRecommend } from "@carbon/icons-react";
+import {
+  AiRecommend,
+  CalculatorCheck,
+  Flash,
+  GasStation,
+  SearchLocate,
+  Van,
+} from "@carbon/icons-react";
 import {
   Accordion,
   AccordionHeader,
@@ -19,11 +26,33 @@ import {
 import { getEnableEnviziLogin } from "../../../common/env";
 import { EmissionScopeSection } from "../EmissionScopeSection";
 import { EmissionScopeConfig } from "../EmissionScopeSection/types";
+import { functions, gettingStartedSteps, usefulFeatures } from "./contstant";
 
 interface StepItemProps {
   title: string;
   description: string;
 }
+
+interface RenderEmissionScopeSectionsProps {
+  features: EmissionScopeConfig[];
+  learnMoreLink: string;
+  learnMoreText: string;
+}
+
+interface ExternalLinkButtonProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+const iconMap: Record<string, React.ReactNode> = {
+  RecommendedAI: <AiRecommend size={24} />,
+  gasStation: <GasStation size={24} />,
+  flash: <Flash size={24} />,
+  van: <Van size={24} />,
+  calculatorCheck: <CalculatorCheck size={24} />,
+  searchLocate: <SearchLocate size={24} />,
+};
 
 function StepItem({ title, description }: Readonly<StepItemProps>) {
   return (
@@ -36,101 +65,49 @@ function StepItem({ title, description }: Readonly<StepItemProps>) {
   );
 }
 
-const gettingStartedSteps = [
-  {
-    title: "1. Select a sheet",
-    description: "Select the sheet for your emissions type, for example, S1. Stationary.",
-  },
-  {
-    title: "2. Enter your activity data",
-    description: "In the input table, add data like fuel use and type, location, and date range.",
-  },
-  {
-    title: "3. Calculate emissions",
-    description: "After you add your data, your emissions are calculated in the output table.",
-  },
-];
-
-const usefulFeatures: EmissionScopeConfig[] = [
-  {
-    iconName: "RecommendedAI",
-    title: "Get a recommended data type",
-    formulas: [
-      {
-        description:
-          "Get AI to help select a data type when you’re not sure which one to use. You then review the recommended data type and decide whether it is appropriate to your activity.",
-        formulaSyntax: "=ENVIZI.RECOMMEND(search,country,[stateProvince],[data],[page],[size])",
-      },
-    ],
-  },
-  {
-    title: "Ensure values are valid",
-    formulas: [
-      {
-        description:
-          "Ensure that you select valid and up-to-date input values. Use the ribbon buttons on the IBM Envizi tab to add dropdowns to the activity type, unit, and location cells. Select a cell, then click the relevant button.",
-      },
-    ],
-  },
-  {
-    title: "Match column titles to the template",
-    formulas: [
-      {
-        description:
-          "If you use your own template, you can add the input and output column titles from the Envizi template. You can then follow the function exactly as written and column titles, such as CO2e and CH4, match the calculated results.",
-        formulaSyntax: "=ENVIZI.HEADERS((function Name),[input])",
-      },
-    ],
-  },
-];
-
-function UsefulFeaturesAccordionItem() {
-  const iconMap: Record<string, React.ReactNode> = {
-    RecommendedAI: <AiRecommend />,
-  };
-
-  const learnMoreTopic = getEnableEnviziLogin()
-    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
-    : "modules-trial-user-only-envizi-ghg-emissions-api";
-  const learnMoreFeatureLink = `https://www.ibm.com/docs/envizi-esg-suite?topic=${learnMoreTopic}`;
-
+function renderEmissionScopeSections({
+  features,
+  learnMoreLink,
+  learnMoreText,
+}: RenderEmissionScopeSectionsProps): React.ReactElement {
   return (
-    <AccordionItem value="useful-features">
-      <AccordionHeader>Useful features</AccordionHeader>
-      <AccordionPanel>
-        <section className="accordion-content">
-          <span>
-            Get AI help to select a data type, ensure that you enter valid activity data, units, and
-            locations, and align the column titles in your spreadsheet with the Envizi template.
-          </span>
-
-          {usefulFeatures.map((feature) => (
-            <EmissionScopeSection
-              key={feature.title}
-              icon={iconMap[feature.iconName]}
-              title={feature.title}
-              formulas={feature.formulas}
-            />
-          ))}
-          <div className="learn-more-btn">
-            <Button
-              as="a"
-              iconPosition="after"
-              icon={<Open16Regular />}
-              href={learnMoreFeatureLink}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Learn more about features
-            </Button>
-          </div>
-        </section>
-      </AccordionPanel>
-    </AccordionItem>
+    <>
+      {features.map((feature) => (
+        <EmissionScopeSection
+          key={feature.title}
+          icon={iconMap[feature.iconName]}
+          title={feature.title}
+          formulas={feature.formulas}
+        />
+      ))}
+      <div className="learn-more-btn">
+        {renderExternalLinkButton({ href: learnMoreLink, children: learnMoreText })}
+      </div>
+    </>
   );
 }
 
-function gettingStartedAccordionItem() {
+function renderExternalLinkButton({
+  href,
+  children,
+  className,
+}: ExternalLinkButtonProps): React.ReactElement {
+  return (
+    <Button
+      as="a"
+      iconPosition="after"
+      icon={<Open16Regular />}
+      href={href}
+      rel="noopener noreferrer"
+      target="_blank"
+      className={className}
+    >
+      {children}
+    </Button>
+  );
+}
+
+function GettingStartedAccordionItem(): React.ReactElement {
   return (
     <AccordionItem value="getting-started">
       <AccordionHeader>Getting started</AccordionHeader>
@@ -163,16 +140,55 @@ function gettingStartedAccordionItem() {
           {gettingStartedSteps.map((step) => (
             <StepItem key={step.title} title={step.title} description={step.description} />
           ))}
-          <Button
-            as="a"
-            iconPosition="after"
-            icon={<Open16Regular />}
-            href="https://ibm.github.io/ibm-envizi-emissions-api-excel-addin"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Excel add-in documentation
-          </Button>
+          {renderExternalLinkButton({
+            href: "https://ibm.github.io/ibm-envizi-emissions-api-excel-addin",
+            children: "Excel add-in documentation",
+          })}
+        </section>
+      </AccordionPanel>
+    </AccordionItem>
+  );
+}
+
+function UsefulFeaturesAccordionItem(): React.ReactElement {
+  const learnMoreTopic = getEnableEnviziLogin()
+    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+    : "modules-trial-user-only-envizi-ghg-emissions-api";
+  const learnMoreFeatureLink = `https://www.ibm.com/docs/envizi-esg-suite?topic=${learnMoreTopic}`;
+
+  return (
+    <AccordionItem value="useful-features">
+      <AccordionHeader>Useful features</AccordionHeader>
+      <AccordionPanel>
+        <section className="accordion-content">
+          <span>
+            Get AI help to select a data type, ensure that you enter valid activity data, units, and
+            locations, and align the column titles in your spreadsheet with the Envizi template.
+          </span>
+
+          {renderEmissionScopeSections({
+            features: usefulFeatures,
+            learnMoreLink: learnMoreFeatureLink,
+            learnMoreText: "Learn more about features",
+          })}
+        </section>
+      </AccordionPanel>
+    </AccordionItem>
+  );
+}
+
+function FunctionsAccordionItem(): React.ReactElement {
+  return (
+    <AccordionItem value="functions">
+      <AccordionHeader>Functions</AccordionHeader>
+      <AccordionPanel>
+        <section className="accordion-content">
+          {renderEmissionScopeSections({
+            features: functions,
+            learnMoreLink:
+              "https://www.ibm.com/docs/en/envizi-esg-suite?topic=reference-functions-in-emissions-calculations-in-excel",
+            learnMoreText: "View all functions",
+          })}
         </section>
       </AccordionPanel>
     </AccordionItem>
@@ -183,8 +199,9 @@ export function QuickHelpTab() {
   return (
     <div className="home-panel">
       <Accordion multiple collapsible defaultOpenItems={["getting-started", "useful-features"]}>
-        {gettingStartedAccordionItem()}
-        {UsefulFeaturesAccordionItem()}
+        <GettingStartedAccordionItem />
+        <UsefulFeaturesAccordionItem />
+        <FunctionsAccordionItem />
       </Accordion>
     </div>
   );
