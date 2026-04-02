@@ -24,7 +24,7 @@ export const usefulFeatures: EmissionScopeConfig[] = [
     formulas: [
       {
         description:
-          "Get AI to help select a data type when you're not sure which one to use. You then review the recommended data type and decide whether it is appropriate to your activity.",
+          "Get AI to help select a data type when you’re not sure which one to use. You then review the recommended data type and decide whether it is appropriate to your activity.",
         formulaSyntax: "=ENVIZI.RECOMMEND(search,country,[stateProvince],[data],[page],[size])",
       },
     ],
@@ -34,7 +34,7 @@ export const usefulFeatures: EmissionScopeConfig[] = [
     formulas: [
       {
         description:
-          "Ensure that you select valid and up-to-date input values. Use the ribbon buttons on the IBM Envizi tab to add dropdowns to the activity type, unit, and location cells. Select a cell, then click the relevant button.",
+          "Ensure that you select valid input values. Use the ribbon buttons on the IBM Envizi tab to add dropdowns to the activity type, unit, and location cells. Select a cell, then click the relevant button.",
       },
     ],
   },
