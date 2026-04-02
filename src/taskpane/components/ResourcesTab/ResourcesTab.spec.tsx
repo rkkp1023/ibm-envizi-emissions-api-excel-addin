@@ -86,17 +86,34 @@ describe("ResourcesTab", () => {
         isLoading: false,
         isError: false,
       });
-      render(<ResourcesTab />, { wrapper });
     });
 
-    it("should render Excel add-in documentation link", () => {
+    it("should render Excel add-in documentation link with Envizi URL when getEnableEnviziLogin is true", () => {
+      getEnableEnviziLogin.mockReturnValue(true);
+      render(<ResourcesTab />, { wrapper });
+
       const link = screen.getByRole("link", { name: /Excel add-in documentation/i });
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute(
         "href",
-        "https://www.ibm.com/docs/en/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+        "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
       );
       expect(link).toHaveAttribute("target", "_blank");
+      expect(getEnableEnviziLogin).toHaveBeenCalled();
+    });
+
+    it("should render Excel add-in documentation link with trial URL when getEnableEnviziLogin is false", () => {
+      getEnableEnviziLogin.mockReturnValue(false);
+      render(<ResourcesTab />, { wrapper });
+
+      const link = screen.getByRole("link", { name: /Excel add-in documentation/i });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/docs/envizi-esg-suite?topic=modules-trial-user-only-envizi-ghg-emissions-api"
+      );
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(getEnableEnviziLogin).toHaveBeenCalled();
     });
   });
 

@@ -34,7 +34,7 @@ const getResourceSections = (supportLink: string, formId: string, documentUrl: s
     title: "Documentation",
     links: [
       {
-        href: `https://www.ibm.com/docs/en/envizi-esg-suite?topic=${documentUrl}`,
+        href: `https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`,
         text: "Excel add-in documentation",
       },
     ],
