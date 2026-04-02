@@ -6,6 +6,7 @@
  * the same credentials as custom functions and taskpane
  */
 
+import { getEnvType } from "../common/env";
 import {
   handleInsertActivityTypes,
   handleInsertArea,
@@ -15,60 +16,53 @@ import {
 import { ActivityTypeOption, AreaTypeOption } from "./data-validation-manager";
 
 /**
- * Shows a notification message to the user
- * Only shows dialog for errors (stays open until user clicks OK)
- * Success messages only go to console
+ * Logs a success message to the console
  */
-function showNotification(message: string, type: "info" | "error" = "info"): void {
-  // Always log to console for debugging (F12 developer tools)
-  const prefix = type === "error" ? "❌ ERROR" : "✅ SUCCESS";
-  const logMessage = `[Add-in ${prefix}] ${message}`;
+function logSuccess(message: string): void {
+  console.log(`[Add-in ✅ SUCCESS] ${message}`);
+}
+
+/**
+ * Shows an error notification dialog to the user
+ */
+function showErrorNotification(message: string): void {
+  console.error(`[Add-in ❌ ERROR] ${message}`);
   
-  if (type === "error") {
-    console.error(logMessage);
-  } else {
-    console.log(logMessage);
-  }
-  
-  // Only show dialog for errors
-  if (type === "error") {
-    try {
-      // Ensure message is a string and not undefined/null
-      const safeMessage = message || "An error occurred";
-      const encodedMessage = encodeURIComponent(safeMessage);
-      // Use /excel-addin root path for server deployment
-      const basePath = window.location.origin.includes('localhost') ? '' : '/excel-addin';
-      const notificationUrl = `${window.location.origin}${basePath}/commands/notification.html?message=${encodedMessage}`;
+  try {
+    // Ensure message is a string and not undefined/null
+    const safeMessage = message || "An error occurred";
+    const encodedMessage = encodeURIComponent(safeMessage);
+    // Use /excel-addin root path for server deployment
+    const basePath = getEnvType() === 'local' ? '' : '/excel-addin';
+    const notificationUrl = `${window.location.origin}${basePath}/commands/notification.html?message=${encodedMessage}`;
       
-      console.log("Opening notification dialog with URL:", notificationUrl);
-      
-      Office.context.ui.displayDialogAsync(
-        notificationUrl,
-        { height: 40, width: 40 },
-        (result) => {
-          if (result.status === Office.AsyncResultStatus.Succeeded) {
-            console.log("Notification dialog opened successfully");
-            // Listen for close message from dialog
-            result.value.addEventHandler(Office.EventType.DialogMessageReceived, () => {
-              try {
-                result.value.close();
-              } catch (e) {
-                // Dialog already closed, ignore
-                console.log("Dialog already closed");
-              }
-            });
-          } else {
-            // Dialog failed, but error is already in console
-            console.error("Failed to show error dialog:", result.error);
-          }
+    console.log("Opening notification dialog with URL:", notificationUrl);
+    
+    Office.context.ui.displayDialogAsync(
+      notificationUrl,
+      { height: 40, width: 40 },
+      (result) => {
+        if (result.status === Office.AsyncResultStatus.Succeeded) {
+          console.log("Notification dialog opened successfully");
+          // Listen for close message from dialog
+          result.value.addEventHandler(Office.EventType.DialogMessageReceived, () => {
+            try {
+              result.value.close();
+            } catch (e) {
+              // Dialog already closed, ignore
+              console.log("Dialog already closed");
+            }
+          });
+        } else {
+          // Dialog failed, but error is already in console
+          console.error("Failed to show error dialog:", result.error);
         }
-      );
-    } catch (error) {
-      // Dialog API failed, error already in console
-      console.error("Error dialog error:", error);
-    }
+      }
+    );
+  } catch (error) {
+    // Dialog API failed, error already in console
+    console.error("Error dialog error:", error);
   }
-  // Success messages only go to console (no popup)
 }
 
 /**
@@ -93,12 +87,12 @@ async function actionInsertActivityType(
 ): Promise<void> {
   try {
     await handleInsertActivityTypes(activityType);
-    showNotification(`Activity type validation (${activityType}) applied successfully!`);
+    logSuccess(`Activity type validation (${activityType}) applied successfully!`);
     event.completed();
   } catch (error) {
     // Handle both standard Error and CustomFunctions.Error
     const errorMessage = error?.message || error?.toString() || "Failed to apply validation";
-    showNotification(`Error: ${errorMessage}`, "error");
+    showErrorNotification(`Error: ${errorMessage}`);
     event.completed();
   }
 }
@@ -112,12 +106,12 @@ async function actionInsertArea(
 ): Promise<void> {
   try {
     await handleInsertArea(areaType);
-    showNotification(`Area validation (${areaType}) applied successfully!`);
+    logSuccess(`Area validation (${areaType}) applied successfully!`);
     event.completed();
   } catch (error) {
     // Handle both standard Error and CustomFunctions.Error
     const errorMessage = error?.message || error?.toString() || "Failed to apply validation";
-    showNotification(`Error: ${errorMessage}`, "error");
+    showErrorNotification(`Error: ${errorMessage}`);
     event.completed();
   }
 }
@@ -128,66 +122,46 @@ async function actionInsertArea(
 async function actionInsertUnits(event: Office.AddinCommands.Event): Promise<void> {
   try {
     await handleInsertUnits();
-    showNotification("Unit validation applied successfully!");
+    logSuccess("Unit validation applied successfully!");
     event.completed();
   } catch (error) {
     // Handle both standard Error and CustomFunctions.Error
     const errorMessage = error?.message || error?.toString() || "Failed to apply validation";
-    showNotification(`Error: ${errorMessage}`, "error");
+    showErrorNotification(`Error: ${errorMessage}`);
     event.completed();
   }
 }
 
-// Create wrapper functions for each activity type menu item
-async function actionInsertActivityType_All(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertActivityType(event, "all");
-}
-async function actionInsertActivityType_Location(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertActivityType(event, "location");
-}
-async function actionInsertActivityType_Stationary(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertActivityType(event, "stationary");
-}
-async function actionInsertActivityType_Mobile(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertActivityType(event, "mobile");
-}
-async function actionInsertActivityType_Fugitive(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertActivityType(event, "fugitive");
-}
-async function actionInsertActivityType_TransportationDistribution(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertActivityType(event, "transportation-and-distribution");
-}
-async function actionInsertActivityType_EconomicActivity(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertActivityType(event, "economic-activity");
-}
-async function actionInsertActivityType_RealEstate(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertActivityType(event, "real-estate");
-}
-
-// Create wrapper functions for each area type menu item
-async function actionInsertArea_Country(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertArea(event, "country");
-}
-async function actionInsertArea_StateProvince(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertArea(event, "stateprovince");
-}
-async function actionInsertArea_PowerGrid(event: Office.AddinCommands.Event): Promise<void> {
-  return actionInsertArea(event, "powergrid");
-}
-
 // Register command handlers globally for Office to call
 (globalThis as any).actionOpenTaskpane = actionOpenTaskpane;
-(globalThis as any).actionInsertActivityType_All = actionInsertActivityType_All;
-(globalThis as any).actionInsertActivityType_Location = actionInsertActivityType_Location;
-(globalThis as any).actionInsertActivityType_Stationary = actionInsertActivityType_Stationary;
-(globalThis as any).actionInsertActivityType_Mobile = actionInsertActivityType_Mobile;
-(globalThis as any).actionInsertActivityType_Fugitive = actionInsertActivityType_Fugitive;
-(globalThis as any).actionInsertActivityType_TransportationDistribution = actionInsertActivityType_TransportationDistribution;
-(globalThis as any).actionInsertActivityType_EconomicActivity = actionInsertActivityType_EconomicActivity;
-(globalThis as any).actionInsertActivityType_RealEstate = actionInsertActivityType_RealEstate;
-(globalThis as any).actionInsertArea_Country = actionInsertArea_Country;
-(globalThis as any).actionInsertArea_StateProvince = actionInsertArea_StateProvince;
-(globalThis as any).actionInsertArea_PowerGrid = actionInsertArea_PowerGrid;
+
+// Register activity type handlers
+[
+  { name: 'All', type: 'all' },
+  { name: 'Location', type: 'location' },
+  { name: 'Stationary', type: 'stationary' },
+  { name: 'Mobile', type: 'mobile' },
+  { name: 'Fugitive', type: 'fugitive' },
+  { name: 'TransportationDistribution', type: 'transportation-and-distribution' },
+  { name: 'EconomicActivity', type: 'economic-activity' },
+  { name: 'RealEstate', type: 'real-estate' },
+].forEach(({ name, type }) => {
+  (globalThis as any)[`actionInsertActivityType_${name}`] =
+    async (event: Office.AddinCommands.Event) =>
+      actionInsertActivityType(event, type as ActivityTypeOption);
+});
+
+// Register area type handlers
+[
+  { name: 'Country', type: 'country' },
+  { name: 'StateProvince', type: 'stateprovince' },
+  { name: 'PowerGrid', type: 'powergrid' },
+].forEach(({ name, type }) => {
+  (globalThis as any)[`actionInsertArea_${name}`] =
+    async (event: Office.AddinCommands.Event) =>
+      actionInsertArea(event, type as AreaTypeOption);
+});
+
 (globalThis as any).actionInsertUnits = actionInsertUnits;
 
 // Initialize Office
