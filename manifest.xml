@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>90ef193d-e53e-4f93-b280-39e2dc609661</Id>
-  <Version>1.0.3</Version>
+  <Version>1.1.0</Version>
   <ProviderName>IBM</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="IBM Envizi Emissions Calculations"/>
@@ -79,6 +79,220 @@
               </Group>
             </OfficeTab>
           </ExtensionPoint>
+          <!-- Custom IBM Envizi tab -->
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <CustomTab id="EnviziTab">
+              <!-- Group 1: Open Taskpane -->
+              <Group id="TaskpaneGroup">
+                <Label resid="TaskpaneGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="EnviziTaskpaneButton">
+                  <Label resid="EnviziTaskpaneButton.Label"/>
+                  <Supertip>
+                    <Title resid="EnviziTaskpaneButton.Label"/>
+                    <Description resid="EnviziTaskpaneButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ButtonId1</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+
+              <!-- Group 2: Insert Activity Types -->
+              <Group id="ActivityTypesGroup">
+                <Label resid="ActivityTypesGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="ActivityTypes.Icon.16x16"/>
+                  <bt:Image size="32" resid="ActivityTypes.Icon.32x32"/>
+                  <bt:Image size="80" resid="ActivityTypes.Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Menu" id="ActivityTypesMenu">
+                  <Label resid="ActivityTypesMenu.Label"/>
+                  <Supertip>
+                    <Title resid="ActivityTypesMenu.Label"/>
+                    <Description resid="ActivityTypesMenu.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="ActivityTypes.Icon.16x16"/>
+                    <bt:Image size="32" resid="ActivityTypes.Icon.32x32"/>
+                    <bt:Image size="80" resid="ActivityTypes.Icon.80x80"/>
+                  </Icon>
+                  <Items>
+                    <Item id="ActivityType_All">
+                      <Label resid="AT.All.Label"/>
+                      <Supertip>
+                        <Title resid="AT.All.Label"/>
+                        <Description resid="AT.All.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertActivityType_All</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="ActivityType_Location">
+                      <Label resid="AT.Location.Label"/>
+                      <Supertip>
+                        <Title resid="AT.Location.Label"/>
+                        <Description resid="AT.Location.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertActivityType_Location</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="ActivityType_Stationary">
+                      <Label resid="AT.Stationary.Label"/>
+                      <Supertip>
+                        <Title resid="AT.Stationary.Label"/>
+                        <Description resid="AT.Stationary.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertActivityType_Stationary</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="ActivityType_Mobile">
+                      <Label resid="AT.Mobile.Label"/>
+                      <Supertip>
+                        <Title resid="AT.Mobile.Label"/>
+                        <Description resid="AT.Mobile.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertActivityType_Mobile</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="ActivityType_Fugitive">
+                      <Label resid="AT.Fugitive.Label"/>
+                      <Supertip>
+                        <Title resid="AT.Fugitive.Label"/>
+                        <Description resid="AT.Fugitive.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertActivityType_Fugitive</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="ActivityType_TransportationDistribution">
+                      <Label resid="AT.TransportDist.Label"/>
+                      <Supertip>
+                        <Title resid="AT.TransportDist.Label"/>
+                        <Description resid="AT.TransportDist.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertActivityType_TransportationDistribution</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="ActivityType_EconomicActivity">
+                      <Label resid="AT.EconActivity.Label"/>
+                      <Supertip>
+                        <Title resid="AT.EconActivity.Label"/>
+                        <Description resid="AT.EconActivity.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertActivityType_EconomicActivity</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="ActivityType_RealEstate">
+                      <Label resid="AT.RealEstate.Label"/>
+                      <Supertip>
+                        <Title resid="AT.RealEstate.Label"/>
+                        <Description resid="AT.RealEstate.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertActivityType_RealEstate</FunctionName>
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+              </Group>
+
+              <!-- Group 3: Insert Area -->
+              <Group id="AreaGroup">
+                <Label resid="AreaGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Area.Icon.16x16"/>
+                  <bt:Image size="32" resid="Area.Icon.32x32"/>
+                  <bt:Image size="80" resid="Area.Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Menu" id="AreaMenu">
+                  <Label resid="AreaMenu.Label"/>
+                  <Supertip>
+                    <Title resid="AreaMenu.Label"/>
+                    <Description resid="AreaMenu.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Area.Icon.16x16"/>
+                    <bt:Image size="32" resid="Area.Icon.32x32"/>
+                    <bt:Image size="80" resid="Area.Icon.80x80"/>
+                  </Icon>
+                  <Items>
+                    <Item id="Area_Country">
+                      <Label resid="Area.Country.Label"/>
+                      <Supertip>
+                        <Title resid="Area.Country.Label"/>
+                        <Description resid="Area.Country.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertArea_Country</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Area_StateProvince">
+                      <Label resid="Area.StateProvince.Label"/>
+                      <Supertip>
+                        <Title resid="Area.StateProvince.Label"/>
+                        <Description resid="Area.StateProvince.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertArea_StateProvince</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Area_PowerGrid">
+                      <Label resid="Area.PowerGrid.Label"/>
+                      <Supertip>
+                        <Title resid="Area.PowerGrid.Label"/>
+                        <Description resid="Area.PowerGrid.Tooltip"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>actionInsertArea_PowerGrid</FunctionName>
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+              </Group>
+
+              <!-- Group 4: Insert Units -->
+              <Group id="UnitsGroup">
+                <Label resid="UnitsGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Units.Icon.16x16"/>
+                  <bt:Image size="32" resid="Units.Icon.32x32"/>
+                  <bt:Image size="80" resid="Units.Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="UnitsButton">
+                  <Label resid="UnitsButton.Label"/>
+                  <Supertip>
+                    <Title resid="UnitsButton.Label"/>
+                    <Description resid="UnitsButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Units.Icon.16x16"/>
+                    <bt:Image size="32" resid="Units.Icon.32x32"/>
+                    <bt:Image size="80" resid="Units.Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>actionInsertUnits</FunctionName>
+                  </Action>
+                </Control>
+              </Group>
+              <Label resid="EnviziTab.Label"/>
+            </CustomTab>
+          </ExtensionPoint>
         </DesktopFormFactor>
       </Host>
     </Hosts>
@@ -87,6 +301,18 @@
         <bt:Image id="Icon.16x16" DefaultValue="https://localhost:8000/assets/icon-16.png"/>
         <bt:Image id="Icon.32x32" DefaultValue="https://localhost:8000/assets/icon-32.png"/>
         <bt:Image id="Icon.80x80" DefaultValue="https://localhost:8000/assets/icon-80.png"/>
+        <!-- Activity Types Icons -->
+        <bt:Image id="ActivityTypes.Icon.16x16" DefaultValue="https://localhost:8000/assets/activity-types-16.png"/>
+        <bt:Image id="ActivityTypes.Icon.32x32" DefaultValue="https://localhost:8000/assets/activity-types-32.png"/>
+        <bt:Image id="ActivityTypes.Icon.80x80" DefaultValue="https://localhost:8000/assets/activity-types-80.png"/>
+        <!-- Area Icons -->
+        <bt:Image id="Area.Icon.16x16" DefaultValue="https://localhost:8000/assets/area-16.png"/>
+        <bt:Image id="Area.Icon.32x32" DefaultValue="https://localhost:8000/assets/area-32.png"/>
+        <bt:Image id="Area.Icon.80x80" DefaultValue="https://localhost:8000/assets/area-80.png"/>
+        <!-- Units Icons -->
+        <bt:Image id="Units.Icon.16x16" DefaultValue="https://localhost:8000/assets/units-16.png"/>
+        <bt:Image id="Units.Icon.32x32" DefaultValue="https://localhost:8000/assets/units-32.png"/>
+        <bt:Image id="Units.Icon.80x80" DefaultValue="https://localhost:8000/assets/units-80.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="Functions.Script.Url" DefaultValue="https://localhost:8000/functions.js"/>
@@ -97,12 +323,49 @@
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="ENVIZI"/>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with IBM Envizi Emissions Calculations"/>
+        <bt:String id="EnviziTab.Label" DefaultValue="IBM Envizi"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="IBM Envizi"/>
+        <bt:String id="TaskpaneGroup.Label" DefaultValue="Task pane"/>
+        <bt:String id="ActivityTypesGroup.Label" DefaultValue="Activity Types"/>
+        <bt:String id="AreaGroup.Label" DefaultValue="Area"/>
+        <bt:String id="UnitsGroup.Label" DefaultValue="Units"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="IBM Envizi Emissions Calculations"/>
+        <bt:String id="EnviziTaskpaneButton.Label" DefaultValue="Open Task pane"/>
+        <bt:String id="ActivityTypesMenu.Label" DefaultValue="Insert Activity Types"/>
+        <bt:String id="AreaMenu.Label" DefaultValue="Insert Area"/>
+        <bt:String id="UnitsButton.Label" DefaultValue="Insert Units"/>
+        <bt:String id="AT.All.Label" DefaultValue="All"/>
+        <bt:String id="AT.Location.Label" DefaultValue="Location"/>
+        <bt:String id="AT.Stationary.Label" DefaultValue="Stationary"/>
+        <bt:String id="AT.Mobile.Label" DefaultValue="Mobile"/>
+        <bt:String id="AT.Fugitive.Label" DefaultValue="Fugitive"/>
+        <bt:String id="AT.TransportDist.Label" DefaultValue="Transportation and Distribution"/>
+        <bt:String id="AT.Calculation.Label" DefaultValue="Calculation"/>
+        <bt:String id="AT.EconActivity.Label" DefaultValue="Economic Activity"/>
+        <bt:String id="AT.RealEstate.Label" DefaultValue="Real Estate"/>
+        <bt:String id="Area.Country.Label" DefaultValue="Country"/>
+        <bt:String id="Area.StateProvince.Label" DefaultValue="State/Province"/>
+        <bt:String id="Area.PowerGrid.Label" DefaultValue="Power Grid"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Seamlessly integrate emissions data into your workflows. Open the 'IBM Envizi Emissions Calculations' task pane to get started."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Seamlessly integrate emissions data into your workflows."/>
+        <bt:String id="EnviziTaskpaneButton.Tooltip" DefaultValue="Open the IBM Envizi Emissions Calculations task pane"/>
+        <bt:String id="ActivityTypesMenu.Tooltip" DefaultValue="Insert data validation for activity types on selected cells"/>
+        <bt:String id="AreaMenu.Tooltip" DefaultValue="Insert data validation for geographic areas on selected cells"/>
+        <bt:String id="UnitsButton.Tooltip" DefaultValue="Insert data validation for units on selected cells"/>
+        <bt:String id="AT.All.Tooltip" DefaultValue="Insert validation for all activity types"/>
+        <bt:String id="AT.Location.Tooltip" DefaultValue="Insert validation for location-based activity types"/>
+        <bt:String id="AT.Stationary.Tooltip" DefaultValue="Insert validation for stationary source activity types"/>
+        <bt:String id="AT.Mobile.Tooltip" DefaultValue="Insert validation for mobile source activity types"/>
+        <bt:String id="AT.Fugitive.Tooltip" DefaultValue="Insert validation for fugitive emissions activity types"/>
+        <bt:String id="AT.TransportDist.Tooltip" DefaultValue="Insert validation for transportation and distribution activity types"/>
+        <bt:String id="AT.Calculation.Tooltip" DefaultValue="Insert validation for calculation activity types"/>
+        <bt:String id="AT.EconActivity.Tooltip" DefaultValue="Insert validation for economic activity types"/>
+        <bt:String id="AT.RealEstate.Tooltip" DefaultValue="Insert validation for real estate activity types"/>
+        <bt:String id="Area.Country.Tooltip" DefaultValue="Insert validation for countries"/>
+        <bt:String id="Area.StateProvince.Tooltip" DefaultValue="Insert validation for states/provinces"/>
+        <bt:String id="Area.PowerGrid.Tooltip" DefaultValue="Insert validation for power grids"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

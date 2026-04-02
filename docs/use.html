@@ -260,6 +260,35 @@
 <p>Once your credentials are validated, the <strong>main interface</strong> of the add-in becomes available:</p>
 <img alt="Main interface of the add-in" class="align-center" src="_images/main.png" />
 </section>
+<section id="using-data-validation-helpers">
+<h2>Using Data Validation Helpers<a class="headerlink" href="#using-data-validation-helpers" title="Link to this heading">¶</a></h2>
+<p>The add-in provides ribbon buttons to quickly add dropdown lists for valid values in your cells.</p>
+<p><strong>Insert Activity Types</strong></p>
+<p>Click the <strong>Activity Types</strong> button to add a dropdown list of valid activity types:</p>
+<ul class="simple">
+<li><p><strong>All</strong> – All available activity types</p></li>
+<li><p><strong>Location</strong> – Location-based activities</p></li>
+<li><p><strong>Stationary</strong> – Stationary combustion activities</p></li>
+<li><p><strong>Mobile</strong> – Mobile combustion activities</p></li>
+<li><p><strong>Fugitive</strong> – Fugitive emissions</p></li>
+<li><p><strong>Transportation &amp; Distribution</strong> – Transport activities</p></li>
+<li><p><strong>Economic Activity</strong> – Economic-based activities</p></li>
+<li><p><strong>Real Estate</strong> – Real estate activities</p></li>
+</ul>
+<p><strong>Insert Area</strong></p>
+<p>Click the <strong>Area</strong> button to add location dropdowns:</p>
+<ul class="simple">
+<li><p><strong>Country</strong> – ISO alpha-3 country codes</p></li>
+<li><p><strong>State/Province</strong> – State or province identifiers</p></li>
+<li><p><strong>Power Grid</strong> – Power grid identifiers</p></li>
+</ul>
+<p><strong>Insert Units</strong></p>
+<p>Click the <strong>Units</strong> button to add a dropdown list of valid measurement units (e.g., kWh, kg, L).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Select the cells where you want the dropdown before clicking the button. The validation will be applied to all selected cells.</p>
+</div>
+</section>
 <section id="working-with-functions">
 <h2>Working with Functions<a class="headerlink" href="#working-with-functions" title="Link to this heading">¶</a></h2>
 <p>The add-in provides custom Excel functions that retrieve and calculate emissions data.</p>
@@ -365,6 +394,7 @@
             <ul>
 <li><a class="reference internal" href="#">Use</a><ul>
 <li><a class="reference internal" href="#logging-in">Logging In</a></li>
+<li><a class="reference internal" href="#using-data-validation-helpers">Using Data Validation Helpers</a></li>
 <li><a class="reference internal" href="#working-with-functions">Working with Functions</a></li>
 <li><a class="reference internal" href="#exporting-results">Exporting Results</a></li>
 </ul>

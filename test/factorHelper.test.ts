@@ -31,6 +31,8 @@ jest.mock("../src/functions/client", () => ({
 
 jest.mock("../src/functions/utils", () => ({
   convertExcelDateToISO: jest.fn(),
+  extractSymbolFromDisplay: jest.fn((value) => value), // pass-through by default
+  extractValueAfterDash: jest.fn((value) => value), // pass-through by default
 }));
 
 describe("factorHelper", () => {

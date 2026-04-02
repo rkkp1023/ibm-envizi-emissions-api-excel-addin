@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <!-- Note: SRI is intentionally not used for Office.js as per Microsoft's official guidance.
+         Office.js is a dynamic library updated by Microsoft, and SRI would break compatibility.
+         The library is loaded from Microsoft's trusted CDN and versioned via URL path. -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+        .error-dialog {
+            background: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .icon {
+            font-size: 40px;
+        }
+        h3 {
+            color: #d32f2f;
+        }
+        .button {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-dialog">
+        <div class="icon">⚠️</div>
+        <h3>Error</h3>
+        <p id="message"></p>
+        <button class="button" onclick="closeDialog()">OK</button>
+    </div>
+    <script>
+        // Get error message from URL
+        const params = new URLSearchParams(window.location.search);
+        const message = params.get('message') || 'An error occurred';
+        
+        // Set message
+        document.getElementById('message').textContent = decodeURIComponent(message);
+        
+        // Close dialog function
+        function closeDialog() {
+            Office.context.ui.messageParent('close');
+        }
+    </script>
+</body>
+</html>
