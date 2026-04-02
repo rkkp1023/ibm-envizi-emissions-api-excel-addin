@@ -29,6 +29,7 @@ module.exports = async (env, options) => {
       login: ["./src/login/login.ts"],
       "login-callback": ["./src/login/login-callback.ts"],
       functions: ["./src/functions/functions.ts"],
+      commands: ["./src/commands/commands-entry.ts"],
     },
     output: {
       path: path.resolve(__dirname, "dist"),
@@ -89,7 +90,7 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: "taskpane.html",
         template: "./src/taskpane/taskpane.html",
-        chunks: ["polyfill", "taskpane", "functions"],
+        chunks: ["polyfill", "taskpane", "functions", "commands"],
       }),
       new HtmlWebpackPlugin({
         filename: "login.html",
@@ -100,6 +101,11 @@ module.exports = async (env, options) => {
         filename: "login-callback.html",
         template: "./src/login/login-callback.html",
         chunks: ["login-callback"],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "commands/notification.html",
+        template: "./src/commands/notification.html",
+        chunks: [],
       }),
       new CopyWebpackPlugin({
         patterns: [
