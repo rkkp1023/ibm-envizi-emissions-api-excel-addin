@@ -15,7 +15,8 @@ export type FunctionNameType =
   | "economic_activity"
   | "real_estate"
   | "factor"
-  | "factor_search";
+  | "factor_search"
+  | "data_type_recommender";
 
 /**
  * Base input headers common to most calculation functions
@@ -109,6 +110,15 @@ const FACTOR_SEARCH_OUTPUT_HEADERS = [
 ] as const;
 
 /**
+ * Output headers for data type recommender function
+ */
+const DATA_TYPE_RECOMMENDER_OUTPUT_HEADERS = [
+  "activityType",
+  "confidence",
+  "activityDescription",
+] as const;
+
+/**
  * Configuration mapping for each function name type
  */
 interface FunctionNameConfig {
@@ -167,6 +177,10 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     inputHeaders: ["search", "country", "stateProvince", "date", "page", "size"],
     outputHeaders: FACTOR_SEARCH_OUTPUT_HEADERS,
   },
+  data_type_recommender: {
+    inputHeaders: ["search", "country", "stateProvince", "date"],
+    outputHeaders: DATA_TYPE_RECOMMENDER_OUTPUT_HEADERS,
+  },
 };
 
 /**
@@ -178,19 +192,37 @@ export const VALID_FUNCTION_NAMES = Object.keys(FUNCTION_NAME_CONFIGS) as Functi
  * Get input headers for a specific function
  * @param functionName - The function name type
  * @param useFactorId - Whether to return factorId-based headers (default: false)
+ * @param includeDataTypeRecommender - Whether to include data type recommender headers after "type" field (default: false)
  * @returns Array of input header names
  */
-export function getInputHeaders(functionName: FunctionNameType, useFactorId: boolean = false): string[] {
+export function getInputHeaders(
+  functionName: FunctionNameType,
+  useFactorId: boolean = false,
+  includeDataTypeRecommender: boolean = false
+): string[] {
   const config = FUNCTION_NAME_CONFIGS[functionName];
   if (!config) {
     throw new Error(`Invalid function name: ${functionName}`);
   }
 
+  let headers: string[];
+  
   if (useFactorId && config.factorIdInputHeaders) {
-    return [...config.factorIdInputHeaders];
+    headers = [...config.factorIdInputHeaders];
+  } else {
+    headers = [...config.inputHeaders];
   }
 
-  return [...config.inputHeaders];
+  // Insert recommender headers after "type" field if requested
+  if (includeDataTypeRecommender && !useFactorId) {
+    const typeIndex = headers.indexOf("type");
+    if (typeIndex !== -1) {
+      // Insert recommender headers after "type"
+      headers.splice(typeIndex + 1, 0, ...DATA_TYPE_RECOMMENDER_OUTPUT_HEADERS);
+    }
+  }
+
+  return headers;
 }
 
 /**
