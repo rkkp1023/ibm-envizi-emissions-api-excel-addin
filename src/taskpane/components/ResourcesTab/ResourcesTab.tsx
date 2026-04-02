@@ -29,16 +29,12 @@ function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
   );
 }
 
-const getResourceSections = (supportLink: string, formId: string) => [
+const getResourceSections = (supportLink: string, formId: string, documentUrl: string) => [
   {
     title: "Documentation",
     links: [
       {
-        href: "https://www.ibm.com/docs/en/envizi-esg-suite?topic=modules-trial-user-only-envizi-ghg-emissions-api",
-        text: "IBM product documentation",
-      },
-      {
-        href: "https://ibm.github.io/ibm-envizi-emissions-api-excel-addin",
+        href: `https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`,
         text: "Excel add-in documentation",
       },
     ],
@@ -48,7 +44,7 @@ const getResourceSections = (supportLink: string, formId: string) => [
     links: [
       {
         href: "https://community.ibm.com/community/user/communities/community-home?CommunityKey=6853271a-0a5c-45f9-a9a2-0186706f68ec",
-        text: "IBM Envizi Community",
+        text: "IBM Envizi community",
       },
       {
         href: "https://www.ibm.com/think/author/envizi",
@@ -79,16 +75,20 @@ export function ResourcesTab() {
       ? "mailto:enviziemissionsapi@ibm.com"
       : "https://www.ibm.com/mysupport";
 
+  const documentUrl = getEnableEnviziLogin()
+    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+    : "modules-trial-user-only-envizi-ghg-emissions-api";
+
   const formId = getEnableEnviziLogin() ? "SV_1YXxfTEf9MKci8u" : "SV_7Vh96izZeRghY34";
 
-  const resourceSections = getResourceSections(supportLink, formId);
+  const resourceSections = getResourceSections(supportLink, formId, documentUrl);
 
   return (
     <div className="resouce">
       <div className="stack-gap-16">
         <p>
-          Everything you need to get started, build, and succeed with the Envizi Emissions API Excel
-          add-in.
+          Everything that you need to get started, build, and succeed with Envizi Emissions
+          Calculations.
         </p>
         {resourceSections.map((section) => (
           <ResourceSection key={section.title} title={section.title} links={section.links} />

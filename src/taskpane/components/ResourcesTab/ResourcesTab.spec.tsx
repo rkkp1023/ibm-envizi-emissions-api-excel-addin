@@ -54,14 +54,14 @@ describe("ResourcesTab", () => {
 
     it("should render without crashing", () => {
       render(<ResourcesTab />, { wrapper });
-      expect(screen.getByText(/Everything you need to get started/i)).toBeInTheDocument();
+      expect(screen.getByText(/Everything that you need to get started/i)).toBeInTheDocument();
     });
 
     it("should render the main description", () => {
       render(<ResourcesTab />, { wrapper });
       expect(
         screen.getByText(
-          /Everything you need to get started, build, and succeed with the Envizi Emissions API Excel add-in/i
+          /Everything that you need to get started, build, and succeed with Envizi Emissions Calculations/i
         )
       ).toBeInTheDocument();
     });
@@ -86,27 +86,34 @@ describe("ResourcesTab", () => {
         isLoading: false,
         isError: false,
       });
+    });
+
+    it("should render Excel add-in documentation link with Envizi URL when getEnableEnviziLogin is true", () => {
+      getEnableEnviziLogin.mockReturnValue(true);
       render(<ResourcesTab />, { wrapper });
-    });
 
-    it("should render IBM product documentation link", () => {
-      const link = screen.getByRole("link", { name: /IBM product documentation/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute(
-        "href",
-        "https://www.ibm.com/docs/en/envizi-esg-suite?topic=modules-trial-user-only-envizi-ghg-emissions-api"
-      );
-      expect(link).toHaveAttribute("target", "_blank");
-    });
-
-    it("should render Excel add-in documentation link", () => {
       const link = screen.getByRole("link", { name: /Excel add-in documentation/i });
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute(
         "href",
-        "https://ibm.github.io/ibm-envizi-emissions-api-excel-addin"
+        "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
       );
       expect(link).toHaveAttribute("target", "_blank");
+      expect(getEnableEnviziLogin).toHaveBeenCalled();
+    });
+
+    it("should render Excel add-in documentation link with trial URL when getEnableEnviziLogin is false", () => {
+      getEnableEnviziLogin.mockReturnValue(false);
+      render(<ResourcesTab />, { wrapper });
+
+      const link = screen.getByRole("link", { name: /Excel add-in documentation/i });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/docs/envizi-esg-suite?topic=modules-trial-user-only-envizi-ghg-emissions-api"
+      );
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(getEnableEnviziLogin).toHaveBeenCalled();
     });
   });
 
@@ -299,10 +306,10 @@ describe("ResourcesTab", () => {
       });
     });
 
-    it("should render all 6 external links", () => {
+    it("should render all 5 external links", () => {
       render(<ResourcesTab />, { wrapper });
       const links = screen.getAllByRole("link");
-      expect(links).toHaveLength(6);
+      expect(links).toHaveLength(5);
     });
 
     it("should render block headers for resource sections", () => {
@@ -347,12 +354,9 @@ describe("ResourcesTab", () => {
     it("should render links within each section", () => {
       render(<ResourcesTab />, { wrapper });
 
-      // Documentation section should have 2 links
-      const docLinks = [
-        screen.getByRole("link", { name: /IBM product documentation/i }),
-        screen.getByRole("link", { name: /Excel add-in documentation/i }),
-      ];
-      expect(docLinks).toHaveLength(2);
+      // Documentation section should have 1 link
+      const docLinks = [screen.getByRole("link", { name: /Excel add-in documentation/i })];
+      expect(docLinks).toHaveLength(1);
 
       // Community section should have 2 links
       const communityLinks = [
@@ -457,7 +461,7 @@ describe("ResourcesTab", () => {
       render(<ResourcesTab />, { wrapper });
 
       // Component should still render with loading state
-      expect(screen.getByText(/Everything you need to get started/i)).toBeInTheDocument();
+      expect(screen.getByText(/Everything that you need to get started/i)).toBeInTheDocument();
     });
 
     it("should handle error state from useAccountSubscription", () => {
@@ -511,7 +515,6 @@ describe("ResourcesTab", () => {
 
     it("should display correct documentation link labels", () => {
       render(<ResourcesTab />, { wrapper });
-      expect(screen.getByText(/IBM product documentation/i)).toBeInTheDocument();
       expect(screen.getByText(/Excel add-in documentation/i)).toBeInTheDocument();
     });
 
