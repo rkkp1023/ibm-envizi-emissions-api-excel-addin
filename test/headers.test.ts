@@ -960,5 +960,73 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
         expect(result[0]).toContain("factorId");
       }
     );
+
+  describe("Input headers with includeDataTypeRecommender", () => {
+    it("should include recommender headers for location endpoint when flag is true", async () => {
+      const result = await headers("location", true, true);
+      expect(result).toEqual([[
+        "type",
+        "activityType",
+        "confidence",
+        "activityDescription",
+        "value",
+        "unit",
+        "country",
+        "stateProvince",
+        "date",
+        "powerGrid"
+      ]]);
+    });
+
+    it("should not include recommender headers when flag is false", async () => {
+      const result = await headers("location", true, false);
+      expect(result).toEqual([[
+        "type",
+        "value",
+        "unit",
+        "country",
+        "stateProvince",
+        "date",
+        "powerGrid"
+      ]]);
+    });
+
+    it("should not include recommender headers when flag is not provided (default)", async () => {
+      const result = await headers("stationary", true);
+      expect(result).toEqual([[
+        "type",
+        "value",
+        "unit",
+        "country",
+        "stateProvince",
+        "date"
+      ]]);
+    });
+
+    it("should handle string 'true' for includeDataTypeRecommender parameter", async () => {
+      const result = await headers("mobile", "true", "true");
+      expect(result[0]).toContain("activityType");
+      expect(result[0]).toContain("confidence");
+      expect(result[0]).toContain("activityDescription");
+    });
+
+    it("should not affect output headers when includeDataTypeRecommender is true", async () => {
+      const result = await headers("location", false, true);
+      expect(result[0]).toContain("totalCO2e");
+      expect(result[0]).not.toContain("Activity Type");
+    });
+
+    it("should not add recommender headers for endpoints without 'type' field", async () => {
+      const result = await headers("factor_search", true, true);
+      expect(result).toEqual([[
+        "search",
+        "country",
+        "stateProvince",
+        "date",
+        "page",
+        "size"
+      ]]);
+    });
+  });
   });
 });
