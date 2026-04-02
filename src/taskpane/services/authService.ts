@@ -5,7 +5,6 @@
 
 import axios from "axios";
 
-import { refreshMetadataOnLogin } from "../../commands/commands";
 import {
   ApiCredentials,
   getUserCredentials,
@@ -80,11 +79,6 @@ export async function performLogin(
   } else {
     await removeApiCredentialsFromStorage();
   }
-
-  // Refresh metadata on login (non-blocking)
-  refreshMetadataOnLogin().catch((error) => {
-    console.error("Failed to refresh metadata on login:", error);
-  });
 }
 
 /**

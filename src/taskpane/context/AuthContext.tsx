@@ -95,6 +95,13 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
         type: "initialize",
         payload: { credentials },
       });
+
+      // Refresh metadata on initialization if credentials exist (non-blocking)
+      if (credentials) {
+        refreshMetadataOnLogin().catch((error) => {
+          console.error("Failed to refresh metadata on initialization:", error);
+        });
+      }
     };
 
     initialize();
@@ -187,6 +194,12 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     try {
       // Perform login with API validation
       await performLogin(credentials, saveCredentials);
+      
+      // Refresh metadata on login (non-blocking)
+      refreshMetadataOnLogin().catch((error) => {
+        console.error("Failed to refresh metadata on login:", error);
+      });
+      
       dispatch({
         type: "loginSuccess",
         payload: { credentials },
