@@ -16,6 +16,7 @@ import {
   PlayCircleFilled,
 } from "@fluentui/react-icons";
 
+import { getEnableEnviziLogin } from "../../../common/env";
 import { EmissionScopeSection } from "../EmissionScopeSection";
 import { EmissionScopeConfig } from "../EmissionScopeSection/types";
 
@@ -88,6 +89,11 @@ function UsefulFeaturesAccordionItem() {
     RecommendedAI: <AiRecommend />,
   };
 
+  const learnMoreTopic = getEnableEnviziLogin()
+    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+    : "modules-trial-user-only-envizi-ghg-emissions-api";
+  const learnMoreFeatureLink = `https://www.ibm.com/docs/envizi-esg-suite?topic=${learnMoreTopic}`;
+
   return (
     <AccordionItem value="useful-features">
       <AccordionHeader>Useful features</AccordionHeader>
@@ -111,7 +117,7 @@ function UsefulFeaturesAccordionItem() {
               as="a"
               iconPosition="after"
               icon={<Open16Regular />}
-              href="https://www.ibm.com/docs/en/SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+              href={learnMoreFeatureLink}
               rel="noopener noreferrer"
               target="_blank"
             >

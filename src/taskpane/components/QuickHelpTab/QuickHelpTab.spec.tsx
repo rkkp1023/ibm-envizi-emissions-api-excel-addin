@@ -204,7 +204,7 @@ describe("Useful Features Section", () => {
     expect(learnMoreLink).toBeInTheDocument();
     expect(learnMoreLink).toHaveAttribute(
       "href",
-      "https://www.ibm.com/docs/en/SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
     );
   });
 
