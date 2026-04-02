@@ -7,6 +7,7 @@ import {
   handleInsertUnits,
   openTaskpane,
   refreshMetadataOnLogin,
+  resetMetadataPromise,
 } from "../../src/commands/commands";
 import {
   insertActivityTypeValidation,
@@ -62,6 +63,8 @@ describe("commands", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, "error").mockImplementation(() => {});
+    // Reset the metadata promise between tests
+    resetMetadataPromise();
   });
 
   afterEach(() => {

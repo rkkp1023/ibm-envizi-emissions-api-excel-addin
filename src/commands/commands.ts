@@ -52,9 +52,15 @@ async function ensureMetadataLoaded(): Promise<void> {
     })();
 
     // Once complete, set to resolved promise so we don't need to do it again
-    initializeMetadataPromise = initializeMetadataPromise.then(() => {
-      initializeMetadataPromise = Promise.resolve();
-    });
+    initializeMetadataPromise.then(
+      () => {
+        initializeMetadataPromise = Promise.resolve();
+      },
+      () => {
+        // On error, reset so next call can try again
+        initializeMetadataPromise = null;
+      }
+    );
   }
 
   // Wait for initialization to complete (or return immediately if already resolved)
@@ -138,6 +144,14 @@ export async function refreshMetadataOnLogin(): Promise<void> {
     console.error("Failed to refresh metadata on login:", error);
     // Don't throw - login should succeed even if metadata refresh fails
   }
+}
+
+/**
+ * Resets the metadata initialization promise (for testing purposes)
+ * @internal
+ */
+export function resetMetadataPromise(): void {
+  initializeMetadataPromise = null;
 }
 
 // Made with Bob
