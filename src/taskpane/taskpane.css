@@ -290,7 +290,7 @@ b {
 .scope-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
 }
 
 .formulas-container {

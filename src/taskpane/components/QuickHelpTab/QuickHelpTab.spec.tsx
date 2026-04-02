@@ -180,9 +180,7 @@ describe("Useful Features Section", () => {
   });
 
   it("should render valid values feature description", () => {
-    expect(
-      screen.getByText(/Ensure that you select valid and up-to-date input values/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Ensure that you select valid input values/i)).toBeInTheDocument();
   });
 
   it("should render column titles feature description", () => {
