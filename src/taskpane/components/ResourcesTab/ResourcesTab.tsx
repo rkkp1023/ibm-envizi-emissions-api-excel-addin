@@ -29,12 +29,12 @@ function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
   );
 }
 
-const getResourceSections = (supportLink: string, formId: string) => [
+const getResourceSections = (supportLink: string, formId: string, documentUrl: string) => [
   {
     title: "Documentation",
     links: [
       {
-        href: "https://www.ibm.com/docs/en/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html",
+        href: `https://www.ibm.com/docs/en/envizi-esg-suite?topic=${documentUrl}`,
         text: "Excel add-in documentation",
       },
     ],
@@ -75,9 +75,13 @@ export function ResourcesTab() {
       ? "mailto:enviziemissionsapi@ibm.com"
       : "https://www.ibm.com/mysupport";
 
+  const documentUrl = getEnableEnviziLogin()
+    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+    : "modules-trial-user-only-envizi-ghg-emissions-api";
+
   const formId = getEnableEnviziLogin() ? "SV_1YXxfTEf9MKci8u" : "SV_7Vh96izZeRghY34";
 
-  const resourceSections = getResourceSections(supportLink, formId);
+  const resourceSections = getResourceSections(supportLink, formId, documentUrl);
 
   return (
     <div className="resouce">
