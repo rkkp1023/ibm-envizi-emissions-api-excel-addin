@@ -108,6 +108,10 @@ function renderExternalLinkButton({
 }
 
 function GettingStartedAccordionItem(): React.ReactElement {
+  const documentUrl = getEnableEnviziLogin()
+    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+    : "api-calculating-emissions-in-microsoft-excel";
+
   return (
     <AccordionItem value="getting-started">
       <AccordionHeader>Getting started</AccordionHeader>
@@ -141,7 +145,7 @@ function GettingStartedAccordionItem(): React.ReactElement {
             <StepItem key={step.title} title={step.title} description={step.description} />
           ))}
           {renderExternalLinkButton({
-            href: "https://ibm.github.io/ibm-envizi-emissions-api-excel-addin",
+            href: `https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`,
             children: "Excel add-in documentation",
           })}
         </section>
@@ -153,7 +157,7 @@ function GettingStartedAccordionItem(): React.ReactElement {
 function UsefulFeaturesAccordionItem(): React.ReactElement {
   const learnMoreTopic = getEnableEnviziLogin()
     ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
-    : "modules-trial-user-only-envizi-ghg-emissions-api";
+    : "api-calculating-emissions-in-microsoft-excel";
   const learnMoreFeatureLink = `https://www.ibm.com/docs/envizi-esg-suite?topic=${learnMoreTopic}`;
 
   return (
@@ -186,7 +190,7 @@ function FunctionsAccordionItem(): React.ReactElement {
           {renderEmissionScopeSections({
             features: functions,
             learnMoreLink:
-              "https://www.ibm.com/docs/en/envizi-esg-suite?topic=reference-functions-in-emissions-calculations-in-excel",
+              "https://www.ibm.com/docs/envizi-esg-suite?topic=reference-functions-in-emissions-calculations-in-excel",
             learnMoreText: "View all functions",
           })}
         </section>
@@ -200,7 +204,7 @@ export function QuickHelpTab() {
     <div className="home-panel">
       <Accordion multiple collapsible defaultOpenItems={["getting-started", "useful-features"]}>
         <GettingStartedAccordionItem />
-        <UsefulFeaturesAccordionItem />
+        {getEnableEnviziLogin() && <UsefulFeaturesAccordionItem />}
         <FunctionsAccordionItem />
       </Accordion>
     </div>

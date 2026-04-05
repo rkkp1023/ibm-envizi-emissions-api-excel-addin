@@ -77,7 +77,7 @@ export function ResourcesTab() {
 
   const documentUrl = getEnableEnviziLogin()
     ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
-    : "modules-trial-user-only-envizi-ghg-emissions-api";
+    : "api-calculating-emissions-in-microsoft-excel";
 
   const formId = getEnableEnviziLogin() ? "SV_1YXxfTEf9MKci8u" : "SV_7Vh96izZeRghY34";
 
