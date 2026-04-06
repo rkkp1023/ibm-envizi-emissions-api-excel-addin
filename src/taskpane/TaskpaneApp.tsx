@@ -63,7 +63,7 @@ function AppWithTheme() {
   const { theme } = useTheme();
 
   return (
-    <FluentProvider theme={theme}>
+    <FluentProvider theme={theme} className="fluent-provider">
       <AuthProvider>
         <AppContent />
       </AuthProvider>

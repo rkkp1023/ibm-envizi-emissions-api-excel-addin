@@ -124,7 +124,7 @@ export const functions: EmissionScopeConfig[] = [
       {
         description:
           "Fetch relevant factor sets by filtering by location, activity, and published year.",
-        formulaSyntax: "=ENVIZI.FACTOR_SEARCH(source, country, [stateProvince], [date])",
+        formulaSyntax: "=ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [date])",
       },
     ],
   },

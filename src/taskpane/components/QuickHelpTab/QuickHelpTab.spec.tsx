@@ -110,7 +110,7 @@ describe("QuickHelpTab", () => {
     expect(docLink).toBeInTheDocument();
     expect(docLink).toHaveAttribute(
       "href",
-      "https://ibm.github.io/ibm-envizi-emissions-api-excel-addin"
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
     );
   });
 

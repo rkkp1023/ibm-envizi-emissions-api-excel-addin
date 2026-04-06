@@ -110,7 +110,7 @@ describe("ResourcesTab", () => {
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute(
         "href",
-        "https://www.ibm.com/docs/envizi-esg-suite?topic=modules-trial-user-only-envizi-ghg-emissions-api"
+        "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
       );
       expect(link).toHaveAttribute("target", "_blank");
       expect(getEnableEnviziLogin).toHaveBeenCalled();
