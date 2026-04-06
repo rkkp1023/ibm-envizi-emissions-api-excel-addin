@@ -79,7 +79,7 @@ function EmissionScopeSections({
   features,
   learnMoreLink,
   learnMoreText,
-}: EmissionScopeSectionsProps): React.ReactElement {
+}: Readonly<EmissionScopeSectionsProps>): React.ReactElement {
   return (
     <>
       {features.map((feature) => (
@@ -91,7 +91,7 @@ function EmissionScopeSections({
         />
       ))}
       <div className="learn-more-btn">
-        <ExternalLinkButton href={learnMoreLink} children={learnMoreText} />
+        <ExternalLinkButton href={learnMoreLink}>{learnMoreText}</ExternalLinkButton>
       </div>
     </>
   );
@@ -101,7 +101,7 @@ function ExternalLinkButton({
   href,
   children,
   className,
-}: ExternalLinkButtonProps): React.ReactElement {
+}: Readonly<ExternalLinkButtonProps>): React.ReactElement {
   return (
     <Button
       as="a"
@@ -157,8 +157,9 @@ function GettingStartedAccordionItem(): React.ReactElement {
 
           <ExternalLinkButton
             href={`https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`}
-            children="Excel add-in documentation"
-          />
+          >
+            Excel add-in documentation
+          </ExternalLinkButton>
         </section>
       </AccordionPanel>
     </AccordionItem>
