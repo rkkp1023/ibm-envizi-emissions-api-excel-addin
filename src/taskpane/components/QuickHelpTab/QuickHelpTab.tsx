@@ -33,7 +33,7 @@ interface StepItemProps {
   description: string;
 }
 
-interface RenderEmissionScopeSectionsProps {
+interface EmissionScopeSectionsProps {
   features: EmissionScopeConfig[];
   learnMoreLink: string;
   learnMoreText: string;
@@ -45,14 +45,24 @@ interface ExternalLinkButtonProps {
   className?: string;
 }
 
-const iconMap: Record<string, React.ReactNode> = {
-  RecommendedAI: <AiRecommend size={24} />,
-  gasStation: <GasStation size={24} />,
-  flash: <Flash size={24} />,
-  van: <Van size={24} />,
-  calculatorCheck: <CalculatorCheck size={24} />,
-  searchLocate: <SearchLocate size={24} />,
+// Map of Carbon icon names to their components
+const carbonIconComponents = {
+  AiRecommend,
+  GasStation,
+  Flash,
+  Van,
+  CalculatorCheck,
+  SearchLocate,
 };
+
+// Generate icon map with React elements
+const iconMap: Record<string, React.ReactNode> = Object.entries(carbonIconComponents).reduce(
+  (acc, [iconName, IconComponent]) => {
+    acc[iconName] = <IconComponent size={24} />;
+    return acc;
+  },
+  {} as Record<string, React.ReactNode>
+);
 
 function StepItem({ title, description }: Readonly<StepItemProps>) {
   return (
@@ -65,11 +75,11 @@ function StepItem({ title, description }: Readonly<StepItemProps>) {
   );
 }
 
-function renderEmissionScopeSections({
+function EmissionScopeSections({
   features,
   learnMoreLink,
   learnMoreText,
-}: RenderEmissionScopeSectionsProps): React.ReactElement {
+}: EmissionScopeSectionsProps): React.ReactElement {
   return (
     <>
       {features.map((feature) => (
@@ -81,13 +91,13 @@ function renderEmissionScopeSections({
         />
       ))}
       <div className="learn-more-btn">
-        {renderExternalLinkButton({ href: learnMoreLink, children: learnMoreText })}
+        <ExternalLinkButton href={learnMoreLink} children={learnMoreText} />
       </div>
     </>
   );
 }
 
-function renderExternalLinkButton({
+function ExternalLinkButton({
   href,
   children,
   className,
@@ -144,10 +154,11 @@ function GettingStartedAccordionItem(): React.ReactElement {
           {gettingStartedSteps.map((step) => (
             <StepItem key={step.title} title={step.title} description={step.description} />
           ))}
-          {renderExternalLinkButton({
-            href: `https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`,
-            children: "Excel add-in documentation",
-          })}
+
+          <ExternalLinkButton
+            href={`https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`}
+            children="Excel add-in documentation"
+          />
         </section>
       </AccordionPanel>
     </AccordionItem>
@@ -170,11 +181,11 @@ function UsefulFeaturesAccordionItem(): React.ReactElement {
             locations, and align the column titles in your spreadsheet with the Envizi template.
           </span>
 
-          {renderEmissionScopeSections({
-            features: usefulFeatures,
-            learnMoreLink: learnMoreFeatureLink,
-            learnMoreText: "Learn more about features",
-          })}
+          <EmissionScopeSections
+            features={usefulFeatures}
+            learnMoreLink={learnMoreFeatureLink}
+            learnMoreText="Learn more about features"
+          />
         </section>
       </AccordionPanel>
     </AccordionItem>
@@ -187,12 +198,11 @@ function FunctionsAccordionItem(): React.ReactElement {
       <AccordionHeader>Functions</AccordionHeader>
       <AccordionPanel>
         <section className="accordion-content">
-          {renderEmissionScopeSections({
-            features: functions,
-            learnMoreLink:
-              "https://www.ibm.com/docs/envizi-esg-suite?topic=reference-functions-in-emissions-calculations-in-excel",
-            learnMoreText: "View all functions",
-          })}
+          <EmissionScopeSections
+            features={functions}
+            learnMoreLink="https://www.ibm.com/docs/envizi-esg-suite?topic=reference-functions-in-emissions-calculations-in-excel"
+            learnMoreText="View all functions"
+          />
         </section>
       </AccordionPanel>
     </AccordionItem>

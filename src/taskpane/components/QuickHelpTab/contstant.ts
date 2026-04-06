@@ -19,7 +19,7 @@ export const gettingStartedSteps = [
 
 export const usefulFeatures: EmissionScopeConfig[] = [
   {
-    iconName: "RecommendedAI",
+    iconName: "AiRecommend",
     title: "Get a recommended data type",
     formulas: [
       {
@@ -52,7 +52,7 @@ export const usefulFeatures: EmissionScopeConfig[] = [
 
 export const functions: EmissionScopeConfig[] = [
   {
-    iconName: "gasStation",
+    iconName: "GasStation",
     title: "Scope 1 emissions",
     formulas: [
       {
@@ -75,7 +75,7 @@ export const functions: EmissionScopeConfig[] = [
     ],
   },
   {
-    iconName: "flash",
+    iconName: "Flash",
     title: "Scope 2 emissions",
     formulas: [
       {
@@ -88,7 +88,7 @@ export const functions: EmissionScopeConfig[] = [
     ],
   },
   {
-    iconName: "van",
+    iconName: "Van",
     title: "Scope 3 emissions",
     formulas: [
       {
@@ -101,7 +101,7 @@ export const functions: EmissionScopeConfig[] = [
     ],
   },
   {
-    iconName: "calculatorCheck",
+    iconName: "CalculatorCheck",
     title: "Custom calculations",
     formulas: [
       {
@@ -113,7 +113,7 @@ export const functions: EmissionScopeConfig[] = [
     ],
   },
   {
-    iconName: "searchLocate",
+    iconName: "SearchLocate",
     title: "Find factor sets",
     formulas: [
       {
