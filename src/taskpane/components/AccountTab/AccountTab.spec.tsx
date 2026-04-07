@@ -84,6 +84,7 @@ jest.mock("../../../common/env", () => ({
   getEnviziExcelAddInOverviewUrl: jest.fn(
     () => "https://pentest.envizi.ibm.com/emissions/excel-add-in-overview"
   ),
+  getEnableEnviziLogin: jest.fn(() => true),
 }));
 
 // Mock window.open

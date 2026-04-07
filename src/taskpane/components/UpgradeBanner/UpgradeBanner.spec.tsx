@@ -52,7 +52,10 @@ describe("UpgradeBanner", () => {
     render(<UpgradeBanner />);
 
     const button = screen.getByRole("link", { name: /Buy now/i });
-    expect(button).toHaveAttribute("href", "https://www.ibm.com/products/envizi");
+    expect(button).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/products/envizi/emissions-calculations"
+    );
   });
 
   it("should have target='_blank' attribute on the button", () => {
