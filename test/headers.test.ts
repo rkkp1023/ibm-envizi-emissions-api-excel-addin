@@ -965,8 +965,8 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
     it("should include recommender headers for location endpoint when flag is true", async () => {
       const result = await headers("location", true, true);
       expect(result).toEqual([[
-        "Activity Name",
         "Activity Type",
+        "Recommended Activity Type",
         "Confidence(%)",
         "Description",
         "Value",
@@ -1005,8 +1005,8 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it("should handle string 'true' for includeDataTypeRecommender parameter", async () => {
       const result = await headers("mobile", "true", "true");
-      expect(result[0]).toContain("Activity Name");
       expect(result[0]).toContain("Activity Type");
+      expect(result[0]).toContain("Recommended Activity Type");
       expect(result[0]).toContain("Confidence(%)");
       expect(result[0]).toContain("Description");
     });
