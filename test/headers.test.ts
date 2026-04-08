@@ -31,7 +31,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers();
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -39,11 +39,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -52,7 +52,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("location", false);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -60,11 +60,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -73,7 +73,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("stationary");
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -81,11 +81,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -94,18 +94,18 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("factor");
       expect(result).toEqual([
         [
-          "factorSet",
-          "source",
-          "methodology",
-          "scope",
-          "activityType",
-          "activityUnit",
-          "name",
-          "description",
-          "publishedFrom",
-          "publishedTo",
-          "region",
-          "totalCO2e",
+          "Factor Set",
+          "Source",
+          "Methodology",
+          "Scope",
+          "Activity Type",
+          "Activity Unit",
+          "Name",
+          "Description",
+          "Published From",
+          "Published To",
+          "Region",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -113,11 +113,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "factorId",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Factor Id",
+          "Transaction Id",
         ],
       ]);
     });
@@ -126,16 +126,16 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("factor_search");
       expect(result).toEqual([
         [
-          "factorSet",
-          "source",
-          "methodology",
-          "scope",
-          "activityType",
-          "activityUnit",
-          "region",
-          "factorId",
-          "publishedFrom",
-          "publishedTo",
+          "Factor Set",
+          "Source",
+          "Methodology",
+          "Scope",
+          "Activity Type",
+          "Activity Unit",
+          "Region",
+          "Factor Id",
+          "Published From",
+          "Published To",
         ],
       ]);
     });
@@ -145,55 +145,55 @@ describe("ENVIZI.HEADERS function", () => {
     it("should return input headers for calculation endpoint", async () => {
       const result = await headers("calculation", true);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
     it("should return input headers for location endpoint (includes powerGrid)", async () => {
       const result = await headers("location", true);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
     it("should return input headers for stationary endpoint (no powerGrid)", async () => {
       const result = await headers("stationary", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for fugitive endpoint", async () => {
       const result = await headers("fugitive", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for mobile endpoint", async () => {
       const result = await headers("mobile", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for transportation_and_distribution endpoint", async () => {
       const result = await headers("transportation_and_distribution", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for economic_activity endpoint", async () => {
       const result = await headers("economic_activity", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for real_estate endpoint", async () => {
       const result = await headers("real_estate", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for factor endpoint", async () => {
       const result = await headers("factor", true);
-      expect(result).toEqual([["type", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for factor_search endpoint", async () => {
       const result = await headers("factor_search", true);
-      expect(result).toEqual([["search", "country", "stateProvince", "date", "page", "size"]]);
+      expect(result).toEqual([["Search", "Country", "StateProvince", "Date", "Page", "Size"]]);
     });
   });
 
@@ -201,7 +201,7 @@ describe("ENVIZI.HEADERS function", () => {
     it("should handle uppercase endpoint names", async () => {
       const result = await headers("LOCATION", true);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
@@ -209,7 +209,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("StAtIoNaRy", false);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -217,18 +217,18 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
 
     it("should handle endpoint names with whitespace", async () => {
       const result = await headers("  fugitive  ", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
   });
 
@@ -264,20 +264,20 @@ describe("ENVIZI.HEADERS function", () => {
     it('should handle string "true" (lowercase)', async () => {
       const result = await headers("location", "true" as any);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
     it('should handle string "TRUE" (uppercase)', async () => {
       const result = await headers("stationary", "TRUE" as any);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it('should handle string "false" (lowercase)', async () => {
       const result = await headers("mobile", "false" as any);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -285,11 +285,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -298,7 +298,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("fugitive", "FALSE" as any);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -306,11 +306,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -318,20 +318,20 @@ describe("ENVIZI.HEADERS function", () => {
     it('should handle string "TrUe" (mixed case)', async () => {
       const result = await headers("calculation", "TrUe" as any);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
     it('should handle string with whitespace " true "', async () => {
       const result = await headers("economic_activity", " true " as any);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it('should treat non-"true" strings as false', async () => {
       const result = await headers("real_estate", "yes" as any);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -339,11 +339,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -366,7 +366,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("mobile", undefined);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -374,11 +374,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -450,7 +450,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers();
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -458,11 +458,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -471,7 +471,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("location", false);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -479,11 +479,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -492,7 +492,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("stationary");
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -500,11 +500,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -513,18 +513,18 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("factor");
       expect(result).toEqual([
         [
-          "factorSet",
-          "source",
-          "methodology",
-          "scope",
-          "activityType",
-          "activityUnit",
-          "name",
-          "description",
-          "publishedFrom",
-          "publishedTo",
-          "region",
-          "totalCO2e",
+          "Factor Set",
+          "Source",
+          "Methodology",
+          "Scope",
+          "Activity Type",
+          "Activity Unit",
+          "Name",
+          "Description",
+          "Published From",
+          "Published To",
+          "Region",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -532,11 +532,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "factorId",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Factor Id",
+          "Transaction Id",
         ],
       ]);
     });
@@ -545,16 +545,16 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("factor_search");
       expect(result).toEqual([
         [
-          "factorSet",
-          "source",
-          "methodology",
-          "scope",
-          "activityType",
-          "activityUnit",
-          "region",
-          "factorId",
-          "publishedFrom",
-          "publishedTo",
+          "Factor Set",
+          "Source",
+          "Methodology",
+          "Scope",
+          "Activity Type",
+          "Activity Unit",
+          "Region",
+          "Factor Id",
+          "Published From",
+          "Published To",
         ],
       ]);
     });
@@ -564,55 +564,55 @@ describe("ENVIZI.HEADERS function", () => {
     it("should return input headers for calculation endpoint", async () => {
       const result = await headers("calculation", true);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
     it("should return input headers for location endpoint (includes powerGrid)", async () => {
       const result = await headers("location", true);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
     it("should return input headers for stationary endpoint (no powerGrid)", async () => {
       const result = await headers("stationary", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for fugitive endpoint", async () => {
       const result = await headers("fugitive", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for mobile endpoint", async () => {
       const result = await headers("mobile", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for transportation_and_distribution endpoint", async () => {
       const result = await headers("transportation_and_distribution", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for economic_activity endpoint", async () => {
       const result = await headers("economic_activity", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for real_estate endpoint", async () => {
       const result = await headers("real_estate", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for factor endpoint", async () => {
       const result = await headers("factor", true);
-      expect(result).toEqual([["type", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it("should return input headers for factor_search endpoint", async () => {
       const result = await headers("factor_search", true);
-      expect(result).toEqual([["search", "country", "stateProvince", "date", "page", "size"]]);
+      expect(result).toEqual([["Search", "Country", "StateProvince", "Date", "Page", "Size"]]);
     });
   });
 
@@ -620,7 +620,7 @@ describe("ENVIZI.HEADERS function", () => {
     it("should handle uppercase endpoint names", async () => {
       const result = await headers("LOCATION", true);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
@@ -628,7 +628,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("StAtIoNaRy", false);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -636,18 +636,18 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
 
     it("should handle endpoint names with whitespace", async () => {
       const result = await headers("  fugitive  ", true);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
   });
 
@@ -683,20 +683,20 @@ describe("ENVIZI.HEADERS function", () => {
     it('should handle string "true" (lowercase)', async () => {
       const result = await headers("location", "true" as any);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
     it('should handle string "TRUE" (uppercase)', async () => {
       const result = await headers("stationary", "TRUE" as any);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it('should handle string "false" (lowercase)', async () => {
       const result = await headers("mobile", "false" as any);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -704,11 +704,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -717,7 +717,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("fugitive", "FALSE" as any);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -725,11 +725,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -737,20 +737,20 @@ describe("ENVIZI.HEADERS function", () => {
     it('should handle string "TrUe" (mixed case)', async () => {
       const result = await headers("calculation", "TrUe" as any);
       expect(result).toEqual([
-        ["type", "value", "unit", "country", "stateProvince", "date", "powerGrid"],
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
       ]);
     });
 
     it('should handle string with whitespace " true "', async () => {
       const result = await headers("economic_activity", " true " as any);
-      expect(result).toEqual([["type", "value", "unit", "country", "stateProvince", "date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
     });
 
     it('should treat non-"true" strings as false', async () => {
       const result = await headers("real_estate", "yes" as any);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -758,11 +758,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -785,7 +785,7 @@ describe("ENVIZI.HEADERS function", () => {
       const result = await headers("mobile", undefined);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -793,11 +793,11 @@ describe("ENVIZI.HEADERS function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -873,7 +873,7 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
       const result = await headers_by_factorid("location", false);
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -881,11 +881,11 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -894,7 +894,7 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
       const result = await headers_by_factorid("mobile");
       expect(result).toEqual([
         [
-          "totalCO2e",
+          "TotalCO2e",
           "CO2",
           "CH4",
           "N2O",
@@ -902,11 +902,11 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
           "PFC",
           "SF6",
           "NF3",
-          "bioCO2",
-          "indirectCO2e",
-          "unit",
-          "description",
-          "transactionId",
+          "BioCO2",
+          "IndirectCO2e",
+          "Unit",
+          "Description",
+          "Transaction Id",
         ],
       ]);
     });
@@ -965,66 +965,67 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
     it("should include recommender headers for location endpoint when flag is true", async () => {
       const result = await headers("location", true, true);
       expect(result).toEqual([[
-        "type",
-        "activityType",
-        "confidence",
-        "activityDescription",
-        "value",
-        "unit",
-        "country",
-        "stateProvince",
-        "date",
-        "powerGrid"
+        "Activity Name",
+        "Activity Type",
+        "Confidence(%)",
+        "Description",
+        "Value",
+        "Unit",
+        "Country",
+        "StateProvince",
+        "Date",
+        "Power Grid"
       ]]);
     });
 
     it("should not include recommender headers when flag is false", async () => {
       const result = await headers("location", true, false);
       expect(result).toEqual([[
-        "type",
-        "value",
-        "unit",
-        "country",
-        "stateProvince",
-        "date",
-        "powerGrid"
+        "Activity Type",
+        "Value",
+        "Unit",
+        "Country",
+        "StateProvince",
+        "Date",
+        "Power Grid"
       ]]);
     });
 
     it("should not include recommender headers when flag is not provided (default)", async () => {
       const result = await headers("stationary", true);
       expect(result).toEqual([[
-        "type",
-        "value",
-        "unit",
-        "country",
-        "stateProvince",
-        "date"
+        "Activity Type",
+        "Value",
+        "Unit",
+        "Country",
+        "StateProvince",
+        "Date"
       ]]);
     });
 
     it("should handle string 'true' for includeDataTypeRecommender parameter", async () => {
       const result = await headers("mobile", "true", "true");
-      expect(result[0]).toContain("activityType");
-      expect(result[0]).toContain("confidence");
-      expect(result[0]).toContain("activityDescription");
+      expect(result[0]).toContain("Activity Name");
+      expect(result[0]).toContain("Activity Type");
+      expect(result[0]).toContain("Confidence(%)");
+      expect(result[0]).toContain("Description");
     });
 
     it("should not affect output headers when includeDataTypeRecommender is true", async () => {
       const result = await headers("location", false, true);
-      expect(result[0]).toContain("totalCO2e");
-      expect(result[0]).not.toContain("Activity Type");
+      expect(result[0]).toContain("TotalCO2e");
+      expect(result[0]).not.toContain("Activity Name");
     });
 
     it("should not add recommender headers for endpoints without 'type' field", async () => {
       const result = await headers("factor_search", true, true);
       expect(result).toEqual([[
-        "search",
-        "country",
-        "stateProvince",
-        "date",
-        "page",
-        "size"
+        "Search",
+        "Country",
+        "StateProvince",
+        "Date",
+        "Page",
+        "Size"
       ]]);
     });
   });
