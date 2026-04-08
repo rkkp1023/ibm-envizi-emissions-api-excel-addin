@@ -316,7 +316,7 @@ export async function factor_search(
  * @param stateProvince Geographic state or province
  * @param date Activity date
  */
-export async function data_type_recommender(
+export async function RECOMMEND_ACTIVITY_TYPE(
   search: string,
   country: string,
   stateProvince?: string,
@@ -458,7 +458,7 @@ export async function real_estate_by_factorId(
  * Returns the input or output headers for a specific endpoint.
  * @customfunction
  * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#headers
- * @param functionName Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search, data_type_recommender)
+ * @param functionName Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search, RECOMMEND_ACTIVITY_TYPE)
  * @param input Whether to return input headers (true) or output headers (false). Default is false.
  * @param includeDataTypeRecommender Whether to include data type recommender headers after "type" field for input headers (default: false). Only applies when input=true.
  * @returns Array of header names as a single row
@@ -536,8 +536,8 @@ export async function headers_by_factorid(functionName?: string, input?: boolean
       );
     }
 
-    // factor_search and data_type_recommender don't support factorId-based calls
-    if (selectedEndpoint === "factor_search" || selectedEndpoint === "data_type_recommender") {
+    // factor_search and RECOMMEND_ACTIVITY_TYPE don't support factorId-based calls
+    if (selectedEndpoint === "factor_search" || selectedEndpoint === "RECOMMEND_ACTIVITY_TYPE") {
       throw new CustomFunctions.Error(
         CustomFunctions.ErrorCode.invalidValue,
         `Function "${selectedEndpoint}" does not support factorId-based calls`
