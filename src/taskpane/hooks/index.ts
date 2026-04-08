@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 export { useAccountSubscription } from "./useAccountSubscription";
 export { useAuth } from "./useAuth";

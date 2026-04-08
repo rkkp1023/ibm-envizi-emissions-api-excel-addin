@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import { jwtDecode } from "jwt-decode";
 import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
@@ -171,12 +168,12 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
         // Note: API key login uses saveApiCredentialsToStorage via performLogin() instead
         saveUserCredentialsToStorage(credentials);
         ensureClient(credentials);
-        
+
         // Refresh metadata on login (non-blocking) - needed for Envizi login
         refreshMetadataOnLogin().catch((error) => {
           console.error("Failed to refresh metadata on login:", error);
         });
-        
+
         dispatch({
           type: "loginSuccess",
           payload: { credentials },
@@ -194,12 +191,12 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     try {
       // Perform login with API validation
       await performLogin(credentials, saveCredentials);
-      
+
       // Refresh metadata on login (non-blocking)
       refreshMetadataOnLogin().catch((error) => {
         console.error("Failed to refresh metadata on login:", error);
       });
-      
+
       dispatch({
         type: "loginSuccess",
         payload: { credentials },

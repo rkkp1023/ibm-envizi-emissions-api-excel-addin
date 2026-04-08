@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import { Theme, webDarkTheme, webLightTheme } from "@fluentui/react-components";
 import { createContext, ReactNode, useEffect, useState } from "react";
