@@ -250,6 +250,72 @@ export function isValidFunctionName(functionName: string): functionName is Funct
 }
 
 /**
+ * Mapping from display headers (with proper capitalization) to API response keys (camelCase)
+ * Function-specific mappings for headers that differ across functions
+ */
+const FUNCTION_SPECIFIC_MAPPINGS: Record<FunctionNameType, Record<string, string>> = {
+  RECOMMEND_ACTIVITY_TYPE: {
+    "Activity Type": "activityType",
+    "Confidence(%)": "confidence",
+    "Description": "activityDescription",
+  },
+  location: {},
+  stationary: {},
+  fugitive: {},
+  mobile: {},
+  transportation_and_distribution: {},
+  calculation: {},
+  economic_activity: {},
+  real_estate: {},
+  factor: {},
+  factor_search: {},
+};
+
+/**
+ * Common mapping from display headers to API response keys
+ */
+const COMMON_HEADER_TO_API_KEY_MAP: Record<string, string> = {
+  // Standard output headers
+  "TotalCO2e": "totalCO2e",
+  "CO2": "CO2",
+  "CH4": "CH4",
+  "N2O": "N2O",
+  "HFC": "HFC",
+  "PFC": "PFC",
+  "SF6": "SF6",
+  "NF3": "NF3",
+  "BioCO2": "bioCO2",
+  "IndirectCO2e": "indirectCO2e",
+  "Unit": "unit",
+  "Description": "description",
+  "Transaction Id": "transactionId",
+  
+  // Factor headers
+  "Factor Set": "factorSet",
+  "Source": "source",
+  "Methodology": "methodology",
+  "Scope": "scope",
+  "Activity Type": "activityType",
+  "Activity Unit": "activityUnit",
+  "Name": "name",
+  "Published From": "publishedFrom",
+  "Published To": "publishedTo",
+  "Region": "region",
+  "Factor Id": "factorId",
+  
+  // Input headers (for reference, though not used in formatRow)
+  "Value": "value",
+  "Country": "country",
+  "StateProvince": "stateProvince",
+  "Date": "date",
+  "Power Grid": "powerGrid",
+  
+  // Data type recommender headers
+  "Activity Name": "activityType",
+  "Confidence(%)": "confidence",
+};
+
+/**
  * Normalize a single response field value for Excel output:
  * - Arrays are joined with ", " (e.g. activityUnit: ["kg", "L"] → "kg, L")
  * - null / undefined → "" (empty cell)
@@ -266,11 +332,20 @@ export function formatValue(val: unknown): string | number {
  * This is the single source of truth for field ordering — if you add/remove/reorder
  * a field in FUNCTION_NAME_CONFIGS outputHeaders, the data row updates automatically.
  *
- * @param response - The raw API response object
+ * Maps display headers to API response keys using HEADER_TO_API_KEY_MAP.
+ *
+ * @param response - The raw API response object (with camelCase keys)
  * @param functionName - The function name type (used to look up output headers)
  * @returns A flat array of cell values in the same order as the output headers
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatRow(response: any, functionName: FunctionNameType): (string | number)[] {
-  return getOutputHeaders(functionName).map((key) => formatValue(response[key]));
+  return getOutputHeaders(functionName).map((displayHeader) => {
+    // Check function-specific mapping first, then common mapping, then fallback to display header
+    const functionSpecificMapping = FUNCTION_SPECIFIC_MAPPINGS[functionName];
+    const apiKey = functionSpecificMapping[displayHeader] ||
+                   COMMON_HEADER_TO_API_KEY_MAP[displayHeader] ||
+                   displayHeader;
+    return formatValue(response[apiKey]);
+  });
 }
