@@ -17,7 +17,7 @@ export type FunctionNameType =
   | "real_estate"
   | "factor"
   | "factor_search"
-  | "RECOMMEND_ACTIVITY_TYPE";
+  | "recommend_activity_type";
 
 /**
  * Header field definition containing both API response name (camelCase) and display name (proper capitalization)
@@ -281,7 +281,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     ],
     outputHeaders: FACTOR_SEARCH_OUTPUT_HEADERS,
   },
-  RECOMMEND_ACTIVITY_TYPE: {
+  recommend_activity_type: {
     inputHeaders: [
       HEADER_FIELDS.SEARCH,
       HEADER_FIELDS.COUNTRY,

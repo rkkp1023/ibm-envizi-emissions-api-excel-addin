@@ -45,7 +45,7 @@ function formatTypeRecommenderResponse(response: any): (string | number)[][] {
   }
 
   // Return only the first result as per requirement
-  return [formatRow(response.types[0], "RECOMMEND_ACTIVITY_TYPE")];
+  return [formatRow(response.types[0], "recommend_activity_type")];
 }
 
 export async function typeRecommender(
