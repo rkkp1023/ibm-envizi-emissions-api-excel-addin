@@ -22,19 +22,19 @@ export type FunctionNameType =
  * Base input headers common to most calculation functions
  */
 const BASE_INPUT_HEADERS = [
-  "type",
-  "value",
-  "unit",
-  "country",
-  "stateProvince",
-  "date",
+  "Activity Type",
+  "Value",
+  "Unit",
+  "Country",
+  "StateProvince",
+  "Date",
 ] as const;
 
 /**
  * Common gas emission fields for all functions
  */
 const COMMON_GAS_HEADERS = [
-  "totalCO2e",
+  "TotalCO2e",
   "CO2",
   "CH4",
   "N2O",
@@ -42,14 +42,14 @@ const COMMON_GAS_HEADERS = [
   "PFC",
   "SF6",
   "NF3",
-  "bioCO2",
-  "indirectCO2e",
+  "BioCO2",
+  "IndirectCO2e",
 ] as const;
 
 /**
  * Trailing metadata fields that appear at the end of output headers
  */
-const OUTPUT_TAIL_HEADERS = ["unit", "description", "transactionId"] as const;
+const OUTPUT_TAIL_HEADERS = ["Unit", "Description", "Transaction Id"] as const;
 
 /**
  * Standard output headers (for most functions)
@@ -67,18 +67,18 @@ const FACTOR_ID_INPUT_HEADERS = ["factorId", "value", "unit"] as const;
  * Output headers for factor retrieval function
  */
 const FACTOR_OUTPUT_HEADERS = [
-  "factorSet",
-  "source",
-  "methodology",
-  "scope",
-  "activityType",
-  "activityUnit",
-  "name",
-  "description",
-  "publishedFrom",
-  "publishedTo",
-  "region",
-  "totalCO2e",
+  "Factor Set",
+  "Source",
+  "Methodology",
+  "Scope",
+  "Activity Type",
+  "Activity Unit",
+  "Name",
+  "Description",
+  "Published From",
+  "Published To",
+  "Region",
+  "TotalCO2e",
   "CO2",
   "CH4",
   "N2O",
@@ -86,36 +86,37 @@ const FACTOR_OUTPUT_HEADERS = [
   "PFC",
   "SF6",
   "NF3",
-  "bioCO2",
-  "indirectCO2e",
-  "unit",
-  "factorId",
-  "transactionId",
+  "BioCO2",
+  "IndirectCO2e",
+  "Unit",
+  "Factor Id",
+  "Transaction Id",
 ] as const;
 
 /**
  * Output headers for factor search function
  */
 const FACTOR_SEARCH_OUTPUT_HEADERS = [
-  "factorSet",
-  "source",
-  "methodology",
-  "scope",
-  "activityType",
-  "activityUnit",
-  "region",
-  "factorId",
-  "publishedFrom",
-  "publishedTo",
+  "Factor Set",
+  "Source",
+  "Methodology",
+  "Scope",
+  "Activity Type",
+  "Activity Unit",
+  "Region",
+  "Factor Id",
+  "Published From",
+  "Published To",
 ] as const;
 
 /**
- * Output headers for data type recommender function
+ * Headers for data type recommender function
  */
-const DATA_TYPE_RECOMMENDER_OUTPUT_HEADERS = [
-  "activityType",
-  "confidence",
-  "activityDescription",
+const DATA_TYPE_RECOMMENDER_HEADERS = [
+  "Activity Name",
+  "Activity Type",
+  "Confidence(%)",
+  "Description",
 ] as const;
 
 /**
@@ -129,7 +130,7 @@ interface FunctionNameConfig {
 
 const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
   location: {
-    inputHeaders: [...BASE_INPUT_HEADERS, "powerGrid"],
+    inputHeaders: [...BASE_INPUT_HEADERS, "Power Grid"],
     outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
@@ -154,7 +155,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   calculation: {
-    inputHeaders: [...BASE_INPUT_HEADERS, "powerGrid"],
+    inputHeaders: [...BASE_INPUT_HEADERS, "Power Grid"],
     outputHeaders: STANDARD_OUTPUT_HEADERS,
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
@@ -169,17 +170,17 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   factor: {
-    inputHeaders: ["type", "unit", "country", "stateProvince", "date"], // type, value, unit for type-based
+    inputHeaders: ["Activity Type", "Unit", "Country", "StateProvince", "Date"], // type, value, unit for type-based
     outputHeaders: FACTOR_OUTPUT_HEADERS,
     factorIdInputHeaders: ["factorId", "unit"], // factorId, unit for id-based
   },
   factor_search: {
-    inputHeaders: ["search", "country", "stateProvince", "date", "page", "size"],
+    inputHeaders: ["Search", "Country", "StateProvince", "Date", "Page", "Size"],
     outputHeaders: FACTOR_SEARCH_OUTPUT_HEADERS,
   },
   data_type_recommender: {
-    inputHeaders: ["search", "country", "stateProvince", "date"],
-    outputHeaders: DATA_TYPE_RECOMMENDER_OUTPUT_HEADERS,
+    inputHeaders: ["Search", "Country", "StateProvince", "Date"],
+    outputHeaders: ["Activity Type", "Confidence(%)", "Description"],
   },
 };
 
@@ -213,12 +214,12 @@ export function getInputHeaders(
     headers = [...config.inputHeaders];
   }
 
-  // Insert recommender headers after "type" field if requested
+  // Replace "Activity Type" with full recommender headers if requested
   if (includeDataTypeRecommender && !useFactorId) {
-    const typeIndex = headers.indexOf("type");
+    const typeIndex = headers.indexOf("Activity Type");
     if (typeIndex !== -1) {
-      // Insert recommender headers after "type"
-      headers.splice(typeIndex + 1, 0, ...DATA_TYPE_RECOMMENDER_OUTPUT_HEADERS);
+      // Remove "Activity Type" and insert all recommender headers in its place
+      headers.splice(typeIndex, 1, ...DATA_TYPE_RECOMMENDER_HEADERS);
     }
   }
 
