@@ -16,7 +16,7 @@ export type FunctionNameType =
   | "real_estate"
   | "factor"
   | "factor_search"
-  | "data_type_recommender";
+  | "RECOMMEND_ACTIVITY_TYPE";
 
 /**
  * Base input headers common to most calculation functions
@@ -178,7 +178,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     inputHeaders: ["Search", "Country", "StateProvince", "Date", "Page", "Size"],
     outputHeaders: FACTOR_SEARCH_OUTPUT_HEADERS,
   },
-  data_type_recommender: {
+  RECOMMEND_ACTIVITY_TYPE: {
     inputHeaders: ["Search", "Country", "StateProvince", "Date"],
     outputHeaders: ["Activity Type", "Confidence(%)", "Description"],
   },
