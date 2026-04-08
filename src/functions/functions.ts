@@ -546,7 +546,7 @@ export async function headers_by_factorid(functionName?: string, input?: boolean
 
     // Get the appropriate headers
     const headersList = isInput
-      ? getInputHeaders(selectedEndpoint, true, false) // true = use factorId headers, false = no recommender for factorId
+      ? getInputHeaders(selectedEndpoint, true, false)  // true = use factorId headers, false = no recommender for factorId
       : getOutputHeaders(selectedEndpoint);
 
     // Return as a single row array
