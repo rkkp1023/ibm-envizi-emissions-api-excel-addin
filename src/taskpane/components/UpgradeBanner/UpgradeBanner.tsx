@@ -84,7 +84,7 @@ export function UpgradeBanner(): React.ReactElement {
               icon={<Open16Regular />}
               iconPosition="after"
               as="a"
-              href="https://www.ibm.com/products/envizi/emissions-calculations"
+              href="https://www.ibm.com/store/en/us/products/EIDSBEJC"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.button}

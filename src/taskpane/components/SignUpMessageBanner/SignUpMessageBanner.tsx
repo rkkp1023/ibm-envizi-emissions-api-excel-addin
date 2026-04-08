@@ -22,7 +22,7 @@ export function SignUpMessageBanner() {
 
   const handleBuyNow = () => {
     window.open(
-      "https://www.ibm.com/products/envizi/emissions-calculations",
+      "https://www.ibm.com/store/en/us/products/EIDSBEJC",
       "_blank",
       "noopener,noreferrer"
     );

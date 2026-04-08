@@ -126,7 +126,7 @@ describe("SignUpMessageBanner", () => {
       fireEvent.click(buyNowButton);
 
       expect(windowOpenSpy).toHaveBeenCalledWith(
-        "https://www.ibm.com/products/envizi/emissions-calculations",
+        "https://www.ibm.com/store/en/us/products/EIDSBEJC",
         "_blank",
         "noopener,noreferrer"
       );
@@ -170,7 +170,7 @@ describe("SignUpMessageBanner", () => {
 
       expect(windowOpenSpy).toHaveBeenCalledTimes(2);
       expect(windowOpenSpy).toHaveBeenCalledWith(
-        "https://www.ibm.com/products/envizi/emissions-calculations",
+        "https://www.ibm.com/store/en/us/products/EIDSBEJC",
         "_blank",
         "noopener,noreferrer"
       );
@@ -193,7 +193,7 @@ describe("SignUpMessageBanner", () => {
       );
       expect(windowOpenSpy).toHaveBeenNthCalledWith(
         2,
-        "https://www.ibm.com/products/envizi/emissions-calculations",
+        "https://www.ibm.com/store/en/us/products/EIDSBEJC",
         "_blank",
         "noopener,noreferrer"
       );
