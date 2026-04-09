@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Troubleshooting Guide" href="troubleshooting.html"><link rel="prev" title="Use" href="use.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
+    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
         <title>Reference - IBM Envizi for Excel documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8d04aa46" />
     
@@ -932,29 +932,133 @@
 </pre></div>
 </div>
 <p><strong>Outputs</strong></p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">factorSet</span></code></p></td>
+<td><p>The emission factor dataset used for calculation (e.g., DEFRA, EPA).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code></p></td>
+<td><p>Reference source of the factor (e.g., publication, license link).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">activityType</span></code></p></td>
+<td><p>Category of data (e.g., Electricity - Scope 3).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">activityUnit</span></code></p></td>
+<td><p>Unit of input activity data (e.g., kWh, liters).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">region</span></code></p></td>
+<td><p>Geographic region where the factor applies.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">factorId</span></code></p></td>
+<td><p>Factor ID from Envizi.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+<section id="recommend-activity-type">
+<h3>Recommend Activity Type<a class="headerlink" href="#recommend-activity-type" title="Link to this heading">¶</a></h3>
+<p>Uses AI to recommend the most appropriate activity type based on a text description. This function helps users find the correct activity type when they’re unsure which one to use for their emissions calculation.</p>
+<p><strong>Syntax</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.RECOMMEND_ACTIVITY_TYPE(search, country, [stateProvince], [date])
+</pre></div>
+</div>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">search</span></code> – Text description of the activity (e.g., “electricity consumption”, “diesel fuel”, “air travel”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">country</span></code> – ISO alpha-3 country code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stateProvince</span></code> <em>(optional)</em> – Geographic state or province</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> <em>(optional)</em> – Activity date (format: YYYY-MM-DD or Excel date)</p></li>
+</ul>
+<p><strong>Outputs</strong></p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Recommended</span> <span class="pre">Activity</span> <span class="pre">Type</span></code></p></td>
+<td><p>The AI-recommended activity type that best matches your description</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Confidence(%)</span></code></p></td>
+<td><p>Confidence level of the recommendation (0-100). Higher values indicate stronger matches.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Description</span></code></p></td>
+<td><p>Detailed description of the recommended activity type</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Examples</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.RECOMMEND_ACTIVITY_TYPE(&quot;electricity usage&quot;, &quot;USA&quot;)
+=ENVIZI.RECOMMEND_ACTIVITY_TYPE(&quot;diesel fuel for trucks&quot;, &quot;GBR&quot;, &quot;England&quot;, &quot;2024-01-15&quot;)
+=ENVIZI.RECOMMEND_ACTIVITY_TYPE(&quot;natural gas heating&quot;, &quot;CAN&quot;, &quot;Ontario&quot;)
+</pre></div>
+</div>
+<p><strong>Usage Tips</strong></p>
+<ul class="simple">
+<li><p>Use descriptive text in the <code class="docutils literal notranslate"><span class="pre">search</span></code> parameter for better recommendations</p></li>
+<li><p>The function returns only the top recommendation (highest confidence)</p></li>
+<li><p>Use the recommended activity type in your emission calculation functions</p></li>
+<li><p>Combine with <code class="docutils literal notranslate"><span class="pre">ENVIZI.HEADERS</span></code> using <code class="docutils literal notranslate"><span class="pre">includeDataTypeRecommender=TRUE</span></code> to create templates that include recommendation columns</p></li>
+</ul>
+<p><strong>Workflow Example</strong></p>
+<ol class="arabic simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">ENVIZI.RECOMMEND_ACTIVITY_TYPE</span></code> to get activity type suggestions</p></li>
+<li><p>Review the confidence level and description</p></li>
+<li><p>Use the recommended activity type in functions like <code class="docutils literal notranslate"><span class="pre">ENVIZI.LOCATION</span></code>, <code class="docutils literal notranslate"><span class="pre">ENVIZI.STATIONARY</span></code>, etc.</p></li>
+</ol>
 <p>—</p>
 </section>
 <section id="headers">
 <h3>Headers<a class="headerlink" href="#headers" title="Link to this heading">¶</a></h3>
 <p>Returns the input or output column headers for a specific endpoint. Useful for setting up spreadsheet templates.</p>
 <p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS([functionName], [input])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS([functionName], [input], [includeDataTypeRecommender])
 </pre></div>
 </div>
 <p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">functionName</span></code> <em>(optional)</em> – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">functionName</span></code> <em>(optional)</em> – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search, recommend_activity_type). Default: calculation</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> <em>(optional)</em> – TRUE for input headers, FALSE for output headers. Default: FALSE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">includeDataTypeRecommender</span></code> <em>(optional)</em> – TRUE to include AI-recommended activity type columns in input headers (adds “Recommended Activity Type”, “Confidence(%)”, and “Description” after “Activity Type”). Only applies when input=TRUE. Default: FALSE</p></li>
 </ul>
 <p><strong>Examples</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS()                          // Returns output headers for calculation endpoint
-=ENVIZI.HEADERS(&quot;location&quot;)                // Returns output headers for location endpoint
-=ENVIZI.HEADERS(&quot;stationary&quot;, TRUE)        // Returns input headers for stationary endpoint
-=ENVIZI.HEADERS(&quot;factor&quot;, FALSE)           // Returns output headers for factor endpoint
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.HEADERS()                                    // Returns output headers for calculation endpoint
+=ENVIZI.HEADERS(&quot;location&quot;)                          // Returns output headers for location endpoint
+=ENVIZI.HEADERS(&quot;stationary&quot;, TRUE)                  // Returns input headers for stationary endpoint
+=ENVIZI.HEADERS(&quot;stationary&quot;, TRUE, TRUE)            // Returns input headers with recommender columns
+=ENVIZI.HEADERS(&quot;factor&quot;, FALSE)                     // Returns output headers for factor endpoint
+=ENVIZI.HEADERS(&quot;recommend_activity_type&quot;, FALSE)    // Returns output headers for activity type recommender
 </pre></div>
 </div>
 <p><strong>Output</strong></p>
 <p>Returns a single row array containing the header names for the specified endpoint and type (input/output).</p>
+<p><strong>Note on Data Type Recommender</strong></p>
+<p>When <code class="docutils literal notranslate"><span class="pre">includeDataTypeRecommender</span></code> is TRUE, the input headers will include three additional columns after “Activity Type”:</p>
+<ul class="simple">
+<li><p><strong>Recommended Activity Type</strong> – AI-suggested activity type based on your description</p></li>
+<li><p><strong>Confidence(%)</strong> – Confidence level of the recommendation (0-100)</p></li>
+<li><p><strong>Description</strong> – Description of the recommended activity type</p></li>
+</ul>
+<p>This is useful when you want to use the <code class="docutils literal notranslate"><span class="pre">ENVIZI.RECOMMEND_ACTIVITY_TYPE</span></code> function to get AI suggestions for activity types before performing calculations.</p>
 <p>—</p>
 </section>
 <section id="headers-by-factorid">
@@ -1055,6 +1159,7 @@
 <li><a class="reference internal" href="#economic-activity">Economic Activity</a></li>
 <li><a class="reference internal" href="#real-estate">Real Estate</a></li>
 <li><a class="reference internal" href="#factor-search">Factor Search</a></li>
+<li><a class="reference internal" href="#recommend-activity-type">Recommend Activity Type</a></li>
 <li><a class="reference internal" href="#headers">Headers</a></li>
 <li><a class="reference internal" href="#headers-by-factorid">Headers by FactorId</a></li>
 </ul>
@@ -1071,7 +1176,7 @@
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
     </body>
