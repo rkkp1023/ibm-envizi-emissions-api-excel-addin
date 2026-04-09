@@ -92,7 +92,9 @@ export const AccountTab: React.FC = () => {
   };
 
   const shouldShowUpgradeBanner =
-    getEnableEnviziLogin() && subscriptionData?.subscriptionType !== "premium";
+    getEnableEnviziLogin() &&
+    !state.credentials["apiKey"] &&
+    subscriptionData?.subscriptionType !== "premium";
 
   return (
     <div className="account-panel">
