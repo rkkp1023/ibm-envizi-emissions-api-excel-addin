@@ -122,6 +122,22 @@ function GettingStartedAccordionItem(): React.ReactElement {
     ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
     : "api-calculating-emissions-in-microsoft-excel";
 
+  const handleImageClick = () => {
+    // Open video player in a separate dialog window
+    const currentPath = window.location.pathname;
+    const rootPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
+    const videoPlayer = `${window.location.origin}${rootPath}/video-player.html`;
+    Office.context.ui.displayDialogAsync(
+      videoPlayer,
+      { height: 60, width: 60, promptBeforeOpen: false },
+      (asyncResult) => {
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+          console.error("Failed to open video dialog:", asyncResult.error.message);
+        }
+      }
+    );
+  };
+
   return (
     <AccordionItem value="getting-started">
       <AccordionHeader>Getting started</AccordionHeader>
@@ -135,7 +151,7 @@ function GettingStartedAccordionItem(): React.ReactElement {
 
           {false && (
             <div className="image-wrapper">
-              <div className="image-container">
+              <div className="image-container" onClick={handleImageClick}>
                 <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
                 <div className="play-button-overlay">
                   <PlayCircleFilled />

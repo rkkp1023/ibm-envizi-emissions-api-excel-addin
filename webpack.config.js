@@ -107,6 +107,11 @@ module.exports = async (env, options) => {
         template: "./src/commands/notification.html",
         chunks: [],
       }),
+      new HtmlWebpackPlugin({
+        filename: "video-player.html",
+        template: "./src/video-player/video-player.html",
+        chunks: ["video-player"],
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {
