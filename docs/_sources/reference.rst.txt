@@ -553,6 +553,63 @@ Factor Search
    * - ``region``
      - Geographic region where the factor applies.
    * - ``factorId``
+     - Factor ID from Envizi.
+
+---
+
+Recommend Activity Type
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Uses AI to recommend the most appropriate activity type based on a text description. This function helps users find the correct activity type when they're unsure which one to use for their emissions calculation.
+
+**Syntax**
+
+.. code-block:: none
+
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE(search, country, [stateProvince], [date])
+
+**Parameters**
+
+- ``search`` – Text description of the activity (e.g., "electricity consumption", "diesel fuel", "air travel")
+- ``country`` – ISO alpha-3 country code
+- ``stateProvince`` *(optional)* – Geographic state or province
+- ``date`` *(optional)* – Activity date (format: YYYY-MM-DD or Excel date)
+
+**Outputs**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Column
+     - Description
+   * - ``Recommended Activity Type``
+     - The AI-recommended activity type that best matches your description
+   * - ``Confidence(%)``
+     - Confidence level of the recommendation (0-100). Higher values indicate stronger matches.
+   * - ``Description``
+     - Detailed description of the recommended activity type
+
+**Examples**
+
+.. code-block:: none
+
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE("electricity usage", "USA")
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE("diesel fuel for trucks", "GBR", "England", "2024-01-15")
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE("natural gas heating", "CAN", "Ontario")
+
+**Usage Tips**
+
+- Use descriptive text in the ``search`` parameter for better recommendations
+- The function returns only the top recommendation (highest confidence)
+- Use the recommended activity type in your emission calculation functions
+- Combine with ``ENVIZI.HEADERS`` using ``includeDataTypeRecommender=TRUE`` to create templates that include recommendation columns
+
+**Workflow Example**
+
+1. Use ``ENVIZI.RECOMMEND_ACTIVITY_TYPE`` to get activity type suggestions
+2. Review the confidence level and description
+3. Use the recommended activity type in functions like ``ENVIZI.LOCATION``, ``ENVIZI.STATIONARY``, etc.
 
 ---
 
@@ -565,25 +622,38 @@ Returns the input or output column headers for a specific endpoint. Useful for s
 
 .. code-block:: none
 
-   =ENVIZI.HEADERS([functionName], [input])
+   =ENVIZI.HEADERS([functionName], [input], [includeDataTypeRecommender])
 
 **Parameters**
 
-- ``functionName`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search). Default: calculation
+- ``functionName`` *(optional)* – Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search, recommend_activity_type). Default: calculation
 - ``input`` *(optional)* – TRUE for input headers, FALSE for output headers. Default: FALSE
+- ``includeDataTypeRecommender`` *(optional)* – TRUE to include AI-recommended activity type columns in input headers (adds "Recommended Activity Type", "Confidence(%)", and "Description" after "Activity Type"). Only applies when input=TRUE. Default: FALSE
 
 **Examples**
 
 .. code-block:: none
 
-   =ENVIZI.HEADERS()                          // Returns output headers for calculation endpoint
-   =ENVIZI.HEADERS("location")                // Returns output headers for location endpoint
-   =ENVIZI.HEADERS("stationary", TRUE)        // Returns input headers for stationary endpoint
-   =ENVIZI.HEADERS("factor", FALSE)           // Returns output headers for factor endpoint
+   =ENVIZI.HEADERS()                                    // Returns output headers for calculation endpoint
+   =ENVIZI.HEADERS("location")                          // Returns output headers for location endpoint
+   =ENVIZI.HEADERS("stationary", TRUE)                  // Returns input headers for stationary endpoint
+   =ENVIZI.HEADERS("stationary", TRUE, TRUE)            // Returns input headers with recommender columns
+   =ENVIZI.HEADERS("factor", FALSE)                     // Returns output headers for factor endpoint
+   =ENVIZI.HEADERS("recommend_activity_type", FALSE)    // Returns output headers for activity type recommender
 
 **Output**
 
 Returns a single row array containing the header names for the specified endpoint and type (input/output).
+
+**Note on Data Type Recommender**
+
+When ``includeDataTypeRecommender`` is TRUE, the input headers will include three additional columns after "Activity Type":
+
+- **Recommended Activity Type** – AI-suggested activity type based on your description
+- **Confidence(%)** – Confidence level of the recommendation (0-100)
+- **Description** – Description of the recommended activity type
+
+This is useful when you want to use the ``ENVIZI.RECOMMEND_ACTIVITY_TYPE`` function to get AI suggestions for activity types before performing calculations.
 
 ---
 

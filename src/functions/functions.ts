@@ -4,6 +4,7 @@ import { factorHelper } from "./factorHelper";
 import { factorSearch } from "./factorSearchHelper";
 import { genericApiCall } from "./generic-api-call";
 import { getInputHeaders, getOutputHeaders, isValidFunctionName, VALID_FUNCTION_NAMES } from "./headers-config";
+import { typeRecommender } from "./typeRecommenderHelper";
 
 /**
  * Calculates location-based emissions.
@@ -307,6 +308,24 @@ export async function factor_search(
 }
 
 /**
+ * Recommends activity types based on search query and location context.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#data-type-recommender
+ * @param search Search query string describing the activity
+ * @param country ISO alpha-3 country code
+ * @param stateProvince Geographic state or province
+ * @param date Activity date
+ */
+export async function RECOMMEND_ACTIVITY_TYPE(
+  search: string,
+  country: string,
+  stateProvince?: string,
+  date?: string
+): Promise<any[][]> {
+  return typeRecommender(search, country, stateProvince, date);
+}
+
+/**
  * Calculates emissions using the factor endpoint.
  * @customfunction
  * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#factor
@@ -439,11 +458,16 @@ export async function real_estate_by_factorId(
  * Returns the input or output headers for a specific endpoint.
  * @customfunction
  * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#headers
- * @param functionName Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search)
+ * @param functionName Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search, RECOMMEND_ACTIVITY_TYPE)
  * @param input Whether to return input headers (true) or output headers (false). Default is false.
+ * @param includeDataTypeRecommender Whether to include data type recommender headers after "type" field for input headers (default: false). Only applies when input=true.
  * @returns Array of header names as a single row
  */
-export async function headers(functionName?: string, input?: boolean | string): Promise<string[][]> {
+export async function headers(
+  functionName?: string,
+  input?: boolean | string,
+  includeDataTypeRecommender?: boolean | string
+): Promise<string[][]> {
   try {
     // Default to "calculation" if no endpoint provided
     const selectedEndpoint = functionName?.trim().toLowerCase() || "calculation";
@@ -452,6 +476,11 @@ export async function headers(functionName?: string, input?: boolean | string): 
     const isInput = typeof input === "string"
       ? input.trim().toLowerCase() === "true"
       : input === true;
+
+    // Handle includeDataTypeRecommender parameter
+    const includeRecommender = typeof includeDataTypeRecommender === "string"
+      ? includeDataTypeRecommender.trim().toLowerCase() === "true"
+      : includeDataTypeRecommender === true;
 
     // Validate function name
     if (!isValidFunctionName(selectedEndpoint)) {
@@ -463,7 +492,7 @@ export async function headers(functionName?: string, input?: boolean | string): 
 
     // Get the appropriate headers
     const headersList = isInput
-      ? getInputHeaders(selectedEndpoint)
+      ? getInputHeaders(selectedEndpoint, false, includeRecommender)
       : getOutputHeaders(selectedEndpoint);
 
     // Return as a single row array
@@ -507,17 +536,17 @@ export async function headers_by_factorid(functionName?: string, input?: boolean
       );
     }
 
-    // factor_search doesn't support factorId-based calls
-    if (selectedEndpoint === "factor_search") {
+    // factor_search and RECOMMEND_ACTIVITY_TYPE don't support factorId-based calls
+    if (selectedEndpoint === "factor_search" || selectedEndpoint === "RECOMMEND_ACTIVITY_TYPE") {
       throw new CustomFunctions.Error(
         CustomFunctions.ErrorCode.invalidValue,
-        `Function "factor_search" does not support factorId-based calls`
+        `Function "${selectedEndpoint}" does not support factorId-based calls`
       );
     }
 
     // Get the appropriate headers
     const headersList = isInput
-      ? getInputHeaders(selectedEndpoint, true) // true = use factorId headers
+      ? getInputHeaders(selectedEndpoint, true, false)  // true = use factorId headers, false = no recommender for factorId
       : getOutputHeaders(selectedEndpoint);
 
     // Return as a single row array
