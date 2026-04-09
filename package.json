@@ -32,7 +32,7 @@
     "axios": "1.13.5",
     "buffer": "^6.0.3",
     "core-js": "^3.36.0",
-    "emissions-api-sdk": "1.0.6",
+    "emissions-api-sdk": "1.0.7",
     "jwt-decode": "^4.0.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

@@ -112,7 +112,8 @@ type ApiCase = {
   expectedResult?: (string | number)[];
 };
 
-// All APIs use STANDARD_OUTPUT_HEADERS: totalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, bioCO2, indirectCO2e, unit, description, transactionId
+// All APIs use STANDARD_OUTPUT_HEADERS: TotalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, BioCO2, IndirectCO2e, Unit, Description, Transaction Id
+// API returns camelCase, but headers are displayed with proper capitalization
 const standardExpectedResult = [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
 
 const apiCases: ApiCase[] = [
