@@ -84,6 +84,7 @@ jest.mock("../../../common/env", () => ({
   getEnviziExcelAddInOverviewUrl: jest.fn(
     () => "https://pentest.envizi.ibm.com/emissions/excel-add-in-overview"
   ),
+  getEnableEnviziLogin: jest.fn(() => true),
 }));
 
 // Mock window.open
@@ -119,9 +120,9 @@ describe("AccountTab - API Credentials Tests", () => {
       expect(screen.getByLabelText(/Organization ID/i)).toBeInTheDocument();
     });
 
-    it("should render View dashboard button", () => {
+    it("should render View account and usage button", () => {
       render(<AccountTab />);
-      expect(screen.getByRole("button", { name: /View dashboard/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /View account and usage/i })).toBeInTheDocument();
     });
 
     it("should render Logout button", () => {
@@ -162,16 +163,16 @@ describe("AccountTab - API Credentials Tests", () => {
     });
   });
 
-  describe("View Dashboard Button", () => {
+  describe("View Account and Usage Button", () => {
     it("should have primary appearance", () => {
       render(<AccountTab />);
-      const button = screen.getByRole("button", { name: /View dashboard/i });
+      const button = screen.getByRole("button", { name: /View account and usage/i });
       expect(button).toHaveClass("fui-Button");
     });
 
     it("should open API key dashboard URL in new window when clicked", () => {
       render(<AccountTab />);
-      const button = screen.getByRole("button", { name: /View dashboard/i });
+      const button = screen.getByRole("button", { name: /View account and usage/i });
 
       fireEvent.click(button);
 
@@ -190,7 +191,7 @@ describe("AccountTab - API Credentials Tests", () => {
       );
 
       render(<AccountTab />);
-      const button = screen.getByRole("button", { name: /View dashboard/i });
+      const button = screen.getByRole("button", { name: /View account and usage/i });
 
       fireEvent.click(button);
 
@@ -201,9 +202,9 @@ describe("AccountTab - API Credentials Tests", () => {
       );
     });
 
-    it("should allow clicking View dashboard multiple times", () => {
+    it("should allow clicking View account and usage multiple times", () => {
       render(<AccountTab />);
-      const button = screen.getByRole("button", { name: /View dashboard/i });
+      const button = screen.getByRole("button", { name: /View account and usage/i });
 
       fireEvent.click(button);
       fireEvent.click(button);
@@ -283,7 +284,7 @@ describe("AccountTab - API Credentials Tests", () => {
 
     it("should have descriptive button text", () => {
       render(<AccountTab />);
-      expect(screen.getByRole("button", { name: /View dashboard/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /View account and usage/i })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /^Logout$/i })).toBeInTheDocument();
     });
   });
@@ -310,7 +311,7 @@ describe("AccountTab - API Credentials Tests", () => {
   describe("Button Interactions", () => {
     it("should handle multiple button clicks correctly", () => {
       render(<AccountTab />);
-      const viewDashboardButton = screen.getByRole("button", { name: /View dashboard/i });
+      const viewDashboardButton = screen.getByRole("button", { name: /View account and usage/i });
       const logoutButton = screen.getByRole("button", { name: /^Logout$/i });
 
       fireEvent.click(viewDashboardButton);
@@ -387,9 +388,9 @@ describe("AccountTab - User Credentials Tests", () => {
   });
 
   describe("Buttons with User Credentials", () => {
-    it("should render View dashboard button", () => {
+    it("should render View account and usage button", () => {
       render(<AccountTab />);
-      expect(screen.getByRole("button", { name: /View dashboard/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /View account and usage/i })).toBeInTheDocument();
     });
 
     it("should render Logout button", () => {
@@ -408,7 +409,7 @@ describe("AccountTab - User Credentials Tests", () => {
 
     it("should open Envizi plugins overview URL for token-based auth", () => {
       render(<AccountTab />);
-      const button = screen.getByRole("button", { name: /View dashboard/i });
+      const button = screen.getByRole("button", { name: /View account and usage/i });
 
       fireEvent.click(button);
 
@@ -427,7 +428,7 @@ describe("AccountTab - User Credentials Tests", () => {
       );
 
       render(<AccountTab />);
-      const button = screen.getByRole("button", { name: /View dashboard/i });
+      const button = screen.getByRole("button", { name: /View account and usage/i });
 
       fireEvent.click(button);
 
@@ -471,5 +472,3 @@ describe("AccountTab - User Credentials Tests", () => {
     });
   });
 });
-
-// Made with Bob
