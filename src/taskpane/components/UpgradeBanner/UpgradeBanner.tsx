@@ -3,6 +3,7 @@
 import { Button, Text, makeStyles, tokens } from "@fluentui/react-components";
 import { Open16Regular } from "@fluentui/react-icons";
 import React from "react";
+import { getBuyNowUrl } from "../../../common/env";
 
 const useStyles = makeStyles({
   container: {
@@ -56,6 +57,9 @@ const useStyles = makeStyles({
   },
   button: {
     color: "black",
+    ":hover": {
+      color: "black",
+    },
   },
 });
 
@@ -84,7 +88,7 @@ export function UpgradeBanner(): React.ReactElement {
               icon={<Open16Regular />}
               iconPosition="after"
               as="a"
-              href="https://www.ibm.com/store/en/us/products/EIDSBEJC"
+              href={getBuyNowUrl()}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.button}

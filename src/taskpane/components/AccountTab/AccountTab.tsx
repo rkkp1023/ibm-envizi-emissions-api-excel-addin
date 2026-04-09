@@ -80,6 +80,7 @@ function ApiCredentialsForm() {
 
 export const AccountTab: React.FC = () => {
   const { state, logout } = useAuth();
+  const { data: subscriptionData } = useAccountSubscription();
 
   const isTokenAuth = state.credentials && "token" in state.credentials;
   const overviewDashboardUrl = isTokenAuth
@@ -89,6 +90,9 @@ export const AccountTab: React.FC = () => {
   const handleViewDashboard = () => {
     window.open(overviewDashboardUrl, "_blank", "noopener");
   };
+
+  const shouldShowUpgradeBanner =
+    getEnableEnviziLogin() && subscriptionData?.subscriptionType !== "premium";
 
   return (
     <div className="account-panel">
@@ -111,7 +115,7 @@ export const AccountTab: React.FC = () => {
           Logout
         </Button>
       </div>
-      {getEnableEnviziLogin() && <UpgradeBanner />}
+      {shouldShowUpgradeBanner && <UpgradeBanner />}
     </div>
   );
 };
