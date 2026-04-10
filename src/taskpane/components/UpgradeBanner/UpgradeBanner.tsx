@@ -18,7 +18,7 @@ const useStyles = makeStyles({
       width: "100%",
       inset: "0",
       backgroundImage:
-        'linear-gradient(to top left, white 40%, rgba(255, 255, 255, 0)), url("../../assets/upgrade-banner.png")',
+        'linear-gradient(to top left, white 40%, rgba(255, 255, 255, 0)), url("assets/upgrade-banner.png")',
       zIndex: 1,
       backgroundSize: "cover",
       backgroundPosition: "right",
