@@ -5,9 +5,14 @@ import React from "react";
 
 import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
 import { ApiCredentials } from "../../../common/credentials";
-import { getEnviziExcelAddInOverviewUrl, getOverviewDashboardUrl } from "../../../common/env";
+import {
+  getEnableEnviziLogin,
+  getEnviziExcelAddInOverviewUrl,
+  getOverviewDashboardUrl,
+} from "../../../common/env";
 import { useAccountSubscription, useAuth, useUserInfo } from "../../hooks";
 import { subscriptionTypeKeyMap } from "../../types/product-subscriptions.types";
+import { UpgradeBanner } from "../UpgradeBanner/UpgradeBanner";
 
 function AccountInformation() {
   const { isLoading: isLoadingUser, isError: isErrorUser, data: userInfo } = useUserInfo();
@@ -75,6 +80,7 @@ function ApiCredentialsForm() {
 
 export const AccountTab: React.FC = () => {
   const { state, logout } = useAuth();
+  const { data: subscriptionData } = useAccountSubscription();
 
   const isTokenAuth = state.credentials && "token" in state.credentials;
   const overviewDashboardUrl = isTokenAuth
@@ -84,6 +90,11 @@ export const AccountTab: React.FC = () => {
   const handleViewDashboard = () => {
     window.open(overviewDashboardUrl, "_blank", "noopener");
   };
+
+  const shouldShowUpgradeBanner =
+    getEnableEnviziLogin() &&
+    !state.credentials["apiKey"] &&
+    subscriptionData?.subscriptionType !== "premium";
 
   return (
     <div className="account-panel">
@@ -95,7 +106,7 @@ export const AccountTab: React.FC = () => {
           iconPosition="after"
           onClick={handleViewDashboard}
         >
-          View dashboard
+          View account and usage
         </Button>
         <Button
           appearance="outline"
@@ -106,6 +117,7 @@ export const AccountTab: React.FC = () => {
           Logout
         </Button>
       </div>
+      {shouldShowUpgradeBanner && <UpgradeBanner />}
     </div>
   );
 };
