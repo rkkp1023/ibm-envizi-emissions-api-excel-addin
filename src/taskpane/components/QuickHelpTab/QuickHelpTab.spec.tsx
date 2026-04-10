@@ -758,6 +758,34 @@ describe("Edge Cases and Error Scenarios", () => {
     render(<QuickHelpTab />);
     expect(document.querySelector(".home-panel")).toBeInTheDocument();
   });
+
+  it("should handle video section when localStorage is not set", () => {
+    localStorage.removeItem("enableVideoSection");
+    render(<QuickHelpTab />);
+
+    // Video section should not be rendered when localStorage is not set
+    expect(screen.queryByAltText("How to play")).not.toBeInTheDocument();
+  });
+
+  it("should handle video section when localStorage is set to false", () => {
+    localStorage.setItem("enableVideoSection", "false");
+    render(<QuickHelpTab />);
+
+    // Video section should not be rendered when localStorage is false
+    expect(screen.queryByAltText("How to play")).not.toBeInTheDocument();
+
+    localStorage.clear();
+  });
+
+  it("should render component without errors when Office context is available", () => {
+    // Verify Office context is properly mocked
+    expect(global.Office).toBeDefined();
+    expect(global.Office.context).toBeDefined();
+    expect(global.Office.context.ui).toBeDefined();
+
+    render(<QuickHelpTab />);
+    expect(screen.getByRole("button", { name: /Getting started/i })).toBeInTheDocument();
+  });
 });
 
 describe("Accessibility", () => {
@@ -786,6 +814,239 @@ describe("Accessibility", () => {
     const imageContainer = screen.getByRole("button", { name: /How to play/i });
     // Button component already has role="button" by default, verified by getByRole
     expect(imageContainer).toBeInTheDocument();
+
+    localStorage.clear();
+  });
+
+  it("should have keyboard accessible accordion items", () => {
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+
+    // Accordion buttons should be keyboard accessible
+    expect(gettingStartedButton).toBeInTheDocument();
+    expect(functionsButton).toBeInTheDocument();
+  });
+
+  it("should maintain focus management when toggling accordion items", () => {
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+
+    gettingStartedButton.focus();
+    expect(document.activeElement).toBe(gettingStartedButton);
+
+    fireEvent.click(gettingStartedButton);
+    // Focus should remain on the button after click
+    expect(document.activeElement).toBe(gettingStartedButton);
+  });
+});
+
+describe("Video Section Behavior", () => {
+  beforeEach(() => {
+    mockDisplayDialogAsync.mockClear();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("should not render video section by default", () => {
+    render(<QuickHelpTab />);
+    expect(screen.queryByAltText("How to play")).not.toBeInTheDocument();
+  });
+
+  it("should render video section when enabled in localStorage", () => {
+    localStorage.setItem("enableVideoSection", "true");
+    render(<QuickHelpTab />);
+
+    expect(screen.getByAltText("How to play")).toBeInTheDocument();
+    expect(screen.getByText(/How to use excel add-in \(placeholder\)/i)).toBeInTheDocument();
+  });
+
+  it("should render play button overlay on video thumbnail", () => {
+    localStorage.setItem("enableVideoSection", "true");
+    render(<QuickHelpTab />);
+
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    expect(imageContainer).toBeInTheDocument();
+
+    // Check for play button icon
+    const playButton = imageContainer.querySelector("svg");
+    expect(playButton).toBeInTheDocument();
+  });
+
+  it("should construct correct redirect URL for video dialog", () => {
+    localStorage.setItem("enableVideoSection", "true");
+    render(<QuickHelpTab />);
+
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    fireEvent.click(imageContainer);
+
+    const callArgs = mockDisplayDialogAsync.mock.calls[0];
+    expect(callArgs[0]).toContain("redirect.html");
+    expect(callArgs[0]).toContain("url=https://mediacenter.ibm.com/media/1_700skqlt");
+  });
+
+  it("should use correct dialog dimensions", () => {
+    localStorage.setItem("enableVideoSection", "true");
+    render(<QuickHelpTab />);
+
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    fireEvent.click(imageContainer);
+
+    const callArgs = mockDisplayDialogAsync.mock.calls[0];
+    expect(callArgs[1]).toEqual({ height: 75, width: 75, promptBeforeOpen: false });
+  });
+
+  it("should not prompt before opening video dialog", () => {
+    localStorage.setItem("enableVideoSection", "true");
+    render(<QuickHelpTab />);
+
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    fireEvent.click(imageContainer);
+
+    const callArgs = mockDisplayDialogAsync.mock.calls[0];
+    expect(callArgs[1].promptBeforeOpen).toBe(false);
+  });
+});
+
+describe("Documentation Links", () => {
+  it("should render correct documentation link for Envizi login enabled", () => {
+    mockEnableEnviziLogin = true;
+    const { getEnableEnviziLogin } = require("../../../common/env");
+    (getEnableEnviziLogin as jest.Mock).mockReturnValue(true);
+
+    render(<QuickHelpTab />);
+
+    const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
+    expect(docLink).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+    );
+  });
+
+  it("should render correct documentation link for Envizi login disabled", () => {
+    mockEnableEnviziLogin = false;
+    const { getEnableEnviziLogin } = require("../../../common/env");
+    (getEnableEnviziLogin as jest.Mock).mockReturnValue(false);
+
+    render(<QuickHelpTab />);
+
+    const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
+    expect(docLink).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+    );
+  });
+
+  it("should render learn more link in useful features section", () => {
+    mockEnableEnviziLogin = true;
+    const { getEnableEnviziLogin } = require("../../../common/env");
+    (getEnableEnviziLogin as jest.Mock).mockReturnValue(true);
+
+    render(<QuickHelpTab />);
+
+    const learnMoreLink = screen.getByRole("link", { name: /Learn more about features/i });
+    expect(learnMoreLink).toBeInTheDocument();
+    expect(learnMoreLink).toHaveAttribute("target", "_blank");
+  });
+
+  it("should render view all functions link with correct URL", () => {
+    render(<QuickHelpTab />);
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    const viewAllLink = screen.getByRole("link", { name: /View all functions/i });
+    expect(viewAllLink).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=reference-functions-in-emissions-calculations-in-excel"
+    );
+  });
+});
+
+describe("Formula Rendering", () => {
+  beforeEach(() => {
+    render(<QuickHelpTab />);
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+  });
+
+  it("should render all Scope 1 formulas", () => {
+    expect(
+      screen.getByText(/=ENVIZI\.STATIONARY\(type, value, unit, country/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/=ENVIZI\.MOBILE\(type, value, unit, country/i)).toBeInTheDocument();
+    expect(screen.getByText(/=ENVIZI\.FUGITIVE\(type, value, unit, country/i)).toBeInTheDocument();
+  });
+
+  it("should render Scope 2 formula", () => {
+    expect(screen.getByText(/=ENVIZI\.LOCATION\(type, value, unit, country/i)).toBeInTheDocument();
+  });
+
+  it("should render Scope 3 formula", () => {
+    expect(
+      screen.getByText(/=ENVIZI\.TRANSPORTATION_AND_DISTRIBUTION\(type, value, unit, country/i)
+    ).toBeInTheDocument();
+  });
+
+  it("should render custom calculation formula", () => {
+    expect(
+      screen.getByText(/=ENVIZI\.CALCULATION\(type, value, unit, country/i)
+    ).toBeInTheDocument();
+  });
+
+  it("should render factor search formulas", () => {
+    expect(screen.getByText(/=ENVIZI\.FACTOR\(type, unit, country/i)).toBeInTheDocument();
+    expect(screen.getByText(/=ENVIZI\.FACTOR_SEARCH\(search, country/i)).toBeInTheDocument();
+  });
+
+  it("should render formula descriptions for all scopes", () => {
+    expect(
+      screen.getByText(/Calculate emissions from comfort heating or combustion of fuels/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Calculates emissions from fleet fuel consumption/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Calculates emissions from leaks of greenhouse gasses/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Calculates emissions from electricity grids/i)).toBeInTheDocument();
+  });
+});
+
+describe("Component State Management", () => {
+  it("should maintain accordion state independently for each section", () => {
+    render(<QuickHelpTab />);
+
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+
+    // Initial state
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
+    expect(functionsButton).toHaveAttribute("aria-expanded", "false");
+
+    // Toggle functions
+    fireEvent.click(functionsButton);
+    expect(functionsButton).toHaveAttribute("aria-expanded", "true");
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
+
+    // Collapse getting started
+    fireEvent.click(gettingStartedButton);
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
+    expect(functionsButton).toHaveAttribute("aria-expanded", "true");
+    expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("should persist video section state from localStorage", () => {
+    localStorage.setItem("enableVideoSection", "true");
+    const { rerender } = render(<QuickHelpTab />);
+
+    expect(screen.getByAltText("How to play")).toBeInTheDocument();
+
+    // Rerender should maintain the same state
+    rerender(<QuickHelpTab />);
+    expect(screen.getByAltText("How to play")).toBeInTheDocument();
 
     localStorage.clear();
   });
