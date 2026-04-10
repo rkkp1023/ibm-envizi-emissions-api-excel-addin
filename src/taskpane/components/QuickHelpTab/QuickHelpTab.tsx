@@ -16,6 +16,7 @@ import {
   Button,
   Image,
   Text,
+  makeStyles,
 } from "@fluentui/react-components";
 import {
   Open16Regular,
@@ -28,6 +29,34 @@ import { getEnableEnviziLogin } from "../../../common/env";
 import { EmissionScopeSection } from "../EmissionScopeSection";
 import { EmissionScopeConfig } from "../EmissionScopeSection/types";
 import { functions, gettingStartedSteps, usefulFeatures } from "./contstant";
+
+const useVideoSectionStyles = makeStyles({
+  imageWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "2px",
+    paddingInline: "12px",
+    marginBlockEnd: "16px",
+  },
+  imageContainer: {
+    position: "relative",
+    cursor: "pointer",
+    padding: "0",
+  },
+  playButtonOverlay: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    "& svg": {
+      fontSize: "42px",
+    },
+  },
+  imagePlaceholder: {
+    display: "flex",
+    justifyContent: "center",
+  },
+});
 
 interface StepItemProps {
   title: string;
@@ -119,6 +148,8 @@ function ExternalLinkButton({
 }
 
 function GettingStartedAccordionItem(): React.ReactElement {
+  const styles = useVideoSectionStyles();
+
   // Initialize state directly from localStorage
   const [showVideoSection] = useState(() => {
     return localStorage.getItem("enableVideoSection") === "true";
@@ -157,19 +188,14 @@ function GettingStartedAccordionItem(): React.ReactElement {
           </p>
 
           {showVideoSection && (
-            <div className="image-wrapper">
-              <div
-                role="button"
-                title="How to play"
-                className="image-container"
-                onClick={handleImageClick}
-              >
+            <div className={styles.imageWrapper}>
+              <Button className={styles.imageContainer} onClick={handleImageClick}>
                 <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
-                <div className="play-button-overlay">
+                <div className={styles.playButtonOverlay}>
                   <PlayCircleFilled />
                 </div>
-              </div>
-              <div className="image-placeholder">
+              </Button>
+              <div className={styles.imagePlaceholder}>
                 <Text>How to use excel add-in (placeholder)</Text>
                 <PanelSeparateWindow20Regular />
               </div>

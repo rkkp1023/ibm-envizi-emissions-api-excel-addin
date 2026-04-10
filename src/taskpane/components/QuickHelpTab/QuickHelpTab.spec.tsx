@@ -121,11 +121,12 @@ describe("QuickHelpTab", () => {
   });
 
   it("should render image with play button overlay", () => {
-    const imageWrapper = document.querySelector(".image-wrapper");
-    expect(imageWrapper).toBeInTheDocument();
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    expect(imageContainer).toBeInTheDocument();
 
-    const playButtonOverlay = document.querySelector(".play-button-overlay");
-    expect(playButtonOverlay).toBeInTheDocument();
+    // Check that the image is rendered
+    const image = screen.getByAltText("How to play");
+    expect(image).toBeInTheDocument();
   });
 
   it("should render image placeholder text", () => {
@@ -346,27 +347,21 @@ describe("Image Click Handler", () => {
 
   it("should call Office.context.ui.displayDialogAsync when image is clicked", () => {
     render(<QuickHelpTab />);
-    const imageContainer = document.querySelector(".image-container");
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
 
-    if (imageContainer) {
-      fireEvent.click(imageContainer);
-      expect(mockDisplayDialogAsync).toHaveBeenCalled();
-    }
+    fireEvent.click(imageContainer);
+    expect(mockDisplayDialogAsync).toHaveBeenCalled();
   });
 
   it("should open video dialog with correct URL when image is clicked", () => {
     render(<QuickHelpTab />);
-    const imageContainer = document.querySelector(".image-container");
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
 
-    if (imageContainer) {
-      fireEvent.click(imageContainer);
+    fireEvent.click(imageContainer);
 
-      const callArgs = mockDisplayDialogAsync.mock.calls[0];
-      expect(callArgs[0]).toContain(
-        "redirect.html?url=https://mediacenter.ibm.com/media/1_700skqlt"
-      );
-      expect(callArgs[1]).toEqual({ height: 75, width: 75, promptBeforeOpen: false });
-    }
+    const callArgs = mockDisplayDialogAsync.mock.calls[0];
+    expect(callArgs[0]).toContain("redirect.html?url=https://mediacenter.ibm.com/media/1_700skqlt");
+    expect(callArgs[1]).toEqual({ height: 75, width: 75, promptBeforeOpen: false });
   });
 
   it("should handle dialog open failure gracefully", () => {
@@ -380,27 +375,23 @@ describe("Image Click Handler", () => {
     });
 
     render(<QuickHelpTab />);
-    const imageContainer = document.querySelector(".image-container");
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
 
-    if (imageContainer) {
-      fireEvent.click(imageContainer);
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Failed to open video dialog:",
-        "Failed to open dialog"
-      );
-    }
+    fireEvent.click(imageContainer);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Failed to open video dialog:",
+      "Failed to open dialog"
+    );
 
     consoleErrorSpy.mockRestore();
   });
 
-  it("should have correct role and title attributes on image container", () => {
+  it("should have correct accessible name on image container", () => {
     render(<QuickHelpTab />);
-    const imageContainer = document.querySelector(".image-container");
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
 
-    if (imageContainer) {
-      expect(imageContainer).toHaveAttribute("role", "button");
-      expect(imageContainer).toHaveAttribute("title", "How to play");
-    }
+    // Button component is accessible via its aria-label
+    expect(imageContainer).toBeInTheDocument();
   });
 });
 
@@ -792,11 +783,9 @@ describe("Accessibility", () => {
     localStorage.setItem("enableVideoSection", "true");
     render(<QuickHelpTab />);
 
-    const imageContainer = document.querySelector(".image-container");
-
-    if (imageContainer) {
-      expect(imageContainer).toHaveAttribute("role", "button");
-    }
+    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    // Button component already has role="button" by default, verified by getByRole
+    expect(imageContainer).toBeInTheDocument();
 
     localStorage.clear();
   });
