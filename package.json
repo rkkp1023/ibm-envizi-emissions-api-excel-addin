@@ -91,6 +91,7 @@
   ],
   "resolutions": {
     "ajv": ">=8.18.0",
+    "axios": "1.15.0",
     "flatted": "^3.4.2",
     "handlebars": "^4.7.9",
     "lodash": "^4.18.1",
