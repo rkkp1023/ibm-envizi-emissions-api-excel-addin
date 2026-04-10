@@ -123,3 +123,11 @@ export function getEnableEnviziLogin(): boolean {
   }
   return window.enableEnviziLogin;
 }
+
+/**
+ * Gets the IBM Store URL for purchasing the Envizi Excel add-in
+ * This function can be extended to support language/locale-specific URLs in the future
+ */
+export function getBuyNowUrl(): string {
+  return "https://www.ibm.com/store/en/us/products/EIDSBEJC";
+}

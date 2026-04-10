@@ -1,11 +1,8 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import "@testing-library/jest-dom";
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { SignUpMessageBanner } from "./SignUpMessageBanner";
 
 describe("SignUpMessageBanner", () => {
@@ -42,32 +39,32 @@ describe("SignUpMessageBanner", () => {
 
     it("should render Extend your trial button", () => {
       render(<SignUpMessageBanner />);
-      expect(screen.getByRole("button", { name: /Extend your trial/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /Extend your trial/i })).toBeInTheDocument();
     });
 
     it("should render Buy now button", () => {
       render(<SignUpMessageBanner />);
-      expect(screen.getByRole("button", { name: /Buy now/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /Buy now/i })).toBeInTheDocument();
     });
   });
 
   describe("Button Appearance", () => {
     it("should render Extend your trial button with outline appearance", () => {
       render(<SignUpMessageBanner />);
-      const extendTrialButton = screen.getByRole("button", { name: /Extend your trial/i });
+      const extendTrialButton = screen.getByRole("link", { name: /Extend your trial/i });
       expect(extendTrialButton).toHaveClass("fui-Button");
     });
 
     it("should render Buy now button with outline appearance", () => {
       render(<SignUpMessageBanner />);
-      const buyNowButton = screen.getByRole("button", { name: /Buy now/i });
+      const buyNowButton = screen.getByRole("link", { name: /Buy now/i });
       expect(buyNowButton).toHaveClass("fui-Button");
     });
 
     it("should render both buttons with medium size", () => {
       render(<SignUpMessageBanner />);
-      const extendTrialButton = screen.getByRole("button", { name: /Extend your trial/i });
-      const buyNowButton = screen.getByRole("button", { name: /Buy now/i });
+      const extendTrialButton = screen.getByRole("link", { name: /Extend your trial/i });
+      const buyNowButton = screen.getByRole("link", { name: /Buy now/i });
 
       expect(extendTrialButton).toBeInTheDocument();
       expect(buyNowButton).toBeInTheDocument();
@@ -75,128 +72,91 @@ describe("SignUpMessageBanner", () => {
   });
 
   describe("Extend Trial Button Interaction", () => {
-    it("should call window.open when Extend your trial button is clicked", () => {
+    it("should have correct href attribute", () => {
       render(<SignUpMessageBanner />);
-      const extendTrialButton = screen.getByRole("button", { name: /Extend your trial/i });
+      const extendTrialButton = screen.getByRole("link", { name: /Extend your trial/i });
 
-      fireEvent.click(extendTrialButton);
-
-      expect(windowOpenSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it("should open correct URL when Extend your trial button is clicked", () => {
-      render(<SignUpMessageBanner />);
-      const extendTrialButton = screen.getByRole("button", { name: /Extend your trial/i });
-
-      fireEvent.click(extendTrialButton);
-
-      expect(windowOpenSpy).toHaveBeenCalledWith(
-        "https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313",
-        "_blank",
-        "noopener,noreferrer"
+      expect(extendTrialButton).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313"
       );
     });
 
-    it("should open link in new tab with security attributes", () => {
+    it("should open link in new tab", () => {
       render(<SignUpMessageBanner />);
-      const extendTrialButton = screen.getByRole("button", { name: /Extend your trial/i });
+      const extendTrialButton = screen.getByRole("link", { name: /Extend your trial/i });
 
-      fireEvent.click(extendTrialButton);
+      expect(extendTrialButton).toHaveAttribute("target", "_blank");
+    });
 
-      const [, target, features] = windowOpenSpy.mock.calls[0];
-      expect(target).toBe("_blank");
-      expect(features).toBe("noopener,noreferrer");
+    it("should have security attributes", () => {
+      render(<SignUpMessageBanner />);
+      const extendTrialButton = screen.getByRole("link", { name: /Extend your trial/i });
+
+      expect(extendTrialButton).toHaveAttribute("rel", "noopener noreferrer");
     });
   });
 
   describe("Buy Now Button Interaction", () => {
-    it("should call window.open when Buy now button is clicked", () => {
+    it("should have correct href attribute", () => {
       render(<SignUpMessageBanner />);
-      const buyNowButton = screen.getByRole("button", { name: /Buy now/i });
+      const buyNowButton = screen.getByRole("link", { name: /Buy now/i });
 
-      fireEvent.click(buyNowButton);
-
-      expect(windowOpenSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it("should open correct URL when Buy now button is clicked", () => {
-      render(<SignUpMessageBanner />);
-      const buyNowButton = screen.getByRole("button", { name: /Buy now/i });
-
-      fireEvent.click(buyNowButton);
-
-      expect(windowOpenSpy).toHaveBeenCalledWith(
-        "https://www.ibm.com/products/envizi/emissions-calculations",
-        "_blank",
-        "noopener,noreferrer"
+      expect(buyNowButton).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/store/en/us/products/EIDSBEJC"
       );
     });
 
-    it("should open link in new tab with security attributes", () => {
+    it("should open link in new tab", () => {
       render(<SignUpMessageBanner />);
-      const buyNowButton = screen.getByRole("button", { name: /Buy now/i });
+      const buyNowButton = screen.getByRole("link", { name: /Buy now/i });
 
-      fireEvent.click(buyNowButton);
+      expect(buyNowButton).toHaveAttribute("target", "_blank");
+    });
 
-      const [, target, features] = windowOpenSpy.mock.calls[0];
-      expect(target).toBe("_blank");
-      expect(features).toBe("noopener,noreferrer");
+    it("should have security attributes", () => {
+      render(<SignUpMessageBanner />);
+      const buyNowButton = screen.getByRole("link", { name: /Buy now/i });
+
+      expect(buyNowButton).toHaveAttribute("rel", "noopener noreferrer");
     });
   });
 
-  describe("Multiple Button Clicks", () => {
-    it("should handle multiple clicks on Extend your trial button", () => {
+  describe("Link Attributes", () => {
+    it("should have correct attributes on Extend your trial link", () => {
       render(<SignUpMessageBanner />);
-      const extendTrialButton = screen.getByRole("button", { name: /Extend your trial/i });
+      const extendTrialButton = screen.getByRole("link", { name: /Extend your trial/i });
 
-      fireEvent.click(extendTrialButton);
-      fireEvent.click(extendTrialButton);
-      fireEvent.click(extendTrialButton);
-
-      expect(windowOpenSpy).toHaveBeenCalledTimes(3);
-      expect(windowOpenSpy).toHaveBeenCalledWith(
-        "https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313",
-        "_blank",
-        "noopener,noreferrer"
+      expect(extendTrialButton).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313"
       );
+      expect(extendTrialButton).toHaveAttribute("target", "_blank");
+      expect(extendTrialButton).toHaveAttribute("rel", "noopener noreferrer");
     });
 
-    it("should handle multiple clicks on Buy now button", () => {
+    it("should have correct attributes on Buy now link", () => {
       render(<SignUpMessageBanner />);
-      const buyNowButton = screen.getByRole("button", { name: /Buy now/i });
+      const buyNowButton = screen.getByRole("link", { name: /Buy now/i });
 
-      fireEvent.click(buyNowButton);
-      fireEvent.click(buyNowButton);
-
-      expect(windowOpenSpy).toHaveBeenCalledTimes(2);
-      expect(windowOpenSpy).toHaveBeenCalledWith(
-        "https://www.ibm.com/products/envizi/emissions-calculations",
-        "_blank",
-        "noopener,noreferrer"
+      expect(buyNowButton).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/store/en/us/products/EIDSBEJC"
       );
+      expect(buyNowButton).toHaveAttribute("target", "_blank");
+      expect(buyNowButton).toHaveAttribute("rel", "noopener noreferrer");
     });
 
-    it("should handle clicks on both buttons independently", () => {
+    it("should render both links with correct attributes", () => {
       render(<SignUpMessageBanner />);
-      const extendTrialButton = screen.getByRole("button", { name: /Extend your trial/i });
-      const buyNowButton = screen.getByRole("button", { name: /Buy now/i });
+      const extendTrialButton = screen.getByRole("link", { name: /Extend your trial/i });
+      const buyNowButton = screen.getByRole("link", { name: /Buy now/i });
 
-      fireEvent.click(extendTrialButton);
-      fireEvent.click(buyNowButton);
-
-      expect(windowOpenSpy).toHaveBeenCalledTimes(2);
-      expect(windowOpenSpy).toHaveBeenNthCalledWith(
-        1,
-        "https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313",
-        "_blank",
-        "noopener,noreferrer"
-      );
-      expect(windowOpenSpy).toHaveBeenNthCalledWith(
-        2,
-        "https://www.ibm.com/products/envizi/emissions-calculations",
-        "_blank",
-        "noopener,noreferrer"
-      );
+      expect(extendTrialButton).toHaveAttribute("target", "_blank");
+      expect(buyNowButton).toHaveAttribute("target", "_blank");
+      expect(extendTrialButton).toHaveAttribute("rel", "noopener noreferrer");
+      expect(buyNowButton).toHaveAttribute("rel", "noopener noreferrer");
     });
   });
 
@@ -217,17 +177,17 @@ describe("SignUpMessageBanner", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render MessageBarActions with two buttons", () => {
+    it("should render MessageBarActions with two links", () => {
       render(<SignUpMessageBanner />);
-      const buttons = screen.getAllByRole("button");
-      expect(buttons).toHaveLength(2);
+      const links = screen.getAllByRole("link");
+      expect(links).toHaveLength(2);
     });
 
-    it("should render buttons in correct order", () => {
+    it("should render links in correct order", () => {
       render(<SignUpMessageBanner />);
-      const buttons = screen.getAllByRole("button");
-      expect(buttons[0]).toHaveTextContent("Extend your trial");
-      expect(buttons[1]).toHaveTextContent("Buy now");
+      const links = screen.getAllByRole("link");
+      expect(links[0]).toHaveTextContent("Extend your trial");
+      expect(links[1]).toHaveTextContent("Buy now");
     });
   });
 });

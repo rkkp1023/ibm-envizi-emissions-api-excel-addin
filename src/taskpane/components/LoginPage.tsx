@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import { Button, Checkbox, Field, Input, Link, Text } from "@fluentui/react-components";
 import { ArrowEnterRegular, Open16Regular } from "@fluentui/react-icons";

@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import {
   Button,
@@ -10,24 +7,9 @@ import {
   MessageBarBody,
   MessageBarTitle,
 } from "@fluentui/react-components";
+import { getBuyNowUrl } from "../../../common/env";
 
 export function SignUpMessageBanner() {
-  const handleExtendTrial = () => {
-    window.open(
-      "https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313",
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
-
-  const handleBuyNow = () => {
-    window.open(
-      "https://www.ibm.com/products/envizi/emissions-calculations",
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
-
   return (
     <MessageBar>
       <MessageBarBody>
@@ -36,10 +18,24 @@ export function SignUpMessageBanner() {
       </MessageBarBody>
 
       <MessageBarActions>
-        <Button appearance="outline" size="medium" onClick={handleExtendTrial}>
+        <Button
+          appearance="outline"
+          size="medium"
+          as="a"
+          href="https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Extend your trial
         </Button>
-        <Button appearance="outline" size="medium" onClick={handleBuyNow}>
+        <Button
+          appearance="outline"
+          size="medium"
+          as="a"
+          href={getBuyNowUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Buy now
         </Button>
       </MessageBarActions>
