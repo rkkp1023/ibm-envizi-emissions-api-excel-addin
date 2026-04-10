@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import "@testing-library/jest-dom";
 
@@ -47,7 +44,7 @@ jest.mock("../auth", () => ({
 
 describe("LoginPage", () => {
   beforeAll(() => {
-    window.localStorage.setItem('enableEnviziLogin', 'false');
+    window.localStorage.setItem("enableEnviziLogin", "false");
   });
 
   beforeEach(() => {

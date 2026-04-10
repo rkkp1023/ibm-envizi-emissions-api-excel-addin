@@ -1,7 +1,4 @@
-/*
- * Copyright IBM Corp. 2026
- * Licensed Materials - Property of IBM
- */
+// Copyright IBM Corp. 2026
 
 import { Button, Link } from "@fluentui/react-components";
 import { ArrowRight16Filled, Open16Regular } from "@fluentui/react-icons";
