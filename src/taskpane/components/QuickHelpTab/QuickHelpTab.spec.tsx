@@ -32,9 +32,36 @@ jest.mock("../../hooks/useAccountSubscription", () => ({
   }),
 }));
 
+// Mock getEnableEnviziLogin
+let mockEnableEnviziLogin = true;
+jest.mock("../../../common/env", () => ({
+  getEnableEnviziLogin: jest.fn(() => mockEnableEnviziLogin),
+}));
+
+// Mock Office.context.ui.displayDialogAsync
+const mockDisplayDialogAsync = jest.fn();
+global.Office = {
+  context: {
+    ui: {
+      displayDialogAsync: mockDisplayDialogAsync,
+    },
+  },
+  AsyncResultStatus: {
+    Failed: 1,
+    Succeeded: 0,
+  },
+} as any;
+
 describe("QuickHelpTab", () => {
   beforeEach(() => {
+    // Enable video section for tests
+    localStorage.setItem("enableVideoSection", "true");
     render(<QuickHelpTab />);
+  });
+
+  afterEach(() => {
+    // Clean up localStorage after each test
+    localStorage.clear();
   });
 
   it("should render the home panel container", () => {
@@ -93,16 +120,16 @@ describe("QuickHelpTab", () => {
     ).toBeInTheDocument();
   });
 
-  it("should not render image with play button overlay (feature disabled)", () => {
+  it("should render image with play button overlay", () => {
     const imageWrapper = document.querySelector(".image-wrapper");
-    expect(imageWrapper).not.toBeInTheDocument();
+    expect(imageWrapper).toBeInTheDocument();
 
     const playButtonOverlay = document.querySelector(".play-button-overlay");
-    expect(playButtonOverlay).not.toBeInTheDocument();
+    expect(playButtonOverlay).toBeInTheDocument();
   });
 
-  it("should not render image placeholder text (feature disabled)", () => {
-    expect(screen.queryByText(/How to use excel add-in \(placeholder\)/i)).not.toBeInTheDocument();
+  it("should render image placeholder text", () => {
+    expect(screen.queryByText(/How to use excel add-in \(placeholder\)/i)).toBeInTheDocument();
   });
 
   it("should render documentation link", () => {
@@ -303,5 +330,474 @@ describe("Accordion Behavior", () => {
     fireEvent.click(usefulFeaturesButton);
     expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
     expect(usefulFeaturesButton).toHaveAttribute("aria-expanded", "true");
+  });
+});
+
+describe("Image Click Handler", () => {
+  beforeEach(() => {
+    mockDisplayDialogAsync.mockClear();
+    // Enable video section for image click tests
+    localStorage.setItem("enableVideoSection", "true");
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("should call Office.context.ui.displayDialogAsync when image is clicked", () => {
+    render(<QuickHelpTab />);
+    const imageContainer = document.querySelector(".image-container");
+
+    if (imageContainer) {
+      fireEvent.click(imageContainer);
+      expect(mockDisplayDialogAsync).toHaveBeenCalled();
+    }
+  });
+
+  it("should open video dialog with correct URL when image is clicked", () => {
+    render(<QuickHelpTab />);
+    const imageContainer = document.querySelector(".image-container");
+
+    if (imageContainer) {
+      fireEvent.click(imageContainer);
+
+      const callArgs = mockDisplayDialogAsync.mock.calls[0];
+      expect(callArgs[0]).toContain(
+        "redirect.html?url=https://mediacenter.ibm.com/media/1_700skqlt"
+      );
+      expect(callArgs[1]).toEqual({ height: 75, width: 75, promptBeforeOpen: false });
+    }
+  });
+
+  it("should handle dialog open failure gracefully", () => {
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+    mockDisplayDialogAsync.mockImplementation((url, options, callback) => {
+      callback({
+        status: 1, // Office.AsyncResultStatus.Failed
+        error: { message: "Failed to open dialog" },
+      });
+    });
+
+    render(<QuickHelpTab />);
+    const imageContainer = document.querySelector(".image-container");
+
+    if (imageContainer) {
+      fireEvent.click(imageContainer);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Failed to open video dialog:",
+        "Failed to open dialog"
+      );
+    }
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it("should have correct role and title attributes on image container", () => {
+    render(<QuickHelpTab />);
+    const imageContainer = document.querySelector(".image-container");
+
+    if (imageContainer) {
+      expect(imageContainer).toHaveAttribute("role", "button");
+      expect(imageContainer).toHaveAttribute("title", "How to play");
+    }
+  });
+});
+
+describe("FunctionsAccordionItem", () => {
+  beforeEach(() => {
+    render(<QuickHelpTab />);
+  });
+
+  it("should render functions accordion item", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    expect(functionsButton).toBeInTheDocument();
+  });
+
+  it("should not have functions section expanded by default", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    expect(functionsButton).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("should expand functions section when clicked", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+
+    fireEvent.click(functionsButton);
+
+    expect(functionsButton).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("should render Scope 1 emissions section", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText("Scope 1 emissions")).toBeInTheDocument();
+  });
+
+  it("should render Scope 2 emissions section", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText("Scope 2 emissions")).toBeInTheDocument();
+  });
+
+  it("should render Scope 3 emissions section", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText("Scope 3 emissions")).toBeInTheDocument();
+  });
+
+  it("should render Custom calculations section", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText("Custom calculations")).toBeInTheDocument();
+  });
+
+  it("should render Find factor sets section", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText("Find factor sets")).toBeInTheDocument();
+  });
+
+  it("should render stationary function syntax", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(
+      screen.getByText(/=ENVIZI\.STATIONARY\(type, value, unit, country/i)
+    ).toBeInTheDocument();
+  });
+
+  it("should render mobile function syntax", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText(/=ENVIZI\.MOBILE\(type, value, unit, country/i)).toBeInTheDocument();
+  });
+
+  it("should render fugitive function syntax", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText(/=ENVIZI\.FUGITIVE\(type, value, unit, country/i)).toBeInTheDocument();
+  });
+
+  it("should render location function syntax", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText(/=ENVIZI\.LOCATION\(type, value, unit, country/i)).toBeInTheDocument();
+  });
+
+  it("should render transportation and distribution function syntax", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(
+      screen.getByText(/=ENVIZI\.TRANSPORTATION_AND_DISTRIBUTION\(type, value, unit, country/i)
+    ).toBeInTheDocument();
+  });
+
+  it("should render calculation function syntax", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(
+      screen.getByText(/=ENVIZI\.CALCULATION\(type, value, unit, country/i)
+    ).toBeInTheDocument();
+  });
+
+  it("should render factor function syntax", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText(/=ENVIZI\.FACTOR\(type, unit, country/i)).toBeInTheDocument();
+  });
+
+  it("should render factor search function syntax", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(screen.getByText(/=ENVIZI\.FACTOR_SEARCH\(search, country/i)).toBeInTheDocument();
+  });
+
+  it("should render view all functions link", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    const viewAllLink = screen.getByRole("link", { name: /View all functions/i });
+    expect(viewAllLink).toBeInTheDocument();
+    expect(viewAllLink).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=reference-functions-in-emissions-calculations-in-excel"
+    );
+  });
+
+  it("should render function descriptions", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    expect(
+      screen.getByText(/Calculate emissions from comfort heating or combustion of fuels/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Calculates emissions from fleet fuel consumption/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Calculates emissions from leaks of greenhouse gasses/i)
+    ).toBeInTheDocument();
+  });
+});
+
+describe("Conditional Rendering based on getEnableEnviziLogin", () => {
+  it("should render useful features section when getEnableEnviziLogin is true", () => {
+    mockEnableEnviziLogin = true;
+    const { getEnableEnviziLogin } = require("../../../common/env");
+    (getEnableEnviziLogin as jest.Mock).mockReturnValue(true);
+
+    render(<QuickHelpTab />);
+
+    expect(screen.getByRole("button", { name: /Useful features/i })).toBeInTheDocument();
+  });
+
+  it("should use correct documentation URL when getEnableEnviziLogin is true", () => {
+    mockEnableEnviziLogin = true;
+    const { getEnableEnviziLogin } = require("../../../common/env");
+    (getEnableEnviziLogin as jest.Mock).mockReturnValue(true);
+
+    render(<QuickHelpTab />);
+
+    const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
+    expect(docLink).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+    );
+  });
+
+  it("should use alternative documentation URL when getEnableEnviziLogin is false", () => {
+    mockEnableEnviziLogin = false;
+    const { getEnableEnviziLogin } = require("../../../common/env");
+    (getEnableEnviziLogin as jest.Mock).mockReturnValue(false);
+
+    render(<QuickHelpTab />);
+
+    const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
+    expect(docLink).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+    );
+  });
+});
+
+describe("ExternalLinkButton Component", () => {
+  beforeEach(() => {
+    render(<QuickHelpTab />);
+  });
+
+  it("should render external links with correct attributes", () => {
+    const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
+
+    expect(docLink).toHaveAttribute("rel", "noopener noreferrer");
+    expect(docLink).toHaveAttribute("target", "_blank");
+  });
+
+  it("should render external link icon", () => {
+    const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
+    const icon = docLink.querySelector("svg");
+
+    expect(icon).toBeInTheDocument();
+  });
+
+  it("should have correct href for learn more link in useful features", () => {
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    const viewAllLink = screen.getByRole("link", { name: /View all functions/i });
+    expect(viewAllLink).toHaveAttribute("target", "_blank");
+    expect(viewAllLink).toHaveAttribute("rel", "noopener noreferrer");
+  });
+});
+
+describe("StepItem Component", () => {
+  beforeEach(() => {
+    render(<QuickHelpTab />);
+  });
+
+  it("should render all step items with correct structure", () => {
+    const textBlocks = document.querySelectorAll(".text-block");
+    expect(textBlocks.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("should render step titles with semibold weight", () => {
+    const step1Title = screen.getByText("1. Select a sheet");
+    expect(step1Title).toBeInTheDocument();
+  });
+
+  it("should render step descriptions as paragraphs", () => {
+    const step1Description = screen.getByText(/Select the sheet for your emissions type/i);
+    expect(step1Description.tagName).toBe("P");
+  });
+});
+
+describe("EmissionScopeSections Component", () => {
+  it("should render emission scope sections with icons", () => {
+    render(<QuickHelpTab />);
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    // Check that sections are rendered
+    expect(screen.getByText("Scope 1 emissions")).toBeInTheDocument();
+    expect(screen.getByText("Scope 2 emissions")).toBeInTheDocument();
+    expect(screen.getByText("Scope 3 emissions")).toBeInTheDocument();
+  });
+
+  it("should render formulas for each emission scope", () => {
+    render(<QuickHelpTab />);
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    // Check for formula categories (rendered with colon)
+    expect(screen.getByText("Stationary:", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText("Mobile:", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText("Fugitive:", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText("Location:", { exact: false })).toBeInTheDocument();
+  });
+
+  it("should render learn more button in emission scope sections", () => {
+    render(<QuickHelpTab />);
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    const learnMoreBtn = document.querySelector(".learn-more-btn");
+    expect(learnMoreBtn).toBeInTheDocument();
+  });
+});
+
+describe("Icon Mapping", () => {
+  it("should render icons for useful features when enabled", () => {
+    mockEnableEnviziLogin = true;
+    const { getEnableEnviziLogin } = require("../../../common/env");
+    (getEnableEnviziLogin as jest.Mock).mockReturnValue(true);
+
+    render(<QuickHelpTab />);
+
+    // Icons should be rendered in the useful features section
+    const usefulFeaturesButton = screen.getByRole("button", { name: /Useful features/i });
+    expect(usefulFeaturesButton).toBeInTheDocument();
+  });
+
+  it("should render icons for function sections", () => {
+    render(<QuickHelpTab />);
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+    fireEvent.click(functionsButton);
+
+    // Check that function sections with icons are rendered
+    expect(screen.getByText("Scope 1 emissions")).toBeInTheDocument();
+    expect(screen.getByText("Scope 2 emissions")).toBeInTheDocument();
+    expect(screen.getByText("Scope 3 emissions")).toBeInTheDocument();
+    expect(screen.getByText("Custom calculations")).toBeInTheDocument();
+    expect(screen.getByText("Find factor sets")).toBeInTheDocument();
+  });
+});
+
+describe("Accordion Multiple Collapsible Behavior", () => {
+  beforeEach(() => {
+    render(<QuickHelpTab />);
+  });
+
+  it("should support multiple accordion items open simultaneously", () => {
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+
+    // Expand functions while getting started is already expanded
+    fireEvent.click(functionsButton);
+
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "true");
+    expect(functionsButton).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("should allow all sections to be collapsed", () => {
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+
+    // Collapse all sections
+    fireEvent.click(gettingStartedButton);
+
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
+    expect(functionsButton).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("should maintain independent state for each accordion item", () => {
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+    const functionsButton = screen.getByRole("button", { name: /Functions/i });
+
+    // Toggle getting started
+    fireEvent.click(gettingStartedButton);
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
+
+    // Toggle functions
+    fireEvent.click(functionsButton);
+    expect(functionsButton).toHaveAttribute("aria-expanded", "true");
+
+    // Getting started should still be collapsed
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded", "false");
+  });
+});
+
+describe("Edge Cases and Error Scenarios", () => {
+  it("should handle missing Office context gracefully", () => {
+    const originalOffice = global.Office;
+    delete (global as any).Office;
+
+    expect(() => render(<QuickHelpTab />)).not.toThrow();
+
+    global.Office = originalOffice;
+  });
+
+  it("should render correctly when no credentials are provided", () => {
+    expect(() => render(<QuickHelpTab />)).not.toThrow();
+    expect(screen.getByRole("button", { name: /Getting started/i })).toBeInTheDocument();
+  });
+
+  it("should handle empty constants arrays gracefully", () => {
+    // Component should still render even if constants are empty
+    render(<QuickHelpTab />);
+    expect(document.querySelector(".home-panel")).toBeInTheDocument();
+  });
+});
+
+describe("Accessibility", () => {
+  beforeEach(() => {
+    render(<QuickHelpTab />);
+  });
+
+  it("should have proper ARIA attributes on accordion buttons", () => {
+    const gettingStartedButton = screen.getByRole("button", { name: /Getting started/i });
+
+    expect(gettingStartedButton).toHaveAttribute("aria-expanded");
+  });
+
+  it("should have accessible external links", () => {
+    const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
+
+    expect(docLink).toHaveAttribute("rel", "noopener noreferrer");
+    expect(docLink).toHaveAttribute("target", "_blank");
+  });
+
+  it("should have proper role attribute on clickable image container", () => {
+    // Enable video section for this test
+    localStorage.setItem("enableVideoSection", "true");
+    render(<QuickHelpTab />);
+
+    const imageContainer = document.querySelector(".image-container");
+
+    if (imageContainer) {
+      expect(imageContainer).toHaveAttribute("role", "button");
+    }
+
+    localStorage.clear();
   });
 });

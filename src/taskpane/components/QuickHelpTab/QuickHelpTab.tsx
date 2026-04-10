@@ -22,6 +22,7 @@ import {
   PanelSeparateWindow20Regular,
   PlayCircleFilled,
 } from "@fluentui/react-icons";
+import { useState } from "react";
 
 import { getEnableEnviziLogin } from "../../../common/env";
 import { EmissionScopeSection } from "../EmissionScopeSection";
@@ -118,18 +119,24 @@ function ExternalLinkButton({
 }
 
 function GettingStartedAccordionItem(): React.ReactElement {
+  // Initialize state directly from localStorage
+  const [showVideoSection] = useState(() => {
+    return localStorage.getItem("enableVideoSection") === "true";
+  });
+
   const documentUrl = getEnableEnviziLogin()
     ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
     : "api-calculating-emissions-in-microsoft-excel";
 
   const handleImageClick = () => {
-    // Open video player in a separate dialog window
+    // Open media page in a separate dialog window using generic redirect page
     const currentPath = window.location.pathname;
     const rootPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
-    const videoPlayer = `${window.location.origin}${rootPath}/video-player.html`;
+    const videoUrl = "https://mediacenter.ibm.com/media/1_700skqlt";
+    const redirectUrl = `${window.location.origin}${rootPath}/redirect.html?url=${videoUrl}`;
     Office.context.ui.displayDialogAsync(
-      videoPlayer,
-      { height: 60, width: 60, promptBeforeOpen: false },
+      redirectUrl,
+      { height: 75, width: 75, promptBeforeOpen: false },
       (asyncResult) => {
         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
           console.error("Failed to open video dialog:", asyncResult.error.message);
@@ -149,9 +156,14 @@ function GettingStartedAccordionItem(): React.ReactElement {
             emissions in tonnes of CO₂ equivalent. No extra tools or steps needed.
           </p>
 
-          {false && (
+          {showVideoSection && (
             <div className="image-wrapper">
-              <div className="image-container" onClick={handleImageClick}>
+              <div
+                role="button"
+                title="How to play"
+                className="image-container"
+                onClick={handleImageClick}
+              >
                 <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
                 <div className="play-button-overlay">
                   <PlayCircleFilled />

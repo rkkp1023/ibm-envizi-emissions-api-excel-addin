@@ -30,6 +30,7 @@ module.exports = async (env, options) => {
       "login-callback": ["./src/login/login-callback.ts"],
       functions: ["./src/functions/functions.ts"],
       commands: ["./src/commands/commands-entry.ts"],
+      redirect: ["./src/redirect/redirect.ts"],
     },
     output: {
       path: path.resolve(__dirname, "dist"),
@@ -108,9 +109,9 @@ module.exports = async (env, options) => {
         chunks: [],
       }),
       new HtmlWebpackPlugin({
-        filename: "video-player.html",
-        template: "./src/video-player/video-player.html",
-        chunks: ["video-player"],
+        filename: "redirect.html",
+        template: "./src/redirect/redirect.html",
+        chunks: ["redirect"],
       }),
       new CopyWebpackPlugin({
         patterns: [
