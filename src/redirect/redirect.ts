@@ -8,24 +8,13 @@ const allowedDomains = ["*.ibm.com", "ibm.com"];
 // Only allow HTTPS protocol for security
 const allowedProtocols = ["https:"];
 
-/**
- * Initialize redirect functionality
- * Validates and redirects to the URL specified in the query parameter
- */
-function initializeRedirect(): void {
-  const urlParams = new URLSearchParams(window.location.search);
-  const targetUrl = urlParams.get("url");
+const urlParams = new URLSearchParams(window.location.search);
+const targetUrl = urlParams.get("url");
 
-  const validUrl = targetUrl ? validateUrl(targetUrl) : null;
+const validUrl = targetUrl ? validateUrl(targetUrl) : null;
 
-  if (validUrl) {
-    window.location.href = validUrl;
-  }
-}
-
-// Auto-initialize when loaded in browser (not in test environment)
-if (typeof process === "undefined" || process.env.NODE_ENV !== "test") {
-  initializeRedirect();
+if (validUrl) {
+  window.location.href = validUrl;
 }
 
 export function validateUrl(url: string): string | null {
