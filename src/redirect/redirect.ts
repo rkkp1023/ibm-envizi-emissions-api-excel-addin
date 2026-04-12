@@ -1,6 +1,6 @@
 // Copyright IBM Corp. 2026
 
-/* global Office, window */
+/* global window */
 
 // Allowlist of permitted domains for redirect
 const allowedDomains = ["*.ibm.com", "ibm.com"];
@@ -8,18 +8,27 @@ const allowedDomains = ["*.ibm.com", "ibm.com"];
 // Only allow HTTPS protocol for security
 const allowedProtocols = ["https:"];
 
-Office.onReady(() => {
+/**
+ * Initialize redirect functionality
+ * Validates and redirects to the URL specified in the query parameter
+ */
+function initializeRedirect(): void {
   const urlParams = new URLSearchParams(window.location.search);
   const targetUrl = urlParams.get("url");
 
-  const validatedUrl = targetUrl ? isValidUrl(targetUrl) : null;
+  const validUrl = targetUrl ? validateUrl(targetUrl) : null;
 
-  if (validatedUrl) {
-    window.location.href = validatedUrl;
+  if (validUrl) {
+    window.location.href = validUrl;
   }
-});
+}
 
-export function isValidUrl(url: string): string | null {
+// Auto-initialize when loaded in browser (not in test environment)
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") {
+  initializeRedirect();
+}
+
+export function validateUrl(url: string): string | null {
   try {
     const parsedUrl = new URL(url);
 
