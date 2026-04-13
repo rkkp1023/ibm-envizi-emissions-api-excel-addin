@@ -25,13 +25,13 @@ export function EmissionFormulaItem({ formula }: Readonly<EmissionFormulaItemPro
   const styles = useStyles();
 
   return (
-    <div className={styles.emissionFormulaItem}>
-      <div className={styles.formulaCategorySection}>
+    <div className={styles.emissionFormulaItem} data-testid="emission-formula-item">
+      <div className={styles.formulaCategorySection} data-testid="formula-category-section">
         {formula?.category && <Text weight="semibold">{formula.category}: </Text>}
         <Text>{formula.description}</Text>
       </div>
       {formula?.formulaSyntax && (
-        <div>
+        <div data-testid="formula-syntax">
           <code className={styles.formulaSyntaxCode}>{formula.formulaSyntax}</code>
         </div>
       )}
