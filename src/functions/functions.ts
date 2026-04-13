@@ -455,32 +455,45 @@ export async function real_estate_by_factorId(
 }
 
 /**
- * Returns the input or output headers for a specific endpoint.
+ * Returns the input and/or output headers for a specific endpoint.
  * @customfunction
  * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#headers
  * @param functionName Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor, factor_search, RECOMMEND_ACTIVITY_TYPE)
- * @param input Whether to return input headers (true) or output headers (false). Default is false.
- * @param includeDataTypeRecommender Whether to include data type recommender headers after "type" field for input headers (default: false). Only applies when input=true.
- * @returns Array of header names as a single row
+ * @param input Whether to return input headers (default: true). Set to false to exclude input headers.
+ * @param output Whether to return output headers (default: true). Set to false to exclude output headers.
+ * @param includeActivityTypeRecommender Whether to include activity type recommender headers after "type" field for input headers (default: false). Only applies when input=true. Ignored when input=false.
+ * @returns Array of header names as a single row. If both input and output are true, returns both sets of headers in one row.
  */
 export async function headers(
   functionName?: string,
   input?: boolean | string,
-  includeDataTypeRecommender?: boolean | string
+  output?: boolean | string,
+  includeActivityTypeRecommender?: boolean | string
 ): Promise<string[][]> {
   try {
     // Default to "calculation" if no endpoint provided
     const selectedEndpoint = functionName?.trim().toLowerCase() || "calculation";
     
-    // Handle boolean parameter - support both boolean and string inputs (case-insensitive)
-    const isInput = typeof input === "string"
-      ? input.trim().toLowerCase() === "true"
-      : input === true;
+    // Handle boolean parameters - support both boolean and string inputs (case-insensitive)
+    // Default values: input=true, output=true, includeActivityTypeRecommender=false
+    const showInput = input === undefined || input === null
+      ? true
+      : typeof input === "string"
+        ? input.trim().toLowerCase() === "true"
+        : input === true;
 
-    // Handle includeDataTypeRecommender parameter
-    const includeRecommender = typeof includeDataTypeRecommender === "string"
-      ? includeDataTypeRecommender.trim().toLowerCase() === "true"
-      : includeDataTypeRecommender === true;
+    const showOutput = output === undefined || output === null
+      ? true
+      : typeof output === "string"
+        ? output.trim().toLowerCase() === "true"
+        : output === true;
+
+    // Handle includeActivityTypeRecommender parameter - only relevant when showInput is true
+    const includeRecommender = showInput && (
+      typeof includeActivityTypeRecommender === "string"
+        ? includeActivityTypeRecommender.trim().toLowerCase() === "true"
+        : includeActivityTypeRecommender === true
+    );
 
     // Validate function name
     if (!isValidFunctionName(selectedEndpoint)) {
@@ -490,10 +503,18 @@ export async function headers(
       );
     }
 
-    // Get the appropriate headers
-    const headersList = isInput
-      ? getInputHeaders(selectedEndpoint, false, includeRecommender)
-      : getOutputHeaders(selectedEndpoint);
+    // Build the headers array based on parameters
+    let headersList: string[] = [];
+    
+    if (showInput) {
+      const inputHeaders = getInputHeaders(selectedEndpoint, false, includeRecommender);
+      headersList = [...inputHeaders];
+    }
+    
+    if (showOutput) {
+      const outputHeaders = getOutputHeaders(selectedEndpoint);
+      headersList = [...headersList, ...outputHeaders];
+    }
 
     // Return as a single row array
     return [headersList];
@@ -511,22 +532,41 @@ export async function headers(
 }
 
 /**
- * Returns the input or output headers for factorId-based calculations.
+ * Returns the input and/or output headers for factorId-based calculations.
  * @customfunction
  * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#headers-by-factorid
  * @param functionName Endpoint name (location, stationary, fugitive, mobile, transportation_and_distribution, calculation, economic_activity, real_estate, factor)
- * @param input Whether to return input headers (true) or output headers (false). Default is false.
- * @returns Array of header names as a single row
+ * @param input Whether to return input headers (default: true). Set to false to exclude input headers.
+ * @param output Whether to return output headers (default: true). Set to false to exclude output headers.
+ * @param includeActivityTypeRecommender Whether to include activity type recommender headers (default: false). This parameter is ignored for factorId-based functions as they don't support recommender headers.
+ * @returns Array of header names as a single row. If both input and output are true, returns both sets of headers in one row.
  */
-export async function headers_by_factorid(functionName?: string, input?: boolean | string): Promise<string[][]> {
+export async function headers_by_factorid(
+  functionName?: string,
+  input?: boolean | string,
+  output?: boolean | string,
+  includeActivityTypeRecommender?: boolean | string
+): Promise<string[][]> {
   try {
     // Default to "calculation" if no endpoint provided
     const selectedEndpoint = functionName?.trim().toLowerCase() || "calculation";
     
-    // Handle boolean parameter - support both boolean and string inputs (case-insensitive)
-    const isInput = typeof input === "string"
-      ? input.trim().toLowerCase() === "true"
-      : input === true;
+    // Handle boolean parameters - support both boolean and string inputs (case-insensitive)
+    // Default values: input=true, output=true
+    const showInput = input === undefined || input === null
+      ? true
+      : typeof input === "string"
+        ? input.trim().toLowerCase() === "true"
+        : input === true;
+
+    const showOutput = output === undefined || output === null
+      ? true
+      : typeof output === "string"
+        ? output.trim().toLowerCase() === "true"
+        : output === true;
+
+    // Note: includeActivityTypeRecommender is ignored for factorId-based functions
+    // as they don't support recommender headers
 
     // Validate function name
     if (!isValidFunctionName(selectedEndpoint)) {
@@ -536,18 +576,26 @@ export async function headers_by_factorid(functionName?: string, input?: boolean
       );
     }
 
-    // factor_search and RECOMMEND_ACTIVITY_TYPE don't support factorId-based calls
-    if (selectedEndpoint === "factor_search" || selectedEndpoint === "RECOMMEND_ACTIVITY_TYPE") {
+    // factor_search and recommend_activity_type don't support factorId-based calls
+    if (selectedEndpoint === "factor_search" || selectedEndpoint === "recommend_activity_type") {
       throw new CustomFunctions.Error(
         CustomFunctions.ErrorCode.invalidValue,
         `Function "${selectedEndpoint}" does not support factorId-based calls`
       );
     }
 
-    // Get the appropriate headers
-    const headersList = isInput
-      ? getInputHeaders(selectedEndpoint, true, false)  // true = use factorId headers, false = no recommender for factorId
-      : getOutputHeaders(selectedEndpoint);
+    // Build the headers array based on parameters
+    let headersList: string[] = [];
+    
+    if (showInput) {
+      const inputHeaders = getInputHeaders(selectedEndpoint, true, false);  // true = use factorId headers, false = no recommender for factorId
+      headersList = [...inputHeaders];
+    }
+    
+    if (showOutput) {
+      const outputHeaders = getOutputHeaders(selectedEndpoint);
+      headersList = [...headersList, ...outputHeaders];
+    }
 
     // Return as a single row array
     return [headersList];
