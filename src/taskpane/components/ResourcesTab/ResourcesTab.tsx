@@ -29,56 +29,65 @@ function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
   );
 }
 
-const getResourceSections = (supportLink: string, formId: string, documentUrl: string) => [
-  {
-    title: "Overview",
-    links: [
-      {
-        href: getEnviziExcelAddInOverviewUrl(),
-        text: "Excel add-in overview page",
-      },
-    ],
-  },
-  {
-    title: "Documentation",
-    links: [
-      {
-        href: `https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`,
-        text: "Excel add-in documentation",
-      },
-    ],
-  },
-  {
-    title: "Community",
-    links: [
-      {
-        href: "https://community.ibm.com/community/user/communities/community-home?CommunityKey=6853271a-0a5c-45f9-a9a2-0186706f68ec",
-        text: "IBM Envizi community",
-      },
-      {
-        href: "https://www.ibm.com/think/author/envizi",
-        text: "IBM Envizi blog",
-      },
-      {
-        href: "https://www.ibm.com/products/envizi/emissions-calculations",
-        text: "IBM Envizi website",
-      },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      {
-        href: `https://your.feedback.ibm.com/jfe/form/${formId}`,
-        text: "Provide feedback",
-      },
-      {
-        href: supportLink,
-        text: "Contact IBM",
-      },
-    ],
-  },
-];
+const getResourceSections = (supportLink: string, formId: string, documentUrl: string) => {
+  const resources = [];
+
+  if (getEnableEnviziLogin()) {
+    resources.push({
+      title: "Overview",
+      links: [
+        {
+          href: getEnviziExcelAddInOverviewUrl(),
+          text: "Excel add-in overview page",
+        },
+      ],
+    });
+  }
+
+  resources.push(
+    {
+      title: "Documentation",
+      links: [
+        {
+          href: `https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`,
+          text: "Excel add-in documentation",
+        },
+      ],
+    },
+    {
+      title: "Community",
+      links: [
+        {
+          href: "https://community.ibm.com/community/user/communities/community-home?CommunityKey=6853271a-0a5c-45f9-a9a2-0186706f68ec",
+          text: "IBM Envizi community",
+        },
+        {
+          href: "https://www.ibm.com/think/author/envizi",
+          text: "IBM Envizi blog",
+        },
+        {
+          href: "https://www.ibm.com/products/envizi/emissions-calculations",
+          text: "IBM Envizi website",
+        },
+      ],
+    },
+    {
+      title: "Support",
+      links: [
+        {
+          href: `https://your.feedback.ibm.com/jfe/form/${formId}`,
+          text: "Provide feedback",
+        },
+        {
+          href: supportLink,
+          text: "Contact IBM",
+        },
+      ],
+    }
+  );
+
+  return resources;
+};
 
 export function ResourcesTab() {
   const { data: subscriptionData } = useAccountSubscription();
