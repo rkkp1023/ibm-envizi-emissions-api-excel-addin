@@ -3,7 +3,7 @@
  */
 
 import { Link } from "@fluentui/react-components";
-import { getEnableEnviziLogin } from "../../../common/env";
+import { getEnableEnviziLogin, getEnviziExcelAddInOverviewUrl } from "../../../common/env";
 import { useAccountSubscription } from "../../hooks";
 
 interface ResourceSectionProps {
@@ -31,6 +31,15 @@ function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
 
 const getResourceSections = (supportLink: string, formId: string, documentUrl: string) => [
   {
+    title: "Overview",
+    links: [
+      {
+        href: getEnviziExcelAddInOverviewUrl(),
+        text: "Excel add-in overview page",
+      },
+    ],
+  },
+  {
     title: "Documentation",
     links: [
       {
@@ -49,6 +58,10 @@ const getResourceSections = (supportLink: string, formId: string, documentUrl: s
       {
         href: "https://www.ibm.com/think/author/envizi",
         text: "IBM Envizi blog",
+      },
+      {
+        href: "https://www.ibm.com/products/envizi/emissions-calculations",
+        text: "IBM Envizi website",
       },
     ],
   },
