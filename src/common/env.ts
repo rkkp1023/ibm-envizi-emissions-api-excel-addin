@@ -101,6 +101,10 @@ export function getEnviziExcelAddInOverviewUrl(): string {
   return `${getEnviziApiHomeUrl()}/excel-add-in-overview`;
 }
 
+export function getAccountUsageUrl(): string {
+  return `${getEnviziApiHomeUrl()}/account-usage`;
+}
+
 export function getEnviziUiOrigin(envType?: EnvType): string {
   const override = window.localStorage.getItem("enviziUiOrigin");
   return override || enviziUiOrigins[envType || getEnvType()];
