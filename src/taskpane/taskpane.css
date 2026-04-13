@@ -328,36 +328,6 @@ b {
   padding-block: 20px;
 }
 
-.image-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-inline: 12px;
-  margin-block-end: 16px;
-}
-
-.image-container {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.play-button-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.play-button-overlay svg {
-  font-size: 42px;
-}
-
-.image-placeholder {
-  display: flex;
-  justify-content: center;
-}
-
 .learn-more-btn {
   display: flex;
   justify-content: center;
