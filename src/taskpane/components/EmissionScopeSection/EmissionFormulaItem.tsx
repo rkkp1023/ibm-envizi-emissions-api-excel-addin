@@ -1,18 +1,38 @@
 // Copyright IBM Corp. 2026
 
-import { Link, Text } from "@fluentui/react-components";
+import { Link, Text, makeStyles, tokens } from "@fluentui/react-components";
 import { EmissionFormulaItemProps } from "./types";
 
+const useStyles = makeStyles({
+  emissionFormulaItem: {
+    display: "flex",
+    flexDirection: "column",
+    gap: tokens.spacingVerticalM,
+    paddingBlock: tokens.spacingVerticalM,
+  },
+  formulaCategorySection: {
+    marginBlockEnd: tokens.spacingVerticalS,
+  },
+  formulaSyntaxCode: {
+    fontSize: "14px",
+    color: "#24a148",
+    whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
+  },
+});
+
 export function EmissionFormulaItem({ formula }: Readonly<EmissionFormulaItemProps>) {
+  const styles = useStyles();
+
   return (
-    <div className="emission-formula-item">
-      <div className="formula-category-section">
+    <div className={styles.emissionFormulaItem}>
+      <div className={styles.formulaCategorySection}>
         {formula?.category && <Text weight="semibold">{formula.category}: </Text>}
         <Text>{formula.description}</Text>
       </div>
       {formula?.formulaSyntax && (
-        <div className="formula-syntax">
-          <code>{formula.formulaSyntax}</code>
+        <div>
+          <code className={styles.formulaSyntaxCode}>{formula.formulaSyntax}</code>
         </div>
       )}
       {formula?.link && (
