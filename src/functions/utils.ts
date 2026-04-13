@@ -66,7 +66,6 @@ export function extractValueAfterDash(displayValue: string | undefined): string 
   
   // No dash pattern found, return original (backward compatible)
   return trimmed;
-  return trimmed;
 }
 
 /**
