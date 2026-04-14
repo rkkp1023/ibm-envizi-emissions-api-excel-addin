@@ -69,6 +69,72 @@ export function extractValueAfterDash(displayValue: string | undefined): string 
 }
 
 /**
+ * Parses a boolean parameter that can be boolean, string, undefined, or null.
+ * Supports case-insensitive string "true"/"false" values.
+ *
+ * @param value The value to parse (boolean, string, undefined, or null)
+ * @param defaultValue The default value to return if value is undefined or null
+ * @returns The parsed boolean value
+ *
+ * @example
+ * parseBooleanParameter(true, false) // Returns: true
+ * parseBooleanParameter("true", false) // Returns: true
+ * parseBooleanParameter("TRUE", false) // Returns: true
+ * parseBooleanParameter(false, true) // Returns: false
+ * parseBooleanParameter("false", true) // Returns: false
+ * parseBooleanParameter(undefined, true) // Returns: true (default)
+ * parseBooleanParameter(null, false) // Returns: false (default)
+ */
+export function parseBooleanParameter(
+  value: boolean | string | undefined | null,
+  defaultValue: boolean
+): boolean {
+  // Handle undefined or null - return default
+  if (value === undefined || value === null) {
+    return defaultValue;
+  }
+  
+  // Handle string input - case-insensitive comparison
+  if (typeof value === "string") {
+    return value.trim().toLowerCase() === "true";
+  }
+  
+  // Handle boolean input
+  return value === true;
+}
+
+/**
+ * Builds a combined headers array based on input/output flags.
+ * This is a shared utility to avoid code duplication between headers functions.
+ *
+ * @param showInput Whether to include input headers
+ * @param showOutput Whether to include output headers
+ * @param getInputHeadersFn Function to get input headers
+ * @param getOutputHeadersFn Function to get output headers
+ * @returns Combined array of headers
+ */
+export function buildHeadersList(
+  showInput: boolean,
+  showOutput: boolean,
+  getInputHeadersFn: () => string[],
+  getOutputHeadersFn: () => string[]
+): string[] {
+  let headersList: string[] = [];
+  
+  if (showInput) {
+    const inputHeaders = getInputHeadersFn();
+    headersList = [...inputHeaders];
+  }
+  
+  if (showOutput) {
+    const outputHeaders = getOutputHeadersFn();
+    headersList = [...headersList, ...outputHeaders];
+  }
+  
+  return headersList;
+}
+
+/**
  * Converts Excel date to ISO format
  */
 export function convertExcelDateToISO(input: string): string {
