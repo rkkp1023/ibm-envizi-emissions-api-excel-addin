@@ -81,9 +81,7 @@ jest.mock("../../../common/env", () => ({
   getOverviewDashboardUrl: jest.fn(
     () => "https://www-dev.app.ibm.com/envizi/emissions-api-home/overview"
   ),
-  getEnviziExcelAddInOverviewUrl: jest.fn(
-    () => "https://pentest.envizi.ibm.com/emissions/excel-add-in-overview"
-  ),
+  getAccountUsageUrl: jest.fn(() => "https://us006t.envizi.com/emissions/account-usage"),
   getEnableEnviziLogin: jest.fn(() => true),
 }));
 
@@ -407,25 +405,23 @@ describe("AccountTab - User Credentials Tests", () => {
       expect(mockLogout).toHaveBeenCalledTimes(1);
     });
 
-    it("should open Envizi plugins overview URL for token-based auth", () => {
+    it("should open account and usage page", () => {
       render(<AccountTab />);
       const button = screen.getByRole("button", { name: /View account and usage/i });
 
       fireEvent.click(button);
 
       expect(mockWindowOpen).toHaveBeenCalledWith(
-        "https://pentest.envizi.ibm.com/emissions/excel-add-in-overview",
+        "https://us006t.envizi.com/emissions/account-usage",
         "_blank",
         "noopener"
       );
     });
 
     it("should open correct Envizi URL for production environment with token auth", () => {
-      const { getEnvType, getEnviziExcelAddInOverviewUrl } = require("../../../common/env");
+      const { getEnvType, getAccountUsageUrl } = require("../../../common/env");
       getEnvType.mockReturnValue("prod");
-      getEnviziExcelAddInOverviewUrl.mockReturnValue(
-        "https://envizi.ibm.com/emissions/excel-add-in-overview"
-      );
+      getAccountUsageUrl.mockReturnValue("https://us006t.envizi.com/emissions/account-usage");
 
       render(<AccountTab />);
       const button = screen.getByRole("button", { name: /View account and usage/i });
@@ -433,7 +429,7 @@ describe("AccountTab - User Credentials Tests", () => {
       fireEvent.click(button);
 
       expect(mockWindowOpen).toHaveBeenCalledWith(
-        "https://envizi.ibm.com/emissions/excel-add-in-overview",
+        "https://us006t.envizi.com/emissions/account-usage",
         "_blank",
         "noopener"
       );

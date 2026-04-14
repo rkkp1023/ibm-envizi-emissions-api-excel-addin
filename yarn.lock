@@ -5274,7 +5274,7 @@ axios-mock-adapter@2.1.0:
     fast-deep-equal "^3.1.3"
     is-buffer "^2.0.5"
 
-axios@1.13.5, axios@1.15.0:
+axios@1.15.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.15.0.tgz#0fcee91ef03d386514474904b27863b2c683bf4f"
   integrity sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==
@@ -6245,12 +6245,12 @@ embla-carousel@^8.5.1:
   resolved "https://registry.yarnpkg.com/embla-carousel/-/embla-carousel-8.6.0.tgz#abcedff2bff36992ea8ac27cd30080ca5b6a3f58"
   integrity sha512-SjWyZBHJPbqxHOzckOfo8lHisEaJWmwd23XppYFYVh10bU66/Pn5tkVkbkCMZVdbUE5eTCI2nD8OyIP4Z+uwkA==
 
-emissions-api-sdk@1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/emissions-api-sdk/-/emissions-api-sdk-1.0.7.tgz#e3a3f21ddb594fcf88bcc7d1b487a168249549fd"
-  integrity sha512-xVu3YI1T+34xsda8gcMlRGjldJdtrbZhbwqeRs2RmUuzO3mD6lyTi2ujJHceW6dMMxiinLH9eSFuurBrPCjdJg==
+emissions-api-sdk@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/emissions-api-sdk/-/emissions-api-sdk-1.0.8.tgz#448f1081977c30016647ebc9e0afa5d3f9eb08a4"
+  integrity sha512-o+O1zxdL3nXo21PzBh2aGY01aow/XiQiqW7Bl04nnwOOWi3XUZSX5v7DREUYWbVz4QYydo4HXgUyq4UuA5xZFQ==
   dependencies:
-    axios "1.13.5"
+    axios "1.15.0"
 
 emittery@^0.13.1:
   version "0.13.1"
@@ -6918,10 +6918,10 @@ flatted@^3.2.9, flatted@^3.4.2:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.4.2.tgz#f5c23c107f0f37de8dbdf24f13722b3b98d52726"
   integrity sha512-PjDse7RzhcPkIJwy5t7KPWQSZ9cAbzQXcafsetQoD7sOJRQlGikNbx7yZp2OotDnJyrDcbyRq3Ttb18iYOqkxA==
 
-follow-redirects@^1.0.0, follow-redirects@^1.15.11:
-  version "1.15.11"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.11.tgz#777d73d72a92f8ec4d2e410eb47352a56b8e8340"
-  integrity sha512-deG2P0JfjrTxl50XGCDyfI97ZGVCxIpfKYmfyrQ54n5FO/0gfIES8C/Psl6kWVDolizcaaxZJnTS0QSMxvnsBQ==
+follow-redirects@^1.0.0, follow-redirects@^1.15.11, follow-redirects@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.16.0.tgz#28474a159d3b9d11ef62050a14ed60e4df6d61bc"
+  integrity sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==
 
 for-each@^0.3.3, for-each@^0.3.5:
   version "0.3.5"

@@ -18,10 +18,11 @@ jest.mock("../../hooks/useAccountSubscription", () => ({
 // Mock the env module
 jest.mock("../../../common/env", () => ({
   getEnableEnviziLogin: jest.fn(),
+  getEnviziExcelAddInOverviewUrl: jest.fn(),
 }));
 
 const { useAccountSubscription } = require("../../hooks/useAccountSubscription");
-const { getEnableEnviziLogin } = require("../../../common/env");
+const { getEnableEnviziLogin, getEnviziExcelAddInOverviewUrl } = require("../../../common/env");
 
 describe("ResourcesTab", () => {
   let queryClient: QueryClient;
@@ -35,8 +36,11 @@ describe("ResourcesTab", () => {
       },
     });
     jest.clearAllMocks();
-    // Default mock for getEnableEnviziLogin
+    // Default mocks
     getEnableEnviziLogin.mockReturnValue(true);
+    getEnviziExcelAddInOverviewUrl.mockReturnValue(
+      "https://mock-envizi-url.com/excel-add-in-overview"
+    );
   });
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -54,7 +58,11 @@ describe("ResourcesTab", () => {
 
     it("should render without crashing", () => {
       render(<ResourcesTab />, { wrapper });
-      expect(screen.getByText(/Everything that you need to get started/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          /Everything that you need to get started, build, and succeed with Envizi Emissions Calculations/i
+        )
+      ).toBeInTheDocument();
     });
 
     it("should render the main description", () => {
@@ -66,8 +74,9 @@ describe("ResourcesTab", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render all three resource sections", () => {
+    it("should render all four resource sections", () => {
       render(<ResourcesTab />, { wrapper });
+      expect(screen.getByText("Overview")).toBeInTheDocument();
       expect(screen.getByText("Documentation")).toBeInTheDocument();
       expect(screen.getByText("Community")).toBeInTheDocument();
       expect(screen.getByText("Support")).toBeInTheDocument();
@@ -76,6 +85,24 @@ describe("ResourcesTab", () => {
     it("should have correct CSS class", () => {
       const { container } = render(<ResourcesTab />, { wrapper });
       expect(container.querySelector(".resouce")).toBeInTheDocument();
+    });
+  });
+
+  describe("Overview Links", () => {
+    beforeEach(() => {
+      useAccountSubscription.mockReturnValue({
+        data: undefined,
+        isLoading: false,
+        isError: false,
+      });
+    });
+
+    it("should render Excel add-in overview page link", () => {
+      render(<ResourcesTab />, { wrapper });
+
+      const link = screen.getByRole("link", { name: /Excel add-in overview page/i });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("target", "_blank");
     });
   });
 
@@ -127,8 +154,8 @@ describe("ResourcesTab", () => {
       render(<ResourcesTab />, { wrapper });
     });
 
-    it("should render IBM Envizi Community link", () => {
-      const link = screen.getByRole("link", { name: /IBM Envizi Community/i });
+    it("should render IBM Envizi community link", () => {
+      const link = screen.getByRole("link", { name: /IBM Envizi community/i });
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute(
         "href",
@@ -141,6 +168,16 @@ describe("ResourcesTab", () => {
       const link = screen.getByRole("link", { name: /IBM Envizi blog/i });
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute("href", "https://www.ibm.com/think/author/envizi");
+      expect(link).toHaveAttribute("target", "_blank");
+    });
+
+    it("should render IBM Envizi website link", () => {
+      const link = screen.getByRole("link", { name: /IBM Envizi website/i });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.ibm.com/products/envizi/emissions-calculations"
+      );
       expect(link).toHaveAttribute("target", "_blank");
     });
   });
@@ -306,22 +343,22 @@ describe("ResourcesTab", () => {
       });
     });
 
-    it("should render all 5 external links", () => {
+    it("should render all 7 external links", () => {
       render(<ResourcesTab />, { wrapper });
       const links = screen.getAllByRole("link");
-      expect(links).toHaveLength(5);
+      expect(links).toHaveLength(7);
     });
 
     it("should render block headers for resource sections", () => {
       const { container } = render(<ResourcesTab />, { wrapper });
       const blockHeaders = container.querySelectorAll(".block-header");
-      expect(blockHeaders).toHaveLength(3);
+      expect(blockHeaders).toHaveLength(4);
     });
 
     it("should render stack-gap-8 containers for links", () => {
       const { container } = render(<ResourcesTab />, { wrapper });
       const stackGaps = container.querySelectorAll(".stack-gap-8");
-      expect(stackGaps).toHaveLength(3);
+      expect(stackGaps).toHaveLength(4);
     });
 
     it("should render stack-gap-16 container for main content", () => {
@@ -342,10 +379,12 @@ describe("ResourcesTab", () => {
 
     it("should render section titles as block headers", () => {
       render(<ResourcesTab />, { wrapper });
+      const overviewHeader = screen.getByText("Overview");
       const documentationHeader = screen.getByText("Documentation");
       const communityHeader = screen.getByText("Community");
       const supportHeader = screen.getByText("Support");
 
+      expect(overviewHeader).toHaveClass("block-header");
       expect(documentationHeader).toHaveClass("block-header");
       expect(communityHeader).toHaveClass("block-header");
       expect(supportHeader).toHaveClass("block-header");
@@ -354,16 +393,21 @@ describe("ResourcesTab", () => {
     it("should render links within each section", () => {
       render(<ResourcesTab />, { wrapper });
 
+      // Overview section should have 1 link
+      const overviewLinks = [screen.getByRole("link", { name: /Excel add-in overview page/i })];
+      expect(overviewLinks).toHaveLength(1);
+
       // Documentation section should have 1 link
       const docLinks = [screen.getByRole("link", { name: /Excel add-in documentation/i })];
       expect(docLinks).toHaveLength(1);
 
-      // Community section should have 2 links
+      // Community section should have 3 links
       const communityLinks = [
-        screen.getByRole("link", { name: /IBM Envizi Community/i }),
+        screen.getByRole("link", { name: /IBM Envizi community/i }),
         screen.getByRole("link", { name: /IBM Envizi blog/i }),
+        screen.getByRole("link", { name: /IBM Envizi website/i }),
       ];
-      expect(communityLinks).toHaveLength(2);
+      expect(communityLinks).toHaveLength(3);
 
       // Support section should have 2 links
       const supportLinks = [
@@ -518,10 +562,16 @@ describe("ResourcesTab", () => {
       expect(screen.getByText(/Excel add-in documentation/i)).toBeInTheDocument();
     });
 
+    it("should display correct overview link labels", () => {
+      render(<ResourcesTab />, { wrapper });
+      expect(screen.getByText(/Excel add-in overview page/i)).toBeInTheDocument();
+    });
+
     it("should display correct community link labels", () => {
       render(<ResourcesTab />, { wrapper });
-      expect(screen.getByText(/IBM Envizi Community/i)).toBeInTheDocument();
+      expect(screen.getByText(/IBM Envizi community/i)).toBeInTheDocument();
       expect(screen.getByText(/IBM Envizi blog/i)).toBeInTheDocument();
+      expect(screen.getByText(/IBM Envizi website/i)).toBeInTheDocument();
     });
 
     it("should display correct support link labels", () => {
