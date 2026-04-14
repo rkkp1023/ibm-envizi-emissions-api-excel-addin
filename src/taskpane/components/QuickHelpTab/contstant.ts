@@ -26,6 +26,10 @@ export const usefulFeatures: EmissionScopeConfig[] = [
         description:
           "Get AI to help select a data type when you’re not sure which one to use. You then review the recommended data type and decide whether it is appropriate to your activity.",
         formulaSyntax: "=ENVIZI.RECOMMEND(search,country,[stateProvince],[data],[page],[size])",
+        link: {
+          href: "https://www.ibm.com/docs/SSFJN8P/topics/t_ctr_calc_emissions_excel.html",
+          title: "Learn more about data type recommender",
+        },
       },
     ],
   },
@@ -35,6 +39,10 @@ export const usefulFeatures: EmissionScopeConfig[] = [
       {
         description:
           "Ensure that you select valid input values. Use the ribbon buttons on the IBM Envizi tab to add dropdowns to the activity type, unit, and location cells. Select a cell, then click the relevant button.",
+        link: {
+          href: "https://www.ibm.com/docs/SSFJN8P/topics/t_ctr_calc_emissions_excel.html",
+          title: "Learn more about selecting valid values",
+        },
       },
     ],
   },
@@ -45,6 +53,10 @@ export const usefulFeatures: EmissionScopeConfig[] = [
         description:
           "If you use your own template, you can add the input and output column titles from the Envizi template. You can then follow the function exactly as written and column titles, such as CO2e and CH4, match the calculated results.",
         formulaSyntax: "=ENVIZI.HEADERS((function Name),[input])",
+        link: {
+          href: "https://www.ibm.com/docs/SSFJN8P/topics/t_calc_with_scope_own.html",
+          title: "Learn more about adding column titles",
+        },
       },
     ],
   },
