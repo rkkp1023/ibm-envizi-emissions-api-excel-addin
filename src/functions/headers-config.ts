@@ -87,6 +87,10 @@ export const HEADER_FIELDS = {
   SEARCH: { apiResponseName: "search", displayName: "Search" },
   PAGE: { apiResponseName: "page", displayName: "Page" },
   SIZE: { apiResponseName: "size", displayName: "Size" },
+  
+  // Economic Activity and Real Estate specific output fields
+  ENERGY: { apiResponseName: "energy(MWh)", displayName: "Energy (MWh)" },
+  ASSET_TURNOVER_RATIO: { apiResponseName: "assetTurnoverRatio", displayName: "Asset Turn Over Ratio" },
 } as const;
 
 /**
@@ -250,13 +254,13 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
   economic_activity: {
     inputHeaders: BASE_INPUT_HEADERS,
     inputHeadersWithRecommender: BASE_INPUT_HEADERS_WITH_RECOMMENDER,
-    outputHeaders: STANDARD_OUTPUT_HEADERS,
+    outputHeaders: [...STANDARD_OUTPUT_HEADERS, HEADER_FIELDS.ENERGY, HEADER_FIELDS.ASSET_TURNOVER_RATIO],
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   real_estate: {
     inputHeaders: BASE_INPUT_HEADERS,
     inputHeadersWithRecommender: BASE_INPUT_HEADERS_WITH_RECOMMENDER,
-    outputHeaders: STANDARD_OUTPUT_HEADERS,
+    outputHeaders: [...STANDARD_OUTPUT_HEADERS, HEADER_FIELDS.ENERGY, HEADER_FIELDS.ASSET_TURNOVER_RATIO],
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   factor: {
