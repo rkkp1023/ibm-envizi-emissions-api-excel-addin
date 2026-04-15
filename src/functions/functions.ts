@@ -5,6 +5,7 @@ import { factorSearch } from "./factorSearchHelper";
 import { genericApiCall } from "./generic-api-call";
 import { getInputHeaders, getOutputHeaders, isValidFunctionName, VALID_FUNCTION_NAMES } from "./headers-config";
 import { typeRecommender } from "./typeRecommenderHelper";
+import { buildHeadersList, parseBooleanParameter } from "./utils";
 
 /**
  * Calculates location-based emissions.
@@ -474,26 +475,13 @@ export async function headers(
     // Default to "calculation" if no endpoint provided
     const selectedEndpoint = functionName?.trim().toLowerCase() || "calculation";
     
-    // Handle boolean parameters - support both boolean and string inputs (case-insensitive)
+    // Handle boolean parameters using helper function
     // Default values: input=true, output=true, includeActivityTypeRecommender=false
-    const showInput = input === undefined || input === null
-      ? true
-      : typeof input === "string"
-        ? input.trim().toLowerCase() === "true"
-        : input === true;
-
-    const showOutput = output === undefined || output === null
-      ? true
-      : typeof output === "string"
-        ? output.trim().toLowerCase() === "true"
-        : output === true;
-
+    const showInput = parseBooleanParameter(input, true);
+    const showOutput = parseBooleanParameter(output, true);
+    
     // Handle includeActivityTypeRecommender parameter - only relevant when showInput is true
-    const includeRecommender = showInput && (
-      typeof includeActivityTypeRecommender === "string"
-        ? includeActivityTypeRecommender.trim().toLowerCase() === "true"
-        : includeActivityTypeRecommender === true
-    );
+    const includeRecommender = showInput && parseBooleanParameter(includeActivityTypeRecommender, false);
 
     // Validate function name
     if (!isValidFunctionName(selectedEndpoint)) {
@@ -503,18 +491,13 @@ export async function headers(
       );
     }
 
-    // Build the headers array based on parameters
-    let headersList: string[] = [];
-    
-    if (showInput) {
-      const inputHeaders = getInputHeaders(selectedEndpoint, false, includeRecommender);
-      headersList = [...inputHeaders];
-    }
-    
-    if (showOutput) {
-      const outputHeaders = getOutputHeaders(selectedEndpoint);
-      headersList = [...headersList, ...outputHeaders];
-    }
+    // Build the headers array using helper function
+    const headersList = buildHeadersList(
+      showInput,
+      showOutput,
+      () => getInputHeaders(selectedEndpoint, false, includeRecommender),
+      () => getOutputHeaders(selectedEndpoint)
+    );
 
     // Return as a single row array
     return [headersList];
@@ -551,19 +534,10 @@ export async function headers_by_factorid(
     // Default to "calculation" if no endpoint provided
     const selectedEndpoint = functionName?.trim().toLowerCase() || "calculation";
     
-    // Handle boolean parameters - support both boolean and string inputs (case-insensitive)
+    // Handle boolean parameters using helper function
     // Default values: input=true, output=true
-    const showInput = input === undefined || input === null
-      ? true
-      : typeof input === "string"
-        ? input.trim().toLowerCase() === "true"
-        : input === true;
-
-    const showOutput = output === undefined || output === null
-      ? true
-      : typeof output === "string"
-        ? output.trim().toLowerCase() === "true"
-        : output === true;
+    const showInput = parseBooleanParameter(input, true);
+    const showOutput = parseBooleanParameter(output, true);
 
     // Note: includeActivityTypeRecommender is ignored for factorId-based functions
     // as they don't support recommender headers
@@ -584,18 +558,13 @@ export async function headers_by_factorid(
       );
     }
 
-    // Build the headers array based on parameters
-    let headersList: string[] = [];
-    
-    if (showInput) {
-      const inputHeaders = getInputHeaders(selectedEndpoint, true, false);  // true = use factorId headers, false = no recommender for factorId
-      headersList = [...inputHeaders];
-    }
-    
-    if (showOutput) {
-      const outputHeaders = getOutputHeaders(selectedEndpoint);
-      headersList = [...headersList, ...outputHeaders];
-    }
+    // Build the headers array using helper function
+    const headersList = buildHeadersList(
+      showInput,
+      showOutput,
+      () => getInputHeaders(selectedEndpoint, true, false),  // true = use factorId headers, false = no recommender for factorId
+      () => getOutputHeaders(selectedEndpoint)
+    );
 
     // Return as a single row array
     return [headersList];

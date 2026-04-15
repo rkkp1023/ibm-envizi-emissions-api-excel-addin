@@ -279,50 +279,6 @@ b {
   height: 32px;
 }
 
-/* Emission Scope Section Styles */
-
-.accordion-content > .emission-scope:first-of-type {
-  padding-block-start: 12px;
-}
-
-.emission-scope {
-  padding-block-end: 12px;
-}
-
-.scope-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.formulas-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.emission-formula-item {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-block: 12px;
-}
-
-.formula-category-section {
-  margin-block-end: 8px;
-}
-
-.formula-syntax code {
-  font-size: 14px;
-  color: #24a148;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.formula-divider {
-  height: 1px;
-  background-color: var(--colorNeutralStroke2);
-}
-
 .resouce {
   padding-inline: 8px;
   padding-block: 20px;

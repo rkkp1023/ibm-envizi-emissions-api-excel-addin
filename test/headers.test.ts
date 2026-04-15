@@ -344,6 +344,8 @@ describe("ENVIZI.HEADERS function", () => {
           "Unit",
           "Description",
           "Transaction Id",
+          "Energy (MWh)",
+          "Asset Turn Over Ratio",
         ],
       ]);
     });
@@ -722,6 +724,8 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
           "Unit",
           "Description",
           "Transaction Id",
+          "Energy (MWh)",
+          "Asset Turn Over Ratio",
         ],
       ]);
     });
