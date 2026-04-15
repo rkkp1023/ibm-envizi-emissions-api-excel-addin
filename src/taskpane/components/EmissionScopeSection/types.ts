@@ -16,6 +16,7 @@ export interface EmissionScopeSectionProps {
   icon: React.ReactNode;
   title: string;
   formulas: EmissionFormula[];
+  isFirst?: boolean;
 }
 
 export interface EmissionFormulaItemProps {
