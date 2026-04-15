@@ -92,9 +92,16 @@ const mockResponse = {
   transactionId: "txn-123",
 };
 
+const mockEconomicActivityResponse = {
+  ...mockResponse,
+  "energy(MWh)": "",
+  assetTurnoverRatio: "",
+};
+
 const mockRealEstateResponse = {
   ...mockResponse,
   "energy(MWh)": 42,
+  assetTurnoverRatio: "",
 };
 
 type ApiCase = {
@@ -142,13 +149,13 @@ const apiCases: ApiCase[] = [
     name: "Economic Activity",
     apiType: "economic_activity",
     emissionMock: EconomicActivity.calculate as jest.Mock,
-    expectedResult: standardExpectedResult,
+    expectedResult: [...standardExpectedResult, "", ""],
   },
   {
     name: "Real Estate",
     apiType: "real_estate",
     emissionMock: RealEstate.calculate as jest.Mock,
-    expectedResult: standardExpectedResult,
+    expectedResult: [...standardExpectedResult, 42, ""],
   },
 ];
 
@@ -156,7 +163,12 @@ describe("genericApiCall", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     apiCases.forEach((c) => {
-      const response = c.apiType === "real_estate" ? mockRealEstateResponse : mockResponse;
+      let response = mockResponse;
+      if (c.apiType === "real_estate") {
+        response = mockRealEstateResponse;
+      } else if (c.apiType === "economic_activity") {
+        response = mockEconomicActivityResponse;
+      }
       c.emissionMock.mockResolvedValue(response);
     });
   });
