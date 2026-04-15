@@ -1,10 +1,10 @@
 // Copyright IBM Corp. 2026
 
-export type SubscriptionType = "trial" | "marketplace" | "basic" | "premium";
+export type SubscriptionType = "trial" | "essentials" | "standard" | "premium";
 
 export const subscriptionTypeKeyMap = {
   trial: "Trial",
-  marketplace: "Marketplace",
-  basic: "Basic",
+  essentials: "Essentials",
+  standard: "Standard",
   premium: "Premium",
 };
