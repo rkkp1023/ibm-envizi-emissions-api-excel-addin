@@ -43,7 +43,7 @@ describe("EmissionScopeSection", () => {
 
     it("should render the scope header", () => {
       render(<EmissionScopeSection icon={mockIcon} title={mockTitle} formulas={mockFormulas} />);
-      const scopeHeader = document.querySelector(".scope-header");
+      const scopeHeader = screen.getByTestId("scope-header");
       expect(scopeHeader).toBeInTheDocument();
     });
 
@@ -84,10 +84,8 @@ describe("EmissionScopeSection", () => {
     });
 
     it("should render formula dividers", () => {
-      const { container } = render(
-        <EmissionScopeSection icon={mockIcon} title={mockTitle} formulas={mockFormulas} />
-      );
-      const dividers = container.querySelectorAll(".formula-divider");
+      render(<EmissionScopeSection icon={mockIcon} title={mockTitle} formulas={mockFormulas} />);
+      const dividers = screen.getAllByTestId("formula-divider");
       expect(dividers).toHaveLength(2);
     });
 
@@ -158,16 +156,16 @@ describe("EmissionScopeSection", () => {
 
     it("should handle empty title", () => {
       render(<EmissionScopeSection icon={mockIcon} title="" formulas={mockFormulas} />);
-      const scopeHeader = document.querySelector(".scope-header");
+      const scopeHeader = screen.getByTestId("scope-header");
       expect(scopeHeader).toBeInTheDocument();
     });
   });
 
   describe("Component Structure", () => {
-    it("should have correct CSS class for scope header", () => {
+    it("should have correct data-testid for scope header", () => {
       render(<EmissionScopeSection icon={mockIcon} title={mockTitle} formulas={mockFormulas} />);
-      const scopeHeader = document.querySelector(".scope-header");
-      expect(scopeHeader).toHaveClass("scope-header");
+      const scopeHeader = screen.getByTestId("scope-header");
+      expect(scopeHeader).toBeInTheDocument();
     });
 
     it("should wrap each formula item with divider in a container", () => {
@@ -182,9 +180,9 @@ describe("EmissionScopeSection", () => {
 
     it("should render icon and title in the same header container", () => {
       render(<EmissionScopeSection icon={mockIcon} title={mockTitle} formulas={mockFormulas} />);
-      const scopeHeader = document.querySelector(".scope-header");
-      expect(scopeHeader?.querySelector("[data-testid='mock-icon']")).toBeInTheDocument();
-      expect(scopeHeader?.textContent).toContain(mockTitle);
+      const scopeHeader = screen.getByTestId("scope-header");
+      expect(scopeHeader.querySelector("[data-testid='mock-icon']")).toBeInTheDocument();
+      expect(scopeHeader.textContent).toContain(mockTitle);
     });
   });
 

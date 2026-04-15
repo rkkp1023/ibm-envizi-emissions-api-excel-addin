@@ -20,21 +20,18 @@ describe("EmissionFormulaItem", () => {
     });
 
     it("should render the emission formula item container", () => {
-      const { container } = render(<EmissionFormulaItem formula={mockFormula} />);
-      const formulaItem = container.querySelector(".emission-formula-item");
-      expect(formulaItem).toBeInTheDocument();
+      render(<EmissionFormulaItem formula={mockFormula} />);
+      expect(screen.getByTestId("emission-formula-item")).toBeInTheDocument();
     });
 
     it("should render the formula category section", () => {
-      const { container } = render(<EmissionFormulaItem formula={mockFormula} />);
-      const categorySection = container.querySelector(".formula-category-section");
-      expect(categorySection).toBeInTheDocument();
+      render(<EmissionFormulaItem formula={mockFormula} />);
+      expect(screen.getByTestId("formula-category-section")).toBeInTheDocument();
     });
 
     it("should render the formula syntax section", () => {
-      const { container } = render(<EmissionFormulaItem formula={mockFormula} />);
-      const syntaxSection = container.querySelector(".formula-syntax");
-      expect(syntaxSection).toBeInTheDocument();
+      render(<EmissionFormulaItem formula={mockFormula} />);
+      expect(screen.getByTestId("formula-syntax")).toBeInTheDocument();
     });
   });
 
@@ -45,8 +42,8 @@ describe("EmissionFormulaItem", () => {
         description: "",
         formulaSyntax: "",
       };
-      const { container } = render(<EmissionFormulaItem formula={emptyFormula} />);
-      expect(container.querySelector(".emission-formula-item")).toBeInTheDocument();
+      render(<EmissionFormulaItem formula={emptyFormula} />);
+      expect(screen.getByTestId("emission-formula-item")).toBeInTheDocument();
     });
 
     it("should render when only description is provided", () => {
