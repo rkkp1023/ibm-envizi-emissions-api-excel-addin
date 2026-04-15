@@ -1,9 +1,9 @@
 // Copyright IBM Corp. 2026
 
 import { Button, Field, Input, Spinner } from "@fluentui/react-components";
+import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
 import React from "react";
 
-import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
 import { ApiCredentials } from "../../../common/credentials";
 import {
   getAccountUsageUrl,
@@ -104,7 +104,7 @@ export const AccountTab: React.FC = () => {
           iconPosition="after"
           onClick={handleViewDashboard}
         >
-          View account and usage
+          {isTokenAuth ? "View account and usage" : "View dashboard"}
         </Button>
         <Button
           appearance="outline"
