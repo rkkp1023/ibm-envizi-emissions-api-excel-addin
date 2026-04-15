@@ -68,7 +68,7 @@ describe("useAccountSubscription", () => {
       });
     });
 
-    it("should map D09SJZX with standard edition to basic", async () => {
+    it("should map D09SJZX with standard edition to standard", async () => {
       const mockResponse = {
         data: {
           organizationId: "org-123",
@@ -85,7 +85,7 @@ describe("useAccountSubscription", () => {
 
       const result = await getAccountSubscriptionData("test-token", "tenant-123", "org-123");
 
-      expect(result.subscriptionType).toBe("basic");
+      expect(result.subscriptionType).toBe("standard");
     });
 
     it("should map D09SJZX with premium edition to premium", async () => {
@@ -108,7 +108,7 @@ describe("useAccountSubscription", () => {
       expect(result.subscriptionType).toBe("premium");
     });
 
-    it("should map D11IQZX to marketplace", async () => {
+    it("should map D11IQZX to essentials", async () => {
       const mockResponse = {
         data: {
           organizationId: "org-123",
@@ -125,7 +125,7 @@ describe("useAccountSubscription", () => {
 
       const result = await getAccountSubscriptionData("test-token", "tenant-123", "org-123");
 
-      expect(result.subscriptionType).toBe("marketplace");
+      expect(result.subscriptionType).toBe("essentials");
     });
   });
 
