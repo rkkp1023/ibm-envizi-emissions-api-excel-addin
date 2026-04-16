@@ -126,17 +126,17 @@ describe("utils", () => {
       expect(convertExcelDateToISO("  44562  ")).toBe("2022-01-01");
     });
 
-    it("should return undefined for invalid inputs", () => {
-      expect(convertExcelDateToISO("invalid")).toBe(undefined);
-      expect(convertExcelDateToISO("not-a-date")).toBe(undefined);
-      expect(convertExcelDateToISO("")).toBe(undefined);
+    it("should throw error for invalid inputs", () => {
+      expect(() => convertExcelDateToISO("invalid")).toThrow("Date should be in YYYY-MM-DD format");
+      expect(() => convertExcelDateToISO("not-a-date")).toThrow("Date should be in YYYY-MM-DD format");
+      expect(() => convertExcelDateToISO("")).toThrow("Date should be in YYYY-MM-DD format");
     });
 
-    it("should not convert small numbers (< 20000)", () => {
+    it("should throw error for small numbers (< 20000)", () => {
       // Small numbers are not Excel dates
-      expect(convertExcelDateToISO("100")).toBe(undefined);
-      expect(convertExcelDateToISO("1000")).toBe(undefined);
-      expect(convertExcelDateToISO("19999")).toBe(undefined);
+      expect(() => convertExcelDateToISO("100")).toThrow("Date should be in YYYY-MM-DD format");
+      expect(() => convertExcelDateToISO("1000")).toThrow("Date should be in YYYY-MM-DD format");
+      expect(() => convertExcelDateToISO("19999")).toThrow("Date should be in YYYY-MM-DD format");
     });
 
     it("should handle edge case dates", () => {
