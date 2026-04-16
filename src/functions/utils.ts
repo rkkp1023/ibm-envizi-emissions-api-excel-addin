@@ -135,13 +135,29 @@ export function buildHeadersList(
 }
 
 /**
- * Converts Excel date to ISO format
+ * Converts Excel date to ISO format (YYYY-MM-DD).
+ * Accepts ISO format dates (YYYY-MM-DD) and Excel serial numbers.
+ * Throws an error for invalid date strings.
+ *
+ * @param input The date string to convert
+ * @returns ISO formatted date string (YYYY-MM-DD)
+ * @throws Error if the input is not a valid date format
+ *
+ * @example
+ * convertExcelDateToISO("2024-01-15") // Returns: "2024-01-15"
+ * convertExcelDateToISO("44562") // Returns: "2022-01-01" (Excel serial date)
+ * convertExcelDateToISO("dasj") // Throws: Error - Date should be in YYYY-MM-DD format
  */
 export function convertExcelDateToISO(input: string): string {
   const trimmed = input.trim();
 
-  // Case 1: Already in ISO YYYY-MM-DD
+  // Case 1: Already in ISO YYYY-MM-DD format
   if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    // Validate that it's actually a valid date
+    const date = new Date(trimmed);
+    if (isNaN(date.getTime())) {
+      throw new Error(`Date should be in YYYY-MM-DD format. Invalid date values provided: "${trimmed}"`);
+    }
     return trimmed;
   }
 
@@ -149,8 +165,12 @@ export function convertExcelDateToISO(input: string): string {
   const asNumber = parseFloat(trimmed);
   if (!isNaN(asNumber) && asNumber > 20000) {
     const date = new Date(Math.round((asNumber - 25569) * 86400 * 1000));
+    if (isNaN(date.getTime())) {
+      throw new Error(`Date should be in YYYY-MM-DD format. Invalid Excel serial date: "${trimmed}"`);
+    }
     return date.toISOString().split("T")[0];
   }
 
-  
+  // Case 3: Invalid format - throw error
+  throw new Error(`Date should be in YYYY-MM-DD format. Invalid date format provided: "${trimmed}"`);
 }
