@@ -148,6 +148,18 @@ describe("utils", () => {
       // Excel serial 50000 = 2036-11-21 (actual conversion)
       expect(convertExcelDateToISO("50000")).toBe("2036-11-21");
     });
+
+    it("should throw error for non-numeric strings", () => {
+      expect(() => convertExcelDateToISO("abc123")).toThrow("Date should be in YYYY-MM-DD format. Invalid date format provided");
+      expect(() => convertExcelDateToISO("12-34-5678")).toThrow("Date should be in YYYY-MM-DD format. Invalid date format provided");
+      expect(() => convertExcelDateToISO("2024/01/15")).toThrow("Date should be in YYYY-MM-DD format. Invalid date format provided");
+    });
+
+    it("should throw error for empty or whitespace-only strings", () => {
+      expect(() => convertExcelDateToISO("")).toThrow("Date should be in YYYY-MM-DD format");
+      expect(() => convertExcelDateToISO("   ")).toThrow("Date should be in YYYY-MM-DD format");
+      expect(() => convertExcelDateToISO("\t\n")).toThrow("Date should be in YYYY-MM-DD format");
+    });
   });
 });
 
