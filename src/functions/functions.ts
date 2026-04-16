@@ -13,7 +13,7 @@ import { buildHeadersList, parseBooleanParameter } from "./utils";
  * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#location-based-emissions
  * @param type Activity type
  * @param value Numeric activity value
- * @param unit Unit of measurement (default: kWh if not specified)
+ * @param unit Unit of measurement
  * @param country ISO alpha-3 country code
  * @param stateProvince Geographic state or province
  * @param date Activity date
@@ -22,17 +22,16 @@ import { buildHeadersList, parseBooleanParameter } from "./utils";
 export async function location(
   type: string,
   value: number,
-  unit: string | undefined,
+  unit: string,
   country: string,
   stateProvince?: string,
   date?: string,
   powerGrid?: string
 ): Promise<any[][]> {
-  const finalUnit = unit || "kwh";
   return genericApiCall("location", {
     type,
     value,
-    unit: finalUnit,
+    unit,
     country,
     stateProvince,
     date,
