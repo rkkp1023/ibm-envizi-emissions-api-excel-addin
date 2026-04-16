@@ -112,12 +112,13 @@ function EmissionScopeSections({
 }: Readonly<EmissionScopeSectionsProps>): React.ReactElement {
   return (
     <>
-      {features.map((feature) => (
+      {features.map((feature, index) => (
         <EmissionScopeSection
           key={feature.title}
           icon={iconMap[feature.iconName]}
           title={feature.title}
           formulas={feature.formulas}
+          isFirst={index === 0}
         />
       ))}
       <div className="learn-more-btn">
