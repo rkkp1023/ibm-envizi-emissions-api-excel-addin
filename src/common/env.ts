@@ -135,3 +135,7 @@ export function getEnableEnviziLogin(): boolean {
 export function getBuyNowUrl(): string {
   return "https://www.ibm.com/store/en/us/products/EIDSBEJC";
 }
+
+export function getPricingPageUrl(): string {
+  return "https://www.ibm.com/products/envizi/pricing";
+}

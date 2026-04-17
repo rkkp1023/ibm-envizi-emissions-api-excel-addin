@@ -3,7 +3,7 @@
 import { Button, Text, makeStyles, tokens } from "@fluentui/react-components";
 import { Open16Regular } from "@fluentui/react-icons";
 import React from "react";
-import { getBuyNowUrl } from "../../../common/env";
+import { getPricingPageUrl } from "../../../common/env";
 
 const useStyles = makeStyles({
   container: {
@@ -88,7 +88,7 @@ export function UpgradeBanner(): React.ReactElement {
               icon={<Open16Regular />}
               iconPosition="after"
               as="a"
-              href={getBuyNowUrl()}
+              href={getPricingPageUrl()}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.button}
