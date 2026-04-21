@@ -8,7 +8,7 @@
   <Description DefaultValue="Seamlessly integrate emissions data into your workflows."/>
   <IconUrl DefaultValue="https://localhost:8000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:8000/assets/icon-64.png"/>
-  <SupportUrl DefaultValue="mailto:enviziemissionsapi@ibm.com"/>
+  <SupportUrl DefaultValue="https://www.ibm.com/mysupport"/>
   <AppDomains>
     <AppDomain>https://plugins.app.ibm.com</AppDomain>
   </AppDomains>
