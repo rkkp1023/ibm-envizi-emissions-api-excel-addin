@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>90ef193d-e53e-4f93-b280-39e2dc609661</Id>
-  <Version>1.1.0</Version>
+  <Version>1.1.1</Version>
   <ProviderName>IBM</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="IBM Envizi Emissions Calculations"/>
@@ -418,7 +418,7 @@
         <bt:String id="TaskpaneButton.Label" DefaultValue="IBM Envizi Emissions Calculations"/>
         <bt:String id="EnviziTaskpaneButton.Label" DefaultValue="Open task pane"/>
         <bt:String id="UnitsButton.Label" DefaultValue="Insert Units"/>
-        <bt:String id="AT.All.Label" DefaultValue="All"/>
+        <bt:String id="AT.All.Label" DefaultValue="Insert all Activity Types"/>
         <bt:String id="AT.Location.Label" DefaultValue="Location"/>
         <bt:String id="AT.Stationary.Label" DefaultValue="Stationary"/>
         <bt:String id="AT.Mobile.Label" DefaultValue="Mobile"/>
@@ -436,7 +436,7 @@
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Seamlessly integrate emissions data into your workflows."/>
         <bt:String id="EnviziTaskpaneButton.Tooltip" DefaultValue="Open the IBM Envizi Emissions Calculations task pane"/>
         <bt:String id="UnitsButton.Tooltip" DefaultValue="Insert data validation for units on selected cells"/>
-        <bt:String id="AT.All.Tooltip" DefaultValue="Insert validation for all activity types"/>
+        <bt:String id="AT.All.Tooltip" DefaultValue="All activities"/>
         <bt:String id="AT.Location.Tooltip" DefaultValue="Insert validation for location-based activity types"/>
         <bt:String id="AT.Stationary.Tooltip" DefaultValue="Insert validation for stationary source activity types"/>
         <bt:String id="AT.Mobile.Tooltip" DefaultValue="Insert validation for mobile source activity types"/>
