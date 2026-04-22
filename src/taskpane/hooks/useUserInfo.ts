@@ -8,8 +8,8 @@ import { UserInfo, UserInfoResponse } from "../types/user.types";
 import { useAuth } from "./useAuth";
 
 const userInfoQuery = `
-   query UserInfo {
-    me {
+query UserInfo {
+  me {
     id
     tenantId
     language {
