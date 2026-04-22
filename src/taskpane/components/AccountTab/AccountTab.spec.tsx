@@ -343,7 +343,7 @@ describe("AccountTab - User Credentials Tests", () => {
       render(<AccountTab />);
       expect(screen.getByLabelText(/^Name$/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^Username$/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/Account type/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/Subscription type/i)).toBeInTheDocument();
     });
 
     it("should not render API credential fields", () => {
@@ -369,7 +369,7 @@ describe("AccountTab - User Credentials Tests", () => {
 
     it("should display account type", () => {
       render(<AccountTab />);
-      const accountTypeInput = screen.getByLabelText(/Account type/i) as HTMLInputElement;
+      const accountTypeInput = screen.getByLabelText(/Subscription type/i) as HTMLInputElement;
       expect(accountTypeInput.value).toBe("Premium");
     });
 
@@ -377,7 +377,7 @@ describe("AccountTab - User Credentials Tests", () => {
       render(<AccountTab />);
       const nameInput = screen.getByLabelText(/^Name$/i) as HTMLInputElement;
       const usernameInput = screen.getByLabelText(/^Username$/i) as HTMLInputElement;
-      const accountTypeInput = screen.getByLabelText(/Account type/i) as HTMLInputElement;
+      const accountTypeInput = screen.getByLabelText(/Subscription type/i) as HTMLInputElement;
 
       expect(nameInput).toHaveAttribute("readonly");
       expect(usernameInput).toHaveAttribute("readonly");

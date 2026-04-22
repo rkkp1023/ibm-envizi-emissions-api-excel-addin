@@ -22,9 +22,8 @@ export interface UserInfoResponse {
         firstName: string;
       };
     };
-    user: {
-      associateName: string;
-      rolesMeta: string;
+    currentAssociate: {
+      name: string;
     };
   };
 }
