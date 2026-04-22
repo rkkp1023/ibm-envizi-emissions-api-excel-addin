@@ -74,8 +74,8 @@ Location-based Emissions
      - Nitrogen trifluoride (NF3) emissions reported separately.
    * - ``bioCO2``
      - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
-   * - ``directCO2``
-     - Direct CO2 emissions explicitly reported when available.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
    * - ``Unit``
      - Unit of measurement for the emissions result.
    * - ``Description``
@@ -122,8 +122,8 @@ Stationary Source Emissions
      - Nitrogen trifluoride (NF3) emissions reported separately.
    * - ``bioCO2``
      - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
-   * - ``directCO2``
-     - Direct CO2 emissions explicitly reported when available.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
    * - ``Unit``
      - Unit of measurement for the emissions result.
    * - ``Description``
@@ -170,8 +170,8 @@ Fugitive Emissions
      - Nitrogen trifluoride (NF3) emissions reported separately.
    * - ``bioCO2``
      - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
-   * - ``directCO2``
-     - Direct CO2 emissions explicitly reported when available.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
    * - ``Unit``
      - Unit of measurement for the emissions result.
    * - ``Description``
@@ -218,8 +218,8 @@ Mobile Emissions
      - Nitrogen trifluoride (NF3) emissions reported separately.
    * - ``bioCO2``
      - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
-   * - ``directCO2``
-     - Direct CO2 emissions explicitly reported when available.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
    * - ``Unit``
      - Unit of measurement for the emissions result.
    * - ``Description``
@@ -266,8 +266,8 @@ Transportation and Distribution
      - Nitrogen trifluoride (NF3) emissions reported separately.
    * - ``bioCO2``
      - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
-   * - ``directCO2``
-     - Direct CO2 emissions explicitly reported when available.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
    * - ``Unit``
      - Unit of measurement for the emissions result.
    * - ``Description``
@@ -314,8 +314,8 @@ Calculation
      - Nitrogen trifluoride (NF3) emissions reported separately.
    * - ``bioCO2``
      - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
-   * - ``directCO2``
-     - Direct CO2 emissions explicitly reported when available.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
    * - ``Unit``
      - Unit of measurement for the emissions result.
    * - ``Description``
@@ -449,14 +449,18 @@ Economic Activity
      - Nitrogen trifluoride (NF3) emissions reported separately.
    * - ``bioCO2``
      - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
-   * - ``directCO2``
-     - Direct CO2 emissions explicitly reported when available.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
    * - ``Unit``
      - Unit of measurement for the emissions result.
    * - ``Description``
      - Provides details on the factor set used in the calculation.
    * - ``Transaction Id``
      - Unique identifier for the calculation transaction, used for reference and auditing.
+   * - ``Energy (MWh)``
+     - Energy consumption in megawatt-hours (MWh).
+   * - ``Asset Turn Over Ratio``
+     - The asset turnover ratio for the activity, if applicable.
 
 ---
 
@@ -516,14 +520,18 @@ Real Estate
      - Nitrogen trifluoride (NF3) emissions reported separately.
    * - ``bioCO2``
      - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
-   * - ``directCO2``
-     - Direct CO2 emissions explicitly reported when available.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
    * - ``Unit``
      - Unit of measurement for the emissions result.
    * - ``Description``
      - Provides details on the factor set used in the calculation.
    * - ``Transaction Id``
      - Unique identifier for the calculation transaction, used for reference and auditing.
+   * - ``Energy (MWh)``
+     - Energy consumption in megawatt-hours (MWh).
+   * - ``Asset Turn Over Ratio``
+     - The asset turnover ratio for the activity, if applicable.
 
 ---
 
