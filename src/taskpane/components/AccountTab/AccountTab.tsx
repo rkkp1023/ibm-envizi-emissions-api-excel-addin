@@ -45,12 +45,15 @@ function AccountInformation() {
         <Field label="Username">
           <Input appearance="underline" value={userInfo.email || ""} readOnly />
         </Field>
-        <Field label="Account type">
+        <Field label="Subscription type">
           <Input
             appearance="underline"
             value={subscriptionTypeKeyMap[subscriptionType] || ""}
             readOnly
           />
+        </Field>
+        <Field label="Organization">
+          <Input appearance="underline" value={userInfo.orgName || ""} readOnly />
         </Field>
       </div>
     </form>

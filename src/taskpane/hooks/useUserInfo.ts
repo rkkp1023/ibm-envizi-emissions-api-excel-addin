@@ -8,29 +8,35 @@ import { UserInfo, UserInfoResponse } from "../types/user.types";
 import { useAuth } from "./useAuth";
 
 const userInfoQuery = `
-  query User {
-    me {
-      tenantId
-      languageCode
-      timeZoneId
-      contact {
-        lastName
-        firstName
-        emailAddress
-      }
+query UserInfo {
+  me {
+    id
+    tenantId
+    language {
+      code
     }
-    user {
-      associateName
-      rolesMeta
+    timeZoneId
+    contact {
+      lastName
+      firstName
+      emailAddress
+    }
+    roles {
+      id
+      name
     }
   }
+  currentAssociate {
+    name
+  }
+}
 `;
 
 /**
  * Fetches user info from Envizi UI GraphQL API
  */
 const fetchUserInfo = async (token: string): Promise<UserInfo> => {
-  const graphqlUrl = `${getEnviziGraphQLUrl()}/ui/graphql`;
+  const graphqlUrl = `${getEnviziGraphQLUrl()}/de/graphql`;
 
   const response = await axios.post<UserInfoResponse>(
     graphqlUrl,
@@ -45,13 +51,13 @@ const fetchUserInfo = async (token: string): Promise<UserInfo> => {
     }
   );
 
-  const { me, user } = response.data.data;
+  const { me, currentAssociate } = response.data.data;
 
   return {
     firstName: me.contact.firstName,
     lastName: me.contact.lastName,
     email: me.contact.emailAddress,
-    orgName: user.associateName,
+    orgName: currentAssociate.name,
     orgId: me.tenantId.toString(),
     languageCode: me.languageCode,
     timeZoneId: me.timeZoneId,

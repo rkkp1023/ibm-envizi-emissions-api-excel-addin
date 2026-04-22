@@ -45,9 +45,8 @@ describe("useUserInfo", () => {
             emailAddress: "john.doe@example.com",
           },
         },
-        user: {
-          associateName: "Test Organization",
-          rolesMeta: "admin",
+        currentAssociate: {
+          name: "Test Organization",
         },
       },
     },
@@ -109,9 +108,9 @@ describe("useUserInfo", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      `${getEnviziGraphQLUrl()}/ui/graphql`,
+      `${getEnviziGraphQLUrl()}/de/graphql`,
       {
-        query: expect.stringContaining("query User"),
+        query: expect.stringContaining("query UserInfo"),
       },
       {
         headers: {
@@ -226,9 +225,8 @@ describe("useUserInfo", () => {
               emailAddress: "jane.smith@example.com",
             },
           },
-          user: {
-            associateName: "Another Org",
-            rolesMeta: "user",
+          currentAssociate: {
+            name: "Another Org",
           },
         },
       },
