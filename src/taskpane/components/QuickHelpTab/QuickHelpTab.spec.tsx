@@ -532,7 +532,7 @@ describe("FunctionsAccordionItem", () => {
     fireEvent.click(functionsButton);
 
     expect(
-      screen.getByText(/Calculate emissions from comfort heating or combustion of fuels/i)
+      screen.getByText(/Calculate emissions for stationary combustion sources/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Calculates emissions from fleet fuel consumption/i)
@@ -1000,7 +1000,7 @@ describe("Formula Rendering", () => {
 
   it("should render formula descriptions for all scopes", () => {
     expect(
-      screen.getByText(/Calculate emissions from comfort heating or combustion of fuels/i)
+      screen.getByText(/Calculate emissions for stationary combustion sources/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Calculates emissions from fleet fuel consumption/i)
