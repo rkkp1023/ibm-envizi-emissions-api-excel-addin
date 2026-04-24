@@ -13,7 +13,7 @@ import {
 
 import { ensureClient } from "./client";
 import { FunctionNameType, formatRow } from "./headers-config";
-import { convertExcelDateToISO, extractSymbolFromDisplay } from "./utils";
+import { convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "./utils";
 
 
 type ApiType = Extract<
@@ -69,9 +69,15 @@ function buildLocation(payload: PayloadWithType, apiType: ApiType): Record<strin
   
   const location: any = { country: countryCode };
 
-  if (stateProvince) location.stateProvince = stateProvince;
+  if (stateProvince) {
+    // Extract state/province from display format: "USA - California" → "California"
+    const stateProvinceValue = extractValueAfterDash(stateProvince) || stateProvince;
+    location.stateProvince = stateProvinceValue;
+  }
   if ((apiType === "location" || apiType === "calculation") && powerGrid) {
-    location.powerGrid = powerGrid;
+    // Extract power grid from display format: "USA - WECC" → "WECC"
+    const powerGridValue = extractValueAfterDash(powerGrid) || powerGrid;
+    location.powerGrid = powerGridValue;
   }
 
   return location;
