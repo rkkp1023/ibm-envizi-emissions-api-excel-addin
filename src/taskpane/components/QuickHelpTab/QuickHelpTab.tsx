@@ -25,7 +25,6 @@ import {
 } from "@fluentui/react-icons";
 import { useState } from "react";
 
-import { getEnableEnviziLogin } from "../../../common/env";
 import { EmissionScopeSection } from "../EmissionScopeSection";
 import { EmissionScopeConfig } from "../EmissionScopeSection/types";
 import { functions, gettingStartedSteps, usefulFeatures } from "./contstant";
@@ -156,10 +155,6 @@ function GettingStartedAccordionItem(): React.ReactElement {
     return localStorage.getItem("enableVideoSection") === "true";
   });
 
-  const documentUrl = getEnableEnviziLogin()
-    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
-    : "api-calculating-emissions-in-microsoft-excel";
-
   const handleImageClick = () => {
     // Open media page in a separate dialog window using generic redirect page
     const currentPath = window.location.pathname;
@@ -210,9 +205,7 @@ function GettingStartedAccordionItem(): React.ReactElement {
             <StepItem key={step.title} title={step.title} description={step.description} />
           ))}
 
-          <ExternalLinkButton
-            href={`https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`}
-          >
+          <ExternalLinkButton href="https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html">
             Excel add-in documentation
           </ExternalLinkButton>
         </section>
@@ -222,11 +215,6 @@ function GettingStartedAccordionItem(): React.ReactElement {
 }
 
 function UsefulFeaturesAccordionItem(): React.ReactElement {
-  const learnMoreTopic = getEnableEnviziLogin()
-    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
-    : "api-calculating-emissions-in-microsoft-excel";
-  const learnMoreFeatureLink = `https://www.ibm.com/docs/envizi-esg-suite?topic=${learnMoreTopic}`;
-
   return (
     <AccordionItem value="useful-features">
       <AccordionHeader>Useful features</AccordionHeader>
@@ -239,7 +227,7 @@ function UsefulFeaturesAccordionItem(): React.ReactElement {
 
           <EmissionScopeSections
             features={usefulFeatures}
-            learnMoreLink={learnMoreFeatureLink}
+            learnMoreLink="https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
             learnMoreText="Learn more about features"
           />
         </section>
@@ -270,7 +258,7 @@ export function QuickHelpTab() {
     <div className="home-panel">
       <Accordion multiple collapsible defaultOpenItems={["getting-started", "useful-features"]}>
         <GettingStartedAccordionItem />
-        {getEnableEnviziLogin() && <UsefulFeaturesAccordionItem />}
+        <UsefulFeaturesAccordionItem />
         <FunctionsAccordionItem />
       </Accordion>
     </div>

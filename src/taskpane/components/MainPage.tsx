@@ -4,7 +4,6 @@ import { Tab, TabList } from "@fluentui/react-components";
 import { useState } from "react";
 
 import { ApiCredentials } from "../../common/credentials";
-import { getEnableEnviziLogin } from "../../common/env";
 import { useAuth } from "../hooks";
 import { AccountTab } from "./AccountTab/AccountTab";
 import { QuickHelpTab } from "./QuickHelpTab/QuickHelpTab";
@@ -16,9 +15,7 @@ type TabValue = "quickHelp" | "account" | "resources";
 export function MainPage() {
   const { state } = useAuth();
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
-  const [showSignUpBanner] = useState(
-    () => getEnableEnviziLogin() && (state.credentials as ApiCredentials).apiKey
-  );
+  const [showSignUpBanner] = useState(() => (state.credentials as ApiCredentials)?.apiKey);
   return (
     <div className="page main-page">
       <TabList

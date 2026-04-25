@@ -17,7 +17,7 @@ const queryClient = new QueryClient({});
 const getStartedClicked = "getStartedClicked";
 
 function AppContent() {
-  const { enableEnviziLogin, state, displayLogin } = useAuth();
+  const { state, displayLogin } = useAuth();
   const [showWelcome, setShowWelcome] = useState(() => {
     const hasSeenWelcome = localStorage.getItem(getStartedClicked) === "true";
     return !hasSeenWelcome;
@@ -37,13 +37,7 @@ function AppContent() {
 
   if (showWelcome) {
     const handleGetStarted = () => {
-      // Check if Envizi login is enabled
-      if (enableEnviziLogin) {
-        displayLogin();
-      } else {
-        localStorage.setItem(getStartedClicked, "true");
-        setShowWelcome(false);
-      }
+      displayLogin();
     };
 
     return <WelcomePage onGetStarted={handleGetStarted} />;
