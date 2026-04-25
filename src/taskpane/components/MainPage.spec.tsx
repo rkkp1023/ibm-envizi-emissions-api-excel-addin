@@ -36,10 +36,6 @@ jest.mock("./ResourcesTab/ResourcesTab", () => ({
 }));
 
 describe("MainPage", () => {
-  beforeAll(() => {
-    window.localStorage.setItem("enableEnviziLogin", "false");
-  });
-
   const renderMainPage = () => {
     return render(
       <AuthProvider>

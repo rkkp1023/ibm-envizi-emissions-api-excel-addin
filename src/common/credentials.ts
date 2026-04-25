@@ -2,8 +2,6 @@
 
 import { JwtPayload } from "jwt-decode";
 
-import { getEnableEnviziLogin } from "./env";
-
 /* global OfficeRuntime */
 
 const apiCredentialsKey = "apiCredentials";
@@ -116,16 +114,13 @@ export async function removeUserCredentialsFromStorage(): Promise<void> {
 
 export async function loadCredentialsFromStorage(): Promise<Credentials | null> {
   let credentials: Credentials | null = await loadApiCredentialsFromStorage();
-  if (!credentials && getEnableEnviziLogin()) {
+  if (!credentials) {
     credentials = await loadUserCredentialsFromStorage();
   }
   return credentials;
 }
 
 export async function removeCredentialsFromStorage(): Promise<void> {
-  const promises = [removeApiCredentialsFromStorage()];
-  if (getEnableEnviziLogin()) {
-    promises.push(removeUserCredentialsFromStorage());
-  }
+  const promises = [removeApiCredentialsFromStorage(), removeUserCredentialsFromStorage()];
   await Promise.all(promises);
 }

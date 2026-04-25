@@ -2,16 +2,12 @@
 
 import { Button, Link } from "@fluentui/react-components";
 import { ArrowRight16Filled, Open16Regular } from "@fluentui/react-icons";
-import { getEnableEnviziLogin } from "../../common/env";
 
 interface WelcomePageProps {
   onGetStarted: () => void;
 }
 
 export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
-  const formId = getEnableEnviziLogin() ? "urx-54313" : "urx-53999";
-  const signupUrl = `https://www.ibm.com/account/reg/signup?formid=${formId}`;
-
   return (
     <div id="welcome-page" className="page welcome-page">
       <header className="welcome-header">
@@ -56,7 +52,7 @@ export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
           </Button>
           <span>
             If you are not signed up yet,{" "}
-            <Link href={signupUrl} target="_blank">
+            <Link href="https://www.ibm.com/account/reg/signup?formid=urx-54313" target="_blank">
               complete the sign-up form
             </Link>
             .

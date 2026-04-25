@@ -568,17 +568,13 @@ describe("Conditional Rendering based on getEnableEnviziLogin", () => {
     );
   });
 
-  it("should use alternative documentation URL when getEnableEnviziLogin is false", () => {
-    mockEnableEnviziLogin = false;
-    const { getEnableEnviziLogin } = require("../../../common/env");
-    (getEnableEnviziLogin as jest.Mock).mockReturnValue(false);
-
+  it("should render documentation URL", () => {
     render(<QuickHelpTab />);
 
     const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
     expect(docLink).toHaveAttribute(
       "href",
-      "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
     );
   });
 });
@@ -923,17 +919,13 @@ describe("Documentation Links", () => {
     );
   });
 
-  it("should render correct documentation link for Envizi login disabled", () => {
-    mockEnableEnviziLogin = false;
-    const { getEnableEnviziLogin } = require("../../../common/env");
-    (getEnableEnviziLogin as jest.Mock).mockReturnValue(false);
-
+  it("should render correct documentation link", () => {
     render(<QuickHelpTab />);
 
     const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
     expect(docLink).toHaveAttribute(
       "href",
-      "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
     );
   });
 

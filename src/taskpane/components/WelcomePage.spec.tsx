@@ -3,7 +3,6 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import * as env from "../../common/env";
 import { WelcomePage } from "./WelcomePage";
 
 describe("WelcomePage", () => {
@@ -12,13 +11,10 @@ describe("WelcomePage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset window state to ensure clean test environment
-    delete window.enableEnviziLogin;
   });
 
   afterEach(() => {
     document.body.innerHTML = "";
-    jest.restoreAllMocks();
   });
 
   describe("Rendering", () => {
@@ -76,8 +72,7 @@ describe("WelcomePage", () => {
       expect(button).toHaveClass("fui-Button");
     });
 
-    it("should render signup link with GA form ID when enableEnviziLogin is true", () => {
-      jest.spyOn(env, "getEnableEnviziLogin").mockReturnValue(true);
+    it("should render signup link with correct form ID", () => {
       renderWelcomePage();
 
       const link = screen.getByRole("link", { name: /complete the sign-up form/i });
@@ -85,17 +80,18 @@ describe("WelcomePage", () => {
         "href",
         "https://www.ibm.com/account/reg/signup?formid=urx-54313"
       );
+      expect(link).toHaveAttribute("target", "_blank");
     });
 
-    it("should render signup link with Preview form ID when enableEnviziLogin is false", () => {
-      jest.spyOn(env, "getEnableEnviziLogin").mockReturnValue(false);
+    it("should render Learn more link", () => {
       renderWelcomePage();
 
-      const link = screen.getByRole("link", { name: /complete the sign-up form/i });
+      const link = screen.getByRole("link", { name: /Learn more/i });
       expect(link).toHaveAttribute(
         "href",
-        "https://www.ibm.com/account/reg/signup?formid=urx-53999"
+        "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
       );
+      expect(link).toHaveAttribute("target", "_blank");
     });
   });
 
