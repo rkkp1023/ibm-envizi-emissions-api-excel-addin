@@ -11,7 +11,7 @@ import { getBuyNowUrl } from "../../../common/env";
 
 export function SignUpMessageBanner() {
   return (
-    <MessageBar>
+    <MessageBar layout="multiline">
       <MessageBarBody>
         <MessageBarTitle>Great news! This add-in is now live.</MessageBarTitle>
         <p>To continue, either extend your trial or buy now to access more features.</p>
