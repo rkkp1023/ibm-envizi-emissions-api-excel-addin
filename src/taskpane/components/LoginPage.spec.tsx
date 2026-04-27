@@ -2,21 +2,28 @@
 
 import "@testing-library/jest-dom";
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import { AuthProvider } from "../context/AuthContext";
 import { LoginPage } from "./LoginPage";
 
+// Mock the auth module
+const mockDisplayLoginDialog = jest.fn();
+jest.mock("../auth", () => ({
+  displayLoginDialog: (...args: any[]) => mockDisplayLoginDialog(...args),
+}));
+
 // Mock the credentials module
-const mockLoadApiCredentialsFromStorage = jest.fn();
-const mockSaveUserCredentialsToStorage = jest.fn();
 jest.mock("../../common/credentials", () => ({
-  loadCredentialsFromStorage: mockLoadApiCredentialsFromStorage,
+  loadCredentialsFromStorage: jest.fn().mockResolvedValue(null),
   saveApiCredentialsToStorage: jest.fn(),
-  saveUserCredentialsToStorage: (...args: any[]) => mockSaveUserCredentialsToStorage(...args),
+  saveUserCredentialsToStorage: jest.fn(),
   removeApiCredentialsFromStorage: jest.fn(),
   removeCredentialsFromStorage: jest.fn(),
   setApiCredentials: jest.fn(),
+  setUserCredentials: jest.fn(),
+  getUserCredentials: jest.fn(),
+  getApiCredentials: jest.fn(),
 }));
 
 // Mock the client module
@@ -25,32 +32,34 @@ jest.mock("../../functions/client", () => ({
   resetClient: jest.fn(),
 }));
 
-// Mock the auth service
-const mockPerformLogin = jest.fn();
-const mockPerformLogout = jest.fn();
-const mockValidateCredentials = jest.fn();
-
-jest.mock("../services/authService", () => ({
-  performLogin: (...args: any[]) => mockPerformLogin(...args),
-  performLogout: (...args: any[]) => mockPerformLogout(...args),
-  validateCredentials: (...args: any[]) => mockValidateCredentials(...args),
+// Mock the commands module
+jest.mock("../../commands/commands", () => ({
+  refreshMetadataOnLogin: jest.fn().mockResolvedValue(undefined),
 }));
 
-// Mock the auth dialog
-const mockDisplayLoginDialog = jest.fn();
-jest.mock("../auth", () => ({
-  displayLoginDialog: (...args: any[]) => mockDisplayLoginDialog(...args),
+// Mock the API modules
+jest.mock("../../api/coreEnviziAuth", () => ({
+  coreEnviziAuth: {
+    exchangeToken: jest.fn().mockResolvedValue("mock-core-token"),
+  },
+}));
+
+jest.mock("../../api/enviziUiGraphQL", () => ({
+  enviziUiGraphQL: {
+    renewToken: jest.fn().mockResolvedValue({
+      data: {
+        renewToken: {
+          token: "mock-new-token",
+          refreshToken: "mock-new-refresh-token",
+        },
+      },
+    }),
+  },
 }));
 
 describe("LoginPage", () => {
-  beforeAll(() => {
-    window.localStorage.setItem("enableEnviziLogin", "false");
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
-    mockLoadApiCredentialsFromStorage.mockResolvedValue(null);
-    mockPerformLogin.mockResolvedValue(undefined);
   });
 
   const renderLoginPage = () => {
@@ -61,187 +70,84 @@ describe("LoginPage", () => {
     );
   };
 
-  it("should render the login form with all required fields", () => {
+  it("should render the welcome text", () => {
     renderLoginPage();
 
-    expect(screen.getByText("Account credentials")).toBeInTheDocument();
-    expect(screen.getByLabelText(/API key/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Tenant ID/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Organization ID/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Save credentials/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Login/i })).toBeInTheDocument();
+    expect(screen.getByText("Welcome back!")).toBeInTheDocument();
   });
 
-  it("should update input fields when user types", () => {
+  it("should render the login button", () => {
     renderLoginPage();
 
-    const apiKeyInput = screen.getByLabelText(/API key/i) as HTMLInputElement;
-    const tenantIdInput = screen.getByLabelText(/Tenant ID/i) as HTMLInputElement;
-    const orgIdInput = screen.getByLabelText(/Organization ID/i) as HTMLInputElement;
-
-    fireEvent.change(apiKeyInput, { target: { value: "test-api-key" } });
-    fireEvent.change(tenantIdInput, { target: { value: "test-tenant" } });
-    fireEvent.change(orgIdInput, { target: { value: "test-org" } });
-
-    expect(apiKeyInput.value).toBe("test-api-key");
-    expect(tenantIdInput.value).toBe("test-tenant");
-    expect(orgIdInput.value).toBe("test-org");
+    const loginButton = screen.getByRole("button", { name: /Login/i });
+    expect(loginButton).toBeInTheDocument();
   });
 
-  it("should have save credentials checkbox checked by default", () => {
+  it("should render the illustration image", () => {
     renderLoginPage();
 
-    const checkbox = screen.getByLabelText(/Save credentials/i) as HTMLInputElement;
-    expect(checkbox).toBeChecked();
+    const images = screen.getAllByAltText("Envizi usecase report progress");
+    const illustrationImage = images.find(
+      (img) => img.getAttribute("src") === "assets/envizi-usecase-report-progress.png"
+    );
+    expect(illustrationImage).toBeInTheDocument();
+    expect(illustrationImage).toHaveClass("envizi-illustration");
   });
 
-  it("should submit form with credentials", async () => {
-    mockPerformLogin.mockResolvedValue(undefined);
-
+  it("should render the sign-up link", () => {
     renderLoginPage();
 
-    const apiKeyInput = screen.getByLabelText(/API key/i);
-    const tenantIdInput = screen.getByLabelText(/Tenant ID/i);
-    const orgIdInput = screen.getByLabelText(/Organization ID/i);
-    const submitButton = screen.getByRole("button", { name: /Login/i });
-
-    fireEvent.change(apiKeyInput, { target: { value: "test-key" } });
-    fireEvent.change(tenantIdInput, { target: { value: "test-tenant" } });
-    fireEvent.change(orgIdInput, { target: { value: "test-org" } });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(mockPerformLogin).toHaveBeenCalledWith(
-        {
-          apiKey: "test-key",
-          tenantId: "test-tenant",
-          orgId: "test-org",
-        },
-        true
-      );
-    });
+    const signUpLink = screen.getByText(/complete the sign-up form/i);
+    expect(signUpLink).toBeInTheDocument();
+    expect(signUpLink.closest("a")).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313"
+    );
+    expect(signUpLink.closest("a")).toHaveAttribute("target", "_blank");
   });
 
-  it("should show loading state during submission", async () => {
-    mockPerformLogin.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
-
+  it("should render the documentation link", () => {
     renderLoginPage();
 
-    const apiKeyInput = screen.getByLabelText(/API key/i);
-    const tenantIdInput = screen.getByLabelText(/Tenant ID/i);
-    const orgIdInput = screen.getByLabelText(/Organization ID/i);
-    const submitButton = screen.getByRole("button", { name: /Login/i });
-
-    fireEvent.change(apiKeyInput, { target: { value: "test-key" } });
-    fireEvent.change(tenantIdInput, { target: { value: "test-tenant" } });
-    fireEvent.change(orgIdInput, { target: { value: "test-org" } });
-    fireEvent.click(submitButton);
-
-    expect(screen.getByRole("button", { name: /Logging in.../i })).toBeInTheDocument();
-    expect(submitButton).toBeDisabled();
-
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: /Login/i })).toBeInTheDocument();
-    });
+    const docLink = screen.getByText(/Learn about Envizi Emissions Calculations in Excel/i);
+    expect(docLink).toBeInTheDocument();
+    expect(docLink.closest("a")).toHaveAttribute(
+      "href",
+      "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
+    );
+    expect(docLink.closest("a")).toHaveAttribute("target", "_blank");
   });
 
-  it("should display error message on login failure", async () => {
-    const error = new Error("Invalid credentials. Please enter your credentials and try again.");
-    (error as any).status = 401;
-    mockPerformLogin.mockRejectedValue(error);
-
+  it("should render the copyright text", () => {
     renderLoginPage();
 
-    const apiKeyInput = screen.getByLabelText(/API key/i);
-    const tenantIdInput = screen.getByLabelText(/Tenant ID/i);
-    const orgIdInput = screen.getByLabelText(/Organization ID/i);
-    const submitButton = screen.getByRole("button", { name: /Login/i });
-
-    fireEvent.change(apiKeyInput, { target: { value: "bad-key" } });
-    fireEvent.change(tenantIdInput, { target: { value: "bad-tenant" } });
-    fireEvent.change(orgIdInput, { target: { value: "bad-org" } });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Invalid credentials. Please enter your credentials and try again./i)
-      ).toBeInTheDocument();
-    });
+    expect(screen.getByText("© Copyright IBM Corp. 2025, 2026")).toBeInTheDocument();
   });
 
-  it("should toggle save credentials checkbox", () => {
+  it("should render the footer icon", () => {
     renderLoginPage();
 
-    const checkbox = screen.getByLabelText(/Save credentials/i) as HTMLInputElement;
-    expect(checkbox).toBeChecked();
-
-    fireEvent.click(checkbox);
-    expect(checkbox).not.toBeChecked();
-
-    fireEvent.click(checkbox);
-    expect(checkbox).toBeChecked();
+    const footerImages = screen.getAllByAltText("Envizi usecase report progress");
+    const footerIcon = footerImages.find(
+      (img) => img.getAttribute("src") === "assets/footer-icon.png"
+    );
+    expect(footerIcon).toBeInTheDocument();
   });
 
-  it("should submit with saveCredentials false when checkbox is unchecked", async () => {
-    mockPerformLogin.mockResolvedValue(undefined);
-
+  it("should call displayLoginDialog when login button is clicked", () => {
     renderLoginPage();
 
-    const apiKeyInput = screen.getByLabelText(/API key/i);
-    const tenantIdInput = screen.getByLabelText(/Tenant ID/i);
-    const orgIdInput = screen.getByLabelText(/Organization ID/i);
-    const checkbox = screen.getByLabelText(/Save credentials/i);
-    const submitButton = screen.getByRole("button", { name: /Login/i });
+    const loginButton = screen.getByRole("button", { name: /Login/i });
+    fireEvent.click(loginButton);
 
-    fireEvent.change(apiKeyInput, { target: { value: "test-key" } });
-    fireEvent.change(tenantIdInput, { target: { value: "test-tenant" } });
-    fireEvent.change(orgIdInput, { target: { value: "test-org" } });
-    fireEvent.click(checkbox); // Uncheck the checkbox
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(mockPerformLogin).toHaveBeenCalledWith(
-        {
-          apiKey: "test-key",
-          tenantId: "test-tenant",
-          orgId: "test-org",
-        },
-        false
-      );
-    });
+    expect(mockDisplayLoginDialog).toHaveBeenCalledTimes(1);
+    expect(mockDisplayLoginDialog).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
   });
 
-  it("should disable inputs during loading", async () => {
-    mockPerformLogin.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
-
+  it("should have primary appearance for login button", () => {
     renderLoginPage();
 
-    const apiKeyInput = screen.getByLabelText(/API key/i) as HTMLInputElement;
-    const tenantIdInput = screen.getByLabelText(/Tenant ID/i) as HTMLInputElement;
-    const orgIdInput = screen.getByLabelText(/Organization ID/i) as HTMLInputElement;
-    const checkbox = screen.getByLabelText(/Save credentials/i) as HTMLInputElement;
-    const submitButton = screen.getByRole("button", { name: /Login/i });
-
-    fireEvent.change(apiKeyInput, { target: { value: "test-key" } });
-    fireEvent.change(tenantIdInput, { target: { value: "test-tenant" } });
-    fireEvent.change(orgIdInput, { target: { value: "test-org" } });
-    fireEvent.click(submitButton);
-
-    expect(apiKeyInput).toBeDisabled();
-    expect(tenantIdInput).toBeDisabled();
-    expect(orgIdInput).toBeDisabled();
-    expect(checkbox).toBeDisabled();
-
-    await waitFor(() => {
-      expect(apiKeyInput).not.toBeDisabled();
-    });
-  });
-
-  it("should render link to overview dashboard", () => {
-    renderLoginPage();
-
-    const link = screen.getByText(/Emissions API overview dashboard/i);
-    expect(link).toBeInTheDocument();
-    expect(link.closest("a")).toHaveAttribute("target", "_blank");
+    const loginButton = screen.getByRole("button", { name: /Login/i });
+    expect(loginButton).toHaveClass("fui-Button");
   });
 });

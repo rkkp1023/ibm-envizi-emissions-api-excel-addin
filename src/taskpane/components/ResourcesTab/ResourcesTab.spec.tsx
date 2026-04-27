@@ -115,8 +115,7 @@ describe("ResourcesTab", () => {
       });
     });
 
-    it("should render Excel add-in documentation link with Envizi URL when getEnableEnviziLogin is true", () => {
-      getEnableEnviziLogin.mockReturnValue(true);
+    it("should render Excel add-in documentation link", () => {
       render(<ResourcesTab />, { wrapper });
 
       const link = screen.getByRole("link", { name: /Excel add-in documentation/i });
@@ -126,21 +125,6 @@ describe("ResourcesTab", () => {
         "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
       );
       expect(link).toHaveAttribute("target", "_blank");
-      expect(getEnableEnviziLogin).toHaveBeenCalled();
-    });
-
-    it("should render Excel add-in documentation link with trial URL when getEnableEnviziLogin is false", () => {
-      getEnableEnviziLogin.mockReturnValue(false);
-      render(<ResourcesTab />, { wrapper });
-
-      const link = screen.getByRole("link", { name: /Excel add-in documentation/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute(
-        "href",
-        "https://www.ibm.com/docs/envizi-esg-suite?topic=api-calculating-emissions-in-microsoft-excel"
-      );
-      expect(link).toHaveAttribute("target", "_blank");
-      expect(getEnableEnviziLogin).toHaveBeenCalled();
     });
   });
 
@@ -191,8 +175,7 @@ describe("ResourcesTab", () => {
       });
     });
 
-    it("should render Provide feedback link with Envizi form ID when getEnableEnviziLogin is true", () => {
-      getEnableEnviziLogin.mockReturnValue(true);
+    it("should render Provide feedback link", () => {
       render(<ResourcesTab />, { wrapper });
 
       const link = screen.getByRole("link", { name: /Provide feedback/i });
@@ -202,21 +185,6 @@ describe("ResourcesTab", () => {
         "https://your.feedback.ibm.com/jfe/form/SV_1YXxfTEf9MKci8u"
       );
       expect(link).toHaveAttribute("target", "_blank");
-      expect(getEnableEnviziLogin).toHaveBeenCalled();
-    });
-
-    it("should render Provide feedback link with default form ID when getEnableEnviziLogin is false", () => {
-      getEnableEnviziLogin.mockReturnValue(false);
-      render(<ResourcesTab />, { wrapper });
-
-      const link = screen.getByRole("link", { name: /Provide feedback/i });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute(
-        "href",
-        "https://your.feedback.ibm.com/jfe/form/SV_7Vh96izZeRghY34"
-      );
-      expect(link).toHaveAttribute("target", "_blank");
-      expect(getEnableEnviziLogin).toHaveBeenCalled();
     });
 
     it("should render Contact IBM link with mailto for trial users", () => {

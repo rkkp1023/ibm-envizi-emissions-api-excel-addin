@@ -3,7 +3,7 @@
  */
 
 import { Link } from "@fluentui/react-components";
-import { getEnableEnviziLogin, getEnviziExcelAddInOverviewUrl } from "../../../common/env";
+import { getEnviziExcelAddInOverviewUrl } from "../../../common/env";
 import { useAccountSubscription } from "../../hooks";
 
 interface ResourceSectionProps {
@@ -29,11 +29,9 @@ function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
   );
 }
 
-const getResourceSections = (supportLink: string, formId: string, documentUrl: string) => {
-  const resources = [];
-
-  if (getEnableEnviziLogin()) {
-    resources.push({
+const getResourceSections = (supportLink: string) => {
+  const resources = [
+    {
       title: "Overview",
       links: [
         {
@@ -41,15 +39,12 @@ const getResourceSections = (supportLink: string, formId: string, documentUrl: s
           text: "Excel add-in overview page",
         },
       ],
-    });
-  }
-
-  resources.push(
+    },
     {
       title: "Documentation",
       links: [
         {
-          href: `https://www.ibm.com/docs/envizi-esg-suite?topic=${documentUrl}`,
+          href: "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html",
           text: "Excel add-in documentation",
         },
       ],
@@ -75,7 +70,7 @@ const getResourceSections = (supportLink: string, formId: string, documentUrl: s
       title: "Support",
       links: [
         {
-          href: `https://your.feedback.ibm.com/jfe/form/${formId}`,
+          href: "https://your.feedback.ibm.com/jfe/form/SV_1YXxfTEf9MKci8u",
           text: "Provide feedback",
         },
         {
@@ -83,8 +78,8 @@ const getResourceSections = (supportLink: string, formId: string, documentUrl: s
           text: "Contact IBM",
         },
       ],
-    }
-  );
+    },
+  ];
 
   return resources;
 };
@@ -97,13 +92,7 @@ export function ResourcesTab() {
       ? "mailto:enviziemissionsapi@ibm.com"
       : "https://www.ibm.com/mysupport";
 
-  const documentUrl = getEnableEnviziLogin()
-    ? "SSFJN8P/topics/c_ctr_new_emissions_excel.html"
-    : "api-calculating-emissions-in-microsoft-excel";
-
-  const formId = getEnableEnviziLogin() ? "SV_1YXxfTEf9MKci8u" : "SV_7Vh96izZeRghY34";
-
-  const resourceSections = getResourceSections(supportLink, formId, documentUrl);
+  const resourceSections = getResourceSections(supportLink);
 
   return (
     <div className="resouce">

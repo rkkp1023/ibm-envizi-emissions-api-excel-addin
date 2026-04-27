@@ -14,7 +14,6 @@ import {
   saveUserCredentialsToStorage,
   UserCredentials,
 } from "../../common/credentials";
-import { getEnableEnviziLogin } from "../../common/env";
 import { ensureClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
 import { performLogin, performLogout } from "../services/authService";
@@ -22,7 +21,6 @@ import { AuthState } from "../types/auth.types";
 import { authReducer, initialAuthState } from "./authReducer";
 
 interface AuthContextType {
-  enableEnviziLogin: boolean;
   state: AuthState;
   displayLogin: () => void;
   login: (credentials: ApiCredentials, saveCredentials: boolean) => Promise<void>;
@@ -58,7 +56,6 @@ async function refreshToken(userCredentials: UserCredentials): Promise<UserCrede
 }
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const enableEnviziLogin = getEnableEnviziLogin();
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
   const msPerMinute = 60 * 1000;
 
@@ -221,7 +218,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   }, []);
 
   const value: AuthContextType = {
-    enableEnviziLogin,
     state,
     displayLogin,
     login,

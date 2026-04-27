@@ -5,11 +5,7 @@ import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
 import React from "react";
 
 import { ApiCredentials } from "../../../common/credentials";
-import {
-  getAccountUsageUrl,
-  getEnableEnviziLogin,
-  getOverviewDashboardUrl,
-} from "../../../common/env";
+import { getAccountUsageUrl, getOverviewDashboardUrl } from "../../../common/env";
 import { useAccountSubscription, useAuth, useUserInfo } from "../../hooks";
 import { subscriptionTypeKeyMap } from "../../types/product-subscriptions.types";
 import { UpgradeBanner } from "../UpgradeBanner/UpgradeBanner";
@@ -93,9 +89,7 @@ export const AccountTab: React.FC = () => {
   };
 
   const shouldShowUpgradeBanner =
-    getEnableEnviziLogin() &&
-    !state.credentials["apiKey"] &&
-    subscriptionData?.subscriptionType !== "premium";
+    !state.credentials["apiKey"] && subscriptionData?.subscriptionType !== "premium";
 
   return (
     <div className="account-panel">
