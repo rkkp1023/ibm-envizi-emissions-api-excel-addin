@@ -33,6 +33,11 @@ Overview
 
 The IBM Envizi for Excel add-in includes a custom **IBM Envizi** tab in the Excel ribbon that provides quick access to data validation helpers. This tab streamlines the process of creating emissions calculation spreadsheets by automatically inserting dropdown lists with valid values for activity types, geographic areas, and measurement units.
 
+.. image:: _images/envizi-ribbon-tab.png
+   :alt: IBM Envizi custom tab in Excel ribbon
+   :align: center
+   :width: 100%
+
 The custom tab eliminates manual data entry errors and ensures that your emissions calculations use valid, API-compatible values.
 
 Tab Structure
