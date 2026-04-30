@@ -23,7 +23,6 @@ import {
   PanelSeparateWindow20Regular,
   PlayCircleFilled,
 } from "@fluentui/react-icons";
-import { useState } from "react";
 
 import { EmissionScopeSection } from "../EmissionScopeSection";
 import { EmissionScopeConfig } from "../EmissionScopeSection/types";
@@ -150,16 +149,12 @@ function ExternalLinkButton({
 function GettingStartedAccordionItem(): React.ReactElement {
   const styles = useVideoSectionStyles();
 
-  // Initialize state directly from localStorage
-  const [showVideoSection] = useState(() => {
-    return localStorage.getItem("enableVideoSection") === "true";
-  });
-
   const handleImageClick = () => {
     // Open media page in a separate dialog window using generic redirect page
     const currentPath = window.location.pathname;
     const rootPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
-    const videoUrl = "https://mediacenter.ibm.com/media/1_700skqlt";
+    const videoUrl =
+      "https://mediacenter.ibm.com/media/Setting+up+the+Microsoft+Excel+add-in+for+IBM+Envizi+Emissions+API/1_z5qb7lsy";
     const redirectUrl = `${window.location.origin}${rootPath}/redirect.html?url=${videoUrl}`;
     Office.context.ui.displayDialogAsync(
       redirectUrl,
@@ -183,20 +178,18 @@ function GettingStartedAccordionItem(): React.ReactElement {
             emissions in tonnes of CO₂ equivalent. No extra tools or steps needed.
           </p>
 
-          {showVideoSection && (
-            <div className={styles.imageWrapper}>
-              <Button className={styles.imageContainer} onClick={handleImageClick}>
-                <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
-                <div className={styles.playButtonOverlay}>
-                  <PlayCircleFilled />
-                </div>
-              </Button>
-              <div className={styles.imagePlaceholder}>
-                <Text>How to use excel add-in (placeholder)</Text>
-                <PanelSeparateWindow20Regular />
+          <div className={styles.imageWrapper}>
+            <Button className={styles.imageContainer} onClick={handleImageClick}>
+              <Image alt="How to play" src="assets/excel-how-to.png" fit="cover" />
+              <div className={styles.playButtonOverlay}>
+                <PlayCircleFilled />
               </div>
+            </Button>
+            <div className={styles.imagePlaceholder}>
+              <Text>How to use excel add-in (placeholder)</Text>
+              <PanelSeparateWindow20Regular />
             </div>
-          )}
+          </div>
 
           <Text size={400} weight="semibold">
             Using the Envizi template
