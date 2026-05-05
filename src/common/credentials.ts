@@ -4,14 +4,7 @@ import { JwtPayload } from "jwt-decode";
 
 /* global OfficeRuntime */
 
-const apiCredentialsKey = "apiCredentials";
 const userCredentialsKey = "userCredentials";
-
-export interface ApiCredentials {
-  apiKey: string;
-  tenantId: string;
-  orgId: string;
-}
 
 export interface UserCredentials {
   token: string; // normal Envizi access token, expires in 1 hour
@@ -19,7 +12,7 @@ export interface UserCredentials {
   coreToken: string; // CoreGUUT token
 }
 
-export type Credentials = ApiCredentials | UserCredentials;
+export type Credentials = UserCredentials;
 
 export interface CoreToken extends JwtPayload {
   tenantId: string;
@@ -27,17 +20,8 @@ export interface CoreToken extends JwtPayload {
 
 declare global {
   interface Window {
-    apiCredentials?: ApiCredentials;
     userCredentials?: UserCredentials;
   }
-}
-
-export function getApiCredentials(): ApiCredentials {
-  return window.apiCredentials;
-}
-
-export function setApiCredentials(apiCredentials: ApiCredentials): void {
-  window.apiCredentials = apiCredentials;
 }
 
 export function getUserCredentials(): UserCredentials {
@@ -46,37 +30,6 @@ export function getUserCredentials(): UserCredentials {
 
 export function setUserCredentials(userCredentials: UserCredentials): void {
   window.userCredentials = userCredentials;
-}
-
-export async function loadApiCredentialsFromStorage(): Promise<ApiCredentials | null> {
-  if (!OfficeRuntime.storage) {
-    return null;
-  }
-  return OfficeRuntime.storage.getItem(apiCredentialsKey).then((credentialsJSON) => {
-    if (credentialsJSON) {
-      const apiCredentials = JSON.parse(credentialsJSON);
-      setApiCredentials(apiCredentials);
-      return apiCredentials;
-    }
-    return null;
-  });
-}
-
-export async function saveApiCredentialsToStorage(apiCredentials: ApiCredentials): Promise<void> {
-  setApiCredentials(apiCredentials);
-  if (!OfficeRuntime.storage) {
-    return;
-  }
-  const credentialsJSON = JSON.stringify(apiCredentials);
-  return OfficeRuntime.storage.setItem(apiCredentialsKey, credentialsJSON);
-}
-
-export async function removeApiCredentialsFromStorage(): Promise<void> {
-  setApiCredentials(null);
-  if (!OfficeRuntime.storage) {
-    return;
-  }
-  return OfficeRuntime.storage.removeItem(apiCredentialsKey);
 }
 
 export async function loadUserCredentialsFromStorage(): Promise<UserCredentials | null> {
@@ -113,14 +66,9 @@ export async function removeUserCredentialsFromStorage(): Promise<void> {
 }
 
 export async function loadCredentialsFromStorage(): Promise<Credentials | null> {
-  let credentials: Credentials | null = await loadApiCredentialsFromStorage();
-  if (!credentials) {
-    credentials = await loadUserCredentialsFromStorage();
-  }
-  return credentials;
+  return await loadUserCredentialsFromStorage();
 }
 
 export async function removeCredentialsFromStorage(): Promise<void> {
-  const promises = [removeApiCredentialsFromStorage(), removeUserCredentialsFromStorage()];
-  await Promise.all(promises);
+  await removeUserCredentialsFromStorage();
 }

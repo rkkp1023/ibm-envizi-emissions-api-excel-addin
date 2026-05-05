@@ -4,8 +4,7 @@ import { Button, Field, Input, Spinner } from "@fluentui/react-components";
 import { ArrowExitRegular, Open16Regular } from "@fluentui/react-icons";
 import React from "react";
 
-import { ApiCredentials } from "../../../common/credentials";
-import { getAccountUsageUrl, getOverviewDashboardUrl } from "../../../common/env";
+import { getAccountUsageUrl } from "../../../common/env";
 import { useAccountSubscription, useAuth, useUserInfo } from "../../hooks";
 import { subscriptionTypeKeyMap } from "../../types/product-subscriptions.types";
 import { UpgradeBanner } from "../UpgradeBanner/UpgradeBanner";
@@ -56,44 +55,19 @@ function AccountInformation() {
   );
 }
 
-function ApiCredentialsForm() {
-  const { state } = useAuth();
-  const credentials = state.credentials as ApiCredentials;
-
-  return (
-    <form className="form">
-      <div className="form-grid">
-        <Field label="API key">
-          <Input type="password" appearance="underline" value={credentials.apiKey || ""} readOnly />
-        </Field>
-        <Field label="Tenant ID">
-          <Input appearance="underline" value={credentials.tenantId || ""} readOnly />
-        </Field>
-        <Field label="Organization ID">
-          <Input appearance="underline" value={credentials.orgId || ""} readOnly />
-        </Field>
-      </div>
-    </form>
-  );
-}
-
 export const AccountTab: React.FC = () => {
-  const { state, logout } = useAuth();
+  const { logout } = useAuth();
   const { data: subscriptionData } = useAccountSubscription();
 
-  const isTokenAuth = state.credentials && "token" in state.credentials;
-  const overviewDashboardUrl = isTokenAuth ? getAccountUsageUrl() : getOverviewDashboardUrl();
-
   const handleViewDashboard = () => {
-    window.open(overviewDashboardUrl, "_blank", "noopener");
+    window.open(getAccountUsageUrl(), "_blank", "noopener");
   };
 
-  const shouldShowUpgradeBanner =
-    !state.credentials["apiKey"] && subscriptionData?.subscriptionType !== "premium";
+  const shouldShowUpgradeBanner = subscriptionData?.subscriptionType !== "premium";
 
   return (
     <div className="account-panel">
-      {state.credentials["apiKey"] ? <ApiCredentialsForm /> : <AccountInformation />}
+      <AccountInformation />
       <div className="account-buttons">
         <Button
           appearance="primary"
@@ -101,7 +75,7 @@ export const AccountTab: React.FC = () => {
           iconPosition="after"
           onClick={handleViewDashboard}
         >
-          {isTokenAuth ? "View account and usage" : "View dashboard"}
+          View account and usage
         </Button>
         <Button
           appearance="outline"

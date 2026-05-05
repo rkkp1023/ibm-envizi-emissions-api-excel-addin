@@ -68,26 +68,6 @@ describe("useUserInfo", () => {
     expect(mockedAxios.post).not.toHaveBeenCalled();
   });
 
-  it("should not fetch when credentials do not have token", () => {
-    const { useAuth } = require("./useAuth");
-    useAuth.mockReturnValue({
-      state: {
-        isAuthenticated: true,
-        credentials: {
-          apiKey: "test-key",
-          tenantId: "tenant-123",
-          orgId: "org-123",
-        },
-      },
-    });
-
-    const { result } = renderHook(() => useUserInfo(), { wrapper });
-
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.isLoading).toBe(false);
-    expect(mockedAxios.post).not.toHaveBeenCalled();
-  });
-
   it("should fetch user info successfully with valid token", async () => {
     const { useAuth } = require("./useAuth");
     useAuth.mockReturnValue({
