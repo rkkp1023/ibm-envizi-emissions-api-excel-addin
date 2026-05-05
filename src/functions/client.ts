@@ -16,26 +16,17 @@ async function getClientConfig(credentials?: Credentials): Promise<ClientConfig>
     );
   }
 
-  const envType = resolvedCredentials["token"] ? "prod" : undefined;
-  let tenantId: string;
-  if (resolvedCredentials["apiKey"]) {
-    tenantId = resolvedCredentials["tenantId"];
-  } else {
-    const decodedToken = jwtDecode<CoreToken>(resolvedCredentials["coreToken"]);
-    tenantId = decodedToken.tenantId;
-  }
+  const decodedToken = jwtDecode<CoreToken>(resolvedCredentials.coreToken);
+  const tenantId = decodedToken.tenantId;
+
   const config: ClientConfig = {
-    host: getApiUrl("ghgemissions", envType),
-    authUrl: `${getApiUrl("saascore", envType)}/authentication-retrieve/api-key`,
+    host: getApiUrl("ghgemissions", "prod"),
+    authUrl: `${getApiUrl("saascore", "prod")}/authentication-retrieve/api-key`,
     clientId: tenantId,
+    token: resolvedCredentials.coreToken,
     isExcelAddIn: true,
   };
-  if (resolvedCredentials["apiKey"]) {
-    config.apiKey = resolvedCredentials["apiKey"];
-    config.orgId = resolvedCredentials["orgId"];
-  } else {
-    config.token = resolvedCredentials["coreToken"];
-  }
+
   return config;
 }
 

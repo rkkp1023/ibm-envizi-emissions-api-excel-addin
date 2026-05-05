@@ -5,15 +5,15 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { QuickHelpTab } from "./QuickHelpTab";
 
-const mockApiCredentials = {
-  apiKey: "test-api-key",
-  tenantId: "test-tenant-id",
-  orgId: "test-org-id",
+const mockUserCredentials = {
+  token: "test-token",
+  refreshToken: "test-refresh-token",
+  coreToken: "test-core-token",
 };
 
 const mockUseAuthReturn = {
   state: {
-    credentials: mockApiCredentials,
+    credentials: mockUserCredentials,
     isInitialized: true,
     isAuthenticated: true,
     isLoggedOut: false,
@@ -360,7 +360,9 @@ describe("Image Click Handler", () => {
     fireEvent.click(imageContainer);
 
     const callArgs = mockDisplayDialogAsync.mock.calls[0];
-    expect(callArgs[0]).toContain("redirect.html?url=https://mediacenter.ibm.com/media/1_700skqlt");
+    expect(callArgs[0]).toContain(
+      "redirect.html?url=https://mediacenter.ibm.com/media/Setting+up+the+Microsoft+Excel+add-in+for+IBM+Envizi+Emissions+API/1_z5qb7lsy"
+    );
     expect(callArgs[1]).toEqual({ height: 75, width: 75, promptBeforeOpen: false });
   });
 
@@ -759,16 +761,16 @@ describe("Edge Cases and Error Scenarios", () => {
     localStorage.removeItem("enableVideoSection");
     render(<QuickHelpTab />);
 
-    // Video section should not be rendered when localStorage is not set
-    expect(screen.queryByAltText("How to play")).not.toBeInTheDocument();
+    // Video section is now always rendered
+    expect(screen.queryByAltText("How to play")).toBeInTheDocument();
   });
 
   it("should handle video section when localStorage is set to false", () => {
     localStorage.setItem("enableVideoSection", "false");
     render(<QuickHelpTab />);
 
-    // Video section should not be rendered when localStorage is false
-    expect(screen.queryByAltText("How to play")).not.toBeInTheDocument();
+    // Video section is now always rendered regardless of localStorage
+    expect(screen.queryByAltText("How to play")).toBeInTheDocument();
 
     localStorage.clear();
   });
@@ -803,13 +805,11 @@ describe("Accessibility", () => {
   });
 
   it("should have proper role attribute on clickable image container", () => {
-    // Enable video section for this test
-    localStorage.setItem("enableVideoSection", "true");
-    render(<QuickHelpTab />);
-
-    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    const imageContainers = screen.getAllByRole("button", { name: /How to play/i });
     // Button component already has role="button" by default, verified by getByRole
-    expect(imageContainer).toBeInTheDocument();
+    // Video section is always rendered, so we expect at least one button
+    expect(imageContainers.length).toBeGreaterThan(0);
+    expect(imageContainers[0]).toBeInTheDocument();
 
     localStorage.clear();
   });
@@ -844,13 +844,13 @@ describe("Video Section Behavior", () => {
     localStorage.clear();
   });
 
-  it("should not render video section by default", () => {
+  it("should render video section by default", () => {
     render(<QuickHelpTab />);
-    expect(screen.queryByAltText("How to play")).not.toBeInTheDocument();
+    expect(screen.getByAltText("How to play")).toBeInTheDocument();
   });
 
-  it("should render video section when enabled in localStorage", () => {
-    localStorage.setItem("enableVideoSection", "true");
+  it("should render video section regardless of localStorage", () => {
+    localStorage.setItem("enableVideoSection", "false");
     render(<QuickHelpTab />);
 
     expect(screen.getByAltText("How to play")).toBeInTheDocument();
@@ -858,10 +858,9 @@ describe("Video Section Behavior", () => {
   });
 
   it("should render play button overlay on video thumbnail", () => {
-    localStorage.setItem("enableVideoSection", "true");
     render(<QuickHelpTab />);
 
-    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    const imageContainer = screen.getAllByRole("button", { name: /How to play/i })[0];
     expect(imageContainer).toBeInTheDocument();
 
     // Check for play button icon
@@ -870,22 +869,22 @@ describe("Video Section Behavior", () => {
   });
 
   it("should construct correct redirect URL for video dialog", () => {
-    localStorage.setItem("enableVideoSection", "true");
     render(<QuickHelpTab />);
 
-    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    const imageContainer = screen.getAllByRole("button", { name: /How to play/i })[0];
     fireEvent.click(imageContainer);
 
     const callArgs = mockDisplayDialogAsync.mock.calls[0];
     expect(callArgs[0]).toContain("redirect.html");
-    expect(callArgs[0]).toContain("url=https://mediacenter.ibm.com/media/1_700skqlt");
+    expect(callArgs[0]).toContain(
+      "url=https://mediacenter.ibm.com/media/Setting+up+the+Microsoft+Excel+add-in+for+IBM+Envizi+Emissions+API/1_z5qb7lsy"
+    );
   });
 
   it("should use correct dialog dimensions", () => {
-    localStorage.setItem("enableVideoSection", "true");
     render(<QuickHelpTab />);
 
-    const imageContainer = screen.getByRole("button", { name: /How to play/i });
+    const imageContainer = screen.getAllByRole("button", { name: /How to play/i })[0];
     fireEvent.click(imageContainer);
 
     const callArgs = mockDisplayDialogAsync.mock.calls[0];
@@ -893,7 +892,6 @@ describe("Video Section Behavior", () => {
   });
 
   it("should not prompt before opening video dialog", () => {
-    localStorage.setItem("enableVideoSection", "true");
     render(<QuickHelpTab />);
 
     const imageContainer = screen.getByRole("button", { name: /How to play/i });
