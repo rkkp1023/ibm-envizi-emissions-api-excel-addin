@@ -45,25 +45,58 @@ Built using **TypeScript**, **Office.js**, and **Webpack**, this add-in enhances
 
 ### For Developers
 
-1. Clone this repository
-2. Install dependencies:
+#### Setup
+
+1. Clone this repository:
+
+   ```bash
+   git clone <repository-url>
    ```
+
+2. Install dependencies:
+
+   ```bash
    yarn install
    ```
+
 3. Build the add-in:
-   ```
+   ```bash
    yarn build
    ```
-4. Start local development server:
-   ```
+
+#### Local Development
+
+1. Start the local development server:
+
+   ```bash
    yarn start
    ```
+
    or
-   ```
+
+   ```bash
    yarn run dev
    ```
 
+   This will start a webpack dev server at `https://localhost:3000`
 
+2. Sideload the add-in in Excel:
+   - Open Excel
+   - Go to **Home** > **Add-ins** > **Manage** > **Upload**
+   - Browse to the `manifest.xml` file in your project root
+   - Click **OK** to load the add-in
+
+3. The add-in should now appear in Excel's ribbon. Click on it to open the task pane.
+
+#### Hot Reload
+
+The development server supports hot module replacement (HMR). Changes to your code will automatically reload in Excel without needing to restart the add-in.
+
+**Note**: If you make changes to the `manifest.xml` file, you'll need to:
+
+1. Close Excel completely
+2. Clear the Excel cache (see Troubleshooting section)
+3. Restart Excel and re-sideload the add-in
 
 ## Usage
 
@@ -71,19 +104,39 @@ Built using **TypeScript**, **Office.js**, and **Webpack**, this add-in enhances
 2. **Using Custom Functions**: In any cell, type `=ENVIZI.` to see available functions
 
 Example function usage:
+
 ```
 =ENVIZI.CALCULATION(type, value, unit, country, [stateProvince], [date], [powerGrid])
 ```
 
 ## Project Structure
 
-- `src/functions/` – Excel custom functions 
+- `src/functions/` – Excel custom functions
 - `src/taskpane/` – UI logic and token dialog popup
-- `dist/` – Webpack output folder 
+- `dist/` – Webpack output folder
 - `manifest.xml` – Office Add-in manifest file for localhost development
 - `Envizi_manifest.xml` – Actual manifest file with links pointing to deployed resources
 - `webpack.config.js` – Build & dev server config
 - `babel.config.json` + `tsconfig.json` – Transpiler configs
+
+## Debugging
+
+### Enable Inspect Element on Mac
+
+#### Step 1: Enable Inspect Element for Office Add-ins
+
+1. Close Excel completely if it's running
+2. Open **Terminal** and run the following command:
+
+   ```bash
+   defaults write com.microsoft.Excel OfficeWebAddinDeveloperExtras -bool true
+   ```
+
+3. Restart Excel and open your add-in
+
+#### Step 2: Debug Your Code
+
+You can also use the browser console by right-clicking in the task pane and selecting "Inspect Element" if the context menu is available.
 
 ## Troubleshooting
 
@@ -91,7 +144,7 @@ Example function usage:
 
 If you encounter issues with the add-in not loading or updating:
 
-```
+```bash
 # Clear Excel cache
 rm -rf ~/Library/Containers/com.microsoft.Excel/Data/Library/Caches/*
 rm -rf ~/Library/Containers/com.microsoft.Excel/Data/Library/Application\ Support/Microsoft/Office/16.0/Wef
@@ -100,11 +153,16 @@ rm -rf ~/Library/Containers/com.microsoft.Excel/Data/Library/Application\ Suppor
 rm -rf ~/Library/Containers/com.microsoft.Excel/Data/Documents/wef/*
 ```
 
+## After clearing the cache:
+
+- Restart Excel
+
 ### Common Issues
 
 - **Authentication Failures**: Ensure your Envizi credentials are correct and your account has the necessary permissions
 - **Functions Not Loading**: Try clearing the Excel cache as described above
 - **Network Errors**: Check your internet connection and firewall settings
+- **HTTPS Certificate Warnings**: When running locally, you may need to trust the self-signed certificate. Follow the prompts in your browser when accessing `https://localhost:3000`
 
 ## Support
 
