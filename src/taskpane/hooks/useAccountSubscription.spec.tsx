@@ -145,25 +145,6 @@ describe("useAccountSubscription", () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    it("should return null when credentials do not have coreToken", () => {
-      const { useAuth } = require("./useAuth");
-      useAuth.mockReturnValue({
-        state: {
-          isAuthenticated: true,
-          credentials: {
-            apiKey: "test-key",
-            tenantId: "tenant-123",
-            orgId: "org-123",
-          },
-        },
-      });
-
-      const { result } = renderHook(() => useAccountSubscription(), { wrapper });
-
-      expect(result.current.data).toBeUndefined();
-      expect(result.current.isLoading).toBe(false);
-    });
-
     it("should decode coreToken and fetch subscription data", async () => {
       const { useAuth } = require("./useAuth");
       useAuth.mockReturnValue({

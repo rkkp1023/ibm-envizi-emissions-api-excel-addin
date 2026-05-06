@@ -7,7 +7,6 @@ import { coreEnviziAuth } from "../../api/coreEnviziAuth";
 import { enviziUiGraphQL } from "../../api/enviziUiGraphQL";
 import { refreshMetadataOnLogin } from "../../commands/commands";
 import {
-  ApiCredentials,
   Credentials,
   loadCredentialsFromStorage,
   removeCredentialsFromStorage,
@@ -16,14 +15,13 @@ import {
 } from "../../common/credentials";
 import { ensureClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
-import { performLogin, performLogout } from "../services/authService";
+import { performLogout } from "../services/authService";
 import { AuthState } from "../types/auth.types";
 import { authReducer, initialAuthState } from "./authReducer";
 
 interface AuthContextType {
   state: AuthState;
   displayLogin: () => void;
-  login: (credentials: ApiCredentials, saveCredentials: boolean) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -162,11 +160,10 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     displayLoginDialog(
       async (credentials) => {
         // Token-based login: Save user credentials to storage for persistence
-        // Note: API key login uses saveApiCredentialsToStorage via performLogin() instead
         saveUserCredentialsToStorage(credentials);
         ensureClient(credentials);
 
-        // Refresh metadata on login (non-blocking) - needed for Envizi login
+        // Refresh metadata on login (non-blocking)
         refreshMetadataOnLogin().catch((error) => {
           console.error("Failed to refresh metadata on login:", error);
         });
@@ -184,28 +181,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     );
   }, []);
 
-  const login = useCallback(async (credentials: ApiCredentials, saveCredentials: boolean) => {
-    try {
-      // Perform login with API validation
-      await performLogin(credentials, saveCredentials);
-
-      // Refresh metadata on login (non-blocking)
-      refreshMetadataOnLogin().catch((error) => {
-        console.error("Failed to refresh metadata on login:", error);
-      });
-
-      dispatch({
-        type: "loginSuccess",
-        payload: { credentials },
-      });
-    } catch (error) {
-      dispatch({
-        type: "loginFailed",
-      });
-      throw error;
-    }
-  }, []);
-
   const logout = useCallback(async () => {
     try {
       // Perform logout and reset client
@@ -220,7 +195,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const value: AuthContextType = {
     state,
     displayLogin,
-    login,
     logout,
   };
 
