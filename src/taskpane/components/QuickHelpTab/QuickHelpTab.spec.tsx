@@ -130,7 +130,7 @@ describe("QuickHelpTab", () => {
   });
 
   it("should render image placeholder text", () => {
-    expect(screen.queryByText(/How to use excel add-in \(placeholder\)/i)).toBeInTheDocument();
+    expect(screen.queryByText(/How to use excel add-in/i)).toBeInTheDocument();
   });
 
   it("should render documentation link", () => {
@@ -138,7 +138,7 @@ describe("QuickHelpTab", () => {
     expect(docLink).toBeInTheDocument();
     expect(docLink).toHaveAttribute(
       "href",
-      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+      "https://www.ibm.com/docs/SSFJN8P/topics/c_ctr_new_emissions_excel.htm"
     );
   });
 
@@ -195,14 +195,14 @@ describe("Useful Features Section", () => {
   it("should render AI recommendation feature description", () => {
     const description = screen.getByText(/You then review the recommended data type/i);
     expect(description).toBeInTheDocument();
-    expect(description.textContent).toContain("Get AI to help select a data type");
+    expect(description.textContent).toContain("Use AI to help you choose the activity type");
     expect(description.textContent).toContain("decide whether it is appropriate to your activity");
   });
 
   it("should render AI recommendation formula syntax", () => {
     expect(
       screen.getByText(
-        /=ENVIZI\.RECOMMEND\(search,country,\[stateProvince\],\[data\],\[page\],\[size\]\)/i
+        /=RECOMMEND_ACTIVITY_TYPE\(search,country,\[stateProvince\],\[data\],\[page\],\[size\]\)/i
       )
     ).toBeInTheDocument();
   });
@@ -534,7 +534,7 @@ describe("FunctionsAccordionItem", () => {
     fireEvent.click(functionsButton);
 
     expect(
-      screen.getByText(/Calculate emissions for stationary combustion sources/i)
+      screen.getByText(/Calculate emissions from comfort heating or combustion of fuels in stationary combustion sources./i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Calculates emissions from fleet fuel consumption/i)
@@ -566,7 +566,7 @@ describe("Conditional Rendering based on getEnableEnviziLogin", () => {
     const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
     expect(docLink).toHaveAttribute(
       "href",
-      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+      "https://www.ibm.com/docs/SSFJN8P/topics/c_ctr_new_emissions_excel.htm"
     );
   });
 
@@ -576,7 +576,7 @@ describe("Conditional Rendering based on getEnableEnviziLogin", () => {
     const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
     expect(docLink).toHaveAttribute(
       "href",
-      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+      "https://www.ibm.com/docs/SSFJN8P/topics/c_ctr_new_emissions_excel.htm"
     );
   });
 });
@@ -854,7 +854,7 @@ describe("Video Section Behavior", () => {
     render(<QuickHelpTab />);
 
     expect(screen.getByAltText("How to play")).toBeInTheDocument();
-    expect(screen.getByText(/How to use excel add-in \(placeholder\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/How to use excel add-in/i)).toBeInTheDocument();
   });
 
   it("should render play button overlay on video thumbnail", () => {
@@ -913,7 +913,7 @@ describe("Documentation Links", () => {
     const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
     expect(docLink).toHaveAttribute(
       "href",
-      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+      "https://www.ibm.com/docs/SSFJN8P/topics/c_ctr_new_emissions_excel.htm"
     );
   });
 
@@ -923,7 +923,7 @@ describe("Documentation Links", () => {
     const docLink = screen.getByRole("link", { name: /Excel add-in documentation/i });
     expect(docLink).toHaveAttribute(
       "href",
-      "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
+      "https://www.ibm.com/docs/SSFJN8P/topics/c_ctr_new_emissions_excel.htm"
     );
   });
 
@@ -990,7 +990,7 @@ describe("Formula Rendering", () => {
 
   it("should render formula descriptions for all scopes", () => {
     expect(
-      screen.getByText(/Calculate emissions for stationary combustion sources/i)
+      screen.getByText(/Calculate emissions from comfort heating or combustion of fuels in stationary combustion sources./i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Calculates emissions from fleet fuel consumption/i)
