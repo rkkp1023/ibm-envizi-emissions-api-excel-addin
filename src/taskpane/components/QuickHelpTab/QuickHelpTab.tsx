@@ -198,7 +198,7 @@ function GettingStartedAccordionItem(): React.ReactElement {
               </div>
             </Button>
             <div className={styles.imagePlaceholder}>
-              <Text>How to use excel add-in</Text>
+              <Text>How to use Excel add-in</Text>
               <PanelSeparateWindow20Regular />
             </div>
           </div>

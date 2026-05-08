@@ -130,7 +130,7 @@ describe("QuickHelpTab", () => {
   });
 
   it("should render image placeholder text", () => {
-    expect(screen.queryByText(/How to use excel add-in/i)).toBeInTheDocument();
+    expect(screen.queryByText(/How to use Excel add-in/i)).toBeInTheDocument();
   });
 
   it("should render documentation link", () => {
@@ -534,7 +534,7 @@ describe("FunctionsAccordionItem", () => {
     fireEvent.click(functionsButton);
 
     expect(
-      screen.getByText(/Calculate emissions from comfort heating or combustion of fuels in stationary combustion sources./i)
+      screen.getByText(/Calculate emissions for stationary combustion sources/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Calculates emissions from fleet fuel consumption/i)
@@ -854,7 +854,7 @@ describe("Video Section Behavior", () => {
     render(<QuickHelpTab />);
 
     expect(screen.getByAltText("How to play")).toBeInTheDocument();
-    expect(screen.getByText(/How to use excel add-in/i)).toBeInTheDocument();
+    expect(screen.getByText(/How to use Excel add-in/i)).toBeInTheDocument();
   });
 
   it("should render play button overlay on video thumbnail", () => {
@@ -990,7 +990,7 @@ describe("Formula Rendering", () => {
 
   it("should render formula descriptions for all scopes", () => {
     expect(
-      screen.getByText(/Calculate emissions from comfort heating or combustion of fuels in stationary combustion sources./i)
+      screen.getByText(/Calculate emissions for stationary combustion sources/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Calculates emissions from fleet fuel consumption/i)
