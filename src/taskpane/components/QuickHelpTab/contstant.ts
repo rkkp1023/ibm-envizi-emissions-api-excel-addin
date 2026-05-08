@@ -70,7 +70,7 @@ export const functions: EmissionScopeConfig[] = [
       {
         category: "Stationary",
         description:
-          "Calculate emissions for stationary combustion sources",
+          "Calculate emissions for stationary combustion sources, such as boilers, heaters, and other fixed fuel-based energy systems.",
         formulaSyntax: "=ENVIZI.STATIONARY(type, value, unit, country, [stateProvince], [date])",
       },
       {
