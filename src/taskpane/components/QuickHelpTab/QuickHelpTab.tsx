@@ -15,10 +15,12 @@ import {
   AccordionPanel,
   Button,
   Image,
+  Link,
   Text,
   makeStyles,
 } from "@fluentui/react-components";
 import {
+  ArrowDownload16Regular,
   Open16Regular,
   PanelSeparateWindow20Regular,
   PlayCircleFilled,
@@ -53,6 +55,16 @@ const useVideoSectionStyles = makeStyles({
   imagePlaceholder: {
     display: "flex",
     justifyContent: "center",
+  },
+  linksWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+  },
+  linkWithIcon: {
+    display: "flex",
+    gap: "0.5rem",
+    alignItems: "center",
   },
 });
 
@@ -174,7 +186,7 @@ function GettingStartedAccordionItem(): React.ReactElement {
         <section className="accordion-content">
           <p>
             Calculate greenhouse gas (GHG) emissions directly in your spreadsheet. You enter your
-            data, and Microsoft Excel uses verified emission factors to automatically calculate
+            data, and Envizi Emissions API uses verified emission factors to automatically calculate
             emissions in tonnes of CO₂ equivalent. No extra tools or steps needed.
           </p>
 
@@ -186,7 +198,7 @@ function GettingStartedAccordionItem(): React.ReactElement {
               </div>
             </Button>
             <div className={styles.imagePlaceholder}>
-              <Text>How to use excel add-in (placeholder)</Text>
+              <Text>How to use Excel add-in</Text>
               <PanelSeparateWindow20Regular />
             </div>
           </div>
@@ -198,9 +210,26 @@ function GettingStartedAccordionItem(): React.ReactElement {
             <StepItem key={step.title} title={step.title} description={step.description} />
           ))}
 
-          <ExternalLinkButton href="https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html">
-            Excel add-in documentation
-          </ExternalLinkButton>
+          <div className={styles.linksWrapper}>
+            <Link
+              href="https://www.ibm.com/docs/SSFJN8P/topics/c_ctr_new_emissions_excel.htm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.linkWithIcon}
+            >
+              Excel add-in documentation
+              <Open16Regular />
+            </Link>
+            <Link
+              href="https://plugins.app.ibm.com/excel-addin/IBM%20Envizi%20Emissions%20Calculations%20Template.xlsx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.linkWithIcon}
+            >
+              Download the template
+              <ArrowDownload16Regular />
+            </Link>
+          </div>
         </section>
       </AccordionPanel>
     </AccordionItem>
