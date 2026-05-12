@@ -12,11 +12,15 @@ jest.mock("../src/functions/client", () => ({
   ensureClient: jest.fn(),
 }));
 
-jest.mock("../src/functions/utils", () => ({
-  convertExcelDateToISO: jest.fn((d) => d), // pass-through
-  extractSymbolFromDisplay: jest.fn((value) => value), // pass-through by default
-  extractValueAfterDash: jest.fn((value) => value), // pass-through by default
-}));
+jest.mock("../src/functions/utils", () => {
+  const actual = jest.requireActual("../src/functions/utils");
+  return {
+    ...actual,
+    convertExcelDateToISO: jest.fn((d) => d), // pass-through
+    extractSymbolFromDisplay: jest.fn((value) => value), // pass-through by default
+    extractValueAfterDash: jest.fn((value) => value), // pass-through by default
+  };
+});
 
 describe("typeRecommender", () => {
   const mockedEnsureClient = ensureClient as jest.MockedFunction<typeof ensureClient>;
