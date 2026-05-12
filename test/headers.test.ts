@@ -193,7 +193,7 @@ describe("ENVIZI.HEADERS function", () => {
 
     it("should return input headers for factor_search endpoint", async () => {
       const result = await headers("factor_search", true, false);
-      expect(result).toEqual([["Search", "Country", "StateProvince", "Date", "Page", "Size"]]);
+      expect(result).toEqual([["Search", "Country", "StateProvince", "Unit", "Scope", "Date", "Page", "Size"]]);
     });
   });
 
@@ -573,7 +573,7 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it("should return input headers for factor_search endpoint", async () => {
       const result = await headers("factor_search", true, false);
-      expect(result).toEqual([["Search", "Country", "StateProvince", "Date", "Page", "Size"]]);
+      expect(result).toEqual([["Search", "Country", "StateProvince", "Unit", "Scope", "Date", "Page", "Size"]]);
     });
   });
 
@@ -972,9 +972,25 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
         "Search",
         "Country",
         "StateProvince",
+        "Unit",
+        "Scope",
         "Date",
         "Page",
         "Size"
+      ]]);
+    });
+  });
+
+  describe("recommend_activity_type endpoint", () => {
+    it("should return input headers for recommend_activity_type endpoint", async () => {
+      const result = await headers("recommend_activity_type", true, false);
+      expect(result).toEqual([[
+        "Search",
+        "Country",
+        "StateProvince",
+        "Unit",
+        "Scope",
+        "Date"
       ]]);
     });
 

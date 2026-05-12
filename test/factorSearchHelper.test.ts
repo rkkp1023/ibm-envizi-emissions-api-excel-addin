@@ -230,7 +230,7 @@ describe("factorSearch", () => {
   it("uses custom pagination parameters when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
 
-    await factorSearch("diesel", "USA", undefined, undefined, 2, 50);
+    await factorSearch("diesel", "USA", undefined, undefined, undefined, undefined, 2, 50);
 
     expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
       pagination: { page: 2, size: 50 }
@@ -299,7 +299,7 @@ describe("factorSearch", () => {
 
   it("includes date in params when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA", undefined, "2024-01-01");
+    await factorSearch("diesel", "USA", undefined, undefined, undefined, "2024-01-01");
     expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
       time: { date: "2024-01-01" }
     }));
@@ -307,9 +307,41 @@ describe("factorSearch", () => {
 
   it("excludes date from params when empty string", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA", undefined, "   ");
+    await factorSearch("diesel", "USA", undefined, undefined, undefined, "   ");
     expect(mockedSearch).toHaveBeenCalledWith(expect.not.objectContaining({
       time: expect.anything()
+    }));
+  });
+
+  it("includes unit in activity params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA", undefined, "kWh");
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: expect.objectContaining({ unit: "kWh" })
+    }));
+  });
+
+  it("excludes unit from activity params when not provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA");
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: { search: "diesel" }
+    }));
+  });
+
+  it("includes scope in activity params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA", undefined, undefined, "1");
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: expect.objectContaining({ scope: "1" })
+    }));
+  });
+
+  it("excludes scope from activity params when not provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA");
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: { search: "diesel" }
     }));
   });
 

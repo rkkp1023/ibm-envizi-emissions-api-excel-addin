@@ -226,14 +226,14 @@ describe("factor-related functions", () => {
   });
 
   it("factor_search calls factorSearch with correct arguments", async () => {
-    const result = await api.factor_search("electricity", "usa","new york","10/10/2020");
-    expect(mockedFactorSearch).toHaveBeenCalledWith("electricity", "usa","new york","10/10/2020", undefined, undefined);
+    const result = await api.factor_search("electricity", "usa","new york", undefined, undefined, "10/10/2020");
+    expect(mockedFactorSearch).toHaveBeenCalledWith("electricity", "usa","new york", undefined, undefined, "10/10/2020", undefined, undefined);
     expect(result).toEqual([["search-result"]]);
   });
 
   it("factor_search calls factorSearch with pagination parameters", async () => {
-    const result = await api.factor_search("electricity", "usa", "new york", "10/10/2020", 2, 50);
-    expect(mockedFactorSearch).toHaveBeenCalledWith("electricity", "usa", "new york", "10/10/2020", 2, 50);
+    const result = await api.factor_search("electricity", "usa", "new york", undefined, undefined, "10/10/2020", 2, 50);
+    expect(mockedFactorSearch).toHaveBeenCalledWith("electricity", "usa", "new york", undefined, undefined, "10/10/2020", 2, 50);
     expect(result).toEqual([["search-result"]]);
   });
 
