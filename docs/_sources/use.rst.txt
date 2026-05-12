@@ -25,38 +25,329 @@ Once your credentials are validated, the **main interface** of the add-in become
    :alt: Main interface of the add-in
    :align: center
 
-Using Data Validation Helpers
-------------------------------
+Custom IBM Envizi Tab - Data Validation Helpers
+------------------------------------------------
 
-The add-in provides ribbon buttons to quickly add dropdown lists for valid values in your cells.
+Overview
+~~~~~~~~
 
-**Insert Activity Types**
+The IBM Envizi for Excel add-in includes a custom **IBM Envizi** tab in the Excel ribbon that provides quick access to data validation helpers. This tab streamlines the process of creating emissions calculation spreadsheets by automatically inserting dropdown lists with valid values for activity types, geographic areas, and measurement units.
 
-Click the **Activity Types** button to add a dropdown list of valid activity types:
+.. image:: _images/envizi-ribbon-tab.png
+   :alt: IBM Envizi custom tab in Excel ribbon
+   :align: center
+   :width: 100%
 
-- **All** – All available activity types
-- **Location** – Location-based activities
-- **Stationary** – Stationary combustion activities
-- **Mobile** – Mobile combustion activities
-- **Fugitive** – Fugitive emissions
-- **Transportation & Distribution** – Transport activities
-- **Economic Activity** – Economic-based activities
-- **Real Estate** – Real estate activities
+The custom tab eliminates manual data entry errors and ensures that your emissions calculations use valid, API-compatible values.
 
-**Insert Area**
+Tab Structure
+~~~~~~~~~~~~~
 
-Click the **Area** button to add location dropdowns:
+The IBM Envizi tab is organized into four groups:
 
-- **Country** – ISO alpha-3 country codes
-- **State/Province** – State or province identifiers
-- **Power Grid** – Power grid identifiers
+1. **Task pane** – Opens the main IBM Envizi interface
+2. **Activity Types** – Inserts activity type dropdowns
+3. **Area** – Inserts geographic location dropdowns
+4. **Units** – Inserts measurement unit dropdowns
 
-**Insert Units**
+General Workflow
+~~~~~~~~~~~~~~~~
 
-Click the **Units** button to add a dropdown list of valid measurement units (e.g., kWh, kg, L).
+1. Select the cell(s) where you want to add a dropdown
+2. Click the appropriate button in the IBM Envizi tab
+3. Choose the specific validation type from the menu (if applicable)
+4. The dropdown list is automatically applied to your selected cells
 
 .. note::
-   Select the cells where you want the dropdown before clicking the button. The validation will be applied to all selected cells.
+   You must be logged in to the IBM Envizi add-in before using these features. The add-in fetches the latest valid values from the Envizi API and caches them for performance.
+
+Activity Types Group
+~~~~~~~~~~~~~~~~~~~~
+
+The **Activity Types** button provides a dropdown menu with options to insert data validation for different emission scopes and categories.
+
+**Available Options:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Option
+     - Description
+   * - **All**
+     - Includes all available activity types across all emission categories
+   * - **Location**
+     - Location-based emissions (typically Scope 2 electricity)
+   * - **Stationary**
+     - Stationary combustion sources (Scope 1)
+   * - **Mobile**
+     - Mobile combustion sources (Scope 1)
+   * - **Fugitive**
+     - Fugitive emissions (Scope 1)
+   * - **Transportation and Distribution**
+     - Transportation and distribution activities (Scope 3)
+   * - **Economic Activity**
+     - Economic activity-based emissions (Scope 3)
+   * - **Real Estate**
+     - Real estate-related emissions (Scope 3)
+
+**How to Use:**
+
+1. Select one or more cells in your spreadsheet
+2. Click the **Activity Types** button in the IBM Envizi tab
+3. Choose the appropriate category from the dropdown menu
+4. A data validation dropdown is applied to the selected cells
+
+**Example:**
+
+If you're creating a template for electricity consumption calculations:
+
+1. Select cell A2 (or a range like A2:A100)
+2. Click **Activity Types** → **Location**
+3. Cell A2 now has a dropdown with location-based activity types like:
+   
+   - Electricity - Scope 2
+   - Electricity - Scope 3
+   - Electricity - Transmission and Distribution
+
+.. tip::
+   Use the **All** option when you need flexibility to work with multiple emission categories in the same column. Use specific categories (Location, Stationary, etc.) when you want to restrict users to a particular emission scope.
+
+Area Group
+~~~~~~~~~~
+
+The **Area** button provides geographic location validation options for country, state/province, and power grid selections.
+
+**Available Options:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Option
+     - Description
+   * - **Country**
+     - ISO alpha-3 country codes (e.g., USA, GBR, AUS)
+   * - **State/Province**
+     - State or province identifiers for supported countries
+   * - **Power Grid**
+     - Power grid region identifiers for electricity calculations
+
+**How to Use:**
+
+1. Select the cells where you want geographic validation
+2. Click the **Area** button in the IBM Envizi tab
+3. Choose **Country**, **State/Province**, or **Power Grid**
+4. The dropdown list is applied to your selected cells
+
+**Example:**
+
+For a multi-country emissions tracking spreadsheet:
+
+1. Select cells in the "Country" column (e.g., B2:B100)
+2. Click **Area** → **Country**
+3. Users can now select from valid country codes like:
+   
+   - USA (United States)
+   - GBR (United Kingdom)
+   - CAN (Canada)
+   - AUS (Australia)
+
+.. note::
+   **State/Province** and **Power Grid** options are particularly useful for location-based electricity calculations where regional factors vary significantly.
+
+Units Group
+~~~~~~~~~~~
+
+The **Units** button inserts a dropdown list of valid measurement units supported by the IBM Envizi Emissions API.
+
+**Supported Units:**
+
+The units dropdown includes all measurement units accepted by the API, such as:
+
+- **Energy**: kWh, MWh, GJ, therms, BTU
+- **Volume**: L (liters), gal (gallons), m³
+- **Mass**: kg, tonnes, lb
+- **Distance**: km, miles
+- **Currency**: USD, EUR, GBP (for economic activity calculations)
+- And many more...
+
+**How to Use:**
+
+1. Select the cells where you want unit validation
+2. Click the **Units** button in the IBM Envizi tab
+3. The dropdown list is automatically applied
+
+**Example:**
+
+For an energy consumption tracking sheet:
+
+1. Select cells in the "Unit" column (e.g., C2:C100)
+2. Click **Units**
+3. Users can now select from valid units like:
+   
+   - kWh
+   - MWh
+   - GJ
+   - therms
+
+.. tip::
+   The units dropdown is context-aware and includes all units that might be valid for any activity type. When using specific activity types, refer to the API documentation to determine which units are appropriate.
+
+Data Validation Features
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Error Prevention:**
+
+When a dropdown is applied, Excel's data validation prevents users from entering invalid values:
+
+- **In-cell dropdown**: Click the cell to see a dropdown arrow with valid options
+- **Error alerts**: If a user tries to type an invalid value, they receive an error message
+- **Prompt messages**: Helpful tooltips appear when a cell is selected
+
+**Automatic Updates:**
+
+The add-in automatically refreshes the validation data from the Envizi API:
+
+- **Refresh interval**: Every 3 days
+- **Automatic sync**: New activity types, countries, or units are automatically available
+- **No manual updates needed**: The add-in handles data synchronization in the background
+
+.. note::
+   The first time you use a validation feature after logging in, there may be a brief delay while the add-in fetches the latest data from the API. Subsequent uses are instant as the data is cached locally.
+
+Best Practices
+~~~~~~~~~~~~~~
+
+**Creating Calculation Templates:**
+
+1. **Set up column headers** using the ``ENVIZI.HEADERS()`` function
+2. **Apply activity type validation** to the "Activity Type" column
+3. **Apply area validation** to the "Country" and "State/Province" columns
+4. **Apply unit validation** to the "Unit" column
+5. **Add your calculation formulas** (e.g., ``=ENVIZI.CALCULATION(...)``)
+
+**Example Template Structure:**
+
+.. code-block:: none
+
+   | Activity Type ▼ | Value | Unit ▼ | Country ▼ | State/Province ▼ | Date       |
+   |-----------------|-------|--------|-----------|------------------|------------|
+   | [dropdown]      | 1000  | kWh    | USA       | California       | 2024-01-15 |
+
+**Combining with Functions:**
+
+Use the dropdowns in conjunction with Excel formulas:
+
+.. code-block:: none
+
+   =ENVIZI.CALCULATION(A2, B2, C2, D2, E2, F2)
+
+Where:
+
+- A2 = Activity Type (from dropdown)
+- B2 = Value (user input)
+- C2 = Unit (from dropdown)
+- D2 = Country (from dropdown)
+- E2 = State/Province (from dropdown)
+- F2 = Date (user input)
+
+**Data Consistency:**
+
+- **Use consistent columns**: Apply the same validation type to entire columns
+- **Lock template rows**: Protect header rows to prevent accidental changes
+- **Document your template**: Add instructions for users in a separate sheet
+
+Troubleshooting
+~~~~~~~~~~~~~~~
+
+**Dropdown Not Appearing:**
+
+*Problem*: The dropdown doesn't appear after clicking a button.
+
+*Solutions*:
+
+1. Ensure you're logged in to the IBM Envizi add-in
+2. Check that cells are selected before clicking the button
+3. Try refreshing the metadata by logging out and back in
+4. Clear Excel's cache (see :doc:`troubleshooting`)
+
+**"Data not available" Error:**
+
+*Problem*: Error message stating "Data not available. check if you are logged in and try again."
+
+*Solutions*:
+
+1. Open the IBM Envizi task pane and verify you're logged in
+2. Check your internet connection
+3. Verify your API credentials are valid
+4. Wait a moment and try again (the add-in may be fetching data)
+
+**Dropdown Shows Old Values:**
+
+*Problem*: The dropdown doesn't include newly added activity types or countries.
+
+*Solutions*:
+
+1. The add-in refreshes data every 3 days automatically
+2. To force a refresh, log out and log back in
+3. The add-in will fetch the latest data from the API
+
+Performance Considerations
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Caching Strategy:**
+
+The add-in uses an intelligent caching strategy to ensure fast performance:
+
+- **First use**: Brief delay while fetching data from API
+- **Subsequent uses**: Instant (data served from cache)
+- **Automatic refresh**: Every 3 days to ensure data is current
+- **Hidden metadata sheet**: Data stored in a hidden Excel sheet for quick access
+
+**Large Datasets:**
+
+When working with large spreadsheets:
+
+- Apply validation to entire columns at once (e.g., A2:A10000)
+- The validation is applied efficiently regardless of range size
+- No performance impact on calculation speed
+
+Technical Details
+~~~~~~~~~~~~~~~~~
+
+**Metadata Storage:**
+
+The add-in stores validation data in a hidden sheet named ``__EnviziMetadata__``:
+
+- **Activity Types**: Organized by emission category
+- **Countries**: ISO alpha-3 codes with full names
+- **States/Provinces**: Organized by country
+- **Power Grids**: Regional identifiers
+- **Units**: All supported measurement units
+
+**Named Ranges:**
+
+Excel named ranges are used for efficient data validation:
+
+- ``EnviziActivityTypes_All``
+- ``EnviziActivityTypes_Location``
+- ``EnviziActivityTypes_Stationary``
+- ``EnviziCountries``
+- ``EnviziStateProvinces``
+- ``EnviziPowerGrids``
+- ``EnviziUnits``
+
+.. note::
+   These named ranges are managed automatically by the add-in. Do not modify or delete them manually.
+
+**API Integration:**
+
+The validation data is fetched from the IBM Envizi Emissions API:
+
+- **Endpoint**: Metadata endpoints for activity types, countries, and units
+- **Authentication**: Uses your API key and tenant credentials
+- **Refresh logic**: Checks last update timestamp and refreshes if older than 3 days
 
 Working with Functions
 ----------------------
