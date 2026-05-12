@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Reference" href="reference.html"><link rel="prev" title="Mac" href="mac.html">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Use - IBM Envizi for Excel documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -260,34 +260,337 @@
 <p>Once your credentials are validated, the <strong>main interface</strong> of the add-in becomes available:</p>
 <img alt="Main interface of the add-in" class="align-center" src="_images/main.png" />
 </section>
-<section id="using-data-validation-helpers">
-<h2>Using Data Validation Helpers<a class="headerlink" href="#using-data-validation-helpers" title="Link to this heading">¶</a></h2>
-<p>The add-in provides ribbon buttons to quickly add dropdown lists for valid values in your cells.</p>
-<p><strong>Insert Activity Types</strong></p>
-<p>Click the <strong>Activity Types</strong> button to add a dropdown list of valid activity types:</p>
-<ul class="simple">
-<li><p><strong>All</strong> – All available activity types</p></li>
-<li><p><strong>Location</strong> – Location-based activities</p></li>
-<li><p><strong>Stationary</strong> – Stationary combustion activities</p></li>
-<li><p><strong>Mobile</strong> – Mobile combustion activities</p></li>
-<li><p><strong>Fugitive</strong> – Fugitive emissions</p></li>
-<li><p><strong>Transportation &amp; Distribution</strong> – Transport activities</p></li>
-<li><p><strong>Economic Activity</strong> – Economic-based activities</p></li>
-<li><p><strong>Real Estate</strong> – Real estate activities</p></li>
-</ul>
-<p><strong>Insert Area</strong></p>
-<p>Click the <strong>Area</strong> button to add location dropdowns:</p>
-<ul class="simple">
-<li><p><strong>Country</strong> – ISO alpha-3 country codes</p></li>
-<li><p><strong>State/Province</strong> – State or province identifiers</p></li>
-<li><p><strong>Power Grid</strong> – Power grid identifiers</p></li>
-</ul>
-<p><strong>Insert Units</strong></p>
-<p>Click the <strong>Units</strong> button to add a dropdown list of valid measurement units (e.g., kWh, kg, L).</p>
+<section id="custom-ibm-envizi-tab-data-validation-helpers">
+<h2>Custom IBM Envizi Tab - Data Validation Helpers<a class="headerlink" href="#custom-ibm-envizi-tab-data-validation-helpers" title="Link to this heading">¶</a></h2>
+<section id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h3>
+<p>The IBM Envizi for Excel add-in includes a custom <strong>IBM Envizi</strong> tab in the Excel ribbon that provides quick access to data validation helpers. This tab streamlines the process of creating emissions calculation spreadsheets by automatically inserting dropdown lists with valid values for activity types, geographic areas, and measurement units.</p>
+<a class="reference internal image-reference" href="_images/envizi-ribbon-tab.png"><img alt="IBM Envizi custom tab in Excel ribbon" class="align-center" src="_images/envizi-ribbon-tab.png" style="width: 100%;" />
+</a>
+<p>The custom tab eliminates manual data entry errors and ensures that your emissions calculations use valid, API-compatible values.</p>
+</section>
+<section id="tab-structure">
+<h3>Tab Structure<a class="headerlink" href="#tab-structure" title="Link to this heading">¶</a></h3>
+<p>The IBM Envizi tab is organized into four groups:</p>
+<ol class="arabic simple">
+<li><p><strong>Task pane</strong> – Opens the main IBM Envizi interface</p></li>
+<li><p><strong>Activity Types</strong> – Inserts activity type dropdowns</p></li>
+<li><p><strong>Area</strong> – Inserts geographic location dropdowns</p></li>
+<li><p><strong>Units</strong> – Inserts measurement unit dropdowns</p></li>
+</ol>
+</section>
+<section id="general-workflow">
+<h3>General Workflow<a class="headerlink" href="#general-workflow" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Select the cell(s) where you want to add a dropdown</p></li>
+<li><p>Click the appropriate button in the IBM Envizi tab</p></li>
+<li><p>Choose the specific validation type from the menu (if applicable)</p></li>
+<li><p>The dropdown list is automatically applied to your selected cells</p></li>
+</ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Select the cells where you want the dropdown before clicking the button. The validation will be applied to all selected cells.</p>
+<p>You must be logged in to the IBM Envizi add-in before using these features. The add-in fetches the latest valid values from the Envizi API and caches them for performance.</p>
 </div>
+</section>
+<section id="activity-types-group">
+<h3>Activity Types Group<a class="headerlink" href="#activity-types-group" title="Link to this heading">¶</a></h3>
+<p>The <strong>Activity Types</strong> button provides a dropdown menu with options to insert data validation for different emission scopes and categories.</p>
+<p><strong>Available Options:</strong></p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>All</strong></p></td>
+<td><p>Includes all available activity types across all emission categories</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Location</strong></p></td>
+<td><p>Location-based emissions (typically Scope 2 electricity)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Stationary</strong></p></td>
+<td><p>Stationary combustion sources (Scope 1)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Mobile</strong></p></td>
+<td><p>Mobile combustion sources (Scope 1)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Fugitive</strong></p></td>
+<td><p>Fugitive emissions (Scope 1)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Transportation and Distribution</strong></p></td>
+<td><p>Transportation and distribution activities (Scope 3)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Economic Activity</strong></p></td>
+<td><p>Economic activity-based emissions (Scope 3)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Real Estate</strong></p></td>
+<td><p>Real estate-related emissions (Scope 3)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>How to Use:</strong></p>
+<ol class="arabic simple">
+<li><p>Select one or more cells in your spreadsheet</p></li>
+<li><p>Click the <strong>Activity Types</strong> button in the IBM Envizi tab</p></li>
+<li><p>Choose the appropriate category from the dropdown menu</p></li>
+<li><p>A data validation dropdown is applied to the selected cells</p></li>
+</ol>
+<p><strong>Example:</strong></p>
+<p>If you’re creating a template for electricity consumption calculations:</p>
+<ol class="arabic simple">
+<li><p>Select cell A2 (or a range like A2:A100)</p></li>
+<li><p>Click <strong>Activity Types</strong> → <strong>Location</strong></p></li>
+<li><p>Cell A2 now has a dropdown with location-based activity types like:</p>
+<ul class="simple">
+<li><p>Electricity - Scope 2</p></li>
+<li><p>Electricity - Scope 3</p></li>
+<li><p>Electricity - Transmission and Distribution</p></li>
+</ul>
+</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use the <strong>All</strong> option when you need flexibility to work with multiple emission categories in the same column. Use specific categories (Location, Stationary, etc.) when you want to restrict users to a particular emission scope.</p>
+</div>
+</section>
+<section id="area-group">
+<h3>Area Group<a class="headerlink" href="#area-group" title="Link to this heading">¶</a></h3>
+<p>The <strong>Area</strong> button provides geographic location validation options for country, state/province, and power grid selections.</p>
+<p><strong>Available Options:</strong></p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Country</strong></p></td>
+<td><p>ISO alpha-3 country codes (e.g., USA, GBR, AUS)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>State/Province</strong></p></td>
+<td><p>State or province identifiers for supported countries</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Power Grid</strong></p></td>
+<td><p>Power grid region identifiers for electricity calculations</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>How to Use:</strong></p>
+<ol class="arabic simple">
+<li><p>Select the cells where you want geographic validation</p></li>
+<li><p>Click the <strong>Area</strong> button in the IBM Envizi tab</p></li>
+<li><p>Choose <strong>Country</strong>, <strong>State/Province</strong>, or <strong>Power Grid</strong></p></li>
+<li><p>The dropdown list is applied to your selected cells</p></li>
+</ol>
+<p><strong>Example:</strong></p>
+<p>For a multi-country emissions tracking spreadsheet:</p>
+<ol class="arabic simple">
+<li><p>Select cells in the “Country” column (e.g., B2:B100)</p></li>
+<li><p>Click <strong>Area</strong> → <strong>Country</strong></p></li>
+<li><p>Users can now select from valid country codes like:</p>
+<ul class="simple">
+<li><p>USA (United States)</p></li>
+<li><p>GBR (United Kingdom)</p></li>
+<li><p>CAN (Canada)</p></li>
+<li><p>AUS (Australia)</p></li>
+</ul>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>State/Province</strong> and <strong>Power Grid</strong> options are particularly useful for location-based electricity calculations where regional factors vary significantly.</p>
+</div>
+</section>
+<section id="units-group">
+<h3>Units Group<a class="headerlink" href="#units-group" title="Link to this heading">¶</a></h3>
+<p>The <strong>Units</strong> button inserts a dropdown list of valid measurement units supported by the IBM Envizi Emissions API.</p>
+<p><strong>Supported Units:</strong></p>
+<p>The units dropdown includes all measurement units accepted by the API, such as:</p>
+<ul class="simple">
+<li><p><strong>Energy</strong>: kWh, MWh, GJ, therms, BTU</p></li>
+<li><p><strong>Volume</strong>: L (liters), gal (gallons), m³</p></li>
+<li><p><strong>Mass</strong>: kg, tonnes, lb</p></li>
+<li><p><strong>Distance</strong>: km, miles</p></li>
+<li><p><strong>Currency</strong>: USD, EUR, GBP (for economic activity calculations)</p></li>
+<li><p>And many more…</p></li>
+</ul>
+<p><strong>How to Use:</strong></p>
+<ol class="arabic simple">
+<li><p>Select the cells where you want unit validation</p></li>
+<li><p>Click the <strong>Units</strong> button in the IBM Envizi tab</p></li>
+<li><p>The dropdown list is automatically applied</p></li>
+</ol>
+<p><strong>Example:</strong></p>
+<p>For an energy consumption tracking sheet:</p>
+<ol class="arabic simple">
+<li><p>Select cells in the “Unit” column (e.g., C2:C100)</p></li>
+<li><p>Click <strong>Units</strong></p></li>
+<li><p>Users can now select from valid units like:</p>
+<ul class="simple">
+<li><p>kWh</p></li>
+<li><p>MWh</p></li>
+<li><p>GJ</p></li>
+<li><p>therms</p></li>
+</ul>
+</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The units dropdown is context-aware and includes all units that might be valid for any activity type. When using specific activity types, refer to the API documentation to determine which units are appropriate.</p>
+</div>
+</section>
+<section id="data-validation-features">
+<h3>Data Validation Features<a class="headerlink" href="#data-validation-features" title="Link to this heading">¶</a></h3>
+<p><strong>Error Prevention:</strong></p>
+<p>When a dropdown is applied, Excel’s data validation prevents users from entering invalid values:</p>
+<ul class="simple">
+<li><p><strong>In-cell dropdown</strong>: Click the cell to see a dropdown arrow with valid options</p></li>
+<li><p><strong>Error alerts</strong>: If a user tries to type an invalid value, they receive an error message</p></li>
+<li><p><strong>Prompt messages</strong>: Helpful tooltips appear when a cell is selected</p></li>
+</ul>
+<p><strong>Automatic Updates:</strong></p>
+<p>The add-in automatically refreshes the validation data from the Envizi API:</p>
+<ul class="simple">
+<li><p><strong>Refresh interval</strong>: Every 3 days</p></li>
+<li><p><strong>Automatic sync</strong>: New activity types, countries, or units are automatically available</p></li>
+<li><p><strong>No manual updates needed</strong>: The add-in handles data synchronization in the background</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The first time you use a validation feature after logging in, there may be a brief delay while the add-in fetches the latest data from the API. Subsequent uses are instant as the data is cached locally.</p>
+</div>
+</section>
+<section id="best-practices">
+<h3>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">¶</a></h3>
+<p><strong>Creating Calculation Templates:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Set up column headers</strong> using the <code class="docutils literal notranslate"><span class="pre">ENVIZI.HEADERS()</span></code> function</p></li>
+<li><p><strong>Apply activity type validation</strong> to the “Activity Type” column</p></li>
+<li><p><strong>Apply area validation</strong> to the “Country” and “State/Province” columns</p></li>
+<li><p><strong>Apply unit validation</strong> to the “Unit” column</p></li>
+<li><p><strong>Add your calculation formulas</strong> (e.g., <code class="docutils literal notranslate"><span class="pre">=ENVIZI.CALCULATION(...)</span></code>)</p></li>
+</ol>
+<p><strong>Example Template Structure:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>| Activity Type ▼ | Value | Unit ▼ | Country ▼ | State/Province ▼ | Date       |
+|-----------------|-------|--------|-----------|------------------|------------|
+| [dropdown]      | 1000  | kWh    | USA       | California       | 2024-01-15 |
+</pre></div>
+</div>
+<p><strong>Combining with Functions:</strong></p>
+<p>Use the dropdowns in conjunction with Excel formulas:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.CALCULATION(A2, B2, C2, D2, E2, F2)
+</pre></div>
+</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p>A2 = Activity Type (from dropdown)</p></li>
+<li><p>B2 = Value (user input)</p></li>
+<li><p>C2 = Unit (from dropdown)</p></li>
+<li><p>D2 = Country (from dropdown)</p></li>
+<li><p>E2 = State/Province (from dropdown)</p></li>
+<li><p>F2 = Date (user input)</p></li>
+</ul>
+<p><strong>Data Consistency:</strong></p>
+<ul class="simple">
+<li><p><strong>Use consistent columns</strong>: Apply the same validation type to entire columns</p></li>
+<li><p><strong>Lock template rows</strong>: Protect header rows to prevent accidental changes</p></li>
+<li><p><strong>Document your template</strong>: Add instructions for users in a separate sheet</p></li>
+</ul>
+</section>
+<section id="troubleshooting">
+<h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h3>
+<p><strong>Dropdown Not Appearing:</strong></p>
+<p><em>Problem</em>: The dropdown doesn’t appear after clicking a button.</p>
+<p><em>Solutions</em>:</p>
+<ol class="arabic simple">
+<li><p>Ensure you’re logged in to the IBM Envizi add-in</p></li>
+<li><p>Check that cells are selected before clicking the button</p></li>
+<li><p>Try refreshing the metadata by logging out and back in</p></li>
+<li><p>Clear Excel’s cache (see <a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting Guide</span></a>)</p></li>
+</ol>
+<p><strong>“Data not available” Error:</strong></p>
+<p><em>Problem</em>: Error message stating “Data not available. check if you are logged in and try again.”</p>
+<p><em>Solutions</em>:</p>
+<ol class="arabic simple">
+<li><p>Open the IBM Envizi task pane and verify you’re logged in</p></li>
+<li><p>Check your internet connection</p></li>
+<li><p>Verify your API credentials are valid</p></li>
+<li><p>Wait a moment and try again (the add-in may be fetching data)</p></li>
+</ol>
+<p><strong>Dropdown Shows Old Values:</strong></p>
+<p><em>Problem</em>: The dropdown doesn’t include newly added activity types or countries.</p>
+<p><em>Solutions</em>:</p>
+<ol class="arabic simple">
+<li><p>The add-in refreshes data every 3 days automatically</p></li>
+<li><p>To force a refresh, log out and log back in</p></li>
+<li><p>The add-in will fetch the latest data from the API</p></li>
+</ol>
+</section>
+<section id="performance-considerations">
+<h3>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading">¶</a></h3>
+<p><strong>Caching Strategy:</strong></p>
+<p>The add-in uses an intelligent caching strategy to ensure fast performance:</p>
+<ul class="simple">
+<li><p><strong>First use</strong>: Brief delay while fetching data from API</p></li>
+<li><p><strong>Subsequent uses</strong>: Instant (data served from cache)</p></li>
+<li><p><strong>Automatic refresh</strong>: Every 3 days to ensure data is current</p></li>
+<li><p><strong>Hidden metadata sheet</strong>: Data stored in a hidden Excel sheet for quick access</p></li>
+</ul>
+<p><strong>Large Datasets:</strong></p>
+<p>When working with large spreadsheets:</p>
+<ul class="simple">
+<li><p>Apply validation to entire columns at once (e.g., A2:A10000)</p></li>
+<li><p>The validation is applied efficiently regardless of range size</p></li>
+<li><p>No performance impact on calculation speed</p></li>
+</ul>
+</section>
+<section id="technical-details">
+<h3>Technical Details<a class="headerlink" href="#technical-details" title="Link to this heading">¶</a></h3>
+<p><strong>Metadata Storage:</strong></p>
+<p>The add-in stores validation data in a hidden sheet named <code class="docutils literal notranslate"><span class="pre">__EnviziMetadata__</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Activity Types</strong>: Organized by emission category</p></li>
+<li><p><strong>Countries</strong>: ISO alpha-3 codes with full names</p></li>
+<li><p><strong>States/Provinces</strong>: Organized by country</p></li>
+<li><p><strong>Power Grids</strong>: Regional identifiers</p></li>
+<li><p><strong>Units</strong>: All supported measurement units</p></li>
+</ul>
+<p><strong>Named Ranges:</strong></p>
+<p>Excel named ranges are used for efficient data validation:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">EnviziActivityTypes_All</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EnviziActivityTypes_Location</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EnviziActivityTypes_Stationary</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EnviziCountries</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EnviziStateProvinces</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EnviziPowerGrids</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EnviziUnits</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These named ranges are managed automatically by the add-in. Do not modify or delete them manually.</p>
+</div>
+<p><strong>API Integration:</strong></p>
+<p>The validation data is fetched from the IBM Envizi Emissions API:</p>
+<ul class="simple">
+<li><p><strong>Endpoint</strong>: Metadata endpoints for activity types, countries, and units</p></li>
+<li><p><strong>Authentication</strong>: Uses your API key and tenant credentials</p></li>
+<li><p><strong>Refresh logic</strong>: Checks last update timestamp and refreshes if older than 3 days</p></li>
+</ul>
+</section>
 </section>
 <section id="working-with-functions">
 <h2>Working with Functions<a class="headerlink" href="#working-with-functions" title="Link to this heading">¶</a></h2>
@@ -394,7 +697,20 @@
             <ul>
 <li><a class="reference internal" href="#">Use</a><ul>
 <li><a class="reference internal" href="#logging-in">Logging In</a></li>
-<li><a class="reference internal" href="#using-data-validation-helpers">Using Data Validation Helpers</a></li>
+<li><a class="reference internal" href="#custom-ibm-envizi-tab-data-validation-helpers">Custom IBM Envizi Tab - Data Validation Helpers</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#tab-structure">Tab Structure</a></li>
+<li><a class="reference internal" href="#general-workflow">General Workflow</a></li>
+<li><a class="reference internal" href="#activity-types-group">Activity Types Group</a></li>
+<li><a class="reference internal" href="#area-group">Area Group</a></li>
+<li><a class="reference internal" href="#units-group">Units Group</a></li>
+<li><a class="reference internal" href="#data-validation-features">Data Validation Features</a></li>
+<li><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
+<li><a class="reference internal" href="#technical-details">Technical Details</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#working-with-functions">Working with Functions</a></li>
 <li><a class="reference internal" href="#exporting-results">Exporting Results</a></li>
 </ul>
@@ -409,8 +725,8 @@
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>
