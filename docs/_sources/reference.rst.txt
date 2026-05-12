@@ -540,7 +540,18 @@ Factor Search
 
 .. code-block:: none
 
-   =ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [date])
+   =ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [unit], [scope], [date], [page], [size])
+
+**Parameters**
+
+- ``search`` – Search query string
+- ``country`` – ISO alpha-3 country code
+- ``stateProvince`` *(optional)* – Geographic state or province
+- ``unit`` *(optional)* – Unit of measurement to filter results (e.g., "kWh", "liters")
+- ``scope`` *(optional)* – Emission scope to filter results (e.g., "1", "2", "3")
+- ``date`` *(optional)* – Activity date (format: YYYY-MM-DD or Excel date)
+- ``page`` *(optional)* – Page number for pagination (default: 1)
+- ``size`` *(optional)* – Number of results per page (default: 30)
 
 **Outputs**
 
@@ -574,13 +585,15 @@ Uses AI to recommend the most appropriate activity type based on a text descript
 
 .. code-block:: none
 
-   =ENVIZI.RECOMMEND_ACTIVITY_TYPE(search, country, [stateProvince], [date])
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE(search, country, [stateProvince], [unit], [scope], [date])
 
 **Parameters**
 
 - ``search`` – Text description of the activity (e.g., "electricity consumption", "diesel fuel", "air travel")
 - ``country`` – ISO alpha-3 country code
 - ``stateProvince`` *(optional)* – Geographic state or province
+- ``unit`` *(optional)* – Unit of measurement to filter recommendations (e.g., "kWh", "liters")
+- ``scope`` *(optional)* – Emission scope to filter recommendations (e.g., "1", "2", "3")
 - ``date`` *(optional)* – Activity date (format: YYYY-MM-DD or Excel date)
 
 **Outputs**
@@ -603,7 +616,9 @@ Uses AI to recommend the most appropriate activity type based on a text descript
 .. code-block:: none
 
    =ENVIZI.RECOMMEND_ACTIVITY_TYPE("electricity usage", "USA")
-   =ENVIZI.RECOMMEND_ACTIVITY_TYPE("diesel fuel for trucks", "GBR", "England", "2024-01-15")
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE("office consumed electricity", "USA", , "kWh")
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE("heating with natural gas", "USA", , , "1")
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE("diesel fuel for trucks", "GBR", "England", , , "2024-01-15")
    =ENVIZI.RECOMMEND_ACTIVITY_TYPE("natural gas heating", "CAN", "Ontario")
 
 **Usage Tips**
