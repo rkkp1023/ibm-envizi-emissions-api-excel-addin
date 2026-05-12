@@ -4,7 +4,7 @@ import { TypeRecommender } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
 import { formatRow } from "./headers-config";
-import { convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "./utils";
+import { buildSearchParams } from "./utils";
 
 function buildTypeRecommenderParams(
   search: string,
@@ -14,34 +14,10 @@ function buildTypeRecommenderParams(
   scope?: string,
   date?: string
 ): any {
-  // Extract country code from display format: "USA (United States)" → "USA"
-  const countryCode = extractSymbolFromDisplay(country) || country;
-  
-  const params: any = {
-    activity: { search },
-    location: { country: countryCode },
-  };
+  // Use shared utility for common parameter building
+  const params = buildSearchParams(search, country, stateProvince, unit, scope, date);
 
-  // Add unit and scope to activity object if provided
-  if (unit?.trim()) {
-    params.activity.unit = unit;
-  }
-
-  if (scope?.trim()) {
-    params.activity.scope = scope;
-  }
-
-  if (stateProvince) {
-    // Extract state/province from display format: "USA - California" → "California"
-    const stateProvinceValue = extractValueAfterDash(stateProvince) || stateProvince;
-    params.location.stateProvince = stateProvinceValue;
-  }
-
-  if (date?.trim()) {
-    const formattedDate = convertExcelDateToISO(date);
-    params.time = { date: formattedDate };
-  }
-
+  // Add pagination specific to type recommender (always returns top 1 result)
   params.pagination = {
     page: 1,
     size: 1

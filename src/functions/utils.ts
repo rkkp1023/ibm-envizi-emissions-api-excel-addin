@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2025, 2026
 
 /**
  * Extracts symbol/code from display format "Symbol (Name)" or returns as-is
@@ -173,4 +173,56 @@ export function convertExcelDateToISO(input: string): string {
 
   // Case 3: Invalid format - throw error
   throw new Error(`Date should be in YYYY-MM-DD format. Invalid date format provided: "${trimmed}"`);
+}
+
+
+/**
+ * Builds common search parameters for API calls with activity and location
+ * This utility reduces code duplication between factorSearch and typeRecommender
+ * 
+ * @param search - Search query string
+ * @param country - ISO alpha-3 country code
+ * @param stateProvince - Optional geographic state or province
+ * @param unit - Optional unit of measurement to filter by
+ * @param scope - Optional emission scope to filter by
+ * @param date - Optional activity date
+ * @returns Base parameters object with activity and location
+ */
+export function buildSearchParams(
+  search: string,
+  country: string,
+  stateProvince?: string,
+  unit?: string,
+  scope?: string,
+  date?: string
+): any {
+  // Extract country code from display format: "USA (United States)" → "USA"
+  const countryCode = extractSymbolFromDisplay(country) || country;
+  
+  const params: any = {
+    activity: { search },
+    location: { country: countryCode },
+  };
+
+  // Add unit and scope to activity object if provided
+  if (unit?.trim()) {
+    params.activity.unit = unit;
+  }
+
+  if (scope?.trim()) {
+    params.activity.scope = scope;
+  }
+
+  if (stateProvince) {
+    // Extract state/province from display format: "USA - California" → "California"
+    const stateProvinceValue = extractValueAfterDash(stateProvince) || stateProvince;
+    params.location.stateProvince = stateProvinceValue;
+  }
+
+  if (date?.trim()) {
+    const formattedDate = convertExcelDateToISO(date);
+    params.time = { date: formattedDate };
+  }
+
+  return params;
 }
