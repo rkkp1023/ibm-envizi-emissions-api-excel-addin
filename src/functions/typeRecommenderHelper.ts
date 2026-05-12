@@ -10,6 +10,8 @@ function buildTypeRecommenderParams(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string
 ): any {
   // Extract country code from display format: "USA (United States)" → "USA"
@@ -19,6 +21,15 @@ function buildTypeRecommenderParams(
     activity: { search },
     location: { country: countryCode },
   };
+
+  // Add unit and scope to activity object if provided
+  if (unit?.trim()) {
+    params.activity.unit = unit;
+  }
+
+  if (scope?.trim()) {
+    params.activity.scope = scope;
+  }
 
   if (stateProvince) {
     // Extract state/province from display format: "USA - California" → "California"
@@ -52,12 +63,14 @@ export async function typeRecommender(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string
 ): Promise<any[][]> {
   try {
     await ensureClient();
 
-    const apiParams = buildTypeRecommenderParams(search, country, stateProvince, date);
+    const apiParams = buildTypeRecommenderParams(search, country, stateProvince, unit, scope, date);
 
     const response = await TypeRecommender.search(apiParams);
 

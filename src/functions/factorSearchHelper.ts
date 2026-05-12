@@ -10,6 +10,8 @@ function buildFactorSearchParams(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string,
   page?: number,
   size?: number
@@ -21,6 +23,15 @@ function buildFactorSearchParams(
     activity: { search },
     location: { country: countryCode },
   };
+
+  // Add unit and scope to activity object if provided
+  if (unit?.trim()) {
+    params.activity.unit = unit;
+  }
+
+  if (scope?.trim()) {
+    params.activity.scope = scope;
+  }
 
   if (stateProvince) {
     // Extract state/province from display format: "USA - California" → "California"
@@ -51,6 +62,8 @@ export async function factorSearch(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string,
   page?: number,
   size?: number
@@ -58,7 +71,7 @@ export async function factorSearch(
   try {
     await ensureClient();
 
-    const apiParams = buildFactorSearchParams(search, country, stateProvince, date, page, size);
+    const apiParams = buildFactorSearchParams(search, country, stateProvince, unit, scope, date, page, size);
 
     const response = await Factor.search(apiParams);
 

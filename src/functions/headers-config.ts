@@ -85,6 +85,8 @@ export const HEADER_FIELDS = {
   
   // Factor search input fields
   SEARCH: { apiResponseName: "search", displayName: "Search" },
+  SEARCH_UNIT: { apiResponseName: "unit", displayName: "Unit" },
+  SEARCH_SCOPE: { apiResponseName: "scope", displayName: "Scope" },
   PAGE: { apiResponseName: "page", displayName: "Page" },
   SIZE: { apiResponseName: "size", displayName: "Size" },
   
@@ -289,6 +291,8 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
       HEADER_FIELDS.SEARCH,
       HEADER_FIELDS.COUNTRY,
       HEADER_FIELDS.STATE_PROVINCE,
+      HEADER_FIELDS.SEARCH_UNIT,
+      HEADER_FIELDS.SEARCH_SCOPE,
       HEADER_FIELDS.DATE,
       HEADER_FIELDS.PAGE,
       HEADER_FIELDS.SIZE,
@@ -300,6 +304,8 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
       HEADER_FIELDS.SEARCH,
       HEADER_FIELDS.COUNTRY,
       HEADER_FIELDS.STATE_PROVINCE,
+      HEADER_FIELDS.SEARCH_UNIT,
+      HEADER_FIELDS.SEARCH_SCOPE,
       HEADER_FIELDS.DATE,
     ],
     outputHeaders: RECOMMEND_ACTIVITY_TYPE_OUTPUT_HEADERS,

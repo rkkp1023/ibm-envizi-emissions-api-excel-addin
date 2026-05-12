@@ -292,6 +292,8 @@ export async function calculation_by_factorId(
  * @param search Search query string
  * @param country ISO alpha-3 country code
  * @param stateProvince Geographic state or province
+ * @param unit Unit of measurement
+ * @param scope Emission scope
  * @param date Activity date
  * @param page Page number for pagination
  * @param size Number of results per page
@@ -300,11 +302,13 @@ export async function factor_search(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string,
   page?: number,
   size?: number
 ): Promise<any[][]> {
-  return factorSearch(search, country, stateProvince, date, page, size);
+  return factorSearch(search, country, stateProvince, unit, scope, date, page, size);
 }
 
 /**
@@ -314,15 +318,19 @@ export async function factor_search(
  * @param search Search query string describing the activity
  * @param country ISO alpha-3 country code
  * @param stateProvince Geographic state or province
+ * @param unit Unit of measurement
+ * @param scope Emission scope
  * @param date Activity date
  */
 export async function RECOMMEND_ACTIVITY_TYPE(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string
 ): Promise<any[][]> {
-  return typeRecommender(search, country, stateProvince, date);
+  return typeRecommender(search, country, stateProvince, unit, scope, date);
 }
 
 /**
