@@ -2,28 +2,51 @@
 Use
 ===
 
+Getting Started
+---------------
+
+Sign Up Process
+~~~~~~~~~~~~~~~
+
+If you haven't already signed up for IBM Envizi Emissions API:
+
+1. Complete the sign-up form on the `IBM Envizi Emissions API welcome page <https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313>`_
+2. After submitting the form, you'll receive an email notification once your account has been provisioned
+3. This process typically takes a short time, and you'll be notified when your account is ready to use
+
 Logging In
-----------
+~~~~~~~~~~
 
-After installation, launch the add-in by clicking the **IBM Envizi for Excel Add-in** button on the Excel ribbon.
+After installation and account provisioning, launch the add-in by clicking the **IBM Envizi for Excel Add-in** button on the Excel ribbon.
 
-When prompted, provide your credentials:
-
-- **apiKey** – API access key
-- **tenantId** – Tenant identifier
-- **orgId** – Organization identifier
-
-Your credentials can be found on the `Overview Dashboard <https://www.app.ibm.com/envizi/emissions-api-home/overview?cuiURL=%2Femissions-api-home%2Foverview>`_ by clicking on the **View API Key** button.
+The add-in will open and display a welcome screen. Click the **Log in** button to authenticate using your account.
 
 .. image:: _images/login.png
    :alt: Login screen of the add-in
    :align: center
 
-Once your credentials are validated, the **main interface** of the add-in becomes available:
+.. note::
+   Use the same IBM ID (email address) that you used when completing the sign-up form. The add-in uses secure IBM authentication to connect to your Envizi account.
 
-.. image:: _images/main.png
+Once you've successfully signed in, the **main interface** of the add-in becomes available:
+
+.. image:: _images/interface.png
    :alt: Main interface of the add-in
    :align: center
+
+Understanding the Interface
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The add-in interface includes three helpful tabs at the bottom:
+
+**Quick Help Tab**
+   Provides instant access to common tasks and frequently used features. This tab offers quick guidance on how to use the add-in's functions and features without leaving Excel.
+
+**Resources Tab**
+   Contains links to documentation and tutorials. Use this tab to access comprehensive guides and reference materials for the IBM Envizi Emissions API.
+
+**Accounts Tab**
+   Displays your current account information and allows you to manage your session. You can view your logged-in status and sign out when needed.
 
 Custom IBM Envizi Tab - Data Validation Helpers
 ------------------------------------------------
