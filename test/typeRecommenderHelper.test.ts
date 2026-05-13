@@ -12,11 +12,15 @@ jest.mock("../src/functions/client", () => ({
   ensureClient: jest.fn(),
 }));
 
-jest.mock("../src/functions/utils", () => ({
-  convertExcelDateToISO: jest.fn((d) => d), // pass-through
-  extractSymbolFromDisplay: jest.fn((value) => value), // pass-through by default
-  extractValueAfterDash: jest.fn((value) => value), // pass-through by default
-}));
+jest.mock("../src/functions/utils", () => {
+  const actual = jest.requireActual("../src/functions/utils");
+  return {
+    ...actual,
+    convertExcelDateToISO: jest.fn((d) => d), // pass-through
+    extractSymbolFromDisplay: jest.fn((value) => value), // pass-through by default
+    extractValueAfterDash: jest.fn((value) => value), // pass-through by default
+  };
+});
 
 describe("typeRecommender", () => {
   const mockedEnsureClient = ensureClient as jest.MockedFunction<typeof ensureClient>;
@@ -98,7 +102,7 @@ describe("typeRecommender", () => {
   it("includes date in params when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
     
-    await typeRecommender("electricity", "USA", undefined, "2024-01-01");
+    await typeRecommender("electricity", "USA", undefined, undefined, undefined, "2024-01-01");
     
     expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
       time: { date: "2024-01-01" }
@@ -108,7 +112,7 @@ describe("typeRecommender", () => {
   it("excludes date from params when empty string", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
     
-    await typeRecommender("electricity", "USA", undefined, "   ");
+    await typeRecommender("electricity", "USA", undefined, undefined, undefined, "   ");
     
     expect(mockedSearch).toHaveBeenCalledWith(expect.not.objectContaining({
       time: expect.anything()
@@ -210,7 +214,7 @@ describe("typeRecommender", () => {
   it("builds correct API params with all optional parameters", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
     
-    await typeRecommender("electricity", "USA", "California", "2024-01-01");
+    await typeRecommender("electricity", "USA", "California", undefined, undefined, "2024-01-01");
     
     expect(mockedSearch).toHaveBeenCalledWith({
       activity: { search: "electricity" },
@@ -218,6 +222,36 @@ describe("typeRecommender", () => {
       time: { date: "2024-01-01" },
       pagination: { page: 1, size: 1 }
     });
+  });
+
+  it("includes unit in activity params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    
+    await typeRecommender("electricity", "USA", undefined, "kWh");
+    
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: expect.objectContaining({ search: "electricity", unit: "kWh" })
+    }));
+  });
+
+  it("includes scope in activity params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    
+    await typeRecommender("electricity", "USA", undefined, undefined, "1");
+    
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: expect.objectContaining({ search: "electricity", scope: "1" })
+    }));
+  });
+
+  it("includes both unit and scope in activity params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    
+    await typeRecommender("electricity", "USA", undefined, "kWh", "2");
+    
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: expect.objectContaining({ search: "electricity", unit: "kWh", scope: "2" })
+    }));
   });
 
   it("builds correct API params with only required parameters", async () => {

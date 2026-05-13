@@ -1,6 +1,6 @@
 // Copyright IBM Corp. 2025, 2026
 
-import { convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "../src/functions/utils";
+import { buildSearchParams, convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "../src/functions/utils";
 
 describe("utils", () => {
   describe("extractSymbolFromDisplay", () => {
@@ -159,6 +159,34 @@ describe("utils", () => {
       expect(() => convertExcelDateToISO("")).toThrow("Date should be in YYYY-MM-DD format");
       expect(() => convertExcelDateToISO("   ")).toThrow("Date should be in YYYY-MM-DD format");
       expect(() => convertExcelDateToISO("\t\n")).toThrow("Date should be in YYYY-MM-DD format");
+    });
+  });
+
+  describe("buildSearchParams", () => {
+    it("should build search params with all parameters", () => {
+      const result = buildSearchParams(
+        "electricity",
+        "USA (United States)",
+        "USA - California",
+        "kWh",
+        "2",
+        "2024-01-01"
+      );
+      
+      expect(result).toEqual({
+        activity: { search: "electricity", unit: "kWh", scope: "2" },
+        location: { country: "USA", stateProvince: "California" },
+        time: { date: "2024-01-01" }
+      });
+    });
+
+    it("should build search params with only required parameters", () => {
+      const result = buildSearchParams("diesel", "USA");
+      
+      expect(result).toEqual({
+        activity: { search: "diesel" },
+        location: { country: "USA" }
+      });
     });
   });
 });

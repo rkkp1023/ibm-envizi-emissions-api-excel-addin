@@ -4,35 +4,22 @@ import { Factor } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
 import { formatRow } from "./headers-config";
-import { convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "./utils";
+import { buildSearchParams } from "./utils";
 
 function buildFactorSearchParams(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string,
   page?: number,
   size?: number
 ): any {
-  // Extract country code from display format: "USA (United States)" → "USA"
-  const countryCode = extractSymbolFromDisplay(country) || country;
-  
-  const params: any = {
-    activity: { search },
-    location: { country: countryCode },
-  };
+  // Use shared utility for common parameter building
+  const params = buildSearchParams(search, country, stateProvince, unit, scope, date);
 
-  if (stateProvince) {
-    // Extract state/province from display format: "USA - California" → "California"
-    const stateProvinceValue = extractValueAfterDash(stateProvince) || stateProvince;
-    params.location.stateProvince = stateProvinceValue;
-  }
-
-  if (date?.trim()) {
-    const formattedDate = convertExcelDateToISO(date);
-    params.time = { date: formattedDate };
-  }
-
+  // Add pagination specific to factor search
   params.pagination = {
     page: page || 1,
     size: size || 30
@@ -51,6 +38,8 @@ export async function factorSearch(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string,
   page?: number,
   size?: number
@@ -58,7 +47,7 @@ export async function factorSearch(
   try {
     await ensureClient();
 
-    const apiParams = buildFactorSearchParams(search, country, stateProvince, date, page, size);
+    const apiParams = buildFactorSearchParams(search, country, stateProvince, unit, scope, date, page, size);
 
     const response = await Factor.search(apiParams);
 

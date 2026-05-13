@@ -4,33 +4,20 @@ import { TypeRecommender } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
 import { formatRow } from "./headers-config";
-import { convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "./utils";
+import { buildSearchParams } from "./utils";
 
 function buildTypeRecommenderParams(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string
 ): any {
-  // Extract country code from display format: "USA (United States)" → "USA"
-  const countryCode = extractSymbolFromDisplay(country) || country;
-  
-  const params: any = {
-    activity: { search },
-    location: { country: countryCode },
-  };
+  // Use shared utility for common parameter building
+  const params = buildSearchParams(search, country, stateProvince, unit, scope, date);
 
-  if (stateProvince) {
-    // Extract state/province from display format: "USA - California" → "California"
-    const stateProvinceValue = extractValueAfterDash(stateProvince) || stateProvince;
-    params.location.stateProvince = stateProvinceValue;
-  }
-
-  if (date?.trim()) {
-    const formattedDate = convertExcelDateToISO(date);
-    params.time = { date: formattedDate };
-  }
-
+  // Add pagination specific to type recommender (always returns top 1 result)
   params.pagination = {
     page: 1,
     size: 1
@@ -52,12 +39,14 @@ export async function typeRecommender(
   search: string,
   country: string,
   stateProvince?: string,
+  unit?: string,
+  scope?: string,
   date?: string
 ): Promise<any[][]> {
   try {
     await ensureClient();
 
-    const apiParams = buildTypeRecommenderParams(search, country, stateProvince, date);
+    const apiParams = buildTypeRecommenderParams(search, country, stateProvince, unit, scope, date);
 
     const response = await TypeRecommender.search(apiParams);
 
