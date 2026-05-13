@@ -8,24 +8,53 @@ Getting Started
 Sign Up Process
 ~~~~~~~~~~~~~~~
 
-If you haven't already signed up for IBM Envizi Emissions API:
+Before using the add-in, you must sign up for IBM Envizi Emissions API:
 
 1. Complete the sign-up form on the `IBM Envizi Emissions API welcome page <https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313>`_
 2. After submitting the form, you'll receive an email notification once your account has been provisioned
 3. This process typically takes a short time, and you'll be notified when your account is ready to use
 
-Logging In
+.. important::
+   Keep your IBM ID (email address) handy as you'll need it to sign in to the add-in.
+
+Login Flow
 ~~~~~~~~~~
 
-After installation and account provisioning, launch the add-in by clicking the **IBM Envizi for Excel Add-in** button on the Excel ribbon.
+After installation and account provisioning, the login experience differs based on whether you're a first-time user or a returning user.
 
-The add-in will open and display a welcome screen. Click the **Log in** button to authenticate using your account.
+**For First-Time Users**
 
-.. image:: _images/login.png
-   :alt: Login screen of the add-in
+When you launch the add-in for the first time by clicking the **IBM Envizi for Excel Add-in** button on the Excel ribbon, you'll see a welcome screen with a **Get Started** button.
+
+.. image:: _images/get-started-screen.png
+   :alt: Get Started screen for first-time users
    :align: center
 
-.. note::
+
+**For Returning Users**
+
+If you've previously logged in and are returning to the add-in or got logged out, you'll see a different welcome screen with a **Login** button.
+
+.. image:: _images/welcome-back-screen.png
+   :alt: Welcome Back screen for returning users
+   :align: center
+
+
+**Login Process**
+
+Regardless of which screen you see, follow these steps to sign in:
+
+1. Click the **Get Started** button (first-time users) or **Login** button (returning users)
+2. A login pop-up window will appear
+
+   .. image:: _images/login-popup.png
+      :alt: Login pop-up window
+      :align: center
+
+3. Enter your IBM credentials in the pop-up window
+4. Once the login is successful, you will be redirected to the main interface
+
+.. tip::
    Use the same IBM ID (email address) that you used when completing the sign-up form. The add-in uses secure IBM authentication to connect to your Envizi account.
 
 Once you've successfully signed in, the **main interface** of the add-in becomes available:
