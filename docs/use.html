@@ -246,19 +246,41 @@
         <article role="main" id="furo-main-content">
           <section id="use">
 <h1>Use<a class="headerlink" href="#use" title="Link to this heading">¶</a></h1>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<section id="sign-up-process">
+<h3>Sign Up Process<a class="headerlink" href="#sign-up-process" title="Link to this heading">¶</a></h3>
+<p>If you haven’t already signed up for IBM Envizi Emissions API:</p>
+<ol class="arabic simple">
+<li><p>Complete the sign-up form on the <a class="reference external" href="https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313">IBM Envizi Emissions API welcome page</a></p></li>
+<li><p>After submitting the form, you’ll receive an email notification once your account has been provisioned</p></li>
+<li><p>This process typically takes a short time, and you’ll be notified when your account is ready to use</p></li>
+</ol>
+</section>
 <section id="logging-in">
-<h2>Logging In<a class="headerlink" href="#logging-in" title="Link to this heading">¶</a></h2>
-<p>After installation, launch the add-in by clicking the <strong>IBM Envizi for Excel Add-in</strong> button on the Excel ribbon.</p>
-<p>When prompted, provide your credentials:</p>
-<ul class="simple">
-<li><p><strong>apiKey</strong> – API access key</p></li>
-<li><p><strong>tenantId</strong> – Tenant identifier</p></li>
-<li><p><strong>orgId</strong> – Organization identifier</p></li>
-</ul>
-<p>Your credentials can be found on the <a class="reference external" href="https://www.app.ibm.com/envizi/emissions-api-home/overview?cuiURL=%2Femissions-api-home%2Foverview">Overview Dashboard</a> by clicking on the <strong>View API Key</strong> button.</p>
+<h3>Logging In<a class="headerlink" href="#logging-in" title="Link to this heading">¶</a></h3>
+<p>After installation and account provisioning, launch the add-in by clicking the <strong>IBM Envizi for Excel Add-in</strong> button on the Excel ribbon.</p>
+<p>The add-in will open and display a welcome screen. Click the <strong>Log in</strong> button to authenticate using your account.</p>
 <img alt="Login screen of the add-in" class="align-center" src="_images/login.png" />
-<p>Once your credentials are validated, the <strong>main interface</strong> of the add-in becomes available:</p>
-<img alt="Main interface of the add-in" class="align-center" src="_images/main.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Use the same IBM ID (email address) that you used when completing the sign-up form. The add-in uses secure IBM authentication to connect to your Envizi account.</p>
+</div>
+<p>Once you’ve successfully signed in, the <strong>main interface</strong> of the add-in becomes available:</p>
+<img alt="Main interface of the add-in" class="align-center" src="_images/interface.png" />
+</section>
+<section id="understanding-the-interface">
+<h3>Understanding the Interface<a class="headerlink" href="#understanding-the-interface" title="Link to this heading">¶</a></h3>
+<p>The add-in interface includes three helpful tabs at the bottom:</p>
+<dl class="simple">
+<dt><strong>Quick Help Tab</strong></dt><dd><p>Provides instant access to common tasks and frequently used features. This tab offers quick guidance on how to use the add-in’s functions and features without leaving Excel.</p>
+</dd>
+<dt><strong>Resources Tab</strong></dt><dd><p>Contains links to documentation and tutorials. Use this tab to access comprehensive guides and reference materials for the IBM Envizi Emissions API.</p>
+</dd>
+<dt><strong>Accounts Tab</strong></dt><dd><p>Displays your current account information and allows you to manage your session. You can view your logged-in status and sign out when needed.</p>
+</dd>
+</dl>
+</section>
 </section>
 <section id="custom-ibm-envizi-tab-data-validation-helpers">
 <h2>Custom IBM Envizi Tab - Data Validation Helpers<a class="headerlink" href="#custom-ibm-envizi-tab-data-validation-helpers" title="Link to this heading">¶</a></h2>
@@ -624,7 +646,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If an error occurs, the add-in will display an error message once you hover over warning icon.</p>
-<a class="reference internal image-reference" href="_images/error.png"><img alt="Example error message" class="align-center" src="_images/error.png" style="width: 220px; height: 145px;" />
+<a class="reference internal image-reference" href="_images/error.png"><img alt="Example error message" class="align-center" height="145" src="_images/error.png" width="220" />
 </a>
 </div>
 </section>
@@ -635,7 +657,7 @@
 <li><p>Copy the cells containing the formulas.</p></li>
 <li><p>Use <strong>Paste Values</strong> to paste only the calculated results into a new location.</p></li>
 </ol>
-<a class="reference internal image-reference" href="_images/paste.png"><img alt="Paste Values option in Excel" class="align-center" src="_images/paste.png" style="width: 220px; height: 420px;" />
+<a class="reference internal image-reference" href="_images/paste.png"><img alt="Paste Values option in Excel" class="align-center" height="420" src="_images/paste.png" width="220" />
 </a>
 </section>
 </section>
@@ -696,7 +718,12 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Use</a><ul>
+<li><a class="reference internal" href="#getting-started">Getting Started</a><ul>
+<li><a class="reference internal" href="#sign-up-process">Sign Up Process</a></li>
 <li><a class="reference internal" href="#logging-in">Logging In</a></li>
+<li><a class="reference internal" href="#understanding-the-interface">Understanding the Interface</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#custom-ibm-envizi-tab-data-validation-helpers">Custom IBM Envizi Tab - Data Validation Helpers</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#tab-structure">Tab Structure</a></li>
