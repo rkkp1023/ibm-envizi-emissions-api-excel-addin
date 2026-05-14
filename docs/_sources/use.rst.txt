@@ -33,7 +33,7 @@ When you launch the add-in for the first time by clicking the **IBM Envizi for E
 
 **For Returning Users**
 
-If you've previously logged in and are returning to the add-in or got logged out, you'll see a different welcome screen with a **Login** button.
+If you have previously logged in and are returning to the add-in, or if your session has expired, a different welcome screen will be displayed featuring a **Login** button.
 
 .. image:: _images/welcome-back-screen.png
    :alt: Welcome Back screen for returning users
@@ -42,22 +42,22 @@ If you've previously logged in and are returning to the add-in or got logged out
 
 **Login Process**
 
-Regardless of which screen you see, follow these steps to sign in:
+Regardless of the screen displayed, follow the steps below to sign in:
 
-1. Click the **Get Started** button (first-time users) or **Login** button (returning users)
-2. A login pop-up window will appear
+1. Click **Get Started** (for first-time users) or **Login** (for returning users).
+2. A login pop-up window will be displayed.
 
    .. image:: _images/login-popup.png
       :alt: Login pop-up window
       :align: center
 
 3. Enter your IBM credentials in the pop-up window
-4. Once the login is successful, you will be redirected to the main interface
+4. Upon successful authentication, you will be redirected to the main interface.
 
 .. tip::
-   Use the same IBM ID (email address) that you used when completing the sign-up form. The add-in uses secure IBM authentication to connect to your Envizi account.
+   Use the same IBM ID (email address) that was used during the sign-up process. The add-in leverages secure IBM authentication to establish a connection with your Envizi account.
 
-Once you've successfully signed in, the **main interface** of the add-in becomes available:
+Upon successful sign-in, the **main interface** of the add-in will become accessible.
 
 .. image:: _images/interface.png
    :alt: Main interface of the add-in
@@ -66,16 +66,16 @@ Once you've successfully signed in, the **main interface** of the add-in becomes
 Understanding the Interface
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The add-in interface includes three helpful tabs at the bottom:
+The add-in interface includes three primary tabs located at the top of the application:
 
-**Quick Help Tab**
-   Provides instant access to common tasks and frequently used features. This tab offers quick guidance on how to use the add-in's functions and features without leaving Excel.
+**Quick Help Tab**  
+Provides immediate access to common tasks and frequently used features. This tab offers concise guidance to help users navigate and utilize the add-in’s functionality without leaving Excel.
 
-**Resources Tab**
-   Contains links to documentation and tutorials. Use this tab to access comprehensive guides and reference materials for the IBM Envizi Emissions API.
+**Resources Tab**  
+Contains links to relevant documentation and tutorials. Use this tab to access comprehensive guides and reference materials related to the IBM Envizi Emissions API.
 
-**Accounts Tab**
-   Displays your current account information and allows you to manage your session. You can view your logged-in status and sign out when needed.
+**Accounts Tab**  
+Displays current account information and provides options for session management. Users can view their authentication status and sign out as required.
 
 Custom IBM Envizi Tab - Data Validation Helpers
 ------------------------------------------------
