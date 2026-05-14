@@ -2,28 +2,83 @@
 Use
 ===
 
-Logging In
-----------
+Getting Started
+---------------
 
-After installation, launch the add-in by clicking the **IBM Envizi for Excel Add-in** button on the Excel ribbon.
+Sign Up Process
+~~~~~~~~~~~~~~~
 
-When prompted, provide your credentials:
+Before using the add-in, you must sign up for IBM Envizi Emissions API:
 
-- **apiKey** – API access key
-- **tenantId** – Tenant identifier
-- **orgId** – Organization identifier
+1. Complete the sign-up form on the `IBM Envizi Emissions API welcome page <https://www.ibm.com/account/reg/us-en/signup?formid=urx-54313>`_
+2. After submitting the form, you'll receive an email notification once your account has been provisioned
+3. This process typically takes a short time, and you'll be notified when your account is ready to use
 
-Your credentials can be found on the `Overview Dashboard <https://www.app.ibm.com/envizi/emissions-api-home/overview?cuiURL=%2Femissions-api-home%2Foverview>`_ by clicking on the **View API Key** button.
+.. important::
+   Keep your IBM ID (email address) handy as you'll need it to sign in to the add-in.
 
-.. image:: _images/login.png
-   :alt: Login screen of the add-in
+Login Flow
+~~~~~~~~~~
+
+After installation and account provisioning, the login experience differs based on whether you're a first-time user or a returning user.
+
+**For First-Time Users**
+
+When you launch the add-in for the first time by clicking the **IBM Envizi for Excel Add-in** button on the Excel ribbon, you'll see a welcome screen with a **Get Started** button.
+
+.. image:: _images/get-started-screen.png
+   :alt: Get Started screen for first-time users
    :align: center
 
-Once your credentials are validated, the **main interface** of the add-in becomes available:
 
-.. image:: _images/main.png
+**For Returning Users**
+
+If you have previously logged in and are returning to the add-in, or if your session has expired, a different welcome screen will be displayed featuring a **Login** button.
+
+.. image:: _images/welcome-back-screen.png
+   :alt: Welcome Back screen for returning users
+   :align: center
+
+
+**Login Process**
+
+Regardless of the screen displayed, follow the steps below to sign in:
+
+1. Click **Get Started** (for first-time users) or **Login** (for returning users).
+2. A login pop-up window will be displayed.
+
+   .. image:: _images/login-popup.png
+      :alt: Login pop-up window
+      :align: center
+
+3. Enter your IBM credentials in the pop-up window
+4. Upon successful authentication, you will be redirected to the main interface.
+
+.. tip::
+   Use the same IBM ID (email address) that was used during the sign-up process. The add-in leverages secure IBM authentication to establish a connection with your Envizi account.
+
+Upon successful sign-in, the **main interface** of the add-in will become accessible.
+
+.. image:: _images/interface.png
    :alt: Main interface of the add-in
    :align: center
+
+Understanding the Interface
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The add-in interface includes three primary tabs located at the top of the application:
+
+**Quick Help Tab**  
+
+Provides immediate access to common tasks and frequently used features. This tab offers concise guidance to help users navigate and utilize the add-in’s functionality without leaving Excel.
+
+**Resources Tab** 
+
+Contains links to relevant documentation and tutorials. Use this tab to access comprehensive guides and reference materials related to the IBM Envizi Emissions API.
+
+**Accounts Tab**  
+
+Displays current account information and provides options for session management. Users can view their authentication status and sign out as required.
 
 Custom IBM Envizi Tab - Data Validation Helpers
 ------------------------------------------------

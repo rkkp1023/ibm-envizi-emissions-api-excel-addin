@@ -20,7 +20,7 @@ IBM Envizi for Excel enables users to calculate and retrieve greenhouse gas (GHG
 This documentation provides:
 
 - Step-by-step guidance for installation and configuration
-- Instructions for authenticating and connecting to the Envizi for Excel
+- Instructions for signing in and getting started with IBM Envizi for Excel
 - Usage examples for common workflows in Excel
 - Reference details for available functions and parameters
 
