@@ -69,12 +69,15 @@ Understanding the Interface
 The add-in interface includes three primary tabs located at the top of the application:
 
 **Quick Help Tab**  
+
 Provides immediate access to common tasks and frequently used features. This tab offers concise guidance to help users navigate and utilize the add-in’s functionality without leaving Excel.
 
-**Resources Tab**  
+**Resources Tab** 
+
 Contains links to relevant documentation and tutorials. Use this tab to access comprehensive guides and reference materials related to the IBM Envizi Emissions API.
 
 **Accounts Tab**  
+
 Displays current account information and provides options for session management. Users can view their authentication status and sign out as required.
 
 Custom IBM Envizi Tab - Data Validation Helpers
