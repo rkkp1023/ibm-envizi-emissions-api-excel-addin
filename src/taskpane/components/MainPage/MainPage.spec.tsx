@@ -3,11 +3,12 @@
 import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
-import { AuthProvider } from "../context/AuthContext";
+
+import { AuthProvider } from "../../context/AuthContext";
 import { MainPage } from "./MainPage";
 
 // Mock the credentials module
-jest.mock("../../common/credentials", () => ({
+jest.mock("../../../common/credentials", () => ({
   loadCredentialsFromStorage: jest.fn().mockResolvedValue(null),
   saveUserCredentialsToStorage: jest.fn(),
   removeCredentialsFromStorage: jest.fn(),
@@ -15,21 +16,21 @@ jest.mock("../../common/credentials", () => ({
 }));
 
 // Mock the client module
-jest.mock("../../functions/client", () => ({
+jest.mock("../../../functions/client", () => ({
   ensureClient: jest.fn().mockResolvedValue(undefined),
   resetClient: jest.fn(),
 }));
 
 // Mock child components
-jest.mock("./QuickHelpTab/QuickHelpTab", () => ({
+jest.mock("../QuickHelpTab/QuickHelpTab", () => ({
   QuickHelpTab: () => <div data-testid="quick-help-tab">Quick Help Content</div>,
 }));
 
-jest.mock("./AccountTab/AccountTab", () => ({
+jest.mock("../AccountTab/AccountTab", () => ({
   AccountTab: () => <div data-testid="account-tab">Account Tab Content</div>,
 }));
 
-jest.mock("./ResourcesTab/ResourcesTab", () => ({
+jest.mock("../ResourcesTab/ResourcesTab", () => ({
   ResourcesTab: () => <div data-testid="resources-tab">Resources Tab Content</div>,
 }));
 
