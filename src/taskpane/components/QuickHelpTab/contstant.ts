@@ -24,8 +24,9 @@ export const usefulFeatures: EmissionScopeConfig[] = [
     formulas: [
       {
         description:
-          "Use AI to help you choose the activity type when you’re not sure which one to use. You then review the recommended data type and decide whether it is appropriate to your activity.",
-        formulaSyntax: "=RECOMMEND_ACTIVITY_TYPE(search,country,[stateProvince],[data],[page],[size])",
+          "Use AI to help you choose the activity type  when you’re not sure which one to use. You then review the recommended data type and decide whether it is appropriate to your activity.",
+        formulaSyntax:
+          "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(search,country,[stateProvince],[unit],[scope],[date])",
         link: {
           href: "https://www.ibm.com/docs/SSFJN8P/topics/t_ctr_calc_emissions_excel.html",
           title: "Learn more about the recommender",
@@ -52,7 +53,8 @@ export const usefulFeatures: EmissionScopeConfig[] = [
       {
         description:
           "If you use your own template, you can add the input and output column titles from the Envizi template. You can then follow the function exactly as written and column titles, such as CO2e and CH4, match the calculated results.",
-        formulaSyntax: "=ENVIZI.HEADERS((function Name),[input])",
+        formulaSyntax:
+          "=ENVIZI.HEADERS([functionName],[input],[output],[includeActivityTypeRecommender])",
         link: {
           href: "https://www.ibm.com/docs/SSFJN8P/topics/t_calc_with_scope_own.html",
           title: "Learn more about adding column titles",
@@ -136,7 +138,8 @@ export const functions: EmissionScopeConfig[] = [
       {
         description:
           "Fetch relevant factor sets by filtering by location, activity, and published year.",
-        formulaSyntax: "=ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [date])",
+        formulaSyntax:
+          "=ENVIZI.FACTOR_SEARCH(search,country,[stateProvince],[unit],[scope],[date],[page],[size])",
       },
     ],
   },
