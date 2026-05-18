@@ -70,6 +70,7 @@
     "depcheck": "^1.4.7",
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-office-addins": "^4.0.3",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "html-loader": "^5.0.0",

@@ -1,3 +1,5 @@
+// Copyright IBM Corp. 2026
+
 import js from "@eslint/js";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import react from "eslint-plugin-react";
