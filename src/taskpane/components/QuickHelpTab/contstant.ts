@@ -26,7 +26,7 @@ export const usefulFeatures: EmissionScopeConfig[] = [
         description:
           "Use AI to help you choose the activity type  when you’re not sure which one to use. You then review the recommended data type and decide whether it is appropriate to your activity.",
         formulaSyntax:
-          "RECOMMEND_ACTIVITY_TYPE(search,country,[stateProvince],[unit],[scope],[date])",
+          "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(search,country,[stateProvince],[unit],[scope],[date])",
         link: {
           href: "https://www.ibm.com/docs/SSFJN8P/topics/t_ctr_calc_emissions_excel.html",
           title: "Learn more about the recommender",
