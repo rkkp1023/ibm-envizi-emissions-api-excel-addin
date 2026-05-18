@@ -202,7 +202,7 @@ describe("Useful Features Section", () => {
   it("should render AI recommendation formula syntax", () => {
     expect(
       screen.getByText(
-        /=RECOMMEND_ACTIVITY_TYPE\(search,country,\[stateProvince\],\[data\],\[page\],\[size\]\)/i
+        /=ENVIZI\.RECOMMEND_ACTIVITY_TYPE\(search,country,\[stateProvince\],\[unit\],\[scope\],\[date\]\)/i
       )
     ).toBeInTheDocument();
   });
@@ -221,7 +221,9 @@ describe("Useful Features Section", () => {
 
   it("should render headers formula syntax", () => {
     expect(
-      screen.getByText(/=ENVIZI\.HEADERS\(\(function Name\),\[input\]\)/i)
+      screen.getByText(
+        /=ENVIZI\.HEADERS\(\[functionName\],\[input\],\[output\],\[includeActivityTypeRecommender\]\)/i
+      )
     ).toBeInTheDocument();
   });
 
@@ -514,7 +516,7 @@ describe("FunctionsAccordionItem", () => {
     const functionsButton = screen.getByRole("button", { name: /Functions/i });
     fireEvent.click(functionsButton);
 
-    expect(screen.getByText(/=ENVIZI\.FACTOR_SEARCH\(search, country/i)).toBeInTheDocument();
+    expect(screen.getByText(/=ENVIZI\.FACTOR_SEARCH\(search,country/i)).toBeInTheDocument();
   });
 
   it("should render view all functions link", () => {
@@ -985,7 +987,7 @@ describe("Formula Rendering", () => {
 
   it("should render factor search formulas", () => {
     expect(screen.getByText(/=ENVIZI\.FACTOR\(type, unit, country/i)).toBeInTheDocument();
-    expect(screen.getByText(/=ENVIZI\.FACTOR_SEARCH\(search, country/i)).toBeInTheDocument();
+    expect(screen.getByText(/=ENVIZI\.FACTOR_SEARCH\(search,country/i)).toBeInTheDocument();
   });
 
   it("should render formula descriptions for all scopes", () => {
