@@ -7,6 +7,7 @@ import {
   MessageBarBody,
   MessageBarTitle,
 } from "@fluentui/react-components";
+
 import { getBuyNowUrl } from "../../../common/env";
 
 export function SignUpMessageBanner() {

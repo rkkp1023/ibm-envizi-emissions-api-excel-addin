@@ -37,10 +37,6 @@ jest.mock("../src/functions/client", () => ({
   ensureClient: jest.fn().mockResolvedValue(undefined),
 }));
 
-import { ensureClient } from "../src/functions/client";
-import { genericApiCall } from "../src/functions/generic-api-call";
-import { convertExcelDateToISO } from "../src/functions/utils";
-
 import {
   Calculation,
   EconomicActivity,
@@ -51,6 +47,10 @@ import {
   Stationary,
   TransportationAndDistribution,
 } from "emissions-api-sdk";
+
+import { ensureClient } from "../src/functions/client";
+import { genericApiCall } from "../src/functions/generic-api-call";
+import { convertExcelDateToISO } from "../src/functions/utils";
 
 // Mock Emission classes
 jest.mock("emissions-api-sdk", () => {

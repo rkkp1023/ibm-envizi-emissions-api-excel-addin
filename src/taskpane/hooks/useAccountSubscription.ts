@@ -38,7 +38,7 @@ export async function getAccountSubscriptionData(
 ): Promise<AccountSubscriptionData> {
   const headers = {
     Authorization: `Bearer ${token}`,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     
     "X-IBM-Client-Id": `saascore-${tenantId}`,
   };
   const response = await axios.get<AccountSubscriptionData>(

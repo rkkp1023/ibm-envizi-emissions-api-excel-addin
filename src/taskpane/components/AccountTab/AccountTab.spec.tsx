@@ -15,7 +15,7 @@ const mockUserCredentials = {
   coreToken: "test-core-token",
 };
 
-let mockUseAuthReturn = {
+const mockUseAuthReturn = {
   state: {
     credentials: mockUserCredentials as any,
     isAuthenticated: true,
@@ -32,7 +32,7 @@ jest.mock("../../hooks/useAuth", () => ({
 }));
 
 // Mock useUserInfo hook
-let mockUserInfoReturn = {
+const mockUserInfoReturn = {
   isLoading: false,
   isError: false,
   data: {
@@ -51,7 +51,7 @@ jest.mock("../../hooks/useUserInfo", () => ({
 }));
 
 // Mock useAccountSubscription hook
-let mockAccountSubscriptionReturn = {
+const mockAccountSubscriptionReturn = {
   isLoading: false,
   isError: false,
   data: {

@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2026
 
 import { useContext } from "react";
+
 import { AuthContext } from "../context/AuthContext";
 
 export function useAuth() {

@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2026
 
 import * as TypeRecommender from "emissions-api-sdk/dist/api/TypeRecommender";
+
 import { ensureClient } from "../src/functions/client";
 import { typeRecommender } from "../src/functions/typeRecommenderHelper";
 

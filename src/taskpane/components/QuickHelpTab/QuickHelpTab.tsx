@@ -16,8 +16,8 @@ import {
   Button,
   Image,
   Link,
-  Text,
   makeStyles,
+  Text,
 } from "@fluentui/react-components";
 import {
   ArrowDownload16Regular,

@@ -1,10 +1,12 @@
 // Copyright IBM Corp. 2025, 2026
 
-import React from "react";
-import { createRoot } from "react-dom/client";
-import { TaskpaneApp } from "./TaskpaneApp";
 import "./reset.css";
 import "./taskpane.css";
+
+import React from "react";
+import { createRoot } from "react-dom/client";
+
+import { TaskpaneApp } from "./TaskpaneApp";
 
 /* global Office */
 

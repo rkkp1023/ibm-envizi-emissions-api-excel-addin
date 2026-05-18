@@ -18,7 +18,7 @@ export async function factorHelper(
   // Extract unit symbol from display format: "kg (kilogram)" → "kg"
   const unitSymbol = extractSymbolFromDisplay(unit) || unit;
 
-  let apiParams: any = {
+  const apiParams: any = {
     activity: { unit: unitSymbol },
   };
 

@@ -1,8 +1,9 @@
 // Copyright IBM Corp. 2026
 
-import { Button, Text, makeStyles, tokens } from "@fluentui/react-components";
+import { Button, makeStyles, Text, tokens } from "@fluentui/react-components";
 import { Open16Regular } from "@fluentui/react-icons";
 import React from "react";
+
 import { getPricingPageUrl } from "../../../common/env";
 
 const useStyles = makeStyles({

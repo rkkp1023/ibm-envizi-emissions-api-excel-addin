@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2026
 
-import { Text, makeStyles, tokens } from "@fluentui/react-components";
+import { makeStyles, Text, tokens } from "@fluentui/react-components";
+
 import { EmissionFormulaItem } from "./EmissionFormulaItem";
 import { EmissionScopeSectionProps } from "./types";
 
