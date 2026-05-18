@@ -4,17 +4,17 @@ import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import { AuthProvider } from "../context/AuthContext";
+import { AuthProvider } from "../../context/AuthContext";
 import { LoginPage } from "./LoginPage";
 
 // Mock the auth module
 const mockDisplayLoginDialog = jest.fn();
-jest.mock("../auth", () => ({
+jest.mock("../../auth", () => ({
   displayLoginDialog: (...args: any[]) => mockDisplayLoginDialog(...args),
 }));
 
 // Mock the credentials module
-jest.mock("../../common/credentials", () => ({
+jest.mock("../../../common/credentials", () => ({
   loadCredentialsFromStorage: jest.fn().mockResolvedValue(null),
   saveUserCredentialsToStorage: jest.fn(),
   removeCredentialsFromStorage: jest.fn(),
@@ -23,24 +23,24 @@ jest.mock("../../common/credentials", () => ({
 }));
 
 // Mock the client module
-jest.mock("../../functions/client", () => ({
+jest.mock("../../../functions/client", () => ({
   ensureClient: jest.fn().mockResolvedValue(undefined),
   resetClient: jest.fn(),
 }));
 
 // Mock the commands module
-jest.mock("../../commands/commands", () => ({
+jest.mock("../../../commands/commands", () => ({
   refreshMetadataOnLogin: jest.fn().mockResolvedValue(undefined),
 }));
 
 // Mock the API modules
-jest.mock("../../api/coreEnviziAuth", () => ({
+jest.mock("../../../api/coreEnviziAuth", () => ({
   coreEnviziAuth: {
     exchangeToken: jest.fn().mockResolvedValue("mock-core-token"),
   },
 }));
 
-jest.mock("../../api/enviziUiGraphQL", () => ({
+jest.mock("../../../api/enviziUiGraphQL", () => ({
   enviziUiGraphQL: {
     renewToken: jest.fn().mockResolvedValue({
       data: {

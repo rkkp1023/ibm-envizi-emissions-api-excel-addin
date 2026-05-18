@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2026
 
 import { Metadata } from "emissions-api-sdk";
+
 import { ensureClient } from "../functions/client";
 
 /**

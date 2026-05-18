@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2026
 
-import { Link, Text, makeStyles, tokens } from "@fluentui/react-components";
+import { Link, makeStyles, Text, tokens } from "@fluentui/react-components";
+
 import { EmissionFormulaItemProps } from "./types";
 
 const useStyles = makeStyles({

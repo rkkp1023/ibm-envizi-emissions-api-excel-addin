@@ -3,7 +3,7 @@
 import { Button, Link, Text } from "@fluentui/react-components";
 import { ArrowEnterRegular, Open16Regular } from "@fluentui/react-icons";
 
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 function EnviziLogin() {
   const { displayLogin, state } = useAuth();

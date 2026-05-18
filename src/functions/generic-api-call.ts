@@ -12,9 +12,8 @@ import {
 } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
-import { FunctionNameType, formatRow } from "./headers-config";
+import { formatRow, FunctionNameType } from "./headers-config";
 import { convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "./utils";
-
 
 type ApiType = Extract<
   FunctionNameType,
@@ -31,7 +30,6 @@ type ApiType = Extract<
 interface BasePayload {
   value: number;
   unit?: string;
-  
 }
 
 export interface PayloadWithType extends BasePayload {
@@ -48,7 +46,6 @@ export interface PayloadWithId extends BasePayload {
 
 type Payload = PayloadWithType | PayloadWithId;
 
-
 const emissionApiMap: Record<ApiType, (params: any) => Promise<any>> = {
   location: Location.calculate,
   stationary: Stationary.calculate,
@@ -60,13 +57,16 @@ const emissionApiMap: Record<ApiType, (params: any) => Promise<any>> = {
   real_estate: RealEstate.calculate,
 };
 
-function buildLocation(payload: PayloadWithType, apiType: ApiType): Record<string, string> | undefined {
+function buildLocation(
+  payload: PayloadWithType,
+  apiType: ApiType
+): Record<string, string> | undefined {
   const { country, stateProvince, powerGrid } = payload;
-  
+
   // Extract country alpha3 from display format
   // "United States (USA)" → "USA" or "USA" → "USA"
   const countryCode = extractSymbolFromDisplay(country) || country;
-  
+
   const location: any = { country: countryCode };
 
   if (stateProvince) {
@@ -85,14 +85,14 @@ function buildLocation(payload: PayloadWithType, apiType: ApiType): Record<strin
 
 function buildApiParams(apiType: ApiType, payload: Payload): any {
   const { value, unit } = payload;
-  
+
   // Extract unit symbol from display format
   // "kilogram (kg)" → "kg" or "kg" → "kg"
   const unitSymbol = unit ? extractSymbolFromDisplay(unit) : undefined;
-  
+
   const activity: any = {
     value,
-    ...(unitSymbol ? { unit: unitSymbol } : {})
+    ...(unitSymbol ? { unit: unitSymbol } : {}),
   };
 
   if ("type" in payload) {
@@ -136,7 +136,10 @@ export async function genericApiCall(apiType: ApiType, payload: Payload): Promis
     const response = await apiFn(apiParams);
 
     if (!response || typeof response !== "object") {
-      throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, "Invalid API response");
+      throw new CustomFunctions.Error(
+        CustomFunctions.ErrorCode.notAvailable,
+        "Invalid API response"
+      );
     }
 
     return formatResponse(response, apiType);

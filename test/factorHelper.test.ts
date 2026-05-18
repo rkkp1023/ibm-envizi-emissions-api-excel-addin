@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2025, 2026
 
 import { Factor } from "emissions-api-sdk";
+
 import { ensureClient } from "../src/functions/client";
 import { factorHelper } from "../src/functions/factorHelper";
 import { convertExcelDateToISO } from "../src/functions/utils";

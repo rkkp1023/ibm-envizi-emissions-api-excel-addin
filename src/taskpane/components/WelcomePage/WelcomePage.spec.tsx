@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2026
 
 import "@testing-library/jest-dom";
+
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import { WelcomePage } from "./WelcomePage";

@@ -69,7 +69,9 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       let credentials: Credentials;
       try {
         credentials = await loadCredentialsFromStorage();
-      } catch (error) {}
+      } catch (error) {
+        console.error("Failed to load credentials from storage:", error);
+      }
       console.log("Credentials loaded from storage:", credentials);
 
       // Check token expiry

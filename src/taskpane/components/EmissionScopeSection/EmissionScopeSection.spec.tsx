@@ -3,6 +3,7 @@
 import "@testing-library/jest-dom";
 
 import { render, screen } from "@testing-library/react";
+
 import { EmissionScopeSection } from "./EmissionScopeSection";
 import { EmissionFormula } from "./types";
 
