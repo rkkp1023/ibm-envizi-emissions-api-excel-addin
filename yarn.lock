@@ -1644,7 +1644,7 @@
     "@griffel/react" "^1.5.32"
     "@swc/helpers" "^0.5.1"
 
-"@fluentui/react-components@^9.72.9":
+"@fluentui/react-components@^9.73.8":
   version "9.73.8"
   resolved "https://registry.yarnpkg.com/@fluentui/react-components/-/react-components-9.73.8.tgz#54d9ec44079d98f1a73b14f56f71075d7ec54179"
   integrity sha512-JG4KQjEvRRfPlh4yt6Rv1/k87ydM2y49r5XPNCnuYHahA7kEM+dY8JdOI7n7FW8bdcvZ7qt4smDrQ2XcPfmxlA==
