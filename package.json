@@ -92,7 +92,7 @@
     "typescript-eslint": "^8.0.0",
     "webpack": "^5.105.4",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "5.2.3"
+    "webpack-dev-server": "5.2.4"
   },
   "prettier": "office-addin-prettier-config",
   "browserslist": [
@@ -123,6 +123,7 @@
     "@protobufjs/utf8": "^1.1.1",
     "test-exclude": "^7.0.1",
     "uuid": "^14.0.0",
+    "ws": "8.20.1",
     "xml2js": "^0.5.0",
     "yaml": "^1.10.3"
   }
