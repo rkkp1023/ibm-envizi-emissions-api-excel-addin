@@ -197,7 +197,7 @@ export function buildSearchParams(
   date?: string
 ): any {
   // Extract country code from display format: "USA (United States)" → "USA"
-  const countryCode = extractSymbolFromDisplay(country) || country;
+  const countryCode = extractSymbolFromDisplay(country?.trim()) || country?.trim();
   
   const params: any = {
     activity: { search },
@@ -206,16 +206,18 @@ export function buildSearchParams(
 
   // Add unit and scope to activity object if provided
   if (unit?.trim()) {
-    params.activity.unit = unit;
+    // Extract unit symbol from display format: "kg (kilogram)" → "kg"
+    const unitSymbol = extractSymbolFromDisplay(unit.trim()) || unit.trim();
+    params.activity.unit = unitSymbol;
   }
 
   if (scope?.trim()) {
-    params.activity.scope = scope;
+    params.activity.scope = scope.trim();
   }
 
-  if (stateProvince) {
+  if (stateProvince?.trim()) {
     // Extract state/province from display format: "USA - California" → "California"
-    const stateProvinceValue = extractValueAfterDash(stateProvince) || stateProvince;
+    const stateProvinceValue = extractValueAfterDash(stateProvince.trim()) || stateProvince.trim();
     params.location.stateProvince = stateProvinceValue;
   }
 
