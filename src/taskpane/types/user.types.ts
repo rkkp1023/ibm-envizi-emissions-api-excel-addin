@@ -5,6 +5,7 @@ export interface UserInfo {
   lastName: string;
   email: string;
   orgName: string;
+  effectiveTo: string;
   orgId: string;
   languageCode?: string;
   timeZoneId?: string;
@@ -23,7 +24,9 @@ export interface UserInfoResponse {
       };
     };
     currentAssociate: {
+      id: string;
       name: string;
+      effectiveTo: string;
     };
   };
 }

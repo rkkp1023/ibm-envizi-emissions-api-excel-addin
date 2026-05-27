@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { CoreToken } from "../../common/credentials";
 import { SubscriptionType } from "../types/product-subscriptions.types";
 import { useAuth } from "./useAuth";
+import { useUserInfo } from "./useUserInfo";
 
 const subscriptionTypes: Record<string, SubscriptionType | Record<string, SubscriptionType>> = {
   EMISSIONS_TRIAL: "trial", // Preview
@@ -38,7 +39,6 @@ export async function getAccountSubscriptionData(
 ): Promise<AccountSubscriptionData> {
   const headers = {
     Authorization: `Bearer ${token}`,
-     
     "X-IBM-Client-Id": `saascore-${tenantId}`,
   };
   const response = await axios.get<AccountSubscriptionData>(
@@ -55,6 +55,7 @@ export async function getAccountSubscriptionData(
 
 export function useAccountSubscription() {
   const { state } = useAuth();
+  const userInfo = useUserInfo()?.data;
 
   // Decode coreToken and extract properties
   const coreTokenData = useMemo(() => {
@@ -91,8 +92,14 @@ export function useAccountSubscription() {
 
   return useQuery({
     queryKey: ["account-subscription", token],
-    queryFn: () => getAccountSubscriptionData(token, tenantId, orgId),
-    enabled: !!token && !!tenantId && !!orgId,
+    queryFn: async () => {
+      const data = await getAccountSubscriptionData(token, tenantId, orgId);
+      return {
+        ...data,
+        ssmExpirationDate: userInfo?.effectiveTo || data.ssmExpirationDate,
+      };
+    },
+    enabled: !!token && !!tenantId && !!orgId && !!userInfo,
     staleTime: Infinity,
   });
 }

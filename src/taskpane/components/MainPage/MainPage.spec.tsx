@@ -4,8 +4,18 @@ import "@testing-library/jest-dom";
 
 import { fireEvent, render, screen } from "@testing-library/react";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "../../context/AuthContext";
 import { MainPage } from "./MainPage";
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false, // avoids retry delays in tests
+      },
+    },
+  });
 
 // Mock the credentials module
 jest.mock("../../../common/credentials", () => ({
@@ -34,11 +44,18 @@ jest.mock("../ResourcesTab/ResourcesTab", () => ({
   ResourcesTab: () => <div data-testid="resources-tab">Resources Tab Content</div>,
 }));
 
+jest.mock("../TrialCountHeader/TrialCountHeader", () => ({
+  TrialCountHeader: () => <div data-testid="trial-count">Trial count header</div>,
+}));
+
 describe("MainPage", () => {
   const renderMainPage = () => {
+    const testQueryClient = createTestQueryClient();
     return render(
       <AuthProvider>
-        <MainPage />
+        <QueryClientProvider client={testQueryClient}>
+          <MainPage />
+        </QueryClientProvider>
       </AuthProvider>
     );
   };

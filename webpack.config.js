@@ -81,6 +81,10 @@ module.exports = async (env, options) => {
             fullySpecified: false, // Disable the strict extension requirement
           },
         },
+        {
+          test: /\.s[ac]ss$/i,
+          use: ["style-loader", "css-loader", "sass-loader"],
+        },
       ],
     },
     plugins: [

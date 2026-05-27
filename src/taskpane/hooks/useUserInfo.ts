@@ -27,7 +27,9 @@ query UserInfo {
     }
   }
   currentAssociate {
-    name
+     id
+     name
+     effectiveTo
   }
 }
 `;
@@ -58,6 +60,7 @@ const fetchUserInfo = async (token: string): Promise<UserInfo> => {
     lastName: me.contact.lastName,
     email: me.contact.emailAddress,
     orgName: currentAssociate.name,
+    effectiveTo: currentAssociate.effectiveTo,
     orgId: me.tenantId.toString(),
     languageCode: me.languageCode,
     timeZoneId: me.timeZoneId,

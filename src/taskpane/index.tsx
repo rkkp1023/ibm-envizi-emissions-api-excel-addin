@@ -1,6 +1,6 @@
 // Copyright IBM Corp. 2025, 2026
 
-import "./reset.css";
+import "./styles.scss";
 import "./taskpane.css";
 
 import React from "react";

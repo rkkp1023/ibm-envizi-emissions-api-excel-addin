@@ -13,6 +13,12 @@ jest.mock("axios");
 jest.mock("jwt-decode");
 jest.mock("./useAuth");
 
+jest.mock("./useUserInfo", () => ({
+  useUserInfo: jest.fn(() => ({
+    data: { id: 1, name: "Test User" },
+  })),
+}));
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const mockedJwtDecode = jwtDecode as jest.MockedFunction<typeof jwtDecode>;
 
