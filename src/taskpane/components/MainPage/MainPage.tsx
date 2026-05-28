@@ -1,10 +1,11 @@
 // Copyright IBM Corp. 2026
 
 import { Tab, TabList } from "@fluentui/react-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAccountSubscription } from "../../hooks";
 import { AccountTab } from "../AccountTab/AccountTab";
+import { ActivityRecommender } from "../ActivityRecommender/ActivityRecommender";
 import { QuickHelpTab } from "../QuickHelpTab/QuickHelpTab";
 import { ResourcesTab } from "../ResourcesTab/ResourcesTab";
 import { TrialCountHeader } from "../TrialCountHeader/TrialCountHeader";
@@ -13,8 +14,35 @@ type TabValue = "quickHelp" | "account" | "resources";
 
 export function MainPage() {
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
+  const [contextData, setContextData] = useState<any>(null);
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
+
+  useEffect(() => {
+    const handleContextAction = (event: CustomEvent<any>) => {
+      const data = event.detail;
+      if (!data) return;
+      if (data.payload) {
+        setContextData(data.payload);
+      }
+    };
+
+    window.addEventListener("CONTEXT_ACTION", handleContextAction as EventListener);
+
+    if (window.recommendedParams) {
+      handleContextAction({
+        detail: window.recommendedParams,
+      } as CustomEvent);
+    }
+
+    return () => {
+      window.removeEventListener("CONTEXT_ACTION", handleContextAction as EventListener);
+    };
+  }, []);
+
+  if (contextData) {
+    return <ActivityRecommender />;
+  }
 
   return (
     <>

@@ -14,6 +14,17 @@ import {
   openTaskpane,
 } from "./commands";
 import { ActivityTypeOption, AreaTypeOption } from "./data-validation-manager";
+import { getParamsFromCell } from "./formula-parser";
+
+declare global {
+  interface Window {
+    recommendedParams?: RecommendedParams;
+  }
+}
+
+export interface RecommendedParams {
+  payload: any;
+}
 
 /**
  * Logs a success message to the console
@@ -27,38 +38,34 @@ function logSuccess(message: string): void {
  */
 function showErrorNotification(message: string): void {
   console.error(`[Add-in ❌ ERROR] ${message}`);
-  
+
   try {
     // Ensure message is a string and not undefined/null
     const safeMessage = message || "An error occurred";
     const encodedMessage = encodeURIComponent(safeMessage);
     // Use /excel-addin root path for server deployment
-    const basePath = getEnvType() === 'local' ? '' : '/excel-addin';
+    const basePath = getEnvType() === "local" ? "" : "/excel-addin";
     const notificationUrl = `${window.location.origin}${basePath}/commands/notification.html?message=${encodedMessage}`;
-      
+
     console.log("Opening notification dialog with URL:", notificationUrl);
-    
-    Office.context.ui.displayDialogAsync(
-      notificationUrl,
-      { height: 40, width: 40 },
-      (result) => {
-        if (result.status === Office.AsyncResultStatus.Succeeded) {
-          console.log("Notification dialog opened successfully");
-          // Listen for close message from dialog
-          result.value.addEventHandler(Office.EventType.DialogMessageReceived, () => {
-            try {
-              result.value.close();
-            } catch (e) {
-              // Dialog already closed, ignore
-              console.log("Dialog already closed");
-            }
-          });
-        } else {
-          // Dialog failed, but error is already in console
-          console.error("Failed to show error dialog:", result.error);
-        }
+
+    Office.context.ui.displayDialogAsync(notificationUrl, { height: 40, width: 40 }, (result) => {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        console.log("Notification dialog opened successfully");
+        // Listen for close message from dialog
+        result.value.addEventHandler(Office.EventType.DialogMessageReceived, () => {
+          try {
+            result.value.close();
+          } catch (e) {
+            // Dialog already closed, ignore
+            console.log("Dialog already closed");
+          }
+        });
+      } else {
+        // Dialog failed, but error is already in console
+        console.error("Failed to show error dialog:", result.error);
       }
-    );
+    });
   } catch (error) {
     // Dialog API failed, error already in console
     console.error("Error dialog error:", error);
@@ -132,37 +139,83 @@ async function actionInsertUnits(event: Office.AddinCommands.Event): Promise<voi
   }
 }
 
+/**
+ * Command handler for IBM Envizi Suggestions context menu
+ * Opens task pane and shows recommendations in the Suggestions tab
+ */
+async function actionShowActivityRecommendation(event: Office.AddinCommands.Event): Promise<void> {
+  try {
+    await Excel.run(async (context) => {
+      const range = context.workbook.getSelectedRange();
+      range.load(["address", "values"]);
+      await context.sync();
+
+      const value = range.values[0][0];
+      if (value === null || value === "") {
+        showErrorNotification(
+          "The selected cell is empty. Please choose a valid cell or enter data before proceeding"
+        );
+      }
+
+      const cellAddress = range.address.split("!")[1]; // Remove sheet name
+
+      // Get parameters from cell (with formula detection)
+      const params = await getParamsFromCell(cellAddress, context);
+
+      // Store in-memory for task pane to read
+      window.recommendedParams = {
+        payload: params,
+      };
+
+      // Open task pane first
+      await openTaskpane();
+
+      window.dispatchEvent(
+        new CustomEvent("CONTEXT_ACTION", {
+          detail: window.recommendedParams,
+        })
+      );
+    });
+
+    event.completed();
+  } catch (error) {
+    const errorMessage = error?.message || error?.toString() || "Failed to process request";
+    showErrorNotification(`Error: ${errorMessage}`);
+    event.completed();
+  }
+}
+
 // Register command handlers globally for Office to call
 (globalThis as any).actionOpenTaskpane = actionOpenTaskpane;
 
 // Register activity type handlers
 [
-  { name: 'All', type: 'all' },
-  { name: 'Location', type: 'location' },
-  { name: 'Stationary', type: 'stationary' },
-  { name: 'Mobile', type: 'mobile' },
-  { name: 'Fugitive', type: 'fugitive' },
-  { name: 'TransportationDistribution', type: 'transportation-and-distribution' },
-  { name: 'EconomicActivity', type: 'economic-activity' },
-  { name: 'RealEstate', type: 'real-estate' },
+  { name: "All", type: "all" },
+  { name: "Location", type: "location" },
+  { name: "Stationary", type: "stationary" },
+  { name: "Mobile", type: "mobile" },
+  { name: "Fugitive", type: "fugitive" },
+  { name: "TransportationDistribution", type: "transportation-and-distribution" },
+  { name: "EconomicActivity", type: "economic-activity" },
+  { name: "RealEstate", type: "real-estate" },
 ].forEach(({ name, type }) => {
-  (globalThis as any)[`actionInsertActivityType_${name}`] =
-    async (event: Office.AddinCommands.Event) =>
-      actionInsertActivityType(event, type as ActivityTypeOption);
+  (globalThis as any)[`actionInsertActivityType_${name}`] = async (
+    event: Office.AddinCommands.Event
+  ) => actionInsertActivityType(event, type as ActivityTypeOption);
 });
 
 // Register area type handlers
 [
-  { name: 'Country', type: 'country' },
-  { name: 'StateProvince', type: 'stateprovince' },
-  { name: 'PowerGrid', type: 'powergrid' },
+  { name: "Country", type: "country" },
+  { name: "StateProvince", type: "stateprovince" },
+  { name: "PowerGrid", type: "powergrid" },
 ].forEach(({ name, type }) => {
-  (globalThis as any)[`actionInsertArea_${name}`] =
-    async (event: Office.AddinCommands.Event) =>
-      actionInsertArea(event, type as AreaTypeOption);
+  (globalThis as any)[`actionInsertArea_${name}`] = async (event: Office.AddinCommands.Event) =>
+    actionInsertArea(event, type as AreaTypeOption);
 });
 
 (globalThis as any).actionInsertUnits = actionInsertUnits;
+(globalThis as any).actionShowActivityRecommendation = actionShowActivityRecommendation;
 
 // Initialize Office
 Office.onReady(() => {

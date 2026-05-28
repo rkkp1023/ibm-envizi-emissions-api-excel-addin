@@ -14,25 +14,27 @@
  * extractSymbolFromDisplay("USA") // Returns: "USA" (backward compatible)
  */
 export function extractSymbolFromDisplay(displayValue: string | undefined): string | undefined {
-  if (!displayValue || typeof displayValue !== 'string') {
+  if (!displayValue || typeof displayValue !== "string") {
     return displayValue;
   }
-  
+
   const trimmed = displayValue.trim();
-  
+
   // Extract symbol from "Symbol (Name)" format using string operations
   // This approach is safe from ReDoS attacks and more performant
-  const firstOpenParen = trimmed.indexOf('(');
-  const lastCloseParen = trimmed.lastIndexOf(')');
-  
+  const firstOpenParen = trimmed.indexOf("(");
+  const lastCloseParen = trimmed.lastIndexOf(")");
+
   // Check if we have valid parentheses: "symbol (name)"
-  if (firstOpenParen > 0 &&
-      lastCloseParen === trimmed.length - 1 &&
-      firstOpenParen < lastCloseParen) {
+  if (
+    firstOpenParen > 0 &&
+    lastCloseParen === trimmed.length - 1 &&
+    firstOpenParen < lastCloseParen
+  ) {
     // Extract and return the content BEFORE the opening parenthesis
     return trimmed.substring(0, firstOpenParen).trim();
   }
-  
+
   // No valid parentheses pattern found, return original (backward compatible)
   return trimmed;
 }
@@ -50,20 +52,20 @@ export function extractSymbolFromDisplay(displayValue: string | undefined): stri
  * extractValueAfterDash("California") // Returns: "California" (backward compatible)
  */
 export function extractValueAfterDash(displayValue: string | undefined): string | undefined {
-  if (!displayValue || typeof displayValue !== 'string') {
+  if (!displayValue || typeof displayValue !== "string") {
     return displayValue;
   }
-  
+
   const trimmed = displayValue.trim();
-  
+
   // Find the dash separator
-  const dashIndex = trimmed.indexOf(' - ');
-  
+  const dashIndex = trimmed.indexOf(" - ");
+
   // If dash found, extract the part after it
   if (dashIndex > 0 && dashIndex < trimmed.length - 3) {
     return trimmed.substring(dashIndex + 3).trim();
   }
-  
+
   // No dash pattern found, return original (backward compatible)
   return trimmed;
 }
@@ -93,12 +95,12 @@ export function parseBooleanParameter(
   if (value === undefined || value === null) {
     return defaultValue;
   }
-  
+
   // Handle string input - case-insensitive comparison
   if (typeof value === "string") {
     return value.trim().toLowerCase() === "true";
   }
-  
+
   // Handle boolean input
   return value === true;
 }
@@ -120,17 +122,17 @@ export function buildHeadersList(
   getOutputHeadersFn: () => string[]
 ): string[] {
   let headersList: string[] = [];
-  
+
   if (showInput) {
     const inputHeaders = getInputHeadersFn();
     headersList = [...inputHeaders];
   }
-  
+
   if (showOutput) {
     const outputHeaders = getOutputHeadersFn();
     headersList = [...headersList, ...outputHeaders];
   }
-  
+
   return headersList;
 }
 
@@ -156,7 +158,9 @@ export function convertExcelDateToISO(input: string): string {
     // Validate that it's actually a valid date
     const date = new Date(trimmed);
     if (isNaN(date.getTime())) {
-      throw new Error(`Date should be in YYYY-MM-DD format. Invalid date values provided: "${trimmed}"`);
+      throw new Error(
+        `Date should be in YYYY-MM-DD format. Invalid date values provided: "${trimmed}"`
+      );
     }
     return trimmed;
   }
@@ -166,20 +170,23 @@ export function convertExcelDateToISO(input: string): string {
   if (!isNaN(asNumber) && asNumber > 20000) {
     const date = new Date(Math.round((asNumber - 25569) * 86400 * 1000));
     if (isNaN(date.getTime())) {
-      throw new Error(`Date should be in YYYY-MM-DD format. Invalid Excel serial date: "${trimmed}"`);
+      throw new Error(
+        `Date should be in YYYY-MM-DD format. Invalid Excel serial date: "${trimmed}"`
+      );
     }
     return date.toISOString().split("T")[0];
   }
 
   // Case 3: Invalid format - throw error
-  throw new Error(`Date should be in YYYY-MM-DD format. Invalid date format provided: "${trimmed}"`);
+  throw new Error(
+    `Date should be in YYYY-MM-DD format. Invalid date format provided: "${trimmed}"`
+  );
 }
-
 
 /**
  * Builds common search parameters for API calls with activity and location
  * This utility reduces code duplication between factorSearch and typeRecommender
- * 
+ *
  * @param search - Search query string
  * @param country - ISO alpha-3 country code
  * @param stateProvince - Optional geographic state or province
@@ -198,7 +205,7 @@ export function buildSearchParams(
 ): any {
   // Extract country code from display format: "USA (United States)" → "USA"
   const countryCode = extractSymbolFromDisplay(country?.trim()) || country?.trim();
-  
+
   const params: any = {
     activity: { search },
     location: { country: countryCode },

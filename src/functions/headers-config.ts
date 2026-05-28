@@ -42,12 +42,15 @@ export const HEADER_FIELDS = {
   STATE_PROVINCE: { apiResponseName: "stateProvince", displayName: "StateProvince" },
   DATE: { apiResponseName: "date", displayName: "Date" },
   POWER_GRID: { apiResponseName: "powerGrid", displayName: "Power Grid" },
-  
-  // Recommender-specific input fields (used when includeDataTypeRecommender=true)
-  RECOMMENDED_ACTIVITY_TYPE: { apiResponseName: "activityType", displayName: "Recommended Activity Type" },
+
+  // Recommender-specific input fields (used when includeRecommendActivityType=true)
+  RECOMMENDED_ACTIVITY_TYPE: {
+    apiResponseName: "activityType",
+    displayName: "Recommended Activity Type",
+  },
   CONFIDENCE: { apiResponseName: "confidence", displayName: "Confidence(%)" },
   ACTIVITY_DESCRIPTION: { apiResponseName: "activityDescription", displayName: "Description" },
-  
+
   // Standard emission output fields
   TOTAL_CO2E: { apiResponseName: "totalCO2e", displayName: "TotalCO2e" },
   CO2: { apiResponseName: "CO2", displayName: "CO2" },
@@ -59,12 +62,12 @@ export const HEADER_FIELDS = {
   NF3: { apiResponseName: "NF3", displayName: "NF3" },
   BIO_CO2: { apiResponseName: "bioCO2", displayName: "BioCO2" },
   INDIRECT_CO2E: { apiResponseName: "indirectCO2e", displayName: "IndirectCO2e" },
-  
+
   // Metadata output fields
   OUTPUT_UNIT: { apiResponseName: "unit", displayName: "Unit" },
   DESCRIPTION: { apiResponseName: "description", displayName: "Description" },
   TRANSACTION_ID: { apiResponseName: "transactionId", displayName: "Transaction Id" },
-  
+
   // Factor-specific fields
   FACTOR_SET: { apiResponseName: "factorSet", displayName: "Factor Set" },
   SOURCE: { apiResponseName: "source", displayName: "Source" },
@@ -77,22 +80,25 @@ export const HEADER_FIELDS = {
   PUBLISHED_TO: { apiResponseName: "publishedTo", displayName: "Published To" },
   REGION: { apiResponseName: "region", displayName: "Region" },
   FACTOR_ID: { apiResponseName: "factorId", displayName: "Factor Id" },
-  
+
   // Factor ID input fields
   FACTOR_ID_INPUT: { apiResponseName: "factorId", displayName: "factorId" },
   FACTOR_VALUE: { apiResponseName: "value", displayName: "value" },
   FACTOR_UNIT: { apiResponseName: "unit", displayName: "unit" },
-  
+
   // Factor search input fields
   SEARCH: { apiResponseName: "search", displayName: "Search" },
   SEARCH_UNIT: { apiResponseName: "unit", displayName: "Unit" },
   SEARCH_SCOPE: { apiResponseName: "scope", displayName: "Scope" },
   PAGE: { apiResponseName: "page", displayName: "Page" },
   SIZE: { apiResponseName: "size", displayName: "Size" },
-  
+
   // Economic Activity and Real Estate specific output fields
   ENERGY: { apiResponseName: "energy(MWh)", displayName: "Energy (MWh)" },
-  ASSET_TURNOVER_RATIO: { apiResponseName: "assetTurnoverRatio", displayName: "Asset Turn Over Ratio" },
+  ASSET_TURNOVER_RATIO: {
+    apiResponseName: "assetTurnoverRatio",
+    displayName: "Asset Turn Over Ratio",
+  },
 } as const;
 
 /**
@@ -256,13 +262,21 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
   economic_activity: {
     inputHeaders: BASE_INPUT_HEADERS,
     inputHeadersWithRecommender: BASE_INPUT_HEADERS_WITH_RECOMMENDER,
-    outputHeaders: [...STANDARD_OUTPUT_HEADERS, HEADER_FIELDS.ENERGY, HEADER_FIELDS.ASSET_TURNOVER_RATIO],
+    outputHeaders: [
+      ...STANDARD_OUTPUT_HEADERS,
+      HEADER_FIELDS.ENERGY,
+      HEADER_FIELDS.ASSET_TURNOVER_RATIO,
+    ],
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   real_estate: {
     inputHeaders: BASE_INPUT_HEADERS,
     inputHeadersWithRecommender: BASE_INPUT_HEADERS_WITH_RECOMMENDER,
-    outputHeaders: [...STANDARD_OUTPUT_HEADERS, HEADER_FIELDS.ENERGY, HEADER_FIELDS.ASSET_TURNOVER_RATIO],
+    outputHeaders: [
+      ...STANDARD_OUTPUT_HEADERS,
+      HEADER_FIELDS.ENERGY,
+      HEADER_FIELDS.ASSET_TURNOVER_RATIO,
+    ],
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   factor: {
@@ -321,13 +335,13 @@ export const VALID_FUNCTION_NAMES = Object.keys(FUNCTION_NAME_CONFIGS) as Functi
  * Get input headers for a specific function
  * @param functionName - The function name type
  * @param useFactorId - Whether to return factorId-based headers (default: false)
- * @param includeDataTypeRecommender - Whether to include data type recommender headers (default: false)
+ * @param includeRecommendActivityType - Whether to include activity type recommender headers (default: false)
  * @returns Array of input header display names
  */
 export function getInputHeaders(
   functionName: FunctionNameType,
   useFactorId: boolean = false,
-  includeDataTypeRecommender: boolean = false
+  includeRecommendActivityType: boolean = false
 ): string[] {
   const config = FUNCTION_NAME_CONFIGS[functionName];
   if (!config) {
@@ -335,16 +349,16 @@ export function getInputHeaders(
   }
 
   let headerFields: readonly HeaderField[];
-  
+
   if (useFactorId && config.factorIdInputHeaders) {
     headerFields = config.factorIdInputHeaders;
-  } else if (includeDataTypeRecommender && config.inputHeadersWithRecommender) {
+  } else if (includeRecommendActivityType && config.inputHeadersWithRecommender) {
     headerFields = config.inputHeadersWithRecommender;
   } else {
     headerFields = config.inputHeaders;
   }
 
-  return headerFields.map(field => field.displayName);
+  return headerFields.map((field) => field.displayName);
 }
 
 /**
@@ -358,7 +372,7 @@ export function getOutputHeaders(functionName: FunctionNameType): string[] {
     throw new Error(`Invalid function name: ${functionName}`);
   }
 
-  return config.outputHeaders.map(field => field.displayName);
+  return config.outputHeaders.map((field) => field.displayName);
 }
 
 /**

@@ -48,6 +48,12 @@ jest.mock("../TrialCountHeader/TrialCountHeader", () => ({
   TrialCountHeader: () => <div data-testid="trial-count">Trial count header</div>,
 }));
 
+jest.mock("../ActivityRecommender/ActivityRecommender", () => ({
+  ActivityRecommender: () => (
+    <div data-testid="activity-recommender">Activity Recommender loaded</div>
+  ),
+}));
+
 describe("MainPage", () => {
   const renderMainPage = () => {
     const testQueryClient = createTestQueryClient();
