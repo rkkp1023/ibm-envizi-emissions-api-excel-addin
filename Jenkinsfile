@@ -28,7 +28,7 @@ sterlingPipeline {
             sh 'curl -fLo /tmp/awscli/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.53.zip"'
             sh 'unzip /tmp/awscli/awscliv2.zip -d /tmp/awscli'
             sh 'sudo /tmp/awscli/aws/install --update'
-'
+
             // Now copy up the dist folder into the ghg-deploy-dev bucket
             sh 'ls -l ./dist'
             sh 'aws --endpoint https://s3.us.cloud-object-storage.appdomain.cloud s3 sync --delete ./dist s3://ghg-plugins-dev --acl public-read'
