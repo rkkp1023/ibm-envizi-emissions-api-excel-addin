@@ -1,4 +1,4 @@
-@Library(['ai-apps-shared-pipeline', 'ei-offering-config@ghg_s3_creds']) _
+@Library(['ai-apps-shared-pipeline', 'ei-offering-config']) _
 
 sterlingPipeline {
     repoName = "ibm-envizi-emissions-api-excel-addin-internal"
