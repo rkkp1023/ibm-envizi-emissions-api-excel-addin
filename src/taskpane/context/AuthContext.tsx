@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2026
 
 import { jwtDecode } from "jwt-decode";
+import isEqual from "lodash/isEqual";
 import { createContext, ReactNode, useCallback, useEffect, useReducer } from "react";
 
 import { coreEnviziAuth } from "../../api/coreEnviziAuth";
@@ -13,7 +14,7 @@ import {
   saveUserCredentialsToStorage,
   UserCredentials,
 } from "../../common/credentials";
-import { ensureClient } from "../../functions/client";
+import { ensureClient, resetClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
 import { performLogout } from "../services/authService";
 import { AuthState } from "../types/auth.types";
@@ -43,7 +44,7 @@ async function refreshToken(userCredentials: UserCredentials): Promise<UserCrede
     refreshToken: userCredentials.refreshToken,
   });
   if (!renewResponse.data?.renewToken) {
-    throw new RefreshTokenError("Failed to refresh token.", renewResponse.errors);
+    throw new RefreshTokenError("Failed to refresh token.", renewResponse.errors!);
   }
   const newCoreToken = await coreEnviziAuth.exchangeToken(renewResponse.data.renewToken.token);
   return {
@@ -66,7 +67,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   // Initialize on mount
   useEffect(() => {
     const initialize = async () => {
-      let credentials: Credentials;
+      let credentials: Credentials | null = null;
       try {
         credentials = await loadCredentialsFromStorage();
       } catch (error) {
@@ -77,7 +78,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       // Check token expiry
       if (credentials?.["token"]) {
         const decodedToken = jwtDecode(credentials["token"]);
-        if (Date.now() >= decodedToken.exp * 1000) {
+        if (Date.now() >= decodedToken.exp! * 1000) {
           // Token expired, discard it
           console.log("Token has expired; removing from storage.");
           credentials = null;
@@ -92,14 +93,14 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
       // Refresh metadata on initialization if credentials exist (non-blocking)
       if (credentials) {
-        refreshMetadataOnLogin().catch((error) => {
-          console.error("Failed to refresh metadata on initialization:", error);
-        });
+        refreshMetadataOnLogin();
       }
     };
 
-    initialize();
-  }, []);
+    if (!state.isInitialized) {
+      initialize();
+    }
+  }, [state.isInitialized]);
 
   // Automatically refresh token
   useEffect(() => {
@@ -110,12 +111,13 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     const refreshTimeoutMinutes = 10;
     console.log(`Setting a ${refreshTimeoutMinutes}-minute token refresh timer`);
 
-    let intervalId = setInterval(() => {
+    let intervalId: ReturnType<typeof setInterval> | undefined = setInterval(() => {
       console.log("Refreshing token...");
       refreshToken(state.credentials as UserCredentials).then(
         (newCredentials) => {
           console.log("Received new credentials:", newCredentials);
           saveUserCredentialsToStorage(newCredentials);
+          ensureClient(newCredentials);
           dispatch({
             type: "refreshCredentials",
             payload: { credentials: newCredentials },
@@ -142,12 +144,12 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   // Automatically log out
   useEffect(() => {
-    if (!state.credentials?.["refreshToken"]) {
+    if (!state.credentials?.refreshToken) {
       return;
     }
 
-    const decodedToken = jwtDecode(state.credentials["refreshToken"]);
-    const expiry = decodedToken.exp * 1000;
+    const decodedToken = jwtDecode(state.credentials.refreshToken);
+    const expiry = decodedToken.exp! * 1000;
     const delay = expiry - Date.now();
     console.log(`Setting a ${(delay / msPerMinute).toFixed(2)}-minute logout timer`);
 
@@ -158,17 +160,63 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     };
   }, [state.credentials]);
 
+  // Sync across multiple windows
+  useEffect(() => {
+    const syncAuthState = () => {
+      const authSyncTimeoutMinutes = 5;
+      console.log(`Setting a ${authSyncTimeoutMinutes}-minute auth state sync timer`);
+
+      const intervalId = setInterval(async () => {
+        try {
+          const storageCredentials = await loadCredentialsFromStorage();
+
+          if (!isEqual(storageCredentials, state.credentials)) {
+            console.log("Auth state changed in another window");
+            if (storageCredentials) {
+              // Login or refresh
+              ensureClient(storageCredentials);
+              if (state.credentials) {
+                dispatch({
+                  type: "refreshCredentials",
+                  payload: { credentials: storageCredentials },
+                });
+              } else {
+                // Refresh metadata on login (non-blocking)
+                refreshMetadataOnLogin();
+                dispatch({
+                  type: "loginSuccess",
+                  payload: { credentials: storageCredentials },
+                });
+              }
+            } else {
+              // Logout case
+              resetClient();
+              dispatch({ type: "logout" });
+            }
+          }
+        } catch (error) {
+          console.error("Error during auth state sync:", error);
+        }
+      }, authSyncTimeoutMinutes * msPerMinute);
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    };
+
+    if (state.isInitialized) {
+      return syncAuthState();
+    }
+  }, [state.isInitialized, state.credentials]);
+
   const displayLogin = useCallback(() => {
     displayLoginDialog(
       async (credentials) => {
-        // Token-based login: Save user credentials to storage for persistence
+        // Save user credentials to storage for persistence
         saveUserCredentialsToStorage(credentials);
         ensureClient(credentials);
-
         // Refresh metadata on login (non-blocking)
-        refreshMetadataOnLogin().catch((error) => {
-          console.error("Failed to refresh metadata on login:", error);
-        });
+        refreshMetadataOnLogin();
 
         dispatch({
           type: "loginSuccess",

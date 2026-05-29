@@ -147,7 +147,7 @@ module.exports = async (env, options) => {
       }),
     ],
     performance: {
-      maxEntrypointSize: 614400,
+      maxEntrypointSize: 1048576,
       maxAssetSize: 1048576,
     },
     devServer: {

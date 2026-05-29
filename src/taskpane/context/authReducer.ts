@@ -4,7 +4,7 @@ import { Credentials } from "../../common/credentials";
 import { AuthState } from "../types/auth.types";
 
 export type AuthAction =
-  | { type: "initialize"; payload: { credentials: Credentials } }
+  | { type: "initialize"; payload: { credentials: Credentials | null } }
   | { type: "refreshCredentials"; payload: { credentials: Credentials } }
   | {
       type: "loginSuccess";
