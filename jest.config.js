@@ -1,3 +1,5 @@
+// Copyright IBM Corp. 2025, 2026
+
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
@@ -6,7 +8,7 @@ module.exports = {
   testMatch: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
   collectCoverage: true,
-  coverageDirectory: "dist/coverage",
+  coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov"],
   coveragePathIgnorePatterns: ["/node_modules/", "/dist/", "/lib/"],
   transform: {
