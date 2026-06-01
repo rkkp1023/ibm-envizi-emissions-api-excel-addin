@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 export function TrialCountHeader(subscriptionInfo: Readonly<TrialCountHeaderProps>) {
   const styles = useStyles();
 
-  const trialCount = (subscriptionData: AccountSubscriptionData) => {
+  const trialCount = (subscriptionData: AccountSubscriptionData | undefined) => {
     const trialExpirationDate = subscriptionData?.ssmExpirationDate;
 
     if (!trialExpirationDate) return 0;
@@ -71,7 +71,7 @@ export function TrialCountHeader(subscriptionInfo: Readonly<TrialCountHeaderProp
   }
 
   const trialDaysRemaining = trialCount(subscriptionInfo.data);
-  const accountAndUsageUrl = getEnviziApiHomeUrl() + "/emissions/account-usage";
+  const accountAndUsageUrl = getEnviziApiHomeUrl() + "/account-usage";
 
   return (
     <Theme theme="g100">
