@@ -47,7 +47,7 @@ export function MainPage() {
   return (
     <>
       {shouldShowTrialCountHeader && <TrialCountHeader {...subscriptionInfo}></TrialCountHeader>}
-      <div className="page main-page">
+      <div className={"page main-page" + (shouldShowTrialCountHeader ? " with-header" : "")}>
         <TabList
           selectedValue={selectedTab}
           onTabSelect={(_, data) => setSelectedTab(data.value as TabValue)}

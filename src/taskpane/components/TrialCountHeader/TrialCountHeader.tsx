@@ -20,7 +20,6 @@ export interface TrialCountHeaderProps {
 
 const useStyles = makeStyles({
   trialHeader: {
-    position: "sticky",
     background: blue80,
   },
   trialCountHeader: {

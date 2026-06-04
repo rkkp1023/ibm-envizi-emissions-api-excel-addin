@@ -288,3 +288,7 @@ b {
   display: flex;
   justify-content: center;
 }
+
+.with-header {
+  margin-top: 3rem;
+}
