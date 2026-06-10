@@ -3,9 +3,10 @@
 import { Tab, TabList } from "@fluentui/react-components";
 import { useEffect, useState } from "react";
 
-import { useAccountSubscription } from "../../hooks";
+import { Theme } from "@carbon/react";
+import { useAccountSubscription, useCarbonTheme } from "../../hooks";
 import { AccountTab } from "../AccountTab/AccountTab";
-import { ActivityRecommender } from "../ActivityRecommender/ActivityRecommender";
+import { ActivityTypeRecommender } from "../ActivityTypeRecommender/ActivityTypeRecommender";
 import { QuickHelpTab } from "../QuickHelpTab/QuickHelpTab";
 import { ResourcesTab } from "../ResourcesTab/ResourcesTab";
 import { TrialCountHeader } from "../TrialCountHeader/TrialCountHeader";
@@ -13,6 +14,7 @@ import { TrialCountHeader } from "../TrialCountHeader/TrialCountHeader";
 type TabValue = "quickHelp" | "account" | "resources";
 
 export function MainPage() {
+  const theme = useCarbonTheme();
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
   const [contextData, setContextData] = useState<any>(null);
   const subscriptionInfo = useAccountSubscription();
@@ -41,7 +43,11 @@ export function MainPage() {
   }, []);
 
   if (contextData) {
-    return <ActivityRecommender />;
+    return (
+      <Theme theme={theme.theme}>
+        <ActivityTypeRecommender />
+      </Theme>
+    );
   }
 
   return (

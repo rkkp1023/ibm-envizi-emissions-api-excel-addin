@@ -1,0 +1,115 @@
+// Copyright IBM Corp. 2026
+
+@use "@carbon/layout/scss/spacing";
+@use "@carbon/themes/scss/tokens";
+@use "@carbon/type";
+
+.activity-type-table-container {
+  width: 100vw;
+  padding-inline: spacing.$spacing-05;
+  overflow-x: auto;
+}
+
+// selected row state - highlighted with border and background
+.activity-type-selected-row {
+  background-color: tokens.$layer-01;
+
+  // Apply border to first cell to ensure visibility
+  td:first-child {
+    border-left: 3px solid tokens.$border-interactive;
+  }
+}
+
+.activity-type-table-row__activity-cell {
+  display: flex;
+}
+
+.activity-type-table-row__radio-wrapper {
+  flex-shrink: 0;
+}
+
+.activity-type-table-row__content {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+
+  // Collapsed state: truncate text with ellipsis
+  > div,
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// Collapsed state (default): inline display with ellipsis
+.activity-type-table-row__metadata {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  .activity-type-table-row__region,
+  .activity-type-table-row__details-list {
+    display: inline;
+  }
+
+  .activity-type-table-row__details-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .activity-type-table-row__details-item {
+    display: inline;
+
+    &::before {
+      content: "• ";
+    }
+  }
+}
+
+// Selected state: column layout with full content visible
+.activity-type-selected-row .activity-type-table-row__metadata {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-02;
+  overflow: visible;
+  white-space: normal;
+
+  .activity-type-table-row__region,
+  .activity-type-table-row__details-list {
+    display: flex;
+  }
+
+  .activity-type-table-row__details-list {
+    flex-direction: column;
+    gap: spacing.$spacing-01;
+    list-style: disc;
+    list-style-position: inside;
+    padding-left: spacing.$spacing-03;
+  }
+
+  .activity-type-table-row__details-item {
+    display: list-item;
+    margin: 0;
+
+    &::before {
+      content: none;
+    }
+  }
+}
+
+.activity-type-table-row__region {
+  display: flex;
+  align-items: center;
+  gap: spacing.$spacing-02;
+}
+
+.activity-type-table-row__confidence-cell {
+  text-align: center;
+}
+
+.activity-type-pagination-container {
+  display: flex;
+  justify-content: center;
+}
