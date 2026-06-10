@@ -15,6 +15,7 @@ export type FunctionNameType =
   | "calculation"
   | "economic_activity"
   | "real_estate"
+  | "physical_activity"
   | "factor"
   | "factor_search"
   | "recommend_activity_type";
@@ -99,6 +100,13 @@ export const HEADER_FIELDS = {
     apiResponseName: "assetTurnoverRatio",
     displayName: "Asset Turn Over Ratio",
   },
+
+  // Attribution input fields (for real_estate and physical_activity)
+  OUTSTANDING_AMOUNT: { apiResponseName: "outstandingAmount", displayName: "Outstanding Amount" },
+  PROPERTY_VALUE: { apiResponseName: "propertyValue", displayName: "Property Value" },
+  TOTAL_EQUITY: { apiResponseName: "totalEquity", displayName: "Total Equity" },
+  TOTAL_DEBT: { apiResponseName: "totalDebt", displayName: "Total Debt" },
+  EVIC: { apiResponseName: "evic", displayName: "EVIC" },
 } as const;
 
 /**
@@ -270,6 +278,16 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
   },
   real_estate: {
+    inputHeaders: BASE_INPUT_HEADERS,
+    inputHeadersWithRecommender: BASE_INPUT_HEADERS_WITH_RECOMMENDER,
+    outputHeaders: [
+      ...STANDARD_OUTPUT_HEADERS,
+      HEADER_FIELDS.ENERGY,
+      HEADER_FIELDS.ASSET_TURNOVER_RATIO,
+    ],
+    factorIdInputHeaders: FACTOR_ID_INPUT_HEADERS,
+  },
+  physical_activity: {
     inputHeaders: BASE_INPUT_HEADERS,
     inputHeadersWithRecommender: BASE_INPUT_HEADERS_WITH_RECOMMENDER,
     outputHeaders: [
