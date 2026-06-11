@@ -9,6 +9,7 @@ import {
   RealEstate,
   Stationary,
   TransportationAndDistribution,
+  PhysicalActivity
 } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
