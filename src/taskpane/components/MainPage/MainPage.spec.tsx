@@ -2,36 +2,17 @@
 
 import "@testing-library/jest-dom";
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "../../context/AuthContext";
+import { useAccountSubscription, useCarbonTheme } from "../../hooks";
 import { MainPage } from "./MainPage";
 
-const createTestQueryClient = () =>
-  new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false, // avoids retry delays in tests
-      },
-    },
-  });
-
-// Mock the credentials module
-jest.mock("../../../common/credentials", () => ({
-  loadCredentialsFromStorage: jest.fn().mockResolvedValue(null),
-  saveUserCredentialsToStorage: jest.fn(),
-  removeCredentialsFromStorage: jest.fn(),
-  setUserCredentials: jest.fn(),
+jest.mock("../../hooks", () => ({
+  useAccountSubscription: jest.fn(),
+  useCarbonTheme: jest.fn(),
 }));
 
-// Mock the client module
-jest.mock("../../../functions/client", () => ({
-  ensureClient: jest.fn().mockResolvedValue(undefined),
-  resetClient: jest.fn(),
-}));
-
-// Mock child components
 jest.mock("../QuickHelpTab/QuickHelpTab", () => ({
   QuickHelpTab: () => <div data-testid="quick-help-tab">Quick Help Content</div>,
 }));
@@ -45,78 +26,189 @@ jest.mock("../ResourcesTab/ResourcesTab", () => ({
 }));
 
 jest.mock("../TrialCountHeader/TrialCountHeader", () => ({
-  TrialCountHeader: () => <div data-testid="trial-count">Trial count header</div>,
+  TrialCountHeader: jest.fn(() => <div data-testid="trial-count-header">Trial count header</div>),
 }));
 
-jest.mock("../ActivityRecommender/ActivityRecommender", () => ({
-  ActivityRecommender: () => (
-    <div data-testid="activity-recommender">Activity Recommender loaded</div>
+jest.mock("../ActivityTypeRecommender/ActivityTypeRecommender", () => ({
+  ActivityTypeRecommender: () => (
+    <div data-testid="activity-type-recommender">Activity Type Recommender loaded</div>
   ),
 }));
+
+const mockedUseAccountSubscription = jest.mocked(useAccountSubscription);
+const mockedUseCarbonTheme = jest.mocked(useCarbonTheme);
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
 describe("MainPage", () => {
   const renderMainPage = () => {
     const testQueryClient = createTestQueryClient();
+
     return render(
-      <AuthProvider>
-        <QueryClientProvider client={testQueryClient}>
-          <MainPage />
-        </QueryClientProvider>
-      </AuthProvider>
+      <QueryClientProvider client={testQueryClient}>
+        <MainPage />
+      </QueryClientProvider>
     );
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedUseCarbonTheme.mockReturnValue({
+      theme: "g100",
+    } as ReturnType<typeof useCarbonTheme>);
+    mockedUseAccountSubscription.mockReturnValue({
+      data: {
+        subscriptionType: "paid",
+      },
+    } as unknown as ReturnType<typeof useAccountSubscription>);
+    delete window.recommendedParams;
   });
 
-  it("should render the main page container with all tabs", () => {
-    renderMainPage();
-    const mainPage = screen.getByRole("tablist").closest(".page.main-page");
-    expect(mainPage).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /Quick help/i })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /Resources/i })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /Account/i })).toBeInTheDocument();
+  describe("Component Rendering", () => {
+    it("should render the main page container with all tabs", () => {
+      renderMainPage();
+
+      const mainPage = screen.getByRole("tablist").closest(".page.main-page");
+
+      expect(mainPage).toBeInTheDocument();
+      expect(screen.getByRole("tab", { name: /Quick help/i })).toBeInTheDocument();
+      expect(screen.getByRole("tab", { name: /Resources/i })).toBeInTheDocument();
+      expect(screen.getByRole("tab", { name: /Account/i })).toBeInTheDocument();
+    });
+
+    it("should initialize with Quick help tab selected", () => {
+      renderMainPage();
+
+      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
+
+      expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
+      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
+    });
+
+    it("should have proper ARIA roles", () => {
+      renderMainPage();
+
+      expect(screen.getByRole("tablist")).toBeInTheDocument();
+      expect(screen.getAllByRole("tab")).toHaveLength(3);
+    });
   });
 
-  it("should initialize with Quick help tab selected", () => {
-    renderMainPage();
-    const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
-    expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
+  describe("User Interactions and State Management", () => {
+    it("should switch tabs and update aria-selected attributes", () => {
+      renderMainPage();
+
+      const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
+      const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
+      const accountTab = screen.getByRole("tab", { name: /Account/i });
+
+      fireEvent.click(resourcesTab);
+      expect(resourcesTab).toHaveAttribute("aria-selected", "true");
+      expect(quickHelpTab).toHaveAttribute("aria-selected", "false");
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("quick-help-tab")).not.toBeInTheDocument();
+
+      fireEvent.click(accountTab);
+      expect(accountTab).toHaveAttribute("aria-selected", "true");
+      expect(resourcesTab).toHaveAttribute("aria-selected", "false");
+      expect(screen.getByTestId("account-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
+
+      fireEvent.click(quickHelpTab);
+      expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
+      expect(accountTab).toHaveAttribute("aria-selected", "false");
+      expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
+    });
   });
 
-  it("should switch tabs and update aria-selected attributes", () => {
-    renderMainPage();
-    const quickHelpTab = screen.getByRole("tab", { name: /Quick help/i });
-    const resourcesTab = screen.getByRole("tab", { name: /Resources/i });
-    const accountTab = screen.getByRole("tab", { name: /Account/i });
+  describe("Props Handling and Child Components", () => {
+    it("should render the trial count header and apply with-header class for trial subscriptions", () => {
+      mockedUseAccountSubscription.mockReturnValue({
+        data: {
+          subscriptionType: "trial",
+        },
+      } as unknown as ReturnType<typeof useAccountSubscription>);
 
-    // Switch to Resources
-    fireEvent.click(resourcesTab);
-    expect(resourcesTab).toHaveAttribute("aria-selected", "true");
-    expect(quickHelpTab).toHaveAttribute("aria-selected", "false");
-    expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
-    expect(screen.queryByTestId("quick-help-tab")).not.toBeInTheDocument();
+      renderMainPage();
 
-    // Switch to Account
-    fireEvent.click(accountTab);
-    expect(accountTab).toHaveAttribute("aria-selected", "true");
-    expect(resourcesTab).toHaveAttribute("aria-selected", "false");
-    expect(screen.getByTestId("account-tab")).toBeInTheDocument();
-    expect(screen.queryByTestId("resources-tab")).not.toBeInTheDocument();
+      expect(screen.getByTestId("trial-count-header")).toBeInTheDocument();
+      expect(screen.getByRole("tablist").closest(".page.main-page")).toHaveClass("with-header");
+    });
 
-    // Switch back to Quick help
-    fireEvent.click(quickHelpTab);
-    expect(quickHelpTab).toHaveAttribute("aria-selected", "true");
-    expect(accountTab).toHaveAttribute("aria-selected", "false");
-    expect(screen.getByTestId("quick-help-tab")).toBeInTheDocument();
-    expect(screen.queryByTestId("account-tab")).not.toBeInTheDocument();
+    it("should not render the trial count header for non-trial subscriptions", () => {
+      renderMainPage();
+
+      expect(screen.queryByTestId("trial-count-header")).not.toBeInTheDocument();
+      expect(screen.getByRole("tablist").closest(".page.main-page")).not.toHaveClass("with-header");
+    });
   });
 
-  it("should have proper ARIA roles", () => {
-    renderMainPage();
-    expect(screen.getByRole("tablist")).toBeInTheDocument();
-    expect(screen.getAllByRole("tab")).toHaveLength(3);
+  describe("Event Handlers and Callbacks", () => {
+    it("should render ActivityTypeRecommender when CONTEXT_ACTION event contains payload", () => {
+      renderMainPage();
+
+      act(() => {
+        window.dispatchEvent(
+          new CustomEvent("CONTEXT_ACTION", {
+            detail: {
+              payload: {
+                foo: "bar",
+              },
+            },
+          })
+        );
+      });
+
+      expect(screen.getByTestId("activity-type-recommender")).toBeInTheDocument();
+      expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    });
+
+    it("should ignore CONTEXT_ACTION event when detail is missing", () => {
+      renderMainPage();
+
+      act(() => {
+        window.dispatchEvent(new CustomEvent("CONTEXT_ACTION"));
+      });
+
+      expect(screen.queryByTestId("activity-type-recommender")).not.toBeInTheDocument();
+      expect(screen.getByRole("tablist")).toBeInTheDocument();
+    });
+
+    it("should ignore CONTEXT_ACTION event when payload is missing", () => {
+      renderMainPage();
+
+      act(() => {
+        window.dispatchEvent(
+          new CustomEvent("CONTEXT_ACTION", {
+            detail: {},
+          })
+        );
+      });
+
+      expect(screen.queryByTestId("activity-type-recommender")).not.toBeInTheDocument();
+      expect(screen.getByRole("tablist")).toBeInTheDocument();
+    });
+
+    it("should render ActivityTypeRecommender when window.recommendedParams contains payload", () => {
+      window.recommendedParams = {
+        payload: {
+          activityType: "test",
+        },
+      };
+
+      renderMainPage();
+
+      expect(screen.getByTestId("activity-type-recommender")).toBeInTheDocument();
+      expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    });
   });
 });

@@ -1,0 +1,11 @@
+// Copyright IBM Corp. 2026
+
+@use "@carbon/layout/scss/spacing";
+@use "@carbon/themes/scss/tokens";
+@use "@carbon/type";
+
+.activity-tab-item {
+  display: flex;
+  align-items: center;
+  gap: spacing.$spacing-03;
+}
