@@ -79,41 +79,6 @@ export async function readCellValues(
   return values;
 }
 
-/**
- * Parses the formula and extracts parameter values
- * @param formula The formula string
- * @param context Excel context
- * @returns Parsed parameters for the API call
- */
-// export async function parseFormulaParams(
-//   formula: string,
-//   context: Excel.RequestContext
-// ): Promise<FormulaParams> {
-//   const cellRefs = extractCellReferences(formula);
-
-//   if (!cellRefs.length) {
-//     throw new Error("No cell references found in formula");
-//   }
-
-//   // Read values from the referenced cells
-//   const values = await readCellValues(cellRefs, context);
-
-//   console.log("Cell values:", cellRefs, values);
-
-//   // Map values to parameters based on function signature:
-//   // recommend_activity_type(search, country, stateProvince?, unit?, scope?, date?)
-//   const params: FormulaParams = {
-//     search: values[0] || "",
-//     country: values[1] || "USA",
-//     stateProvince: values[2] || undefined,
-//     unit: values[3] || undefined,
-//     scope: values[4] || undefined,
-//     date: values[5] || undefined,
-//   };
-
-//   return params;
-// }
-
 export async function parseFormulaParams(
   formula: string,
   context: Excel.RequestContext
