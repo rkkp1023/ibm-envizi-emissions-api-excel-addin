@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 });
 
 export interface ActivityRecommenderProps {
-  context: context;
+  context?: context;
   onClose?: () => void;
 }
 
@@ -45,7 +45,7 @@ const fetchRecommendations = async (
       country: context.country,
       stateProvince: context.stateProvince,
       unit: context.unit,
-      scope: "",
+      scope: context.scope,
       date: context.date,
     };
 
@@ -71,11 +71,11 @@ export function ActivityTypeRecommender({ context, onClose }: Readonly<ActivityR
   // Fetch recommendations only when both search and country are available
   useEffect(() => {
     // Exit early if search or country is missing/empty
-    if (!context.search || !context.country) {
+    if (!context?.search || !context?.country) {
       return;
     }
     fetchRecommendations(context, setRecommendations, setIsLoading);
-  }, [context.search, context.country, context.stateProvince, context.unit, context.date]);
+  }, [context?.search, context?.country, context?.stateProvince, context?.unit, context?.date]);
 
   const handleRadioSelect = (recommendation: ActivityTypeRecommendation) => {
     setSelectedRecommendation(recommendation);
