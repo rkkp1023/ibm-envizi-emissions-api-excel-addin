@@ -84,23 +84,6 @@ export function ActivityTypeRecommender({ context, onClose }: Readonly<ActivityR
     console.log("Selected recommendation:", recommendation);
   };
 
-  const RenderActivityTypeTable = () => {
-    if (isLoading) {
-      return (
-        <div className={styles.loadingContainer}>
-          <InlineLoading description="Loading activity type recommendations..." />
-        </div>
-      );
-    }
-
-    return (
-      <ActivityTypeRecommenderTable
-        recommendations={recommendations}
-        onSelect={handleRadioSelect}
-      />
-    );
-  };
-
   return (
     <Tabs dismissable onTabCloseRequest={onClose}>
       <TabList fullWidth={true} className={styles.tabList}>
@@ -114,7 +97,16 @@ export function ActivityTypeRecommender({ context, onClose }: Readonly<ActivityR
       <TabPanels>
         <Stack as="div" gap={3}>
           <div className="activity-type-recom-container">
-            <RenderActivityTypeTable />
+            {isLoading ? (
+              <div className={styles.loadingContainer}>
+                <InlineLoading description="Loading activity type recommendations..." />
+              </div>
+            ) : (
+              <ActivityTypeRecommenderTable
+                recommendations={recommendations}
+                onSelect={handleRadioSelect}
+              />
+            )}
           </div>
         </Stack>
       </TabPanels>
