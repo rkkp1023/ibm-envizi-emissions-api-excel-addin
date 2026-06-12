@@ -374,6 +374,7 @@ export async function factor_by_id(factorId: number, unit?: string): Promise<any
  * @param country ISO alpha-3 country code
  * @param stateProvince Geographic state or province
  * @param date Activity date
+ * @param revenue Revenue for attribution
  */
 export async function economic_activity(
   type: string,
@@ -381,8 +382,11 @@ export async function economic_activity(
   unit: string,
   country: string,
   stateProvince?: string,
-  date?: string
+  date?: string,
+  revenue?: number
 ): Promise<any[][]> {
+  const attribution = revenue !== undefined ? { revenue } : undefined;
+
   return genericApiCall("economic_activity", {
     type,
     value,
@@ -390,6 +394,7 @@ export async function economic_activity(
     country,
     stateProvince,
     date,
+    attribution,
   });
 }
 
@@ -400,16 +405,21 @@ export async function economic_activity(
  * @param factorId Emission factor ID
  * @param value Numeric activity value
  * @param unit Unit of measurement
+ * @param revenue Revenue for attribution
  */
 export async function economic_activity_by_factorId(
   factorId: number,
   value: number,
-  unit: string
+  unit: string,
+  revenue?: number
 ): Promise<any[][]> {
+  const attribution = revenue !== undefined ? { revenue } : undefined;
+
   return genericApiCall("economic_activity", {
     factorId,
     value,
     unit,
+    attribution,
   });
 }
 

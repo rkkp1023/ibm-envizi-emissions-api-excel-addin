@@ -40,6 +40,7 @@ export interface AttributionPayload {
   totalEquity?: number;
   totalDebt?: number;
   evic?: number;
+  revenue?: number;
 }
 
 export interface PayloadWithType extends BasePayload {
@@ -126,7 +127,7 @@ function buildApiParams(apiType: ApiType, payload: Payload): any {
     }
   }
 
-  // Add attribution if provided (for real_estate and physical_activity)
+  // Add attribution if provided (for real_estate, physical_activity, and economic_activity)
   if (attribution) {
     const attributionObj: any = {};
 
@@ -144,6 +145,9 @@ function buildApiParams(apiType: ApiType, payload: Payload): any {
     }
     if (attribution.evic !== undefined) {
       attributionObj.evic = attribution.evic;
+    }
+    if (attribution.revenue !== undefined) {
+      attributionObj.revenue = attribution.revenue;
     }
 
     if (Object.keys(attributionObj).length > 0) {
