@@ -54,7 +54,7 @@ export function MainPage() {
   if (contextData) {
     return (
       <Theme theme={theme.theme}>
-        <ActivityTypeRecommender context={contextData} />
+        <ActivityTypeRecommender context={contextData} onClose={() => setContextData(null)} />
       </Theme>
     );
   }
