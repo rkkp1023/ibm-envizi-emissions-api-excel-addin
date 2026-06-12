@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2026
 
 import { AiRecommend } from "@carbon/icons-react";
-import { InlineLoading, Stack, Tab, TabList, TabPanels, Tabs } from "@carbon/react";
+import { InlineLoading, Stack, Tab, TabList, TabPanels, Tabs, Tag } from "@carbon/react";
 import { makeStyles } from "@griffel/react";
 import { useEffect, useState } from "react";
 
@@ -96,6 +96,23 @@ export function ActivityTypeRecommender({ context, onClose }: Readonly<ActivityR
       </TabList>
       <TabPanels>
         <Stack as="div" gap={3}>
+          <div className="tags-container">
+            <span>
+              Top 30 recommendations for "<b>{context?.search}</b>"
+            </span>
+            <div className="tags">
+              {context?.country && (
+                <Tag size="md" title="Clear filter" type="blue">
+                  {context?.country}
+                </Tag>
+              )}
+              {context?.stateProvince && (
+                <Tag size="md" title="Clear filter" type="blue">
+                  {context?.stateProvince}
+                </Tag>
+              )}
+            </div>
+          </div>
           <div className="activity-type-recom-container">
             {isLoading ? (
               <div className={styles.loadingContainer}>
