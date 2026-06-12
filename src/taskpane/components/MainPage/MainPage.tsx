@@ -13,10 +13,19 @@ import { TrialCountHeader } from "../TrialCountHeader/TrialCountHeader";
 
 type TabValue = "quickHelp" | "account" | "resources";
 
+export interface context {
+  search: string;
+  country: string;
+  date?: string;
+  scope?: string;
+  stateProvince?: string;
+  unit?: string;
+}
+
 export function MainPage() {
   const theme = useCarbonTheme();
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
-  const [contextData, setContextData] = useState<any>(null);
+  const [contextData, setContextData] = useState<context | null>();
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
 
@@ -45,7 +54,7 @@ export function MainPage() {
   if (contextData) {
     return (
       <Theme theme={theme.theme}>
-        <ActivityTypeRecommender />
+        <ActivityTypeRecommender context={contextData} />
       </Theme>
     );
   }
