@@ -34,7 +34,7 @@ interface TypeRecommenderResponseItem {
 }
 
 interface TypeRecommenderResponse {
-  types?: TypeRecommenderResponseItem[];
+  types: TypeRecommenderResponseItem[];
 }
 
 function buildTypeRecommenderParams({
@@ -80,22 +80,6 @@ function mapRecommendation(
   };
 }
 
-function getErrorMessage(error: unknown): string {
-  if (error && typeof error === "object") {
-    const responseMessage =
-      "response" in error ? (error.response as { data?: { message?: string } }) : undefined;
-    if (responseMessage?.data?.message) {
-      return responseMessage.data.message;
-    }
-
-    if ("message" in error && typeof error.message === "string") {
-      return error.message;
-    }
-  }
-
-  return "Unknown error";
-}
-
 export async function recommendActivityType(
   params: ActivityTypeRecommenderSearchParams
 ): Promise<ActivityTypeRecommendation[]> {
@@ -106,22 +90,18 @@ export async function recommendActivityType(
       buildTypeRecommenderParams(params)
     )) as TypeRecommenderResponse;
 
-    if (!response || !Array.isArray(response.types)) {
-      throw new Error("Invalid API response structure: Missing 'types' array");
-    }
-
     return response.types
+      .filter(
+        (item): item is TypeRecommenderResponseItem =>
+          item !== null && item.activityType !== undefined
+      )
       .map((item, index) => mapRecommendation(item, index))
       .filter((item): item is ActivityTypeRecommendation => item !== null);
   } catch (error: unknown) {
-    const message = getErrorMessage(error);
-    console.error("Taskpane activity type recommender request failed:", message);
-    throw new Error(message);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("Taskpane activity type recommender request failed:", errorMessage);
+    throw new Error(`Failed to fetch activity type recommendations: ${errorMessage}`);
   }
 }
-
-export const activityTypeRecommenderService = {
-  recommendActivityType,
-};
 
 // Made with Bob

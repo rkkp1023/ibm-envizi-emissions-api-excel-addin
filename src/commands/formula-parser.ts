@@ -1,6 +1,6 @@
 // Copyright IBM Corp. 2026
 
-import { excelDateToString } from "../functions/utils";
+import { convertExcelDateToISO } from "../functions/utils";
 
 /**
  * Utility functions for parsing Excel formulas and extracting parameters
@@ -119,7 +119,7 @@ export async function parseFormulaParams(
     stateProvince: resolvedValues[2] || undefined,
     unit: resolvedValues[3] || undefined,
     scope: resolvedValues[4] || undefined,
-    date: excelDateToString(Number(resolvedValues[5])) || undefined,
+    date: convertExcelDateToISO(resolvedValues[5]) || undefined,
   };
 
   return params;

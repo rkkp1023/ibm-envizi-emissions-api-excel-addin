@@ -13,7 +13,7 @@ import { TrialCountHeader } from "../TrialCountHeader/TrialCountHeader";
 
 type TabValue = "quickHelp" | "account" | "resources";
 
-export interface context {
+export interface ActivityTypeRecomenderContext {
   search: string;
   country: string;
   date?: string;
@@ -25,7 +25,7 @@ export interface context {
 export function MainPage() {
   const theme = useCarbonTheme();
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
-  const [contextData, setContextData] = useState<context | null>();
+  const [contextData, setContextData] = useState<ActivityTypeRecomenderContext>();
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
 

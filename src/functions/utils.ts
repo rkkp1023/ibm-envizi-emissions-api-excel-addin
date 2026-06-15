@@ -1,7 +1,5 @@
 // Copyright IBM Corp. 2025, 2026
 
-import { DateTime } from "luxon";
-
 /**
  * Extracts symbol/code from display format "Symbol (Name)" or returns as-is
  * This function handles both display format and direct symbol input for backward compatibility
@@ -150,9 +148,15 @@ export function buildHeadersList(
  * @example
  * convertExcelDateToISO("2024-01-15") // Returns: "2024-01-15"
  * convertExcelDateToISO("44562") // Returns: "2022-01-01" (Excel serial date)
+ * convertExcelDateToISO("") // Returns: "" (empty string)
  * convertExcelDateToISO("dasj") // Throws: Error - Date should be in YYYY-MM-DD format
  */
 export function convertExcelDateToISO(input: string): string {
+  // Handle empty string - return as-is
+  if (!input || input.trim() === "") {
+    return "";
+  }
+
   const trimmed = input.trim();
 
   // Case 1: Already in ISO YYYY-MM-DD format
@@ -236,35 +240,4 @@ export function buildSearchParams(
   }
 
   return params;
-}
-
-/**
- * Converts an Excel serial date into a formatted date string.
- *
- * Excel internally stores dates as serial numbers:
- *   - 1      = 1900-01-01
- *   - 45453  = 2024-06-10
- *
- * Excel uses 1899-12-30 as the base (epoch) date.
- * We add the serial number as days to this base date
- * and then format the result as yyyy-MM-dd.
- *
- * @param serial - dates as serial numbers
- * Example:
- *   excelDateToString(45453)
- * @returns Returns: "2024-06-10" or undefined if the serial is invalid or produces a date before 1970-01-01
- */
-export function excelDateToString(serial: number): string | undefined {
-  // Handle missing, invalid, or zero values
-  if (!serial || isNaN(serial) || serial <= 0) {
-    return undefined;
-  }
-
-  // Excel serial date for 1970-01-01 is 25569
-  // Reject dates before 1970-01-01 to avoid API errors
-  if (serial < 25569) {
-    return undefined;
-  }
-
-  return DateTime.utc(1899, 12, 30).plus({ days: serial }).toFormat("yyyy-MM-dd");
 }
