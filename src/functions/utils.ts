@@ -148,10 +148,15 @@ export function buildHeadersList(
  * @example
  * convertExcelDateToISO("2024-01-15") // Returns: "2024-01-15"
  * convertExcelDateToISO("44562") // Returns: "2022-01-01" (Excel serial date)
+ * convertExcelDateToISO("") // Returns: "" (empty string)
  * convertExcelDateToISO("dasj") // Throws: Error - Date should be in YYYY-MM-DD format
  */
 export function convertExcelDateToISO(input: string): string {
   const trimmed = input.trim();
+  // Handle empty string
+  if (!trimmed || trimmed === "") {
+    return "";
+  }
 
   // Case 1: Already in ISO YYYY-MM-DD format
   if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
