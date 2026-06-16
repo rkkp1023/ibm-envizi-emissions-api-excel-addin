@@ -64,19 +64,15 @@ function buildTypeRecommenderParams({
 function mapRecommendation(
   recommendation?: TypeRecommenderResponseItem,
   index: number = 0
-): ActivityTypeRecommendation | null {
-  if (!recommendation?.activityType) {
-    return null;
-  }
-
+): ActivityTypeRecommendation {
   return {
     id: `recommendation-${index}`,
-    activityType: recommendation.activityType,
-    confidence: typeof recommendation.confidence === "number" ? recommendation.confidence : 0,
-    activityDescription: recommendation.activityDescription ?? "",
-    region: recommendation.region ?? "-",
-    scope: recommendation.scope ?? "-",
-    units: Array.isArray(recommendation.activityUnit) ? recommendation.activityUnit : [],
+    activityType: recommendation?.activityType ?? "",
+    confidence: typeof recommendation?.confidence === "number" ? recommendation.confidence : 0,
+    activityDescription: recommendation?.activityDescription ?? "",
+    region: recommendation?.region ?? "-",
+    scope: recommendation?.scope ?? "-",
+    units: Array.isArray(recommendation?.activityUnit) ? recommendation.activityUnit : [],
   };
 }
 
@@ -91,12 +87,8 @@ export async function recommendActivityType(
     )) as TypeRecommenderResponse;
 
     return response.types
-      .filter(
-        (item): item is TypeRecommenderResponseItem =>
-          item !== null && item.activityType !== undefined
-      )
-      .map((item, index) => mapRecommendation(item, index))
-      .filter((item): item is ActivityTypeRecommendation => item !== null);
+      .filter((item) => item?.activityType)
+      .map((item, index) => mapRecommendation(item, index));
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("Taskpane activity type recommender request failed:", errorMessage);

@@ -1,7 +1,9 @@
 // Copyright IBM Corp. 2026
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import React from "react";
 
 import { ActivityRecommenderProps, ActivityTypeRecommender } from "./ActivityTypeRecommender";
 
@@ -99,9 +101,7 @@ const mockRecommendations = [
 const mockRecommendActivityType = jest.fn();
 
 jest.mock("../../services/activityTypeRecommenderService", () => ({
-  activityTypeRecommenderService: {
-    recommendActivityType: (...args: any[]) => mockRecommendActivityType(...args),
-  },
+  recommendActivityType: (...args: any[]) => mockRecommendActivityType(...args),
 }));
 
 describe("ActivityTypeRecommender", () => {
@@ -122,6 +122,18 @@ describe("ActivityTypeRecommender", () => {
     onClose: mockOnClose,
   };
 
+  // Helper function to render component with QueryClientProvider
+  const renderWithQueryClient = (ui: React.ReactElement) => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockRecommendActivityType.mockResolvedValue(mockRecommendations);
@@ -133,31 +145,31 @@ describe("ActivityTypeRecommender", () => {
 
   describe("Component Rendering", () => {
     it("should render without crashing", () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       expect(screen.getByText("Envizi Activity type recommender")).toBeInTheDocument();
     });
 
     it("should render the tab with correct title", () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       const tabTitle = screen.getByText("Envizi Activity type recommender");
       expect(tabTitle).toBeInTheDocument();
     });
 
     it("should render the AiRecommend icon", () => {
-      const { container } = render(<ActivityTypeRecommender {...defaultProps} />);
+      const { container } = renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       const iconElement = container.querySelector(".activity-tab-item svg");
       expect(iconElement).toBeInTheDocument();
     });
 
     it("should render ActivityTypeRecommenderTable component", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       await waitFor(() => {
         expect(screen.getByTestId("activity-type-recommender-table")).toBeInTheDocument();
       });
     });
 
     it("should render with default recommendations", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       await waitFor(() => {
         const recommendationsCount = screen.getByTestId("recommendations-count");
         expect(recommendationsCount).toHaveTextContent("5");
@@ -165,28 +177,28 @@ describe("ActivityTypeRecommender", () => {
     });
 
     it("should render without onClose prop", () => {
-      render(<ActivityTypeRecommender />);
+      renderWithQueryClient(<ActivityTypeRecommender />);
       expect(screen.getByText("Envizi Activity type recommender")).toBeInTheDocument();
     });
   });
 
   describe("Props Handling", () => {
     it("should pass onClose callback to Tabs component", () => {
-      render(<ActivityTypeRecommender onClose={mockOnClose} />);
+      renderWithQueryClient(<ActivityTypeRecommender onClose={mockOnClose} />);
       // Verify component renders successfully with onClose prop
       expect(screen.getByText("Envizi Activity type recommender")).toBeInTheDocument();
     });
 
     it("should handle undefined onClose prop gracefully", () => {
       expect(() => {
-        render(<ActivityTypeRecommender />);
+        renderWithQueryClient(<ActivityTypeRecommender />);
       }).not.toThrow();
     });
   });
 
   describe("State Management", () => {
     it("should initialize with null selectedRecommendation", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       // State is internal, but we can verify behavior
       await waitFor(() => {
         expect(screen.getByTestId("activity-type-recommender-table")).toBeInTheDocument();
@@ -194,7 +206,7 @@ describe("ActivityTypeRecommender", () => {
     });
 
     it("should update selectedRecommendation when handleRadioSelect is called", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
@@ -218,7 +230,7 @@ describe("ActivityTypeRecommender", () => {
 
   describe("User Interactions", () => {
     it("should handle radio selection", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
@@ -237,7 +249,7 @@ describe("ActivityTypeRecommender", () => {
     });
 
     it("should log the selected recommendation to console", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
@@ -251,7 +263,7 @@ describe("ActivityTypeRecommender", () => {
     });
 
     it("should handle multiple selections", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
@@ -271,7 +283,7 @@ describe("ActivityTypeRecommender", () => {
 
   describe("Callback Handlers", () => {
     it("should call handleRadioSelect with correct recommendation", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
@@ -298,7 +310,7 @@ describe("ActivityTypeRecommender", () => {
       const ActivityTypeRecommenderTableMock =
         require("../ActivityTypeRecommenderTable/ActivityTypeRecommenderTable").default;
 
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(ActivityTypeRecommenderTableMock.mock.calls.length).toBeGreaterThan(0);
@@ -317,7 +329,7 @@ describe("ActivityTypeRecommender", () => {
       const ActivityTypeRecommenderTableMock =
         require("../ActivityTypeRecommenderTable/ActivityTypeRecommenderTable").default;
 
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(ActivityTypeRecommenderTableMock.mock.calls.length).toBeGreaterThan(0);
@@ -340,7 +352,7 @@ describe("ActivityTypeRecommender", () => {
 
   describe("Default Recommendations Data", () => {
     it("should provide 5 default recommendations", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       await waitFor(() => {
         const recommendationsCount = screen.getByTestId("recommendations-count");
         expect(recommendationsCount).toHaveTextContent("5");
@@ -348,7 +360,7 @@ describe("ActivityTypeRecommender", () => {
     });
 
     it("should have recommendations with correct structure", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
@@ -372,7 +384,7 @@ describe("ActivityTypeRecommender", () => {
     });
 
     it("should have recommendations with confidence values in descending order", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
@@ -388,26 +400,26 @@ describe("ActivityTypeRecommender", () => {
 
   describe("Component Structure", () => {
     it("should render Tabs component with correct props", () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       // Verify Tabs component renders with the tab content
       expect(screen.getByText("Envizi Activity type recommender")).toBeInTheDocument();
     });
 
     it("should render TabList with fullWidth prop", () => {
-      const { container } = render(<ActivityTypeRecommender {...defaultProps} />);
+      const { container } = renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       const tabListElement = container.querySelector(".mock-tab-list-class");
       expect(tabListElement).toBeInTheDocument();
     });
 
     it("should render Stack component with correct gap", () => {
-      const { container } = render(<ActivityTypeRecommender {...defaultProps} />);
+      const { container } = renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       // Stack component is rendered, verify by checking for the container
       const containerElement = container.querySelector(".activity-type-recom-container");
       expect(containerElement).toBeInTheDocument();
     });
 
     it("should render activity-type-recom-container div", () => {
-      const { container } = render(<ActivityTypeRecommender {...defaultProps} />);
+      const { container } = renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       const containerElement = container.querySelector(".activity-type-recom-container");
       expect(containerElement).toBeInTheDocument();
     });
@@ -415,13 +427,13 @@ describe("ActivityTypeRecommender", () => {
 
   describe("Accessibility", () => {
     it("should have accessible tab structure", () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       const tabElement = screen.getByText("Envizi Activity type recommender");
       expect(tabElement).toBeInTheDocument();
     });
 
     it("should render icon with text for better accessibility", () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       const tabItem = screen.getByText("Envizi Activity type recommender");
       expect(tabItem.parentElement).toHaveClass("activity-tab-item");
     });
@@ -430,12 +442,12 @@ describe("ActivityTypeRecommender", () => {
   describe("Edge Cases", () => {
     it("should handle empty onClose callback", () => {
       expect(() => {
-        render(<ActivityTypeRecommender onClose={undefined} />);
+        renderWithQueryClient(<ActivityTypeRecommender onClose={undefined} />);
       }).not.toThrow();
     });
 
     it("should render correctly when recommendations are selected multiple times", async () => {
-      render(<ActivityTypeRecommender {...defaultProps} />);
+      renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();

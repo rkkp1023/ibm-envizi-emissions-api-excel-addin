@@ -152,12 +152,11 @@ export function buildHeadersList(
  * convertExcelDateToISO("dasj") // Throws: Error - Date should be in YYYY-MM-DD format
  */
 export function convertExcelDateToISO(input: string): string {
-  // Handle empty string - return as-is
-  if (!input || input.trim() === "") {
+  const trimmed = input.trim();
+  // Handle empty string
+  if (!trimmed || trimmed === "") {
     return "";
   }
-
-  const trimmed = input.trim();
 
   // Case 1: Already in ISO YYYY-MM-DD format
   if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {

@@ -58,12 +58,12 @@ export function ActivityTypeRecommender({ context, onClose }: Readonly<ActivityR
         </Tab>
       </TabList>
       <TabPanels>
-        <Stack as="div" gap={3}>
+        <Stack gap={3}>
           <div className="tags-container">
             <span>
               Top 30 recommendations for "<b>{context?.search}</b>"
             </span>
-            <Stack as="div" gap={3} orientation="horizontal">
+            <Stack gap={3} orientation="horizontal">
               {context?.country && (
                 <Tag size="md" title="Clear filter" type="blue">
                   {context?.country}
