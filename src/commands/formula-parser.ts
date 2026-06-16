@@ -84,9 +84,10 @@ export async function parseFormulaParams(
   context: Excel.RequestContext
 ): Promise<FormulaParams> {
   // Extract function arguments
-  const match = formula.match(/\((.*)\)/);
+  const regex = /\((.*)\)/;
+  const match = regex.exec(formula);
 
-  if (!match || !match[1]) {
+  if (!match?.[1]) {
     throw new Error("Invalid formula");
   }
 
