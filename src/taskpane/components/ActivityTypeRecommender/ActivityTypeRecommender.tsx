@@ -1,13 +1,15 @@
 // Copyright IBM Corp. 2026
 
 import { AiRecommend } from "@carbon/icons-react";
-import { Stack, Tab, TabList, TabPanels, Tabs } from "@carbon/react";
+import { InlineLoading, Stack, Tab, TabList, TabPanels, Tabs, Tag } from "@carbon/react";
 import { makeStyles } from "@griffel/react";
 import { useState } from "react";
 
+import { useActivityTypeRecommendations } from "../../hooks/useActivityTypeRecommendations";
 import ActivityTypeRecommenderTable, {
   ActivityTypeRecommendation,
 } from "../ActivityTypeRecommenderTable/ActivityTypeRecommenderTable";
+import { ActivityTypeRecomenderContext } from "../MainPage/MainPage";
 
 const useStyles = makeStyles({
   tabList: {
@@ -15,65 +17,28 @@ const useStyles = makeStyles({
       width: "100%",
     },
   },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "2rem",
+  },
 });
 
 export interface ActivityRecommenderProps {
+  context?: ActivityTypeRecomenderContext;
   onClose?: () => void;
 }
 
-// Sample data matching Figma design
-const defaultRecommendations: ActivityTypeRecommendation[] = [
-  {
-    id: "1",
-    activityType: "Waste Recycled - Cardboard",
-    confidence: 95,
-    activityDescription: "Waste Recycled - Cardboard",
-    region: "Global",
-    scope: "Scope 3 - Category 5: Waste generated in operations",
-    units: ["kg", "tonnes"],
-  },
-  {
-    id: "2",
-    activityType: "Waste Recycled - Cardboard",
-    confidence: 92,
-    activityDescription: "Waste Recycled - Cardboard (Alternative)",
-    region: "Global",
-    scope: "Scope 3 - Category 5: Waste generated in operations",
-    units: ["kg", "tonnes"],
-  },
-  {
-    id: "3",
-    activityType: "Waste Recycled - Cardboard",
-    confidence: 88,
-    activityDescription: "Waste Recycled - Cardboard (Regional)",
-    region: "Global",
-    scope: "Scope 3 - Category 5: Waste generated in operations",
-    units: ["kg", "tonnes", "lbs"],
-  },
-  {
-    id: "4",
-    activityType: "Waste Recycled - Cardboard",
-    confidence: 85,
-    activityDescription: "Waste Recycled - Cardboard (Standard)",
-    region: "Global",
-    scope: "Scope 3 - Category 5: Waste generated in operations",
-    units: ["kg", "tonnes"],
-  },
-  {
-    id: "5",
-    activityType: "Waste Recycled - Cardboard",
-    confidence: 82,
-    activityDescription: "Waste Recycled - Cardboard (Basic)",
-    region: "Global",
-    scope: "Scope 3 - Category 5: Waste generated in operations",
-    units: ["kg"],
-  },
-];
-
-export function ActivityTypeRecommender({ onClose }: Readonly<ActivityRecommenderProps>) {
+export function ActivityTypeRecommender({ context, onClose }: Readonly<ActivityRecommenderProps>) {
   const styles = useStyles();
   const [selectedRecommendation, setSelectedRecommendation] =
     useState<ActivityTypeRecommendation | null>(null);
+
+  const { data: recommendations, isLoading } = useActivityTypeRecommendations({
+    search: context?.search || "",
+    ...context,
+  });
 
   const handleRadioSelect = (recommendation: ActivityTypeRecommendation) => {
     setSelectedRecommendation(recommendation);
@@ -93,12 +58,35 @@ export function ActivityTypeRecommender({ onClose }: Readonly<ActivityRecommende
         </Tab>
       </TabList>
       <TabPanels>
-        <Stack as="div" gap={3}>
+        <Stack gap={3}>
+          <div className="tags-container">
+            <span>
+              Top 30 recommendations for "<b>{context?.search}</b>"
+            </span>
+            <Stack gap={3} orientation="horizontal">
+              {context?.country && (
+                <Tag size="md" title="Clear filter" type="blue">
+                  {context?.country}
+                </Tag>
+              )}
+              {context?.stateProvince && (
+                <Tag size="md" title="Clear filter" type="blue">
+                  {context?.stateProvince}
+                </Tag>
+              )}
+            </Stack>
+          </div>
           <div className="activity-type-recom-container">
-            <ActivityTypeRecommenderTable
-              recommendations={defaultRecommendations}
-              onSelect={handleRadioSelect}
-            />
+            {isLoading ? (
+              <div className={styles.loadingContainer}>
+                <InlineLoading description="Loading activity type recommendations..." />
+              </div>
+            ) : (
+              <ActivityTypeRecommenderTable
+                recommendations={recommendations || []}
+                onSelect={handleRadioSelect}
+              />
+            )}
           </div>
         </Stack>
       </TabPanels>

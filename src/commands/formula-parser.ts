@@ -1,5 +1,7 @@
 // Copyright IBM Corp. 2026
 
+import { convertExcelDateToISO } from "../functions/utils";
+
 /**
  * Utility functions for parsing Excel formulas and extracting parameters
  */
@@ -77,34 +79,48 @@ export async function readCellValues(
   return values;
 }
 
-/**
- * Parses the formula and extracts parameter values
- * @param formula The formula string
- * @param context Excel context
- * @returns Parsed parameters for the API call
- */
 export async function parseFormulaParams(
   formula: string,
   context: Excel.RequestContext
 ): Promise<FormulaParams> {
-  const cellRefs = extractCellReferences(formula);
+  // Extract function arguments
+  const regex = /\((.*)\)/;
+  const match = regex.exec(formula);
 
-  if (!cellRefs.length) {
-    throw new Error("No cell references found in formula");
+  if (!match?.[1]) {
+    throw new Error("Invalid formula");
   }
 
-  // Read values from the referenced cells
-  const values = await readCellValues(cellRefs, context);
+  // Split all params in exact order
+  const rawParams = match[1].split(",").map((p) => p.trim());
 
-  // Map values to parameters based on function signature:
-  // recommend_activity_type(search, country, stateProvince?, date?)
+  // Identify cell refs only
+  const cellRefs = rawParams.filter((param) => /^[A-Z]+[0-9]+$/i.test(param));
+
+  // Read only cell reference values
+  const cellValues = await readCellValues(cellRefs, context);
+
+  let cellIndex = 0;
+
+  // Rebuild params preserving original positions
+  const resolvedValues = rawParams.map((param) => {
+    const isCellRef = /^[A-Z]+[0-9]+$/i.test(param);
+
+    if (isCellRef) {
+      return cellValues[cellIndex++] || "";
+    }
+
+    // Remove quotes from static text
+    return param.replace(/^"(.*)"$/, "$1");
+  });
+
   const params: FormulaParams = {
-    search: values[0] || "",
-    country: values[1] || "USA",
-    stateProvince: values[2] || undefined,
-    unit: values[3] || undefined,
-    scope: values[4] || undefined,
-    date: values[5] || undefined,
+    search: resolvedValues[0] || "",
+    country: resolvedValues[1] || "USA",
+    stateProvince: resolvedValues[2] || undefined,
+    unit: resolvedValues[3] || undefined,
+    scope: resolvedValues[4] || undefined,
+    date: convertExcelDateToISO(resolvedValues[5]) || undefined,
   };
 
   return params;
