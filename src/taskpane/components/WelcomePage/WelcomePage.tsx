@@ -3,11 +3,20 @@
 import { Button, Link } from "@fluentui/react-components";
 import { ArrowRight16Filled, Open16Regular } from "@fluentui/react-icons";
 
+import { analyticsService } from "../../services/analyticsService";
+
 interface WelcomePageProps {
   onGetStarted: () => void;
 }
 
 export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
+  const handleGetStartedClick = () => {
+    analyticsService.trackUiInteraction({
+      CTA: "Get Started",
+    });
+    onGetStarted();
+  };
+
   return (
     <div id="welcome-page" className="page welcome-page">
       <header className="welcome-header">
@@ -46,7 +55,7 @@ export function WelcomePage({ onGetStarted }: Readonly<WelcomePageProps>) {
             appearance="primary"
             iconPosition="after"
             icon={<ArrowRight16Filled />}
-            onClick={onGetStarted}
+            onClick={handleGetStartedClick}
           >
             Get started
           </Button>

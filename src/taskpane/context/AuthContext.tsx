@@ -16,6 +16,7 @@ import {
 } from "../../common/credentials";
 import { ensureClient, resetClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
+import { analyticsService } from "../services/analyticsService";
 import { performLogout } from "../services/authService";
 import { AuthState } from "../types/auth.types";
 import { authReducer, initialAuthState } from "./authReducer";
@@ -183,6 +184,8 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
               } else {
                 // Refresh metadata on login (non-blocking)
                 refreshMetadataOnLogin();
+                // Update analytics user profile on login from another window (non-blocking)
+                analyticsService.updateUserProfile();
                 dispatch({
                   type: "loginSuccess",
                   payload: { credentials: storageCredentials },
@@ -217,6 +220,8 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
         ensureClient(credentials);
         // Refresh metadata on login (non-blocking)
         refreshMetadataOnLogin();
+        // Update analytics user profile on login (non-blocking)
+        analyticsService.updateUserProfile();
 
         dispatch({
           type: "loginSuccess",

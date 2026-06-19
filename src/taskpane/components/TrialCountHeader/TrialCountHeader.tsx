@@ -11,6 +11,7 @@ import { DateTime } from "luxon";
 
 import { getEnviziApiHomeUrl } from "../../../common/env";
 import { AccountSubscriptionData } from "../../hooks/useAccountSubscription";
+import { analyticsService } from "../../services/analyticsService";
 
 export interface TrialCountHeaderProps {
   isLoading: boolean;
@@ -45,6 +46,12 @@ const useStyles = makeStyles({
 
 export function TrialCountHeader(subscriptionInfo: Readonly<TrialCountHeaderProps>) {
   const styles = useStyles();
+
+  const handleUpgradeClick = () => {
+    analyticsService.trackUiInteraction({
+      CTA: "Upgrade",
+    });
+  };
 
   const trialCount = (subscriptionData: AccountSubscriptionData | undefined) => {
     const trialExpirationDate = subscriptionData?.ssmExpirationDate;
@@ -96,6 +103,7 @@ export function TrialCountHeader(subscriptionInfo: Readonly<TrialCountHeaderProp
             kind="ghost"
             size="sm"
             renderIcon={Upgrade}
+            onClick={handleUpgradeClick}
             href="https://www.ibm.com/products/envizi/emissions-calculations"
             rel="noopener noreferrer"
             target="_blank"

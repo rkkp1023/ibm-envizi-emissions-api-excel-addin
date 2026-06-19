@@ -1,10 +1,11 @@
 // Copyright IBM Corp. 2026
 
+import { Theme } from "@carbon/react";
 import { Tab, TabList } from "@fluentui/react-components";
 import { useEffect, useState } from "react";
 
-import { Theme } from "@carbon/react";
 import { useAccountSubscription, useCarbonTheme } from "../../hooks";
+import { analyticsService } from "../../services/analyticsService";
 import { AccountTab } from "../AccountTab/AccountTab";
 import { ActivityTypeRecommender } from "../ActivityTypeRecommender/ActivityTypeRecommender";
 import { QuickHelpTab } from "../QuickHelpTab/QuickHelpTab";
@@ -68,7 +69,14 @@ export function MainPage() {
           onTabSelect={(_, data) => setSelectedTab(data.value as TabValue)}
         >
           <Tab value="quickHelp">Quick help</Tab>
-          <Tab value="resources">Resources</Tab>
+          <Tab
+            value="resources"
+            onClick={() => {
+              analyticsService.trackUiInteraction({ CTA: "Resourcess" });
+            }}
+          >
+            Resources
+          </Tab>
           <Tab value="account">Account</Tab>
         </TabList>
         <div className="tab-content">

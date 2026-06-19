@@ -130,3 +130,25 @@ export function getBuyNowUrl(): string {
 export function getPricingPageUrl(): string {
   return "https://www.ibm.com/products/envizi/pricing";
 }
+
+export const segmentKeys: Record<EnvType, string> = {
+  prod: "UFQ2aJT29kmBYu1kxjkmAAYnOtCgapWp",
+  np: "NQBwxzQErkTkwSG5npxexaKuVDEkCqrT",
+  local: "NQBwxzQErkTkwSG5npxexaKuVDEkCqrT",
+};
+
+export const enviziProductInfo = {
+  UT30: "30BZD",
+  productCode: "WW1171",
+  productCodeType: "WWPC",
+  productId: "5900API",
+  productTitle: "IBM Envizi",
+};
+
+// Feature flag for Carbon AutoTrack support
+export const enableCarbonAutotrack = false;
+
+export function getSegmentKey(envType?: EnvType): string {
+  const override = window.localStorage.getItem("useProdSegmentSetup");
+  return segmentKeys[override ? "prod" : envType || getEnvType()];
+}
