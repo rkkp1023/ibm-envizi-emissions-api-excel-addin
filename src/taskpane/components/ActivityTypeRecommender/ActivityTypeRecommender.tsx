@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2026
 
-import { AiRecommend } from "@carbon/icons-react";
-import { InlineLoading, Stack, Tab, TabList, TabPanels, Tabs, Tag } from "@carbon/react";
+import { AiRecommend, Idea } from "@carbon/icons-react";
+import { Button, InlineLoading, Stack, Tab, TabList, TabPanels, Tabs, Tag } from "@carbon/react";
 import { makeStyles } from "@griffel/react";
 import { useState } from "react";
 
@@ -37,6 +37,7 @@ export function ActivityTypeRecommender({ context, onClose }: Readonly<ActivityR
 
   const { data: recommendations, isLoading } = useActivityTypeRecommendations({
     search: context?.search || "",
+    country: context?.country || "",
     ...context,
   });
 
@@ -58,37 +59,60 @@ export function ActivityTypeRecommender({ context, onClose }: Readonly<ActivityR
         </Tab>
       </TabList>
       <TabPanels>
-        <Stack gap={3}>
-          <div className="tags-container">
-            <span>
-              Top 30 recommendations for "<b>{context?.search}</b>"
-            </span>
-            <Stack gap={3} orientation="horizontal">
-              {context?.country && (
-                <Tag size="md" title="Clear filter" type="blue">
-                  {context?.country}
-                </Tag>
-              )}
-              {context?.stateProvince && (
-                <Tag size="md" title="Clear filter" type="blue">
-                  {context?.stateProvince}
-                </Tag>
-              )}
-            </Stack>
-          </div>
-          <div className="activity-type-recom-container">
-            {isLoading ? (
-              <div className={styles.loadingContainer}>
-                <InlineLoading description="Loading activity type recommendations..." />
+        <div className="recommender-wrapper">
+          <Stack gap={3}>
+            <div className="tags-container">
+              <span>
+                Top 30 recommendations for "<b>{context?.search}</b>"
+              </span>
+              <Stack gap={3} orientation="horizontal">
+                {context?.country && (
+                  <Tag size="md" title="Clear filter" type="blue">
+                    {context?.country}
+                  </Tag>
+                )}
+                {context?.stateProvince && (
+                  <Tag size="md" title="Clear filter" type="blue">
+                    {context?.stateProvince}
+                  </Tag>
+                )}
+              </Stack>
+            </div>
+            <Stack gap={5}>
+              <div className="activty-recom-table">
+                {isLoading ? (
+                  <div className={styles.loadingContainer}>
+                    <InlineLoading description="Loading activity type recommendations..." />
+                  </div>
+                ) : (
+                  <ActivityTypeRecommenderTable
+                    recommendations={recommendations || []}
+                    onSelect={handleRadioSelect}
+                  />
+                )}
               </div>
-            ) : (
-              <ActivityTypeRecommenderTable
-                recommendations={recommendations || []}
-                onSelect={handleRadioSelect}
-              />
-            )}
-          </div>
-        </Stack>
+
+              <div className="button-group">
+                <Button kind="primary" size="md" iconDescription="Use selected activity type">
+                  Use selected activity type
+                </Button>
+                <Button kind="secondary" size="md" iconDescription="Use selected activity type">
+                  Cancel
+                </Button>
+              </div>
+
+              <div className="information-banner">
+                <div>
+                  <Idea />
+                </div>
+                <span>
+                  If you can't locate what you need in this list, use the "Insert activity type" in
+                  the ribbon and search in the dropdown menu.
+                </span>
+              </div>
+            </Stack>
+          </Stack>
+        </div>
       </TabPanels>
     </Tabs>
   );

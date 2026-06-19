@@ -414,13 +414,13 @@ describe("ActivityTypeRecommender", () => {
     it("should render Stack component with correct gap", () => {
       const { container } = renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
       // Stack component is rendered, verify by checking for the container
-      const containerElement = container.querySelector(".activity-type-recom-container");
+      const containerElement = container.querySelector(".recommender-wrapper");
       expect(containerElement).toBeInTheDocument();
     });
 
-    it("should render activity-type-recom-container div", () => {
+    it("should render recommender-wrapper div", () => {
       const { container } = renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
-      const containerElement = container.querySelector(".activity-type-recom-container");
+      const containerElement = container.querySelector(".recommender-wrapper");
       expect(containerElement).toBeInTheDocument();
     });
   });
