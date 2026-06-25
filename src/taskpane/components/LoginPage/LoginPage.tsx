@@ -4,17 +4,9 @@ import { Button, Link, Text } from "@fluentui/react-components";
 import { ArrowEnterRegular, Open16Regular } from "@fluentui/react-icons";
 
 import { useAuth } from "../../hooks/useAuth";
-import { analyticsService } from "../../services/analyticsService";
 
 function EnviziLogin() {
   const { displayLogin, state } = useAuth();
-
-  const handleLoginClick = () => {
-    analyticsService.trackUiInteraction({
-      CTA: "Login",
-    });
-    displayLogin();
-  };
 
   return (
     <div className="envizi-login-page" id="login-page">
@@ -36,7 +28,7 @@ function EnviziLogin() {
             appearance="primary"
             icon={<ArrowEnterRegular />}
             iconPosition="after"
-            onClick={handleLoginClick}
+            onClick={displayLogin}
             size="medium"
             className="envizi-login-button"
           >

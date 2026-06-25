@@ -5,7 +5,6 @@ import { Open16Regular } from "@fluentui/react-icons";
 import React from "react";
 
 import { getPricingPageUrl } from "../../../common/env";
-import { analyticsService } from "../../services/analyticsService";
 
 const useStyles = makeStyles({
   container: {
@@ -68,12 +67,6 @@ const useStyles = makeStyles({
 export function UpgradeBanner(): React.ReactElement {
   const styles = useStyles();
 
-  const handleBuyNowClick = () => {
-    analyticsService.trackUiInteraction({
-      CTA: "Buy now",
-    });
-  };
-
   return (
     <div className={`${styles.container} ${styles.backgroundOverlay}`}>
       <div className={styles.content}>
@@ -100,7 +93,6 @@ export function UpgradeBanner(): React.ReactElement {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.button}
-              onClick={handleBuyNowClick}
             >
               Buy now
             </Button>

@@ -146,7 +146,7 @@ export const enviziProductInfo = {
 };
 
 // Feature flag for Carbon AutoTrack support
-export const enableCarbonAutotrack = false;
+export const enableCarbonAutotrack = true;
 
 export function getSegmentKey(envType?: EnvType): string {
   const override = window.localStorage.getItem("useProdSegmentSetup");
