@@ -212,18 +212,14 @@ describe("ActivityTypeRecommender", () => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
       });
 
+      const useButton = screen.getByText("Use selected activity type");
+      expect(useButton).toBeDisabled();
+
       const selectButton = screen.getByTestId("mock-select-button");
       fireEvent.click(selectButton);
 
       await waitFor(() => {
-        expect(consoleLogSpy).toHaveBeenCalledWith(
-          "Selected recommendation:",
-          expect.objectContaining({
-            id: "1",
-            activityType: "Waste Recycled - Cardboard",
-            confidence: 95,
-          })
-        );
+        expect(useButton).not.toBeDisabled();
       });
     });
   });
@@ -236,30 +232,33 @@ describe("ActivityTypeRecommender", () => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
       });
 
+      const useButton = screen.getByText("Use selected activity type");
+      expect(useButton).toBeDisabled();
+
       const selectButton = screen.getByTestId("mock-select-button");
       fireEvent.click(selectButton);
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        "Selected recommendation:",
-        expect.objectContaining({
-          id: "1",
-          activityType: "Waste Recycled - Cardboard",
-        })
-      );
+      await waitFor(() => {
+        expect(useButton).not.toBeDisabled();
+      });
     });
 
-    it("should log the selected recommendation to console", async () => {
+    it("should enable the use button when recommendation is selected", async () => {
       renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
       });
 
+      const useButton = screen.getByText("Use selected activity type");
+      expect(useButton).toBeDisabled();
+
       const selectButton = screen.getByTestId("mock-select-button");
       fireEvent.click(selectButton);
 
-      expect(consoleLogSpy).toHaveBeenCalledTimes(1);
-      expect(consoleLogSpy).toHaveBeenCalledWith("Selected recommendation:", expect.any(Object));
+      await waitFor(() => {
+        expect(useButton).not.toBeDisabled();
+      });
     });
 
     it("should handle multiple selections", async () => {
@@ -269,14 +268,14 @@ describe("ActivityTypeRecommender", () => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
       });
 
+      const useButton = screen.getByText("Use selected activity type");
       const selectButton = screen.getByTestId("mock-select-button");
 
       fireEvent.click(selectButton);
       fireEvent.click(selectButton);
 
       await waitFor(() => {
-        expect(consoleLogSpy).toHaveBeenCalled();
-        expect(consoleLogSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+        expect(useButton).not.toBeDisabled();
       });
     });
   });
@@ -289,21 +288,15 @@ describe("ActivityTypeRecommender", () => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
       });
 
+      const useButton = screen.getByText("Use selected activity type");
+      expect(useButton).toBeDisabled();
+
       const selectButton = screen.getByTestId("mock-select-button");
       fireEvent.click(selectButton);
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        "Selected recommendation:",
-        expect.objectContaining({
-          id: "1",
-          activityType: "Waste Recycled - Cardboard",
-          confidence: 95,
-          activityDescription: "Waste Recycled - Cardboard",
-          region: "Global",
-          scope: "Scope 3 - Category 5: Waste generated in operations",
-          units: ["kg", "tonnes"],
-        })
-      );
+      await waitFor(() => {
+        expect(useButton).not.toBeDisabled();
+      });
     });
 
     it("should pass onSelect callback to ActivityTypeRecommenderTable", async () => {
@@ -360,41 +353,47 @@ describe("ActivityTypeRecommender", () => {
     });
 
     it("should have recommendations with correct structure", async () => {
+      const ActivityTypeRecommenderTableMock =
+        require("../ActivityTypeRecommenderTable/ActivityTypeRecommenderTable").default;
+
       renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
-        expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
+        expect(ActivityTypeRecommenderTableMock.mock.calls.length).toBeGreaterThan(0);
       });
 
-      const selectButton = screen.getByTestId("mock-select-button");
-      fireEvent.click(selectButton);
+      const callArgs =
+        ActivityTypeRecommenderTableMock.mock.calls[
+          ActivityTypeRecommenderTableMock.mock.calls.length - 1
+        ][0];
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        "Selected recommendation:",
-        expect.objectContaining({
-          id: expect.any(String),
-          activityType: expect.any(String),
-          confidence: expect.any(Number),
-          activityDescription: expect.any(String),
-          region: expect.any(String),
-          scope: expect.any(String),
-          units: expect.any(Array),
-        })
-      );
+      expect(callArgs.recommendations[0]).toMatchObject({
+        id: expect.any(String),
+        activityType: expect.any(String),
+        confidence: expect.any(Number),
+        activityDescription: expect.any(String),
+        region: expect.any(String),
+        scope: expect.any(String),
+        units: expect.any(Array),
+      });
     });
 
     it("should have recommendations with confidence values in descending order", async () => {
+      const ActivityTypeRecommenderTableMock =
+        require("../ActivityTypeRecommenderTable/ActivityTypeRecommenderTable").default;
+
       renderWithQueryClient(<ActivityTypeRecommender {...defaultProps} />);
 
       await waitFor(() => {
-        expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
+        expect(ActivityTypeRecommenderTableMock.mock.calls.length).toBeGreaterThan(0);
       });
 
-      const selectButton = screen.getByTestId("mock-select-button");
-      fireEvent.click(selectButton);
+      const callArgs =
+        ActivityTypeRecommenderTableMock.mock.calls[
+          ActivityTypeRecommenderTableMock.mock.calls.length - 1
+        ][0];
 
-      const loggedRecommendation = consoleLogSpy.mock.calls[0][1];
-      expect(loggedRecommendation.confidence).toBe(95);
+      expect(callArgs.recommendations[0].confidence).toBe(95);
     });
   });
 
@@ -453,6 +452,7 @@ describe("ActivityTypeRecommender", () => {
         expect(screen.getByTestId("mock-select-button")).toBeInTheDocument();
       });
 
+      const useButton = screen.getByText("Use selected activity type");
       const selectButton = screen.getByTestId("mock-select-button");
 
       fireEvent.click(selectButton);
@@ -460,8 +460,7 @@ describe("ActivityTypeRecommender", () => {
       fireEvent.click(selectButton);
 
       await waitFor(() => {
-        expect(consoleLogSpy).toHaveBeenCalled();
-        expect(consoleLogSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+        expect(useButton).not.toBeDisabled();
       });
     });
   });

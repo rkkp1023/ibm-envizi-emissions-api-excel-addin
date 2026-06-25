@@ -162,17 +162,15 @@ async function actionShowActivityRecommendation(event: Office.AddinCommands.Even
       // Get parameters from cell (with formula detection)
       const params = await getParamsFromCell(cellAddress, context);
 
-      // Store in-memory for task pane to read
-      window.recommendedParams = {
-        payload: params,
-      };
-
       // Open task pane first
       await openTaskpane();
 
+      // Dispatch event with recommendation parameters and task pane state
       window.dispatchEvent(
-        new CustomEvent("CONTEXT_ACTION", {
-          detail: window.recommendedParams,
+        new CustomEvent("ACTIVITY_RECOMMENDER_REQUESTED", {
+          detail: {
+            recommendedParams: params,
+          },
         })
       );
     });

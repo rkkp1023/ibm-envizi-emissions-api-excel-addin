@@ -4,6 +4,8 @@ import { Theme } from "@carbon/react";
 import { Tab, TabList } from "@fluentui/react-components";
 import { useEffect, useState } from "react";
 
+import { getIsTaskpaneOpen } from "../../../commands/taskPaneVisibility";
+import { useActivityRecommender } from "../../context/ActivityRecommenderContext";
 import { useAccountSubscription, useCarbonTheme } from "../../hooks";
 import { AccountTab } from "../AccountTab/AccountTab";
 import { ActivityTypeRecommender } from "../ActivityTypeRecommender/ActivityTypeRecommender";
@@ -25,36 +27,73 @@ export interface ActivityTypeRecomenderContext {
 export function MainPage() {
   const theme = useCarbonTheme();
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
-  const [contextData, setContextData] = useState<ActivityTypeRecomenderContext>();
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
+  const isTaskPaneOpen = getIsTaskpaneOpen();
+
+  const {
+    activityRecommenderState,
+    setActivityRecommenderState,
+    recommendedParams,
+    setRecommendedParams,
+  } = useActivityRecommender();
 
   useEffect(() => {
-    const handleContextAction = (event: CustomEvent<any>) => {
+    const handleActivityRecommenderRequested = (event: CustomEvent<any>) => {
       const data = event.detail;
       if (!data) return;
-      if (data.payload) {
-        setContextData(data.payload);
+
+      const { recommendedParams } = data;
+      if (!recommendedParams) return;
+
+      setRecommendedParams(recommendedParams);
+
+      if (!isTaskPaneOpen) {
+        setActivityRecommenderState("standalone");
+      } else {
+        // Task pane was already open
+        // If recommender state is undefined, set to dismissable
+        // If it's already standalone, keep it standalone
+        if (activityRecommenderState === undefined) {
+          setActivityRecommenderState("dismissable");
+        }
       }
     };
+    console.log("isTaskpaneOpen::", isTaskPaneOpen);
 
-    window.addEventListener("CONTEXT_ACTION", handleContextAction as EventListener);
+    window.addEventListener(
+      "ACTIVITY_RECOMMENDER_REQUESTED",
+      handleActivityRecommenderRequested as EventListener
+    );
 
     if (window.recommendedParams) {
-      handleContextAction({
+      handleActivityRecommenderRequested({
         detail: window.recommendedParams,
       } as CustomEvent);
     }
 
     return () => {
-      window.removeEventListener("CONTEXT_ACTION", handleContextAction as EventListener);
+      window.removeEventListener(
+        "ACTIVITY_RECOMMENDER_REQUESTED",
+        handleActivityRecommenderRequested as EventListener
+      );
     };
-  }, []);
+  }, [activityRecommenderState, setActivityRecommenderState, setRecommendedParams]);
 
-  if (contextData) {
+  const onClose = () => {
+    if (activityRecommenderState === "standalone") {
+      // Close the task pane
+      Office.addin.hide();
+    }
+    // Clear recommender state and params
+    setActivityRecommenderState(undefined);
+    setRecommendedParams(undefined);
+  };
+
+  if (activityRecommenderState) {
     return (
       <Theme theme={theme.theme}>
-        <ActivityTypeRecommender context={contextData} onClose={() => setContextData(null)} />
+        <ActivityTypeRecommender context={recommendedParams} onClose={onClose} />
       </Theme>
     );
   }

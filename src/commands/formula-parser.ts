@@ -51,6 +51,43 @@ export function extractCellReferences(formula: string): string[] {
 }
 
 /**
+ * Interface for parameter cell addresses extracted from formula
+ */
+export interface ParameterCellAddresses {
+  searchCell?: string;
+  countryCell?: string;
+  stateProvinceCell?: string;
+  unitCell?: string;
+  scopeCell?: string;
+  dateCell?: string;
+}
+
+/**
+ * Extracts parameter cell addresses from the ENVIZI.recommend_activity_type formula
+ * Uses extractCellReferences to get all cell references and maps them to parameter positions
+ * @param formula The formula string (e.g., "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1, B1, C1, D1)")
+ * @returns Object containing cell addresses for each parameter (search, country, stateProvince, unit, scope, date)
+ */
+export function extractParameterCellAddresses(formula: string): ParameterCellAddresses {
+  if (!formula) {
+    return {};
+  }
+
+  // Extract all cell references from the formula using the existing utility
+  const cellRefs = extractCellReferences(formula);
+
+  // Map cell references to their respective parameter positions
+  return {
+    searchCell: cellRefs[0],
+    countryCell: cellRefs[1],
+    stateProvinceCell: cellRefs[2],
+    unitCell: cellRefs[3],
+    scopeCell: cellRefs[4],
+    dateCell: cellRefs[5],
+  };
+}
+
+/**
  * Reads values from cell references
  * @param cellReferences Array of cell references (e.g., ["A1", "B1"])
  * @param context Excel context
