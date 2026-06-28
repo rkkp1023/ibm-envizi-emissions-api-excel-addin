@@ -257,6 +257,45 @@
 <li><p>Units must follow the supported unit conventions defined in Envizi.</p></li>
 </ul>
 </section>
+<section id="currency-conversion-support">
+<h2>Currency Conversion Support<a class="headerlink" href="#currency-conversion-support" title="Link to this heading">¶</a></h2>
+<section id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h3>
+<p>The IBM Envizi for Excel add-in supports automatic currency conversion for functions that accept monetary values. This feature allows you to input values in your preferred currency, and the system will automatically convert them to the appropriate base currency for emissions calculations.</p>
+<p><strong>Supported Functions</strong></p>
+<p>Currency conversion is available for the following functions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.ECONOMIC_ACTIVITY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.ECONOMIC_ACTIVITY_BY_FACTORID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.REAL_ESTATE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.REAL_ESTATE_BY_FACTORID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.PHYSICAL_ACTIVITY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.PHYSICAL_ACTIVITY_BY_FACTORID</span></code></p></li>
+</ul>
+</section>
+<section id="supported-currencies">
+<h3>Supported Currencies<a class="headerlink" href="#supported-currencies" title="Link to this heading">¶</a></h3>
+<p>The add-in supports conversion for 170 currencies, including:</p>
+<p>USD, AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BOV, BRL, BSD, BTN, BWP, BYN, BZD, CAD, CDF, CHE, CHF, CHW, CLF, CLP, CNY, COP, COU, CRC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HTG, HUF, IDR, ILS, INR, IQD, IRR, ISK, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRU, MUR, MVR, MWK, MXN, MXV, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SOS, SRD, SSP, STN, SVC, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USN, UYI, UYU, UYW, UZS, VED, VES, VND, VUV, WST, XAD, XAF, XCD, XCG, XDR, XOF, XPF, XSU, XUA, YER, ZAR, ZMW, ZWG</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>USD is the base currency.</p>
+</div>
+</section>
+<section id="exchange-rate-data">
+<h3>Exchange Rate Data<a class="headerlink" href="#exchange-rate-data" title="Link to this heading">¶</a></h3>
+<p><strong>Data Source</strong></p>
+<p>Exchange rates are sourced from the U.S. Department of the Treasury’s Fiscal Data API, which provides official exchange rates used by the U.S. government for accounting and reporting purposes.</p>
+<ul class="simple">
+<li><p><strong>API Source</strong>: <a class="reference external" href="https://api.fiscaldata.treasury.gov/services/api/fiscal_service">https://api.fiscaldata.treasury.gov/services/api/fiscal_service</a></p></li>
+<li><p><strong>Data Provider</strong>: U.S. Department of the Treasury, Bureau of the Fiscal Service</p></li>
+</ul>
+<p><strong>Historical Coverage</strong></p>
+<p>Exchange rate data is available from <strong>March 31, 2001</strong> onwards. If you specify a date earlier than this, the system will use the earliest available rate.</p>
+<p><strong>Data Updates</strong></p>
+<p>The exchange rate database is automatically synchronized with the Treasury API to ensure you always have access to the most current rates. Updates are captured as soon as they become available from the Treasury.</p>
+</section>
+</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <section id="location-based-emissions">
@@ -1195,6 +1234,12 @@
             <ul>
 <li><a class="reference internal" href="#">Reference</a><ul>
 <li><a class="reference internal" href="#general-notes">General Notes</a></li>
+<li><a class="reference internal" href="#currency-conversion-support">Currency Conversion Support</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#supported-currencies">Supported Currencies</a></li>
+<li><a class="reference internal" href="#exchange-rate-data">Exchange Rate Data</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
 <li><a class="reference internal" href="#location-based-emissions">Location-based Emissions</a></li>
 <li><a class="reference internal" href="#stationary-source-emissions">Stationary Source Emissions</a></li>

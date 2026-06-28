@@ -14,6 +14,53 @@ General Notes
 - Errors are returned as Excel error messages.
 - Units must follow the supported unit conventions defined in Envizi.
 
+Currency Conversion Support
+---------------------------
+
+Overview
+~~~~~~~~
+
+The IBM Envizi for Excel add-in supports automatic currency conversion for functions that accept monetary values. This feature allows you to input values in your preferred currency, and the system will automatically convert them to the appropriate base currency for emissions calculations.
+
+**Supported Functions**
+
+Currency conversion is available for the following functions:
+
+- ``ENVIZI.ECONOMIC_ACTIVITY``
+- ``ENVIZI.ECONOMIC_ACTIVITY_BY_FACTORID``
+- ``ENVIZI.REAL_ESTATE``
+- ``ENVIZI.REAL_ESTATE_BY_FACTORID``
+- ``ENVIZI.PHYSICAL_ACTIVITY``
+- ``ENVIZI.PHYSICAL_ACTIVITY_BY_FACTORID``
+
+Supported Currencies
+~~~~~~~~~~~~~~~~~~~~
+
+The add-in supports conversion for 170 currencies, including:
+
+USD, AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BOV, BRL, BSD, BTN, BWP, BYN, BZD, CAD, CDF, CHE, CHF, CHW, CLF, CLP, CNY, COP, COU, CRC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HTG, HUF, IDR, ILS, INR, IQD, IRR, ISK, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRU, MUR, MVR, MWK, MXN, MXV, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SOS, SRD, SSP, STN, SVC, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USN, UYI, UYU, UYW, UZS, VED, VES, VND, VUV, WST, XAD, XAF, XCD, XCG, XDR, XOF, XPF, XSU, XUA, YER, ZAR, ZMW, ZWG
+
+.. note::
+   USD is the base currency.
+
+Exchange Rate Data
+~~~~~~~~~~~~~~~~~~
+
+**Data Source**
+
+Exchange rates are sourced from the U.S. Department of the Treasury's Fiscal Data API, which provides official exchange rates used by the U.S. government for accounting and reporting purposes.
+
+- **API Source**: https://api.fiscaldata.treasury.gov/services/api/fiscal_service
+- **Data Provider**: U.S. Department of the Treasury, Bureau of the Fiscal Service
+
+**Historical Coverage**
+
+Exchange rate data is available from **March 31, 2001** onwards. If you specify a date earlier than this, the system will use the earliest available rate.
+
+**Data Updates**
+
+The exchange rate database is automatically synchronized with the Treasury API to ensure you always have access to the most current rates. Updates are captured as soon as they become available from the Treasury.
+
 Functions
 ---------
 
