@@ -36,9 +36,354 @@ Currency conversion is available for the following functions:
 Supported Currencies
 ~~~~~~~~~~~~~~~~~~~~
 
-The add-in supports conversion for 170 currencies, including:
+The add-in supports conversion for 170 currencies:
 
-USD, AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BOV, BRL, BSD, BTN, BWP, BYN, BZD, CAD, CDF, CHE, CHF, CHW, CLF, CLP, CNY, COP, COU, CRC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HTG, HUF, IDR, ILS, INR, IQD, IRR, ISK, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRU, MUR, MVR, MWK, MXN, MXV, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SOS, SRD, SSP, STN, SVC, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USN, UYI, UYU, UYW, UZS, VED, VES, VND, VUV, WST, XAD, XAF, XCD, XCG, XDR, XOF, XPF, XSU, XUA, YER, ZAR, ZMW, ZWG
+.. list-table::
+   :header-rows: 1
+   :widths: 60 40
+
+   * - Currency Name
+     - Symbol
+   * - ADB Unit of Account
+     - XUA
+   * - Afghani
+     - AFN
+   * - Algerian Dinar
+     - DZD
+   * - Arab Accounting Dinar
+     - XAD
+   * - Argentine Peso
+     - ARS
+   * - Armenian Dram
+     - AMD
+   * - Aruban Florin
+     - AWG
+   * - Australian Dollar
+     - AUD
+   * - Azerbaijan Manat
+     - AZN
+   * - Bahamian Dollar
+     - BSD
+   * - Bahraini Dinar
+     - BHD
+   * - Baht
+     - THB
+   * - Balboa
+     - PAB
+   * - Barbados Dollar
+     - BBD
+   * - Belarusian Ruble
+     - BYN
+   * - Belize Dollar
+     - BZD
+   * - Bermudian Dollar
+     - BMD
+   * - Boliviano
+     - BOB
+   * - Bolívar Soberano
+     - VED
+   * - Bolívar Soberano
+     - VES
+   * - Brazilian Real
+     - BRL
+   * - Brunei Dollar
+     - BND
+   * - Bulgarian Lev
+     - BGN
+   * - Burundi Franc
+     - BIF
+   * - Cabo Verde Escudo
+     - CVE
+   * - Canadian Dollar
+     - CAD
+   * - Caribbean Guilder
+     - XCG
+   * - Cayman Islands Dollar
+     - KYD
+   * - CFA Franc BCEAO
+     - XOF
+   * - CFA Franc BEAC
+     - XAF
+   * - CFP Franc
+     - XPF
+   * - Chilean Peso
+     - CLP
+   * - Colombian Peso
+     - COP
+   * - Comorian Franc
+     - KMF
+   * - Congolese Franc
+     - CDF
+   * - Convertible Mark
+     - BAM
+   * - Cordoba Oro
+     - NIO
+   * - Costa Rican Colon
+     - CRC
+   * - Cuban Peso
+     - CUP
+   * - Czech Koruna
+     - CZK
+   * - Dalasi
+     - GMD
+   * - Danish Krone
+     - DKK
+   * - Denar
+     - MKD
+   * - Djibouti Franc
+     - DJF
+   * - Dobra
+     - STN
+   * - Dominican Peso
+     - DOP
+   * - Dong
+     - VND
+   * - East Caribbean Dollar
+     - XCD
+   * - Egyptian Pound
+     - EGP
+   * - El Salvador Colon
+     - SVC
+   * - Ethiopian Birr
+     - ETB
+   * - Euro
+     - EUR
+   * - Falkland Islands Pound
+     - FKP
+   * - Fiji Dollar
+     - FJD
+   * - Forint
+     - HUF
+   * - Ghana Cedi
+     - GHS
+   * - Gibraltar Pound
+     - GIP
+   * - Gourde
+     - HTG
+   * - Guarani
+     - PYG
+   * - Guinean Franc
+     - GNF
+   * - Guyana Dollar
+     - GYD
+   * - Hong Kong Dollar
+     - HKD
+   * - Hryvnia
+     - UAH
+   * - Iceland Krona
+     - ISK
+   * - Indian Rupee
+     - INR
+   * - Iranian Rial
+     - IRR
+   * - Iraqi Dinar
+     - IQD
+   * - Jamaican Dollar
+     - JMD
+   * - Jordanian Dinar
+     - JOD
+   * - Kenyan Shilling
+     - KES
+   * - Kina
+     - PGK
+   * - Kuwaiti Dinar
+     - KWD
+   * - Kwanza
+     - AOA
+   * - Kyat
+     - MMK
+   * - Lao Kip
+     - LAK
+   * - Lari
+     - GEL
+   * - Lebanese Pound
+     - LBP
+   * - Lek
+     - ALL
+   * - Lempira
+     - HNL
+   * - Leone
+     - SLE
+   * - Liberian Dollar
+     - LRD
+   * - Libyan Dinar
+     - LYD
+   * - Lilangeni
+     - SZL
+   * - Loti
+     - LSL
+   * - Malagasy Ariary
+     - MGA
+   * - Malawi Kwacha
+     - MWK
+   * - Malaysian Ringgit
+     - MYR
+   * - Mauritius Rupee
+     - MUR
+   * - Mexican Peso
+     - MXN
+   * - Mexican Unidad de Inversion (UDI)
+     - MXV
+   * - Moldovan Leu
+     - MDL
+   * - Moroccan Dirham
+     - MAD
+   * - Mozambique Metical
+     - MZN
+   * - Mvdol
+     - BOV
+   * - Naira
+     - NGN
+   * - Nakfa
+     - ERN
+   * - Namibia Dollar
+     - NAD
+   * - Nepalese Rupee
+     - NPR
+   * - Netherlands Antillean Guilder
+     - ANG
+   * - New Israeli Sheqel
+     - ILS
+   * - New Taiwan Dollar
+     - TWD
+   * - New Zealand Dollar
+     - NZD
+   * - Ngultrum
+     - BTN
+   * - North Korean Won
+     - KPW
+   * - Norwegian Krone
+     - NOK
+   * - Ouguiya
+     - MRU
+   * - Pa'anga
+     - TOP
+   * - Pakistan Rupee
+     - PKR
+   * - Pataca
+     - MOP
+   * - Peso Uruguayo
+     - UYU
+   * - Philippine Peso
+     - PHP
+   * - Pound Sterling
+     - GBP
+   * - Pula
+     - BWP
+   * - Qatari Rial
+     - QAR
+   * - Quetzal
+     - GTQ
+   * - Rand
+     - ZAR
+   * - Rial Omani
+     - OMR
+   * - Riel
+     - KHR
+   * - Romanian Leu
+     - RON
+   * - Rufiyaa
+     - MVR
+   * - Rupiah
+     - IDR
+   * - Russian Ruble
+     - RUB
+   * - Rwanda Franc
+     - RWF
+   * - Saint Helena Pound
+     - SHP
+   * - Saudi Riyal
+     - SAR
+   * - SDR (Special Drawing Right)
+     - XDR
+   * - Serbian Dinar
+     - RSD
+   * - Seychelles Rupee
+     - SCR
+   * - Singapore Dollar
+     - SGD
+   * - Sol
+     - PEN
+   * - Solomon Islands Dollar
+     - SBD
+   * - Som
+     - KGS
+   * - Somali Shilling
+     - SOS
+   * - Somoni
+     - TJS
+   * - South Sudanese Pound
+     - SSP
+   * - Sri Lanka Rupee
+     - LKR
+   * - Sucre
+     - XSU
+   * - Sudanese Pound
+     - SDG
+   * - Surinam Dollar
+     - SRD
+   * - Swedish Krona
+     - SEK
+   * - Swiss Franc
+     - CHF
+   * - Syrian Pound
+     - SYP
+   * - Taka
+     - BDT
+   * - Tala
+     - WST
+   * - Tanzanian Shilling
+     - TZS
+   * - Tenge
+     - KZT
+   * - Trinidad and Tobago Dollar
+     - TTD
+   * - Tugrik
+     - MNT
+   * - Tunisian Dinar
+     - TND
+   * - Turkish Lira
+     - TRY
+   * - Turkmenistan New Manat
+     - TMT
+   * - UAE Dirham
+     - AED
+   * - Uganda Shilling
+     - UGX
+   * - Unidad de Fomento
+     - CLF
+   * - Unidad de Valor Real
+     - COU
+   * - Unidad Previsional
+     - UYW
+   * - United States dollar
+     - USD
+   * - Uruguay Peso en Unidades Indexadas (UI)
+     - UYI
+   * - US Dollar (Next day)
+     - USN
+   * - Uzbekistan Sum
+     - UZS
+   * - Vatu
+     - VUV
+   * - WIR Euro
+     - CHE
+   * - WIR Franc
+     - CHW
+   * - Won
+     - KRW
+   * - Yemeni Rial
+     - YER
+   * - Yen
+     - JPY
+   * - Yuan Renminbi
+     - CNY
+   * - Zambian Kwacha
+     - ZMW
+   * - Zimbabwe Gold
+     - ZWG
+   * - Zloty
+     - PLN
 
 Exchange Rate Data
 ~~~~~~~~~~~~~~~~~~
@@ -57,6 +402,9 @@ Exchange rate data is available from **March 31, 2001** onwards. If you specify 
 **Data Updates**
 
 The exchange rate database is automatically synchronized with the Treasury API to ensure you always have access to the most current rates. Updates are captured as soon as they become available from the Treasury.
+
+- **Update Frequency**: The U.S. Treasury typically publishes exchange rates on a **quarterly basis**
+- **Amendment Policy**: If current rates deviate from the published rates by 10% or more, Treasury will issue amendments to the quarterly report
 
 Functions
 ---------
