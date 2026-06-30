@@ -790,7 +790,7 @@ Economic Activity
 
 .. code-block:: none
 
-   =ENVIZI.ECONOMIC_ACTIVITY(type, value, unit, country, [stateProvince], [date])
+   =ENVIZI.ECONOMIC_ACTIVITY(type, value, unit, country, [stateProvince], [date], [outstandingAmount], [totalEquity], [totalDebt], [evic], [revenue])
 
 **Parameters**
 
@@ -800,6 +800,11 @@ Economic Activity
 - ``country`` – ISO alpha-3 country code
 - ``stateProvince`` *(optional)* – Geographic state or province
 - ``date`` *(optional)* – Activity date
+- ``outstandingAmount`` *(optional)* – Outstanding loan or investment amount for attribution
+- ``totalEquity`` *(optional)* – Total equity for attribution (private companies)
+- ``totalDebt`` *(optional)* – Total debt for attribution (private companies)
+- ``evic`` *(optional)* – Enterprise Value Including Cash for attribution (listed companies)
+- ``revenue`` *(optional)* – Revenue for attribution
 
 ---
 
@@ -807,11 +812,93 @@ Economic Activity
 
 .. code-block:: none
 
-   =ENVIZI.ECONOMIC_ACTIVITY_BY_FACTORID(factorId, value, unit)
+   =ENVIZI.ECONOMIC_ACTIVITY_BY_FACTORID(factorId, value, unit, [outstandingAmount], [totalEquity], [totalDebt], [evic], [revenue])
 
 - ``factorId`` – Factor ID from Envizi
 - ``value`` – Numeric activity value
 - ``unit`` – Unit of measurement
+- ``outstandingAmount`` *(optional)* – Outstanding loan or investment amount for attribution
+- ``totalEquity`` *(optional)* – Total equity for attribution (private companies)
+- ``totalDebt`` *(optional)* – Total debt for attribution (private companies)
+- ``evic`` *(optional)* – Enterprise Value Including Cash for attribution (listed companies)
+- ``revenue`` *(optional)* – Revenue for attribution
+
+**Outputs**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Column
+     - Description
+   * - ``Total CO2e``
+     - The total emissions expressed as carbon dioxide equivalent (CO2e). This is the sum of all GHGs weighted by their global warming potential (GWP).
+   * - ``CO2``
+     - Direct carbon dioxide (CO2) emissions reported separately.
+   * - ``CH4``
+     - Methane (CH4) emissions reported separately.
+   * - ``N2O``
+     - Nitrous oxide (N2O) emissions reported separately.
+   * - ``HFC``
+     - Hydrofluorocarbon (HFC) emissions reported separately.
+   * - ``PFC``
+     - Perfluorocarbon (PFC) emissions reported separately.
+   * - ``SF6``
+     - Sulfur hexafluoride (SF6) emissions reported separately.
+   * - ``NF3``
+     - Nitrogen trifluoride (NF3) emissions reported separately.
+   * - ``bioCO2``
+     - Biogenic carbon dioxide (bioCO2) emissions, if applicable.
+   * - ``indirectCO2e``
+     - Indirect CO2 equivalent emissions, if applicable.
+   * - ``Unit``
+     - Unit of measurement for the emissions result.
+   * - ``Description``
+     - Provides details on the factor set used in the calculation.
+   * - ``Transaction Id``
+     - Unique identifier for the calculation transaction, used for reference and auditing.
+   * - ``Energy (MWh)``
+     - Energy consumption in megawatt-hours (MWh).
+   * - ``Asset Turn Over Ratio``
+     - The asset turnover ratio for the activity, if applicable.
+   * - ``Score``
+     - Attribution score for the economic activity.
+
+---
+
+Real Estate
+~~~~~~~~~~~
+
+**Syntax**
+
+.. code-block:: none
+
+   =ENVIZI.REAL_ESTATE(type, value, unit, country, [stateProvince], [date], [outstandingAmount], [propertyValue])
+
+**Parameters**
+
+- ``type`` – Activity type
+- ``value`` – Numeric activity value
+- ``unit`` – Unit of measurement
+- ``country`` – ISO alpha-3 country code
+- ``stateProvince`` *(optional)* – Geographic state or province
+- ``date`` *(optional)* – Activity date
+- ``outstandingAmount`` *(optional)* – Outstanding loan amount for attribution
+- ``propertyValue`` *(optional)* – Property value for attribution
+
+---
+
+**Alternate Syntax (factorId)**
+
+.. code-block:: none
+
+   =ENVIZI.REAL_ESTATE_BY_FACTORID(factorId, value, unit, [outstandingAmount], [propertyValue])
+
+- ``factorId`` – Factor ID from Envizi
+- ``value`` – Numeric activity value
+- ``unit`` – Unit of measurement
+- ``outstandingAmount`` *(optional)* – Outstanding loan amount for attribution
+- ``propertyValue`` *(optional)* – Property value for attribution
 
 **Outputs**
 
@@ -854,14 +941,14 @@ Economic Activity
 
 ---
 
-Real Estate
-~~~~~~~~~~~
+Physical Activity
+~~~~~~~~~~~~~~~~~
 
 **Syntax**
 
 .. code-block:: none
 
-   =ENVIZI.REAL_ESTATE(type, value, unit, country, [stateProvince], [date])
+   =ENVIZI.PHYSICAL_ACTIVITY(type, value, unit, country, [stateProvince], [date], [outstandingAmount], [totalEquity], [totalDebt], [evic])
 
 **Parameters**
 
@@ -871,6 +958,10 @@ Real Estate
 - ``country`` – ISO alpha-3 country code
 - ``stateProvince`` *(optional)* – Geographic state or province
 - ``date`` *(optional)* – Activity date
+- ``outstandingAmount`` *(optional)* – Outstanding loan or investment amount for attribution
+- ``totalEquity`` *(optional)* – Total equity for attribution (private companies)
+- ``totalDebt`` *(optional)* – Total debt for attribution (private companies)
+- ``evic`` *(optional)* – Enterprise Value Including Cash for attribution (listed companies)
 
 ---
 
@@ -878,11 +969,15 @@ Real Estate
 
 .. code-block:: none
 
-   =ENVIZI.REAL_ESTATE_BY_FACTORID(factorId, value, unit)
+   =ENVIZI.PHYSICAL_ACTIVITY_BY_FACTORID(factorId, value, unit, [outstandingAmount], [totalEquity], [totalDebt], [evic])
 
 - ``factorId`` – Factor ID from Envizi
 - ``value`` – Numeric activity value
 - ``unit`` – Unit of measurement
+- ``outstandingAmount`` *(optional)* – Outstanding loan or investment amount for attribution
+- ``totalEquity`` *(optional)* – Total equity for attribution (private companies)
+- ``totalDebt`` *(optional)* – Total debt for attribution (private companies)
+- ``evic`` *(optional)* – Enterprise Value Including Cash for attribution (listed companies)
 
 **Outputs**
 
