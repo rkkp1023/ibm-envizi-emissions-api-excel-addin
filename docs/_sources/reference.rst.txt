@@ -28,10 +28,8 @@ Currency conversion is available for the following functions:
 
 - ``ENVIZI.ECONOMIC_ACTIVITY``
 - ``ENVIZI.ECONOMIC_ACTIVITY_BY_FACTORID``
-- ``ENVIZI.REAL_ESTATE``
-- ``ENVIZI.REAL_ESTATE_BY_FACTORID``
-- ``ENVIZI.PHYSICAL_ACTIVITY``
-- ``ENVIZI.PHYSICAL_ACTIVITY_BY_FACTORID``
+- ``ENVIZI.CALCULATION``
+- ``ENVIZI.CALCULATION_BY_FACTORID``
 
 Supported Currencies
 ~~~~~~~~~~~~~~~~~~~~
