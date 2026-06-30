@@ -1,6 +1,6 @@
 // Copyright IBM Corp. 2026
 
-let isTaskpaneOpen = false;
+let isTaskpaneOpen = true;
 
 /**
  * Captures the initial taskpane visibility state once Office is ready,

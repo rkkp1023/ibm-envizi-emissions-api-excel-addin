@@ -1,0 +1,21 @@
+// Copyright IBM Corp. 2026
+
+@use "@carbon/layout/scss/spacing";
+
+.dismissible-tab-content {
+  display: flex;
+  align-items: center;
+  gap: spacing.$spacing-03;
+}
+
+.dismissible-tab-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  color: inherit;
+  font-size: inherit;
+  display: flex;
+  align-items: center;
+}

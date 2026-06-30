@@ -1,0 +1,26 @@
+// Copyright IBM Corp. 2026
+
+@use "@carbon/layout/scss/spacing";
+@use "@carbon/themes/scss/tokens";
+
+.tags-container {
+  display: flex;
+  gap: spacing.$spacing-03;
+  flex-direction: column;
+}
+
+.information-banner {
+  display: flex;
+  padding: spacing.$spacing-02;
+  gap: spacing.$spacing-03;
+  align-items: flex-start;
+  border-radius: 8px;
+  border: 2px solid tokens.$support-success-inverse;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: spacing.$spacing-03;
+}

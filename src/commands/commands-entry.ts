@@ -16,6 +16,7 @@ import {
 } from "./commands";
 import { ActivityTypeOption, AreaTypeOption } from "./data-validation-manager";
 import { getParamsFromCell } from "./formula-parser";
+import { getIsTaskpaneOpen } from "./taskPaneVisibility";
 
 declare global {
   interface Window {
@@ -177,7 +178,10 @@ async function actionShowActivityRecommendation(event: Office.AddinCommands.Even
       // Get parameters from cell (with formula detection)
       const params = await getParamsFromCell(cellAddress, context);
 
-      // Open task pane first
+      // Capture whether the task pane was already open BEFORE opening it
+      const wasAlreadyOpen = getIsTaskpaneOpen();
+
+      // Open task pane
       await openTaskpane();
 
       // Dispatch event with recommendation parameters and task pane state
@@ -185,6 +189,7 @@ async function actionShowActivityRecommendation(event: Office.AddinCommands.Even
         new CustomEvent("ACTIVITY_RECOMMENDER_REQUESTED", {
           detail: {
             recommendedParams: params,
+            wasAlreadyOpen,
           },
         })
       );

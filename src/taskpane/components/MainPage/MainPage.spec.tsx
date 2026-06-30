@@ -6,13 +6,12 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ActivityRecommenderProvider } from "../../context/ActivityRecommenderContext";
-import { useAccountSubscription, useCarbonTheme, useTaskPane } from "../../hooks";
+import { useAccountSubscription, useCarbonTheme } from "../../hooks";
 import { MainPage } from "./MainPage";
 
 jest.mock("../../hooks", () => ({
   useAccountSubscription: jest.fn(),
   useCarbonTheme: jest.fn(),
-  useTaskPane: jest.fn(),
 }));
 
 jest.mock("../QuickHelpTab/QuickHelpTab", () => ({
@@ -37,9 +36,22 @@ jest.mock("../ActivityTypeRecommender/ActivityTypeRecommender", () => ({
   ),
 }));
 
+jest.mock("../ActivityTypeRecommenderContent/ActivityTypeRecommenderContent", () => ({
+  ActivityTypeRecommenderContent: () => (
+    <div data-testid="activity-type-recommender-content">Activity Type Recommender Content</div>
+  ),
+}));
+
+jest.mock("../DismissibleTab/DismissibleTab", () => ({
+  DismissibleTab: ({ value, label, onDismiss }: { value: string; label: string; onDismiss: () => void }) => (
+    <button role="tab" data-testid="dismissible-tab" data-value={value} onClick={onDismiss}>
+      {label}
+    </button>
+  ),
+}));
+
 const mockedUseAccountSubscription = jest.mocked(useAccountSubscription);
 const mockedUseCarbonTheme = jest.mocked(useCarbonTheme);
-const mockedUseTaskPane = jest.mocked(useTaskPane);
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -73,9 +85,6 @@ describe("MainPage", () => {
         subscriptionType: "paid",
       },
     } as unknown as ReturnType<typeof useAccountSubscription>);
-    mockedUseTaskPane.mockReturnValue({
-      isTaskPaneOpen: false,
-    } as ReturnType<typeof useTaskPane>);
     delete (window as any).recommendedParams;
   });
 
@@ -161,7 +170,7 @@ describe("MainPage", () => {
   });
 
   describe("Event Handlers and Callbacks", () => {
-    it("should render ActivityTypeRecommender when ACTIVITY_RECOMMENDER_REQUESTED event contains recommendedParams", () => {
+    it("should render ActivityTypeRecommender (standalone) when ACTIVITY_RECOMMENDER_REQUESTED event contains recommendedParams and task pane was closed", () => {
       renderMainPage();
 
       act(() => {
@@ -171,6 +180,7 @@ describe("MainPage", () => {
               recommendedParams: {
                 foo: "bar",
               },
+              wasAlreadyOpen: false,
             },
           })
         );
@@ -178,6 +188,64 @@ describe("MainPage", () => {
 
       expect(screen.getByTestId("activity-type-recommender")).toBeInTheDocument();
       expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    });
+
+    it("should render dismissable tab when ACTIVITY_RECOMMENDER_REQUESTED event fires and task pane was already open", () => {
+      renderMainPage();
+
+      act(() => {
+        window.dispatchEvent(
+          new CustomEvent("ACTIVITY_RECOMMENDER_REQUESTED", {
+            detail: {
+              recommendedParams: {
+                foo: "bar",
+              },
+              wasAlreadyOpen: true,
+            },
+          })
+        );
+      });
+
+      expect(screen.queryByTestId("activity-type-recommender")).not.toBeInTheDocument();
+      expect(screen.getByRole("tablist")).toBeInTheDocument();
+      expect(screen.getByTestId("dismissible-tab")).toBeInTheDocument();
+      expect(screen.getByTestId("activity-type-recommender-content")).toBeInTheDocument();
+    });
+
+    it("should close the dismissable tab and restore the previously selected tab when Cancel is clicked", () => {
+      renderMainPage();
+
+      // Switch to Resources tab before opening the recommender
+      act(() => {
+        fireEvent.click(screen.getByRole("tab", { name: /Resources/i }));
+      });
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
+
+      // Open dismissable tab
+      act(() => {
+        window.dispatchEvent(
+          new CustomEvent("ACTIVITY_RECOMMENDER_REQUESTED", {
+            detail: {
+              recommendedParams: { foo: "bar" },
+              wasAlreadyOpen: true,
+            },
+          })
+        );
+      });
+
+      expect(screen.getByTestId("dismissible-tab")).toBeInTheDocument();
+      expect(screen.getByTestId("activity-type-recommender-content")).toBeInTheDocument();
+
+      // Click Cancel (the dismissible tab's onDismiss → onClose)
+      act(() => {
+        fireEvent.click(screen.getByTestId("dismissible-tab"));
+      });
+
+      expect(screen.queryByTestId("dismissible-tab")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("activity-type-recommender-content")).not.toBeInTheDocument();
+      // Should restore to Resources, not quickHelp
+      expect(screen.getByTestId("resources-tab")).toBeInTheDocument();
+      expect(screen.queryByTestId("quick-help-tab")).not.toBeInTheDocument();
     });
 
     it("should ignore ACTIVITY_RECOMMENDER_REQUESTED event when detail is missing", () => {

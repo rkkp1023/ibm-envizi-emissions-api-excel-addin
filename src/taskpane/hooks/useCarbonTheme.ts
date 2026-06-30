@@ -12,13 +12,14 @@ interface Theme {
 
 export function useCarbonTheme() {
   const context = useContext(ThemeContext);
-  const carbonThemeContext = {
-    theme: context.isDark ? "g90" : "white",
-  } as Theme;
 
   if (!context) {
     throw new Error("useTheme must be used within ThemeProvider");
   }
+
+  const carbonThemeContext = {
+    theme: context.isDark ? "g90" : "white",
+  } as Theme;
 
   return carbonThemeContext;
 }

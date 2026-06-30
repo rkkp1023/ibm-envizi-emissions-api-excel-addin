@@ -2,5 +2,23 @@
 
 @use "@carbon/react";
 @use "@carbon-labs/react-ui-shell/scss/ui-shell.scss";
+@use "@carbon/layout/scss/spacing";
+@use "@carbon/themes/scss/tokens";
+@use "@carbon/themes/scss/theme" as carbon-theme;
+@use "@carbon/themes/scss/themes" as carbon-themes;
 
 @use "../taskpane/components/index.scss";
+
+.activity-recommender-content {
+  padding: spacing.$spacing-03;
+}
+
+// Override background token for dark (g90) theme only
+.cds--g90 {
+  @include carbon-theme.theme(
+    carbon-themes.$g90,
+    (
+      background: #282828,
+    )
+  );
+}

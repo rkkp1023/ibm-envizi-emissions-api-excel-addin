@@ -110,6 +110,7 @@ export default function ActivityTypeRecommenderTable({
                   const isSelected = selectedId === row.id;
                   // Access data directly from paginatedRecommendations using index
                   const rowData = paginatedRecommendations[index];
+                  if (!rowData) return null;
 
                   return (
                     <TableRow

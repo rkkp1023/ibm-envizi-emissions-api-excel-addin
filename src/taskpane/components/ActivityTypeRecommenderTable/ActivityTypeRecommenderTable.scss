@@ -5,9 +5,7 @@
 @use "@carbon/type";
 
 .activity-type-table-container {
-  width: 100vw;
-  padding-inline: spacing.$spacing-05;
-  overflow-x: auto;
+  width: calc(100vw - spacing.$spacing-05 * 2);
 }
 
 // selected row state - highlighted with border and background
