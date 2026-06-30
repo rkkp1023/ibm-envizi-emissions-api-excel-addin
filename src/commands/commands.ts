@@ -7,9 +7,7 @@ import {
   insertAreaValidation,
   insertUnitValidation,
 } from "./data-validation-manager";
-import {
-  fetchAllMetadata,
-} from "./metadata-service";
+import { fetchAllMetadata } from "./metadata-service";
 import {
   createNamedRanges,
   deleteMetadataSheet,
@@ -134,7 +132,7 @@ export async function forceMetadataRefresh(): Promise<void> {
 export async function refreshMetadataOnLogin(): Promise<void> {
   try {
     const sheetExists = await metadataSheetExists();
-    
+
     // Only refresh if sheet exists
     if (sheetExists) {
       console.log("Refreshing metadata on login...");

@@ -14,6 +14,7 @@ import {
 } from "../../common/credentials";
 import { ensureClient, resetClient } from "../../functions/client";
 import { displayLoginDialog } from "../auth";
+import { analyticsService } from "../services/analyticsService";
 import { performLogout } from "../services/authService";
 import { AuthContext, AuthProvider } from "./AuthContext";
 
@@ -26,6 +27,12 @@ jest.mock("../../common/credentials");
 jest.mock("../../functions/client");
 jest.mock("../auth");
 jest.mock("../services/authService");
+
+jest.mock("../services/analyticsService", () => ({
+  analyticsService: {
+    updateUserProfile: jest.fn().mockResolvedValue(undefined),
+  },
+}));
 
 const mockedJwtDecode = jwtDecode as jest.MockedFunction<typeof jwtDecode>;
 const mockedLoadCredentials = loadCredentialsFromStorage as jest.MockedFunction<
@@ -48,6 +55,7 @@ const mockedEnsureClient = ensureClient as jest.MockedFunction<typeof ensureClie
 const mockedResetClient = resetClient as jest.MockedFunction<typeof resetClient>;
 const mockedEnviziUiGraphQL = enviziUiGraphQL as jest.Mocked<typeof enviziUiGraphQL>;
 const mockedCoreEnviziAuth = coreEnviziAuth as jest.Mocked<typeof coreEnviziAuth>;
+const mockedAnalyticsService = analyticsService as jest.Mocked<typeof analyticsService>;
 
 const syncAuthStateTimeout = 5 * 60 * 1000;
 
@@ -65,6 +73,7 @@ describe("AuthContext", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    mockedAnalyticsService.updateUserProfile.mockResolvedValue(undefined);
     mockedJwtDecode.mockReturnValue(mockDecodedToken);
     mockedLoadCredentials.mockResolvedValue(null);
     mockedRefreshMetadata.mockResolvedValue(undefined);

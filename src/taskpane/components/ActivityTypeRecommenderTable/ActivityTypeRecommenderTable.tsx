@@ -73,7 +73,7 @@ export default function ActivityTypeRecommenderTable({
   onSelect,
 }: ActivityRecommenderTableProps) {
   const styles = useStyles();
-  const [selectedId, setSelectedId] = useState<string>(recommendations[0]?.id || "");
+  const [selectedId, setSelectedId] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
 

@@ -940,7 +940,7 @@
 </section>
 <section id="factor-search">
 <h3>Factor Search<a class="headerlink" href="#factor-search" title="Link to this heading">¶</a></h3>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [unit], [scope], [date], [page], [size])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [unit], [scope], [date], [page], [size], [enableReranker])
 </pre></div>
 </div>
 <p><strong>Parameters</strong></p>
@@ -953,6 +953,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> <em>(optional)</em> – Activity date (format: YYYY-MM-DD or Excel date)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">page</span></code> <em>(optional)</em> – Page number for pagination (default: 1)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">size</span></code> <em>(optional)</em> – Number of results per page (default: 30)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enableReranker</span></code> <em>(optional)</em> – Whether to apply cross-encoder reranking to the results (default: TRUE). Set to FALSE to skip reranking and use raw semantic similarity scores only. Omitting it preserves the default behavior (reranking on).</p></li>
 </ul>
 <p><strong>Outputs</strong></p>
 <div class="table-wrapper colwidths-given docutils container">
@@ -988,13 +989,19 @@
 </tbody>
 </table>
 </div>
+<p><strong>Examples</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.FACTOR_SEARCH(&quot;electricity&quot;, &quot;USA&quot;)
+=ENVIZI.FACTOR_SEARCH(&quot;electricity&quot;, &quot;USA&quot;, , &quot;kWh&quot;, &quot;2&quot;, &quot;2024-01-15&quot;, 1, 10)
+=ENVIZI.FACTOR_SEARCH(&quot;electricity&quot;, &quot;USA&quot;, , , , , , , FALSE)  // Skip reranking, use raw semantic scores
+</pre></div>
+</div>
 <p>—</p>
 </section>
 <section id="recommend-activity-type">
 <h3>Recommend Activity Type<a class="headerlink" href="#recommend-activity-type" title="Link to this heading">¶</a></h3>
 <p>Uses AI to recommend the most appropriate activity type based on a text description. This function helps users find the correct activity type when they’re unsure which one to use for their emissions calculation.</p>
 <p><strong>Syntax</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.RECOMMEND_ACTIVITY_TYPE(search, country, [stateProvince], [unit], [scope], [date])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=ENVIZI.RECOMMEND_ACTIVITY_TYPE(search, country, [stateProvince], [unit], [scope], [date], [enableReranker])
 </pre></div>
 </div>
 <p><strong>Parameters</strong></p>
@@ -1005,6 +1012,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">unit</span></code> <em>(optional)</em> – Unit of measurement to filter recommendations (e.g., “kWh”, “liters”)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">scope</span></code> <em>(optional)</em> – Emission scope to filter recommendations (e.g., “1”, “2”, “3”)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> <em>(optional)</em> – Activity date (format: YYYY-MM-DD or Excel date)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enableReranker</span></code> <em>(optional)</em> – Whether to apply cross-encoder reranking to the recommendations (default: TRUE). Set to FALSE to skip reranking and use raw semantic similarity scores only. Omitting it preserves the default behavior (reranking on).</p></li>
 </ul>
 <p><strong>Outputs</strong></p>
 <div class="table-wrapper colwidths-given docutils container">
@@ -1028,6 +1036,9 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Description</span></code></p></td>
 <td><p>Detailed description of the recommended activity type</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Scope</span></code></p></td>
+<td><p>The distinct emission scopes covered by the recommended activity type. The API returns this as a list (for example, <code class="docutils literal notranslate"><span class="pre">[&quot;2&quot;]</span></code> or <code class="docutils literal notranslate"><span class="pre">[&quot;1&quot;,</span> <span class="pre">&quot;2&quot;]</span></code>); Excel displays it as a comma-separated value such as “2” or “1, 2”. Values follow the standard scope conventions (“1”, “2”, “3.1”–“3.15”). Empty when the activity type has no associated scopes.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1037,12 +1048,14 @@
 =ENVIZI.RECOMMEND_ACTIVITY_TYPE(&quot;heating with natural gas&quot;, &quot;USA&quot;, , , &quot;1&quot;)
 =ENVIZI.RECOMMEND_ACTIVITY_TYPE(&quot;diesel fuel for trucks&quot;, &quot;GBR&quot;, &quot;England&quot;, , , &quot;2024-01-15&quot;)
 =ENVIZI.RECOMMEND_ACTIVITY_TYPE(&quot;natural gas heating&quot;, &quot;CAN&quot;, &quot;Ontario&quot;)
+=ENVIZI.RECOMMEND_ACTIVITY_TYPE(&quot;electricity usage&quot;, &quot;USA&quot;, , , , , FALSE)  // Skip reranking, use raw semantic scores
 </pre></div>
 </div>
 <p><strong>Usage Tips</strong></p>
 <ul class="simple">
 <li><p>Use descriptive text in the <code class="docutils literal notranslate"><span class="pre">search</span></code> parameter for better recommendations</p></li>
 <li><p>The function returns only the top recommendation (highest confidence)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Scope</span></code> output is informational and can contain more than one scope for an activity type.</p></li>
 <li><p>Use the recommended activity type in your emission calculation functions</p></li>
 <li><p>Combine with <code class="docutils literal notranslate"><span class="pre">ENVIZI.HEADERS</span></code> using <code class="docutils literal notranslate"><span class="pre">includeDataTypeRecommender=TRUE</span></code> to create templates that include recommendation columns</p></li>
 </ul>
@@ -1080,6 +1093,7 @@
 </div>
 <p><strong>Output</strong></p>
 <p>Returns a single row array containing the header names for the specified endpoint. When both input and output are TRUE, returns both sets of headers in one row.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">recommend_activity_type</span></code>, output headers are <code class="docutils literal notranslate"><span class="pre">Recommended</span> <span class="pre">Activity</span> <span class="pre">Type</span></code>, <code class="docutils literal notranslate"><span class="pre">Confidence(%)</span></code>, <code class="docutils literal notranslate"><span class="pre">Description</span></code>, and <code class="docutils literal notranslate"><span class="pre">Scope</span></code>.</p>
 <p><strong>Note on Data Type Recommender</strong></p>
 <p>When <code class="docutils literal notranslate"><span class="pre">includeActivityTypeRecommender</span></code> is TRUE and <code class="docutils literal notranslate"><span class="pre">input</span></code> is TRUE, the input headers will include three additional columns after “Activity Type”:</p>
 <ul class="simple">
