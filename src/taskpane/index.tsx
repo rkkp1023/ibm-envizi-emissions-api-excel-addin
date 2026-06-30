@@ -7,6 +7,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 import { TaskpaneApp } from "./TaskpaneApp";
+import { analyticsService } from "./services/analyticsService";
 
 /* global Office */
 
@@ -25,6 +26,7 @@ function hideSideloadMessage() {
  */
 function initializeApp() {
   hideSideloadMessage();
+  analyticsService.initialize();
 
   const rootElement = document.getElementById("root");
   if (!rootElement) {

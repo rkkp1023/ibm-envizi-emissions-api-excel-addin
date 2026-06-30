@@ -1,6 +1,11 @@
 // Copyright IBM Corp. 2025, 2026
 
-import { buildSearchParams, convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "../src/functions/utils";
+import {
+  buildSearchParams,
+  convertExcelDateToISO,
+  extractSymbolFromDisplay,
+  extractValueAfterDash,
+} from "../src/functions/utils";
 
 describe("utils", () => {
   describe("extractSymbolFromDisplay", () => {
@@ -128,8 +133,13 @@ describe("utils", () => {
 
     it("should throw error for invalid inputs", () => {
       expect(() => convertExcelDateToISO("invalid")).toThrow("Date should be in YYYY-MM-DD format");
-      expect(() => convertExcelDateToISO("not-a-date")).toThrow("Date should be in YYYY-MM-DD format");
-      expect(() => convertExcelDateToISO("")).toThrow("Date should be in YYYY-MM-DD format");
+      expect(() => convertExcelDateToISO("not-a-date")).toThrow(
+        "Date should be in YYYY-MM-DD format"
+      );
+    });
+
+    it("should return empty string for empty input", () => {
+      expect(convertExcelDateToISO("")).toBe("");
     });
 
     it("should throw error for small numbers (< 20000)", () => {
@@ -150,15 +160,20 @@ describe("utils", () => {
     });
 
     it("should throw error for non-numeric strings", () => {
-      expect(() => convertExcelDateToISO("abc123")).toThrow("Date should be in YYYY-MM-DD format. Invalid date format provided");
-      expect(() => convertExcelDateToISO("12-34-5678")).toThrow("Date should be in YYYY-MM-DD format. Invalid date format provided");
-      expect(() => convertExcelDateToISO("2024/01/15")).toThrow("Date should be in YYYY-MM-DD format. Invalid date format provided");
+      expect(() => convertExcelDateToISO("abc123")).toThrow(
+        "Date should be in YYYY-MM-DD format. Invalid date format provided"
+      );
+      expect(() => convertExcelDateToISO("12-34-5678")).toThrow(
+        "Date should be in YYYY-MM-DD format. Invalid date format provided"
+      );
+      expect(() => convertExcelDateToISO("2024/01/15")).toThrow(
+        "Date should be in YYYY-MM-DD format. Invalid date format provided"
+      );
     });
 
-    it("should throw error for empty or whitespace-only strings", () => {
-      expect(() => convertExcelDateToISO("")).toThrow("Date should be in YYYY-MM-DD format");
-      expect(() => convertExcelDateToISO("   ")).toThrow("Date should be in YYYY-MM-DD format");
-      expect(() => convertExcelDateToISO("\t\n")).toThrow("Date should be in YYYY-MM-DD format");
+    it("should return empty string for whitespace-only strings", () => {
+      expect(convertExcelDateToISO("   ")).toBe("");
+      expect(convertExcelDateToISO("\t\n")).toBe("");
     });
   });
 
@@ -172,20 +187,20 @@ describe("utils", () => {
         "2",
         "2024-01-01"
       );
-      
+
       expect(result).toEqual({
         activity: { search: "electricity", unit: "kWh", scope: "2" },
         location: { country: "USA", stateProvince: "California" },
-        time: { date: "2024-01-01" }
+        time: { date: "2024-01-01" },
       });
     });
 
     it("should build search params with only required parameters", () => {
       const result = buildSearchParams("diesel", "USA");
-      
+
       expect(result).toEqual({
         activity: { search: "diesel" },
-        location: { country: "USA" }
+        location: { country: "USA" },
       });
     });
   });

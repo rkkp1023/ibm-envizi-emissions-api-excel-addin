@@ -5,12 +5,14 @@ import "@testing-library/jest-dom";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useAccountSubscription, useCarbonTheme } from "../../hooks";
+import { ActivityRecommenderProvider } from "../../context/ActivityRecommenderContext";
+import { useAccountSubscription, useCarbonTheme, useTaskPane } from "../../hooks";
 import { MainPage } from "./MainPage";
 
 jest.mock("../../hooks", () => ({
   useAccountSubscription: jest.fn(),
   useCarbonTheme: jest.fn(),
+  useTaskPane: jest.fn(),
 }));
 
 jest.mock("../QuickHelpTab/QuickHelpTab", () => ({
@@ -37,6 +39,7 @@ jest.mock("../ActivityTypeRecommender/ActivityTypeRecommender", () => ({
 
 const mockedUseAccountSubscription = jest.mocked(useAccountSubscription);
 const mockedUseCarbonTheme = jest.mocked(useCarbonTheme);
+const mockedUseTaskPane = jest.mocked(useTaskPane);
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -53,7 +56,9 @@ describe("MainPage", () => {
 
     return render(
       <QueryClientProvider client={testQueryClient}>
-        <MainPage />
+        <ActivityRecommenderProvider>
+          <MainPage />
+        </ActivityRecommenderProvider>
       </QueryClientProvider>
     );
   };
@@ -68,7 +73,10 @@ describe("MainPage", () => {
         subscriptionType: "paid",
       },
     } as unknown as ReturnType<typeof useAccountSubscription>);
-    delete window.recommendedParams;
+    mockedUseTaskPane.mockReturnValue({
+      isTaskPaneOpen: false,
+    } as ReturnType<typeof useTaskPane>);
+    delete (window as any).recommendedParams;
   });
 
   describe("Component Rendering", () => {
@@ -153,14 +161,14 @@ describe("MainPage", () => {
   });
 
   describe("Event Handlers and Callbacks", () => {
-    it("should render ActivityTypeRecommender when CONTEXT_ACTION event contains payload", () => {
+    it("should render ActivityTypeRecommender when ACTIVITY_RECOMMENDER_REQUESTED event contains recommendedParams", () => {
       renderMainPage();
 
       act(() => {
         window.dispatchEvent(
-          new CustomEvent("CONTEXT_ACTION", {
+          new CustomEvent("ACTIVITY_RECOMMENDER_REQUESTED", {
             detail: {
-              payload: {
+              recommendedParams: {
                 foo: "bar",
               },
             },
@@ -172,23 +180,23 @@ describe("MainPage", () => {
       expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
     });
 
-    it("should ignore CONTEXT_ACTION event when detail is missing", () => {
+    it("should ignore ACTIVITY_RECOMMENDER_REQUESTED event when detail is missing", () => {
       renderMainPage();
 
       act(() => {
-        window.dispatchEvent(new CustomEvent("CONTEXT_ACTION"));
+        window.dispatchEvent(new CustomEvent("ACTIVITY_RECOMMENDER_REQUESTED"));
       });
 
       expect(screen.queryByTestId("activity-type-recommender")).not.toBeInTheDocument();
       expect(screen.getByRole("tablist")).toBeInTheDocument();
     });
 
-    it("should ignore CONTEXT_ACTION event when payload is missing", () => {
+    it("should ignore ACTIVITY_RECOMMENDER_REQUESTED event when recommendedParams is missing", () => {
       renderMainPage();
 
       act(() => {
         window.dispatchEvent(
-          new CustomEvent("CONTEXT_ACTION", {
+          new CustomEvent("ACTIVITY_RECOMMENDER_REQUESTED", {
             detail: {},
           })
         );
@@ -198,9 +206,9 @@ describe("MainPage", () => {
       expect(screen.getByRole("tablist")).toBeInTheDocument();
     });
 
-    it("should render ActivityTypeRecommender when window.recommendedParams contains payload", () => {
-      window.recommendedParams = {
-        payload: {
+    it("should render ActivityTypeRecommender when window.recommendedParams contains recommendedParams", () => {
+      (window as any).recommendedParams = {
+        recommendedParams: {
           activityType: "test",
         },
       };

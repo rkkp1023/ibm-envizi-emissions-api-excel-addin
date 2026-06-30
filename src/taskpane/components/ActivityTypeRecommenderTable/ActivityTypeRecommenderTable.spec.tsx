@@ -181,11 +181,11 @@ describe("ActivityTypeRecommenderTable", () => {
       expect(radioButtons).toHaveLength(mockRecommendations.length);
     });
 
-    it("should have first radio button checked by default", () => {
+    it("should have no radio button checked by default", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
       const radioButtons = screen.getAllByRole("radio");
-      expect(radioButtons[0]).toBeChecked();
+      expect(radioButtons[0]).not.toBeChecked();
       expect(radioButtons[1]).not.toBeChecked();
       expect(radioButtons[2]).not.toBeChecked();
     });
@@ -297,7 +297,7 @@ describe("ActivityTypeRecommenderTable", () => {
       fireEvent.click(radioButtons[1]);
       fireEvent.click(radioButtons[2]);
 
-      expect(mockOnSelect).toHaveBeenCalledTimes(2);
+      expect(mockOnSelect).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -452,12 +452,21 @@ describe("ActivityTypeRecommenderTable", () => {
   });
 
   describe("Row Selection Styling", () => {
-    it("should apply selected class to selected row", () => {
+    it("should apply selected class to selected row after selection", () => {
       const { container } = render(
         <ActivityTypeRecommenderTable recommendations={mockRecommendations} />
       );
 
-      const selectedRow = container.querySelector(".activity-type-selected-row");
+      // Initially no row should be selected
+      let selectedRow = container.querySelector(".activity-type-selected-row");
+      expect(selectedRow).not.toBeInTheDocument();
+
+      // Click first radio button to select it
+      const radioButtons = screen.getAllByRole("radio");
+      fireEvent.click(radioButtons[0]);
+
+      // Now the selected row class should be applied
+      selectedRow = container.querySelector(".activity-type-selected-row");
       expect(selectedRow).toBeInTheDocument();
     });
 

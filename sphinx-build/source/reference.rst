@@ -540,7 +540,7 @@ Factor Search
 
 .. code-block:: none
 
-   =ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [unit], [scope], [date], [page], [size])
+   =ENVIZI.FACTOR_SEARCH(search, country, [stateProvince], [unit], [scope], [date], [page], [size], [enableReranker])
 
 **Parameters**
 
@@ -552,6 +552,7 @@ Factor Search
 - ``date`` *(optional)* – Activity date (format: YYYY-MM-DD or Excel date)
 - ``page`` *(optional)* – Page number for pagination (default: 1)
 - ``size`` *(optional)* – Number of results per page (default: 30)
+- ``enableReranker`` *(optional)* – Whether to apply cross-encoder reranking to the results (default: TRUE). Set to FALSE to skip reranking and use raw semantic similarity scores only. Omitting it preserves the default behavior (reranking on).
 
 **Outputs**
 
@@ -574,6 +575,14 @@ Factor Search
    * - ``factorId``
      - Factor ID from Envizi.
 
+**Examples**
+
+.. code-block:: none
+
+   =ENVIZI.FACTOR_SEARCH("electricity", "USA")
+   =ENVIZI.FACTOR_SEARCH("electricity", "USA", , "kWh", "2", "2024-01-15", 1, 10)
+   =ENVIZI.FACTOR_SEARCH("electricity", "USA", , , , , , , FALSE)  // Skip reranking, use raw semantic scores
+
 ---
 
 Recommend Activity Type
@@ -585,7 +594,7 @@ Uses AI to recommend the most appropriate activity type based on a text descript
 
 .. code-block:: none
 
-   =ENVIZI.RECOMMEND_ACTIVITY_TYPE(search, country, [stateProvince], [unit], [scope], [date])
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE(search, country, [stateProvince], [unit], [scope], [date], [enableReranker])
 
 **Parameters**
 
@@ -595,6 +604,7 @@ Uses AI to recommend the most appropriate activity type based on a text descript
 - ``unit`` *(optional)* – Unit of measurement to filter recommendations (e.g., "kWh", "liters")
 - ``scope`` *(optional)* – Emission scope to filter recommendations (e.g., "1", "2", "3")
 - ``date`` *(optional)* – Activity date (format: YYYY-MM-DD or Excel date)
+- ``enableReranker`` *(optional)* – Whether to apply cross-encoder reranking to the recommendations (default: TRUE). Set to FALSE to skip reranking and use raw semantic similarity scores only. Omitting it preserves the default behavior (reranking on).
 
 **Outputs**
 
@@ -610,6 +620,8 @@ Uses AI to recommend the most appropriate activity type based on a text descript
      - Confidence level of the recommendation (0-100). Higher values indicate stronger matches.
    * - ``Description``
      - Detailed description of the recommended activity type
+   * - ``Scope``
+     - The distinct emission scopes covered by the recommended activity type. The API returns this as a list (for example, ``["2"]`` or ``["1", "2"]``); Excel displays it as a comma-separated value such as "2" or "1, 2". Values follow the standard scope conventions ("1", "2", "3.1"–"3.15"). Empty when the activity type has no associated scopes.
 
 **Examples**
 
@@ -620,11 +632,13 @@ Uses AI to recommend the most appropriate activity type based on a text descript
    =ENVIZI.RECOMMEND_ACTIVITY_TYPE("heating with natural gas", "USA", , , "1")
    =ENVIZI.RECOMMEND_ACTIVITY_TYPE("diesel fuel for trucks", "GBR", "England", , , "2024-01-15")
    =ENVIZI.RECOMMEND_ACTIVITY_TYPE("natural gas heating", "CAN", "Ontario")
+   =ENVIZI.RECOMMEND_ACTIVITY_TYPE("electricity usage", "USA", , , , , FALSE)  // Skip reranking, use raw semantic scores
 
 **Usage Tips**
 
 - Use descriptive text in the ``search`` parameter for better recommendations
 - The function returns only the top recommendation (highest confidence)
+- The ``Scope`` output is informational and can contain more than one scope for an activity type.
 - Use the recommended activity type in your emission calculation functions
 - Combine with ``ENVIZI.HEADERS`` using ``includeDataTypeRecommender=TRUE`` to create templates that include recommendation columns
 
@@ -669,6 +683,8 @@ Returns the input and/or output column headers for a specific endpoint. Useful f
 **Output**
 
 Returns a single row array containing the header names for the specified endpoint. When both input and output are TRUE, returns both sets of headers in one row.
+
+For ``recommend_activity_type``, output headers are ``Recommended Activity Type``, ``Confidence(%)``, ``Description``, and ``Scope``.
 
 **Note on Data Type Recommender**
 
