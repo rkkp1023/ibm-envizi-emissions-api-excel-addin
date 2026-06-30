@@ -374,6 +374,10 @@ export async function factor_by_id(factorId: number, unit?: string): Promise<any
  * @param country ISO alpha-3 country code
  * @param stateProvince Geographic state or province
  * @param date Activity date
+ * @param outstandingAmount Outstanding amount for attribution
+ * @param totalEquity Total equity for attribution (private companies)
+ * @param totalDebt Total debt for attribution (private companies)
+ * @param evic Enterprise Value Including Cash for attribution (listed companies)
  * @param revenue Revenue for attribution
  */
 export async function economic_activity(
@@ -383,9 +387,20 @@ export async function economic_activity(
   country: string,
   stateProvince?: string,
   date?: string,
+  outstandingAmount?: number,
+  totalEquity?: number,
+  totalDebt?: number,
+  evic?: number,
   revenue?: number
 ): Promise<any[][]> {
-  const attribution = revenue !== undefined ? { revenue } : undefined;
+  const attribution =
+    outstandingAmount !== undefined ||
+    totalEquity !== undefined ||
+    totalDebt !== undefined ||
+    evic !== undefined ||
+    revenue !== undefined
+      ? { outstandingAmount, totalEquity, totalDebt, evic, revenue }
+      : undefined;
 
   return genericApiCall("economic_activity", {
     type,
@@ -405,15 +420,30 @@ export async function economic_activity(
  * @param factorId Emission factor ID
  * @param value Numeric activity value
  * @param unit Unit of measurement
+ * @param outstandingAmount Outstanding amount for attribution
+ * @param totalEquity Total equity for attribution (private companies)
+ * @param totalDebt Total debt for attribution (private companies)
+ * @param evic Enterprise Value Including Cash for attribution (listed companies)
  * @param revenue Revenue for attribution
  */
 export async function economic_activity_by_factorId(
   factorId: number,
   value: number,
   unit: string,
+  outstandingAmount?: number,
+  totalEquity?: number,
+  totalDebt?: number,
+  evic?: number,
   revenue?: number
 ): Promise<any[][]> {
-  const attribution = revenue !== undefined ? { revenue } : undefined;
+  const attribution =
+    outstandingAmount !== undefined ||
+    totalEquity !== undefined ||
+    totalDebt !== undefined ||
+    evic !== undefined ||
+    revenue !== undefined
+      ? { outstandingAmount, totalEquity, totalDebt, evic, revenue }
+      : undefined;
 
   return genericApiCall("economic_activity", {
     factorId,
@@ -435,8 +465,6 @@ export async function economic_activity_by_factorId(
  * @param date Activity date
  * @param outstandingAmount Outstanding amount for attribution
  * @param propertyValue Property value for attribution
- * @param totalEquity Total equity for attribution
- * @param totalDebt Total debt for attribution
  */
 export async function real_estate(
   type: string,
@@ -446,16 +474,11 @@ export async function real_estate(
   stateProvince?: string,
   date?: string,
   outstandingAmount?: number,
-  propertyValue?: number,
-  totalEquity?: number,
-  totalDebt?: number
+  propertyValue?: number
 ): Promise<any[][]> {
   const attribution =
-    outstandingAmount !== undefined ||
-    propertyValue !== undefined ||
-    totalEquity !== undefined ||
-    totalDebt !== undefined
-      ? { outstandingAmount, propertyValue, totalEquity, totalDebt }
+    outstandingAmount !== undefined || propertyValue !== undefined
+      ? { outstandingAmount, propertyValue }
       : undefined;
 
   return genericApiCall("real_estate", {
@@ -478,24 +501,17 @@ export async function real_estate(
  * @param unit Unit of measurement
  * @param outstandingAmount Outstanding amount for attribution
  * @param propertyValue Property value for attribution
- * @param totalEquity Total equity for attribution
- * @param totalDebt Total debt for attribution
  */
 export async function real_estate_by_factorId(
   factorId: number,
   value: number,
   unit: string,
   outstandingAmount?: number,
-  propertyValue?: number,
-  totalEquity?: number,
-  totalDebt?: number
+  propertyValue?: number
 ): Promise<any[][]> {
   const attribution =
-    outstandingAmount !== undefined ||
-    propertyValue !== undefined ||
-    totalEquity !== undefined ||
-    totalDebt !== undefined
-      ? { outstandingAmount, propertyValue, totalEquity, totalDebt }
+    outstandingAmount !== undefined || propertyValue !== undefined
+      ? { outstandingAmount, propertyValue }
       : undefined;
 
   return genericApiCall("real_estate", {

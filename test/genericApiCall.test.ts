@@ -43,6 +43,7 @@ import {
   Fugitive,
   Location,
   Mobile,
+  PhysicalActivity,
   RealEstate,
   Stationary,
   TransportationAndDistribution,
@@ -64,6 +65,7 @@ jest.mock("emissions-api-sdk", () => {
     TransportationAndDistribution: { calculate: jest.fn() },
     EconomicActivity: { calculate: jest.fn() },
     RealEstate: { calculate: jest.fn() },
+    PhysicalActivity: { calculate: jest.fn() },
     default: {},
   };
 });
@@ -114,7 +116,8 @@ type ApiCase = {
     | "calculation"
     | "transportation_and_distribution"
     | "economic_activity"
-    | "real_estate";
+    | "real_estate"
+    | "physical_activity";
   emissionMock: jest.Mock;
   expectedResult?: (string | number)[];
 };
@@ -157,6 +160,12 @@ const apiCases: ApiCase[] = [
     emissionMock: RealEstate.calculate as jest.Mock,
     expectedResult: [...standardExpectedResult, 42, ""],
   },
+  {
+    name: "Physical Activity",
+    apiType: "physical_activity",
+    emissionMock: PhysicalActivity.calculate as jest.Mock,
+    expectedResult: [...standardExpectedResult, "", ""],
+  },
 ];
 
 describe("genericApiCall", () => {
@@ -166,7 +175,7 @@ describe("genericApiCall", () => {
       let response = mockResponse;
       if (c.apiType === "real_estate") {
         response = mockRealEstateResponse;
-      } else if (c.apiType === "economic_activity") {
+      } else if (c.apiType === "economic_activity" || c.apiType === "physical_activity") {
         response = mockEconomicActivityResponse;
       }
       c.emissionMock.mockResolvedValue(response);
