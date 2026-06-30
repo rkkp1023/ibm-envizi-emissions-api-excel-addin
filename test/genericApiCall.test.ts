@@ -98,6 +98,7 @@ const mockEconomicActivityResponse = {
   ...mockResponse,
   "energy(MWh)": "",
   assetTurnoverRatio: "",
+  score: "",
 };
 
 const mockRealEstateResponse = {
@@ -152,7 +153,7 @@ const apiCases: ApiCase[] = [
     name: "Economic Activity",
     apiType: "economic_activity",
     emissionMock: EconomicActivity.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, "", ""],
+    expectedResult: [...standardExpectedResult, "", "", ""],
   },
   {
     name: "Real Estate",
