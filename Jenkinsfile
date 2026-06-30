@@ -28,7 +28,7 @@ sterlingPipeline {
         sh 'unzip /tmp/awscli/awscliv2.zip -d /tmp/awscli'
         sh 'sudo /tmp/awscli/aws/install --update'
 
-        if (getValue(delegate, 'branchName' == 'main')) {
+        if (getValue(delegate, 'branchName') == 'main') {
             withCredentials([usernamePassword(credentialsId: getValue(delegate, 'cosPublishCredentials'), passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                 // Now copy up the dist folder into the ghg-deploy-dev bucket
                 sh 'ls -l ./dist'
@@ -36,7 +36,7 @@ sterlingPipeline {
             }
         }
 
-        if (getValue(delegate, 'branchName' == 'prod')) {
+        if (getValue(delegate, 'branchName') == 'prod') {
             withCredentials([usernamePassword(credentialsId: getValue(delegate, 'prodCosPublishCredentials'), passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                 // Now copy up the dist folder into the ei-ghg-plugins-production bucket
                 sh 'ls -l ./dist'
