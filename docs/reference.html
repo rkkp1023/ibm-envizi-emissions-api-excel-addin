@@ -257,6 +257,569 @@
 <li><p>Units must follow the supported unit conventions defined in Envizi.</p></li>
 </ul>
 </section>
+<section id="currency-conversion-support">
+<h2>Currency Conversion Support<a class="headerlink" href="#currency-conversion-support" title="Link to this heading">¶</a></h2>
+<section id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h3>
+<p>The IBM Envizi for Excel add-in supports automatic currency conversion for functions that accept monetary values. This feature allows you to input values in your preferred currency, and the system will automatically convert them to the appropriate base currency for emissions calculations.</p>
+<p><strong>Supported Functions</strong></p>
+<p>Currency conversion is available for the following functions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.ECONOMIC_ACTIVITY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.ECONOMIC_ACTIVITY_BY_FACTORID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.REAL_ESTATE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.REAL_ESTATE_BY_FACTORID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.PHYSICAL_ACTIVITY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENVIZI.PHYSICAL_ACTIVITY_BY_FACTORID</span></code></p></li>
+</ul>
+</section>
+<section id="supported-currencies">
+<h3>Supported Currencies<a class="headerlink" href="#supported-currencies" title="Link to this heading">¶</a></h3>
+<p>The add-in supports conversion for 170 currencies:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 60.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Currency Name</p></th>
+<th class="head"><p>Symbol</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ADB Unit of Account</p></td>
+<td><p>XUA</p></td>
+</tr>
+<tr class="row-odd"><td><p>Afghani</p></td>
+<td><p>AFN</p></td>
+</tr>
+<tr class="row-even"><td><p>Algerian Dinar</p></td>
+<td><p>DZD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Arab Accounting Dinar</p></td>
+<td><p>XAD</p></td>
+</tr>
+<tr class="row-even"><td><p>Argentine Peso</p></td>
+<td><p>ARS</p></td>
+</tr>
+<tr class="row-odd"><td><p>Armenian Dram</p></td>
+<td><p>AMD</p></td>
+</tr>
+<tr class="row-even"><td><p>Aruban Florin</p></td>
+<td><p>AWG</p></td>
+</tr>
+<tr class="row-odd"><td><p>Australian Dollar</p></td>
+<td><p>AUD</p></td>
+</tr>
+<tr class="row-even"><td><p>Azerbaijan Manat</p></td>
+<td><p>AZN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bahamian Dollar</p></td>
+<td><p>BSD</p></td>
+</tr>
+<tr class="row-even"><td><p>Bahraini Dinar</p></td>
+<td><p>BHD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Baht</p></td>
+<td><p>THB</p></td>
+</tr>
+<tr class="row-even"><td><p>Balboa</p></td>
+<td><p>PAB</p></td>
+</tr>
+<tr class="row-odd"><td><p>Barbados Dollar</p></td>
+<td><p>BBD</p></td>
+</tr>
+<tr class="row-even"><td><p>Belarusian Ruble</p></td>
+<td><p>BYN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Belize Dollar</p></td>
+<td><p>BZD</p></td>
+</tr>
+<tr class="row-even"><td><p>Bermudian Dollar</p></td>
+<td><p>BMD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Boliviano</p></td>
+<td><p>BOB</p></td>
+</tr>
+<tr class="row-even"><td><p>Bolívar Soberano</p></td>
+<td><p>VED</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bolívar Soberano</p></td>
+<td><p>VES</p></td>
+</tr>
+<tr class="row-even"><td><p>Brazilian Real</p></td>
+<td><p>BRL</p></td>
+</tr>
+<tr class="row-odd"><td><p>Brunei Dollar</p></td>
+<td><p>BND</p></td>
+</tr>
+<tr class="row-even"><td><p>Bulgarian Lev</p></td>
+<td><p>BGN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Burundi Franc</p></td>
+<td><p>BIF</p></td>
+</tr>
+<tr class="row-even"><td><p>Cabo Verde Escudo</p></td>
+<td><p>CVE</p></td>
+</tr>
+<tr class="row-odd"><td><p>Canadian Dollar</p></td>
+<td><p>CAD</p></td>
+</tr>
+<tr class="row-even"><td><p>Caribbean Guilder</p></td>
+<td><p>XCG</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cayman Islands Dollar</p></td>
+<td><p>KYD</p></td>
+</tr>
+<tr class="row-even"><td><p>CFA Franc BCEAO</p></td>
+<td><p>XOF</p></td>
+</tr>
+<tr class="row-odd"><td><p>CFA Franc BEAC</p></td>
+<td><p>XAF</p></td>
+</tr>
+<tr class="row-even"><td><p>CFP Franc</p></td>
+<td><p>XPF</p></td>
+</tr>
+<tr class="row-odd"><td><p>Chilean Peso</p></td>
+<td><p>CLP</p></td>
+</tr>
+<tr class="row-even"><td><p>Colombian Peso</p></td>
+<td><p>COP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Comorian Franc</p></td>
+<td><p>KMF</p></td>
+</tr>
+<tr class="row-even"><td><p>Congolese Franc</p></td>
+<td><p>CDF</p></td>
+</tr>
+<tr class="row-odd"><td><p>Convertible Mark</p></td>
+<td><p>BAM</p></td>
+</tr>
+<tr class="row-even"><td><p>Cordoba Oro</p></td>
+<td><p>NIO</p></td>
+</tr>
+<tr class="row-odd"><td><p>Costa Rican Colon</p></td>
+<td><p>CRC</p></td>
+</tr>
+<tr class="row-even"><td><p>Cuban Peso</p></td>
+<td><p>CUP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Czech Koruna</p></td>
+<td><p>CZK</p></td>
+</tr>
+<tr class="row-even"><td><p>Dalasi</p></td>
+<td><p>GMD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Danish Krone</p></td>
+<td><p>DKK</p></td>
+</tr>
+<tr class="row-even"><td><p>Denar</p></td>
+<td><p>MKD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Djibouti Franc</p></td>
+<td><p>DJF</p></td>
+</tr>
+<tr class="row-even"><td><p>Dobra</p></td>
+<td><p>STN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dominican Peso</p></td>
+<td><p>DOP</p></td>
+</tr>
+<tr class="row-even"><td><p>Dong</p></td>
+<td><p>VND</p></td>
+</tr>
+<tr class="row-odd"><td><p>East Caribbean Dollar</p></td>
+<td><p>XCD</p></td>
+</tr>
+<tr class="row-even"><td><p>Egyptian Pound</p></td>
+<td><p>EGP</p></td>
+</tr>
+<tr class="row-odd"><td><p>El Salvador Colon</p></td>
+<td><p>SVC</p></td>
+</tr>
+<tr class="row-even"><td><p>Ethiopian Birr</p></td>
+<td><p>ETB</p></td>
+</tr>
+<tr class="row-odd"><td><p>Euro</p></td>
+<td><p>EUR</p></td>
+</tr>
+<tr class="row-even"><td><p>Falkland Islands Pound</p></td>
+<td><p>FKP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fiji Dollar</p></td>
+<td><p>FJD</p></td>
+</tr>
+<tr class="row-even"><td><p>Forint</p></td>
+<td><p>HUF</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ghana Cedi</p></td>
+<td><p>GHS</p></td>
+</tr>
+<tr class="row-even"><td><p>Gibraltar Pound</p></td>
+<td><p>GIP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Gourde</p></td>
+<td><p>HTG</p></td>
+</tr>
+<tr class="row-even"><td><p>Guarani</p></td>
+<td><p>PYG</p></td>
+</tr>
+<tr class="row-odd"><td><p>Guinean Franc</p></td>
+<td><p>GNF</p></td>
+</tr>
+<tr class="row-even"><td><p>Guyana Dollar</p></td>
+<td><p>GYD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hong Kong Dollar</p></td>
+<td><p>HKD</p></td>
+</tr>
+<tr class="row-even"><td><p>Hryvnia</p></td>
+<td><p>UAH</p></td>
+</tr>
+<tr class="row-odd"><td><p>Iceland Krona</p></td>
+<td><p>ISK</p></td>
+</tr>
+<tr class="row-even"><td><p>Indian Rupee</p></td>
+<td><p>INR</p></td>
+</tr>
+<tr class="row-odd"><td><p>Iranian Rial</p></td>
+<td><p>IRR</p></td>
+</tr>
+<tr class="row-even"><td><p>Iraqi Dinar</p></td>
+<td><p>IQD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Jamaican Dollar</p></td>
+<td><p>JMD</p></td>
+</tr>
+<tr class="row-even"><td><p>Jordanian Dinar</p></td>
+<td><p>JOD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kenyan Shilling</p></td>
+<td><p>KES</p></td>
+</tr>
+<tr class="row-even"><td><p>Kina</p></td>
+<td><p>PGK</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kuwaiti Dinar</p></td>
+<td><p>KWD</p></td>
+</tr>
+<tr class="row-even"><td><p>Kwanza</p></td>
+<td><p>AOA</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kyat</p></td>
+<td><p>MMK</p></td>
+</tr>
+<tr class="row-even"><td><p>Lao Kip</p></td>
+<td><p>LAK</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lari</p></td>
+<td><p>GEL</p></td>
+</tr>
+<tr class="row-even"><td><p>Lebanese Pound</p></td>
+<td><p>LBP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lek</p></td>
+<td><p>ALL</p></td>
+</tr>
+<tr class="row-even"><td><p>Lempira</p></td>
+<td><p>HNL</p></td>
+</tr>
+<tr class="row-odd"><td><p>Leone</p></td>
+<td><p>SLE</p></td>
+</tr>
+<tr class="row-even"><td><p>Liberian Dollar</p></td>
+<td><p>LRD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Libyan Dinar</p></td>
+<td><p>LYD</p></td>
+</tr>
+<tr class="row-even"><td><p>Lilangeni</p></td>
+<td><p>SZL</p></td>
+</tr>
+<tr class="row-odd"><td><p>Loti</p></td>
+<td><p>LSL</p></td>
+</tr>
+<tr class="row-even"><td><p>Malagasy Ariary</p></td>
+<td><p>MGA</p></td>
+</tr>
+<tr class="row-odd"><td><p>Malawi Kwacha</p></td>
+<td><p>MWK</p></td>
+</tr>
+<tr class="row-even"><td><p>Malaysian Ringgit</p></td>
+<td><p>MYR</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mauritius Rupee</p></td>
+<td><p>MUR</p></td>
+</tr>
+<tr class="row-even"><td><p>Mexican Peso</p></td>
+<td><p>MXN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mexican Unidad de Inversion (UDI)</p></td>
+<td><p>MXV</p></td>
+</tr>
+<tr class="row-even"><td><p>Moldovan Leu</p></td>
+<td><p>MDL</p></td>
+</tr>
+<tr class="row-odd"><td><p>Moroccan Dirham</p></td>
+<td><p>MAD</p></td>
+</tr>
+<tr class="row-even"><td><p>Mozambique Metical</p></td>
+<td><p>MZN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mvdol</p></td>
+<td><p>BOV</p></td>
+</tr>
+<tr class="row-even"><td><p>Naira</p></td>
+<td><p>NGN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Nakfa</p></td>
+<td><p>ERN</p></td>
+</tr>
+<tr class="row-even"><td><p>Namibia Dollar</p></td>
+<td><p>NAD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Nepalese Rupee</p></td>
+<td><p>NPR</p></td>
+</tr>
+<tr class="row-even"><td><p>Netherlands Antillean Guilder</p></td>
+<td><p>ANG</p></td>
+</tr>
+<tr class="row-odd"><td><p>New Israeli Sheqel</p></td>
+<td><p>ILS</p></td>
+</tr>
+<tr class="row-even"><td><p>New Taiwan Dollar</p></td>
+<td><p>TWD</p></td>
+</tr>
+<tr class="row-odd"><td><p>New Zealand Dollar</p></td>
+<td><p>NZD</p></td>
+</tr>
+<tr class="row-even"><td><p>Ngultrum</p></td>
+<td><p>BTN</p></td>
+</tr>
+<tr class="row-odd"><td><p>North Korean Won</p></td>
+<td><p>KPW</p></td>
+</tr>
+<tr class="row-even"><td><p>Norwegian Krone</p></td>
+<td><p>NOK</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ouguiya</p></td>
+<td><p>MRU</p></td>
+</tr>
+<tr class="row-even"><td><p>Pa’anga</p></td>
+<td><p>TOP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pakistan Rupee</p></td>
+<td><p>PKR</p></td>
+</tr>
+<tr class="row-even"><td><p>Pataca</p></td>
+<td><p>MOP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Peso Uruguayo</p></td>
+<td><p>UYU</p></td>
+</tr>
+<tr class="row-even"><td><p>Philippine Peso</p></td>
+<td><p>PHP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pound Sterling</p></td>
+<td><p>GBP</p></td>
+</tr>
+<tr class="row-even"><td><p>Pula</p></td>
+<td><p>BWP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Qatari Rial</p></td>
+<td><p>QAR</p></td>
+</tr>
+<tr class="row-even"><td><p>Quetzal</p></td>
+<td><p>GTQ</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rand</p></td>
+<td><p>ZAR</p></td>
+</tr>
+<tr class="row-even"><td><p>Rial Omani</p></td>
+<td><p>OMR</p></td>
+</tr>
+<tr class="row-odd"><td><p>Riel</p></td>
+<td><p>KHR</p></td>
+</tr>
+<tr class="row-even"><td><p>Romanian Leu</p></td>
+<td><p>RON</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rufiyaa</p></td>
+<td><p>MVR</p></td>
+</tr>
+<tr class="row-even"><td><p>Rupiah</p></td>
+<td><p>IDR</p></td>
+</tr>
+<tr class="row-odd"><td><p>Russian Ruble</p></td>
+<td><p>RUB</p></td>
+</tr>
+<tr class="row-even"><td><p>Rwanda Franc</p></td>
+<td><p>RWF</p></td>
+</tr>
+<tr class="row-odd"><td><p>Saint Helena Pound</p></td>
+<td><p>SHP</p></td>
+</tr>
+<tr class="row-even"><td><p>Saudi Riyal</p></td>
+<td><p>SAR</p></td>
+</tr>
+<tr class="row-odd"><td><p>SDR (Special Drawing Right)</p></td>
+<td><p>XDR</p></td>
+</tr>
+<tr class="row-even"><td><p>Serbian Dinar</p></td>
+<td><p>RSD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Seychelles Rupee</p></td>
+<td><p>SCR</p></td>
+</tr>
+<tr class="row-even"><td><p>Singapore Dollar</p></td>
+<td><p>SGD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sol</p></td>
+<td><p>PEN</p></td>
+</tr>
+<tr class="row-even"><td><p>Solomon Islands Dollar</p></td>
+<td><p>SBD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Som</p></td>
+<td><p>KGS</p></td>
+</tr>
+<tr class="row-even"><td><p>Somali Shilling</p></td>
+<td><p>SOS</p></td>
+</tr>
+<tr class="row-odd"><td><p>Somoni</p></td>
+<td><p>TJS</p></td>
+</tr>
+<tr class="row-even"><td><p>South Sudanese Pound</p></td>
+<td><p>SSP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sri Lanka Rupee</p></td>
+<td><p>LKR</p></td>
+</tr>
+<tr class="row-even"><td><p>Sucre</p></td>
+<td><p>XSU</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sudanese Pound</p></td>
+<td><p>SDG</p></td>
+</tr>
+<tr class="row-even"><td><p>Surinam Dollar</p></td>
+<td><p>SRD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Swedish Krona</p></td>
+<td><p>SEK</p></td>
+</tr>
+<tr class="row-even"><td><p>Swiss Franc</p></td>
+<td><p>CHF</p></td>
+</tr>
+<tr class="row-odd"><td><p>Syrian Pound</p></td>
+<td><p>SYP</p></td>
+</tr>
+<tr class="row-even"><td><p>Taka</p></td>
+<td><p>BDT</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tala</p></td>
+<td><p>WST</p></td>
+</tr>
+<tr class="row-even"><td><p>Tanzanian Shilling</p></td>
+<td><p>TZS</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tenge</p></td>
+<td><p>KZT</p></td>
+</tr>
+<tr class="row-even"><td><p>Trinidad and Tobago Dollar</p></td>
+<td><p>TTD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tugrik</p></td>
+<td><p>MNT</p></td>
+</tr>
+<tr class="row-even"><td><p>Tunisian Dinar</p></td>
+<td><p>TND</p></td>
+</tr>
+<tr class="row-odd"><td><p>Turkish Lira</p></td>
+<td><p>TRY</p></td>
+</tr>
+<tr class="row-even"><td><p>Turkmenistan New Manat</p></td>
+<td><p>TMT</p></td>
+</tr>
+<tr class="row-odd"><td><p>UAE Dirham</p></td>
+<td><p>AED</p></td>
+</tr>
+<tr class="row-even"><td><p>Uganda Shilling</p></td>
+<td><p>UGX</p></td>
+</tr>
+<tr class="row-odd"><td><p>Unidad de Fomento</p></td>
+<td><p>CLF</p></td>
+</tr>
+<tr class="row-even"><td><p>Unidad de Valor Real</p></td>
+<td><p>COU</p></td>
+</tr>
+<tr class="row-odd"><td><p>Unidad Previsional</p></td>
+<td><p>UYW</p></td>
+</tr>
+<tr class="row-even"><td><p>United States dollar</p></td>
+<td><p>USD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Uruguay Peso en Unidades Indexadas (UI)</p></td>
+<td><p>UYI</p></td>
+</tr>
+<tr class="row-even"><td><p>US Dollar (Next day)</p></td>
+<td><p>USN</p></td>
+</tr>
+<tr class="row-odd"><td><p>Uzbekistan Sum</p></td>
+<td><p>UZS</p></td>
+</tr>
+<tr class="row-even"><td><p>Vatu</p></td>
+<td><p>VUV</p></td>
+</tr>
+<tr class="row-odd"><td><p>WIR Euro</p></td>
+<td><p>CHE</p></td>
+</tr>
+<tr class="row-even"><td><p>WIR Franc</p></td>
+<td><p>CHW</p></td>
+</tr>
+<tr class="row-odd"><td><p>Won</p></td>
+<td><p>KRW</p></td>
+</tr>
+<tr class="row-even"><td><p>Yemeni Rial</p></td>
+<td><p>YER</p></td>
+</tr>
+<tr class="row-odd"><td><p>Yen</p></td>
+<td><p>JPY</p></td>
+</tr>
+<tr class="row-even"><td><p>Yuan Renminbi</p></td>
+<td><p>CNY</p></td>
+</tr>
+<tr class="row-odd"><td><p>Zambian Kwacha</p></td>
+<td><p>ZMW</p></td>
+</tr>
+<tr class="row-even"><td><p>Zimbabwe Gold</p></td>
+<td><p>ZWG</p></td>
+</tr>
+<tr class="row-odd"><td><p>Zloty</p></td>
+<td><p>PLN</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="exchange-rate-data">
+<h3>Exchange Rate Data<a class="headerlink" href="#exchange-rate-data" title="Link to this heading">¶</a></h3>
+<p><strong>Data Source</strong></p>
+<p>Exchange rates are sourced from the U.S. Department of the Treasury’s Fiscal Data API, which provides official exchange rates used by the U.S. government for accounting and reporting purposes.</p>
+<ul class="simple">
+<li><p><strong>API Source</strong>: <a class="reference external" href="https://api.fiscaldata.treasury.gov/services/api/fiscal_service">https://api.fiscaldata.treasury.gov/services/api/fiscal_service</a></p></li>
+<li><p><strong>Data Provider</strong>: U.S. Department of the Treasury, Bureau of the Fiscal Service</p></li>
+</ul>
+<p><strong>Historical Coverage</strong></p>
+<p>Exchange rate data is available from <strong>March 31, 2001</strong> onwards. If you specify a date earlier than this, the system will use the earliest available rate.</p>
+<p><strong>Data Updates</strong></p>
+<p>The exchange rate database is automatically synchronized with the Treasury API to ensure you always have access to the most current rates. Updates are captured as soon as they become available from the Treasury.</p>
+<ul class="simple">
+<li><p><strong>Update Frequency</strong>: The U.S. Treasury typically publishes exchange rates on a <strong>quarterly basis</strong></p></li>
+<li><p><strong>Amendment Policy</strong>: If current rates deviate from the published rates by 10% or more, Treasury will issue amendments to the quarterly report</p></li>
+</ul>
+</section>
+</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <section id="location-based-emissions">
@@ -1195,6 +1758,12 @@
             <ul>
 <li><a class="reference internal" href="#">Reference</a><ul>
 <li><a class="reference internal" href="#general-notes">General Notes</a></li>
+<li><a class="reference internal" href="#currency-conversion-support">Currency Conversion Support</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#supported-currencies">Supported Currencies</a></li>
+<li><a class="reference internal" href="#exchange-rate-data">Exchange Rate Data</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
 <li><a class="reference internal" href="#location-based-emissions">Location-based Emissions</a></li>
 <li><a class="reference internal" href="#stationary-source-emissions">Stationary Source Emissions</a></li>
