@@ -374,6 +374,11 @@ export async function factor_by_id(factorId: number, unit?: string): Promise<any
  * @param country ISO alpha-3 country code
  * @param stateProvince Geographic state or province
  * @param date Activity date
+ * @param outstandingAmount Outstanding amount for attribution
+ * @param totalEquity Total equity for attribution (private companies)
+ * @param totalDebt Total debt for attribution (private companies)
+ * @param evic Enterprise Value Including Cash for attribution (listed companies)
+ * @param revenue Revenue for attribution
  */
 export async function economic_activity(
   type: string,
@@ -381,8 +386,22 @@ export async function economic_activity(
   unit: string,
   country: string,
   stateProvince?: string,
-  date?: string
+  date?: string,
+  outstandingAmount?: number,
+  totalEquity?: number,
+  totalDebt?: number,
+  evic?: number,
+  revenue?: number
 ): Promise<any[][]> {
+  const attribution =
+    outstandingAmount !== undefined ||
+    totalEquity !== undefined ||
+    totalDebt !== undefined ||
+    evic !== undefined ||
+    revenue !== undefined
+      ? { outstandingAmount, totalEquity, totalDebt, evic, revenue }
+      : undefined;
+
   return genericApiCall("economic_activity", {
     type,
     value,
@@ -390,6 +409,7 @@ export async function economic_activity(
     country,
     stateProvince,
     date,
+    attribution,
   });
 }
 
@@ -400,16 +420,36 @@ export async function economic_activity(
  * @param factorId Emission factor ID
  * @param value Numeric activity value
  * @param unit Unit of measurement
+ * @param outstandingAmount Outstanding amount for attribution
+ * @param totalEquity Total equity for attribution (private companies)
+ * @param totalDebt Total debt for attribution (private companies)
+ * @param evic Enterprise Value Including Cash for attribution (listed companies)
+ * @param revenue Revenue for attribution
  */
 export async function economic_activity_by_factorId(
   factorId: number,
   value: number,
-  unit: string
+  unit: string,
+  outstandingAmount?: number,
+  totalEquity?: number,
+  totalDebt?: number,
+  evic?: number,
+  revenue?: number
 ): Promise<any[][]> {
+  const attribution =
+    outstandingAmount !== undefined ||
+    totalEquity !== undefined ||
+    totalDebt !== undefined ||
+    evic !== undefined ||
+    revenue !== undefined
+      ? { outstandingAmount, totalEquity, totalDebt, evic, revenue }
+      : undefined;
+
   return genericApiCall("economic_activity", {
     factorId,
     value,
     unit,
+    attribution,
   });
 }
 
@@ -423,6 +463,8 @@ export async function economic_activity_by_factorId(
  * @param country ISO alpha-3 country code
  * @param stateProvince Geographic state or province
  * @param date Activity date
+ * @param outstandingAmount Outstanding amount for attribution
+ * @param propertyValue Property value for attribution
  */
 export async function real_estate(
   type: string,
@@ -430,8 +472,15 @@ export async function real_estate(
   unit: string,
   country: string,
   stateProvince?: string,
-  date?: string
+  date?: string,
+  outstandingAmount?: number,
+  propertyValue?: number
 ): Promise<any[][]> {
+  const attribution =
+    outstandingAmount !== undefined || propertyValue !== undefined
+      ? { outstandingAmount, propertyValue }
+      : undefined;
+
   return genericApiCall("real_estate", {
     type,
     value,
@@ -439,6 +488,7 @@ export async function real_estate(
     country,
     stateProvince,
     date,
+    attribution,
   });
 }
 
@@ -449,16 +499,109 @@ export async function real_estate(
  * @param factorId Emission factor ID
  * @param value Numeric activity value
  * @param unit Unit of measurement
+ * @param outstandingAmount Outstanding amount for attribution
+ * @param propertyValue Property value for attribution
  */
 export async function real_estate_by_factorId(
   factorId: number,
   value: number,
-  unit: string
+  unit: string,
+  outstandingAmount?: number,
+  propertyValue?: number
 ): Promise<any[][]> {
+  const attribution =
+    outstandingAmount !== undefined || propertyValue !== undefined
+      ? { outstandingAmount, propertyValue }
+      : undefined;
+
   return genericApiCall("real_estate", {
     factorId,
     value,
     unit,
+    attribution,
+  });
+}
+
+/**
+ * Calculates emissions using the physical activity endpoint.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#physical-activity
+ * @param type Activity type
+ * @param value Numeric activity value
+ * @param unit Unit of measurement
+ * @param country ISO alpha-3 country code
+ * @param stateProvince Geographic state or province
+ * @param date Activity date
+ * @param outstandingAmount Outstanding amount for attribution
+ * @param totalEquity Total equity for attribution
+ * @param totalDebt Total debt for attribution
+ * @param evic Enterprise Value Including Cash for attribution
+ */
+export async function physical_activity(
+  type: string,
+  value: number,
+  unit: string,
+  country: string,
+  stateProvince?: string,
+  date?: string,
+  outstandingAmount?: number,
+  totalEquity?: number,
+  totalDebt?: number,
+  evic?: number
+): Promise<any[][]> {
+  const attribution =
+    outstandingAmount !== undefined ||
+    totalEquity !== undefined ||
+    totalDebt !== undefined ||
+    evic !== undefined
+      ? { outstandingAmount, totalEquity, totalDebt, evic }
+      : undefined;
+
+  return genericApiCall("physical_activity", {
+    type,
+    value,
+    unit,
+    country,
+    stateProvince,
+    date,
+    attribution,
+  });
+}
+
+/**
+ * Calculates emissions using the physical activity endpoint.
+ * @customfunction
+ * @helpurl https://ibm.github.io/ibm-envizi-emissions-api-excel-addin/reference.html#physical-activity
+ * @param factorId Emission factor ID
+ * @param value Numeric activity value
+ * @param unit Unit of measurement
+ * @param outstandingAmount Outstanding amount for attribution
+ * @param totalEquity Total equity for attribution
+ * @param totalDebt Total debt for attribution
+ * @param evic Enterprise Value Including Cash for attribution
+ */
+export async function physical_activity_by_factorId(
+  factorId: number,
+  value: number,
+  unit: string,
+  outstandingAmount?: number,
+  totalEquity?: number,
+  totalDebt?: number,
+  evic?: number
+): Promise<any[][]> {
+  const attribution =
+    outstandingAmount !== undefined ||
+    totalEquity !== undefined ||
+    totalDebt !== undefined ||
+    evic !== undefined
+      ? { outstandingAmount, totalEquity, totalDebt, evic }
+      : undefined;
+
+  return genericApiCall("physical_activity", {
+    factorId,
+    value,
+    unit,
+    attribution,
   });
 }
 
@@ -481,14 +624,15 @@ export async function headers(
   try {
     // Default to "calculation" if no endpoint provided
     const selectedEndpoint = functionName?.trim().toLowerCase() || "calculation";
-    
+
     // Handle boolean parameters using helper function
     // Default values: input=true, output=true, includeActivityTypeRecommender=false
     const showInput = parseBooleanParameter(input, true);
     const showOutput = parseBooleanParameter(output, true);
-    
+
     // Handle includeActivityTypeRecommender parameter - only relevant when showInput is true
-    const includeRecommender = showInput && parseBooleanParameter(includeActivityTypeRecommender, false);
+    const includeRecommender =
+      showInput && parseBooleanParameter(includeActivityTypeRecommender, false);
 
     // Validate function name
     if (!isValidFunctionName(selectedEndpoint)) {
@@ -514,10 +658,7 @@ export async function headers(
     const message = e?.message || "Unknown error";
     console.error("Headers function failed: ", message);
 
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.notAvailable,
-      message
-    );
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, message);
   }
 }
 
@@ -540,7 +681,7 @@ export async function headers_by_factorid(
   try {
     // Default to "calculation" if no endpoint provided
     const selectedEndpoint = functionName?.trim().toLowerCase() || "calculation";
-    
+
     // Handle boolean parameters using helper function
     // Default values: input=true, output=true
     const showInput = parseBooleanParameter(input, true);
@@ -569,7 +710,7 @@ export async function headers_by_factorid(
     const headersList = buildHeadersList(
       showInput,
       showOutput,
-      () => getInputHeaders(selectedEndpoint, true, false),  // true = use factorId headers, false = no recommender for factorId
+      () => getInputHeaders(selectedEndpoint, true, false), // true = use factorId headers, false = no recommender for factorId
       () => getOutputHeaders(selectedEndpoint)
     );
 
@@ -581,9 +722,6 @@ export async function headers_by_factorid(
     const message = e?.message || "Unknown error";
     console.error("Headers by factorId function failed: ", message);
 
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.notAvailable,
-      message
-    );
+    throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, message);
   }
 }

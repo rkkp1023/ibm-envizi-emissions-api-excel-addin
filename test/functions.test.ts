@@ -214,6 +214,117 @@ describe("emissions custom functions", () => {
     mockedGenericApiCall.mockRejectedValueOnce(new Error("Boom!"));
     await expect(api.location("electricity", 1, "kwh" , "USA")).rejects.toThrow("Boom!");
   });
+
+  describe("economic_activity attribution", () => {
+    it("passes full attribution when all fields provided", async () => {
+      await api.economic_activity("office", 1000, "usd", "USA", undefined, undefined, 500000, 2000000, 1000000, 8000000, 3000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("economic_activity", expect.objectContaining({
+        attribution: { outstandingAmount: 500000, totalEquity: 2000000, totalDebt: 1000000, evic: 8000000, revenue: 3000000 },
+      }));
+    });
+
+    it("passes only revenue when only revenue provided", async () => {
+      await api.economic_activity("office", 1000, "usd", "USA", undefined, undefined, undefined, undefined, undefined, undefined, 2000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("economic_activity", expect.objectContaining({
+        attribution: { outstandingAmount: undefined, totalEquity: undefined, totalDebt: undefined, evic: undefined, revenue: 2000000 },
+      }));
+    });
+
+    it("passes only outstandingAmount + evic when provided", async () => {
+      await api.economic_activity("office", 1000, "usd", "USA", undefined, undefined, 500000, undefined, undefined, 8000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("economic_activity", expect.objectContaining({
+        attribution: { outstandingAmount: 500000, totalEquity: undefined, totalDebt: undefined, evic: 8000000, revenue: undefined },
+      }));
+    });
+
+    it("omits attribution when no attribution fields provided", async () => {
+      await api.economic_activity("office", 1000, "usd", "USA");
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("economic_activity", expect.not.objectContaining({
+        attribution: expect.anything(),
+      }));
+    });
+
+    it("economic_activity_by_factorId passes full attribution", async () => {
+      await api.economic_activity_by_factorId(555, 1000, "usd", 500000, 2000000, 1000000, 8000000, 3000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("economic_activity", expect.objectContaining({
+        attribution: { outstandingAmount: 500000, totalEquity: 2000000, totalDebt: 1000000, evic: 8000000, revenue: 3000000 },
+      }));
+    });
+
+    it("economic_activity_by_factorId omits attribution when none provided", async () => {
+      await api.economic_activity_by_factorId(555, 1000, "usd");
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("economic_activity", expect.not.objectContaining({
+        attribution: expect.anything(),
+      }));
+    });
+  });
+
+  describe("real_estate attribution", () => {
+    it("passes outstandingAmount and propertyValue", async () => {
+      await api.real_estate("Commercial", 5000, "m2", "USA", undefined, undefined, 1000000, 5000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("real_estate", expect.objectContaining({
+        attribution: { outstandingAmount: 1000000, propertyValue: 5000000 },
+      }));
+    });
+
+    it("omits attribution when no attribution fields provided", async () => {
+      await api.real_estate("Commercial", 5000, "m2", "USA");
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("real_estate", expect.not.objectContaining({
+        attribution: expect.anything(),
+      }));
+    });
+
+    it("real_estate_by_factorId passes outstandingAmount and propertyValue", async () => {
+      await api.real_estate_by_factorId(666, 5000, "m2", 1000000, 5000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("real_estate", expect.objectContaining({
+        attribution: { outstandingAmount: 1000000, propertyValue: 5000000 },
+      }));
+    });
+
+    it("real_estate_by_factorId omits attribution when none provided", async () => {
+      await api.real_estate_by_factorId(666, 5000, "m2");
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("real_estate", expect.not.objectContaining({
+        attribution: expect.anything(),
+      }));
+    });
+  });
+
+  describe("physical_activity attribution", () => {
+    it("passes outstandingAmount + totalEquity + totalDebt (private company)", async () => {
+      await api.physical_activity("commercial real estate", 0.1, "km2", "USA", undefined, undefined, 1000000, 3000000, 2000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("physical_activity", expect.objectContaining({
+        attribution: { outstandingAmount: 1000000, totalEquity: 3000000, totalDebt: 2000000, evic: undefined },
+      }));
+    });
+
+    it("passes outstandingAmount + evic (listed company)", async () => {
+      await api.physical_activity("commercial real estate", 0.1, "km2", "USA", undefined, undefined, 1000000, undefined, undefined, 10000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("physical_activity", expect.objectContaining({
+        attribution: { outstandingAmount: 1000000, totalEquity: undefined, totalDebt: undefined, evic: 10000000 },
+      }));
+    });
+
+    it("omits attribution when no attribution fields provided", async () => {
+      await api.physical_activity("commercial real estate", 0.1, "km2", "USA");
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("physical_activity", expect.not.objectContaining({
+        attribution: expect.anything(),
+      }));
+    });
+
+    it("physical_activity_by_factorId passes outstandingAmount + evic", async () => {
+      await api.physical_activity_by_factorId(777, 0.1, "km2", 1000000, undefined, undefined, 10000000);
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("physical_activity", expect.objectContaining({
+        attribution: { outstandingAmount: 1000000, totalEquity: undefined, totalDebt: undefined, evic: 10000000 },
+      }));
+    });
+
+    it("physical_activity_by_factorId omits attribution when none provided", async () => {
+      await api.physical_activity_by_factorId(777, 0.1, "km2");
+      expect(mockedGenericApiCall).toHaveBeenCalledWith("physical_activity", expect.not.objectContaining({
+        attribution: expect.anything(),
+      }));
+    });
+  });
 });
 
 describe("factor-related functions", () => {

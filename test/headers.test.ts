@@ -178,12 +178,12 @@ describe("ENVIZI.HEADERS function", () => {
 
     it("should return input headers for economic_activity endpoint", async () => {
       const result = await headers("economic_activity", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Total Equity", "Total Debt", "EVIC", "Revenue"]]);
     });
 
     it("should return input headers for real_estate endpoint", async () => {
       const result = await headers("real_estate", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Property Value"]]);
     });
 
     it("should return input headers for factor endpoint", async () => {
@@ -324,7 +324,7 @@ describe("ENVIZI.HEADERS function", () => {
 
     it('should handle string with whitespace " true "', async () => {
       const result = await headers("economic_activity", " true " as any, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Total Equity", "Total Debt", "EVIC", "Revenue"]]);
     });
 
     it('should treat non-"true" strings as false', async () => {
@@ -558,12 +558,12 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it("should return input headers for economic_activity endpoint", async () => {
       const result = await headers("economic_activity", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Total Equity", "Total Debt", "EVIC", "Revenue"]]);
     });
 
     it("should return input headers for real_estate endpoint", async () => {
       const result = await headers("real_estate", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Property Value"]]);
     });
 
     it("should return input headers for factor endpoint", async () => {
@@ -704,7 +704,7 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it('should handle string with whitespace " true "', async () => {
       const result = await headers("economic_activity", " true " as any, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Total Equity", "Total Debt", "EVIC", "Revenue"]]);
     });
 
     it('should treat non-"true" strings as false', async () => {

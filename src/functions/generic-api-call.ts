@@ -9,6 +9,7 @@ import {
   RealEstate,
   Stationary,
   TransportationAndDistribution,
+  PhysicalActivity
 } from "emissions-api-sdk";
 
 import { ensureClient } from "./client";
@@ -25,11 +26,21 @@ type ApiType = Extract<
   | "calculation"
   | "economic_activity"
   | "real_estate"
+  | "physical_activity"
 >;
 
 interface BasePayload {
   value: number;
   unit?: string;
+}
+
+export interface AttributionPayload {
+  outstandingAmount?: number;
+  propertyValue?: number;
+  totalEquity?: number;
+  totalDebt?: number;
+  evic?: number;
+  revenue?: number;
 }
 
 export interface PayloadWithType extends BasePayload {
@@ -38,10 +49,12 @@ export interface PayloadWithType extends BasePayload {
   stateProvince?: string;
   date?: string;
   powerGrid?: string;
+  attribution?: AttributionPayload;
 }
 
 export interface PayloadWithId extends BasePayload {
   factorId: number;
+  attribution?: AttributionPayload;
 }
 
 type Payload = PayloadWithType | PayloadWithId;
@@ -55,6 +68,7 @@ const emissionApiMap: Record<ApiType, (params: any) => Promise<any>> = {
   calculation: Calculation.calculate,
   economic_activity: EconomicActivity.calculate,
   real_estate: RealEstate.calculate,
+  physical_activity: PhysicalActivity.calculate,
 };
 
 function buildLocation(
@@ -84,7 +98,7 @@ function buildLocation(
 }
 
 function buildApiParams(apiType: ApiType, payload: Payload): any {
-  const { value, unit } = payload;
+  const { value, unit, attribution } = payload;
 
   // Extract unit symbol from display format
   // "kilogram (kg)" → "kg" or "kg" → "kg"
@@ -110,6 +124,34 @@ function buildApiParams(apiType: ApiType, payload: Payload): any {
     const formattedDate = payload.date?.trim() ? convertExcelDateToISO(payload.date) : null;
     if (formattedDate) {
       apiParams.time = { date: formattedDate };
+    }
+  }
+
+  // Add attribution if provided (for real_estate, physical_activity, and economic_activity)
+  if (attribution) {
+    const attributionObj: any = {};
+
+    if (attribution.outstandingAmount !== undefined) {
+      attributionObj.outstandingAmount = attribution.outstandingAmount;
+    }
+    if (attribution.propertyValue !== undefined) {
+      attributionObj.propertyValue = attribution.propertyValue;
+    }
+    if (attribution.totalEquity !== undefined) {
+      attributionObj.totalEquity = attribution.totalEquity;
+    }
+    if (attribution.totalDebt !== undefined) {
+      attributionObj.totalDebt = attribution.totalDebt;
+    }
+    if (attribution.evic !== undefined) {
+      attributionObj.evic = attribution.evic;
+    }
+    if (attribution.revenue !== undefined) {
+      attributionObj.revenue = attribution.revenue;
+    }
+
+    if (Object.keys(attributionObj).length > 0) {
+      apiParams.attribution = attributionObj;
     }
   }
 
