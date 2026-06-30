@@ -18,21 +18,30 @@ sterlingPipeline {
     caseCheckVulnsIgnoreList = 'bom.json'
     acceptableFailedStageList = null
 
-    // only run the upload on a PR merge build to main
-    uploadArtifactEnabled = getValue(delegate, 'branchName') in ['main'] 
+    // only run the upload on a PR merge build to main (dev) or prod
+    uploadArtifactEnabled = getValue(delegate, 'branchName') in ['main', 'prod'] 
     uploadArtifactCommand = {
-        withCredentials([usernamePassword(credentialsId: getValue(delegate, 'cosPublishCredentials'), passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-            // install AWS CLIv2
-            sh 'mkdir -p /tmp/awscli'
-            // okay to hardcode architecture to x86 since our build servers are that
-            sh 'curl -fLo /tmp/awscli/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.53.zip"'
-            sh 'unzip /tmp/awscli/awscliv2.zip -d /tmp/awscli'
-            sh 'sudo /tmp/awscli/aws/install --update'
+        // install AWS CLIv2
+        sh 'mkdir -p /tmp/awscli'
+        // okay to hardcode architecture to x86 since our build servers are that
+        sh 'curl -fLo /tmp/awscli/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.53.zip"'
+        sh 'unzip /tmp/awscli/awscliv2.zip -d /tmp/awscli'
+        sh 'sudo /tmp/awscli/aws/install --update'
 
-            // Now copy up the dist folder into the ghg-deploy-dev bucket
-            sh 'ls -l ./dist'
-            sh 'aws --endpoint https://s3.us.cloud-object-storage.appdomain.cloud s3 sync --delete ./dist s3://ghg-plugins-dev --acl public-read'
+        if (getValue(delegate, 'branchName') == 'main') {
+            withCredentials([usernamePassword(credentialsId: getValue(delegate, 'cosPublishCredentials'), passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                // Now copy up the dist folder into the ghg-deploy-dev bucket
+                sh 'ls -l ./dist'
+                sh 'aws --endpoint https://s3.us.cloud-object-storage.appdomain.cloud s3 sync --delete ./dist s3://ghg-plugins-dev --acl public-read'
+            }
+        }
+
+        if (getValue(delegate, 'branchName') == 'prod') {
+            withCredentials([usernamePassword(credentialsId: getValue(delegate, 'prodCosPublishCredentials'), passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                // Now copy up the dist folder into the ei-ghg-plugins-production bucket
+                sh 'ls -l ./dist'
+                sh 'aws --endpoint https://s3.us.cloud-object-storage.appdomain.cloud s3 sync --delete ./dist s3://ei-ghg-plugins-production --acl public-read'
+            }
         }
     }
-
 }
