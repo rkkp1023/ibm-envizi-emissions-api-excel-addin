@@ -104,8 +104,9 @@ function buildApiParams(apiType: ApiType, payload: Payload): any {
   // "kilogram (kg)" → "kg" or "kg" → "kg"
   const unitSymbol = unit ? extractSymbolFromDisplay(unit) : undefined;
 
+  const includeValue = apiType !== "economic_activity" || (value !== undefined && value !== null && value !== ("" as any) && value !== 0);
   const activity: any = {
-    value,
+    ...(includeValue ? { value } : {}),
     ...(unitSymbol ? { unit: unitSymbol } : {}),
   };
 
@@ -131,22 +132,22 @@ function buildApiParams(apiType: ApiType, payload: Payload): any {
   if (attribution) {
     const attributionObj: any = {};
 
-    if (attribution.outstandingAmount !== undefined) {
+    if (attribution.outstandingAmount !== undefined && attribution.outstandingAmount !== null) {
       attributionObj.outstandingAmount = attribution.outstandingAmount;
     }
-    if (attribution.propertyValue !== undefined) {
+    if (attribution.propertyValue !== undefined && attribution.propertyValue !== null) {
       attributionObj.propertyValue = attribution.propertyValue;
     }
-    if (attribution.totalEquity !== undefined) {
+    if (attribution.totalEquity !== undefined && attribution.totalEquity !== null) {
       attributionObj.totalEquity = attribution.totalEquity;
     }
-    if (attribution.totalDebt !== undefined) {
+    if (attribution.totalDebt !== undefined && attribution.totalDebt !== null) {
       attributionObj.totalDebt = attribution.totalDebt;
     }
-    if (attribution.evic !== undefined) {
+    if (attribution.evic !== undefined && attribution.evic !== null) {
       attributionObj.evic = attribution.evic;
     }
-    if (attribution.revenue !== undefined) {
+    if (attribution.revenue !== undefined && attribution.revenue !== null) {
       attributionObj.revenue = attribution.revenue;
     }
 

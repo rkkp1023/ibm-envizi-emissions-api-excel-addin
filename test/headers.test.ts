@@ -346,6 +346,8 @@ describe("ENVIZI.HEADERS function", () => {
           "Transaction Id",
           "Energy (MWh)",
           "Asset Turn Over Ratio",
+          "Financed Emission",
+          "Attribution Factor",
         ],
       ]);
     });
@@ -726,6 +728,8 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
           "Transaction Id",
           "Energy (MWh)",
           "Asset Turn Over Ratio",
+          "Financed Emission",
+          "Attribution Factor",
         ],
       ]);
     });

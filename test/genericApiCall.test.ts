@@ -99,12 +99,24 @@ const mockEconomicActivityResponse = {
   "energy(MWh)": "",
   assetTurnoverRatio: "",
   score: "",
+  financedEmission: "",
+  attributionFactor: "",
 };
 
 const mockRealEstateResponse = {
   ...mockResponse,
   "energy(MWh)": 42,
   assetTurnoverRatio: "",
+  financedEmission: "",
+  attributionFactor: "",
+};
+
+const mockPhysicalActivityResponse = {
+  ...mockResponse,
+  "energy(MWh)": "",
+  assetTurnoverRatio: "",
+  financedEmission: "",
+  attributionFactor: "",
 };
 
 type ApiCase = {
@@ -153,19 +165,19 @@ const apiCases: ApiCase[] = [
     name: "Economic Activity",
     apiType: "economic_activity",
     emissionMock: EconomicActivity.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, "", "", ""],
+    expectedResult: [...standardExpectedResult, "", "", "", "", ""],
   },
   {
     name: "Real Estate",
     apiType: "real_estate",
     emissionMock: RealEstate.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, 42, ""],
+    expectedResult: [...standardExpectedResult, 42, "", ""],
   },
   {
     name: "Physical Activity",
     apiType: "physical_activity",
     emissionMock: PhysicalActivity.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, "", ""],
+    expectedResult: [...standardExpectedResult, "", "", ""],
   },
 ];
 
@@ -176,8 +188,10 @@ describe("genericApiCall", () => {
       let response = mockResponse;
       if (c.apiType === "real_estate") {
         response = mockRealEstateResponse;
-      } else if (c.apiType === "economic_activity" || c.apiType === "physical_activity") {
+      } else if (c.apiType === "economic_activity") {
         response = mockEconomicActivityResponse;
+      } else if (c.apiType === "physical_activity") {
+        response = mockPhysicalActivityResponse;
       }
       c.emissionMock.mockResolvedValue(response);
     });
@@ -272,5 +286,76 @@ describe("genericApiCall", () => {
         country: "US",
       })
     ).rejects.toThrow("boom");
+  });
+
+  it("omits attribution entirely when all attribution fields are null", async () => {
+    (RealEstate.calculate as jest.Mock).mockResolvedValueOnce(mockRealEstateResponse);
+    await genericApiCall("real_estate", {
+      value: 5000,
+      unit: "m2",
+      type: "Commercial",
+      country: "USA",
+      attribution: { outstandingAmount: null as any, propertyValue: null as any },
+    });
+    expect(RealEstate.calculate).toHaveBeenCalledWith(
+      expect.not.objectContaining({ attribution: expect.anything() })
+    );
+  });
+
+  it("omits attribution entirely when all attribution fields are undefined", async () => {
+    (RealEstate.calculate as jest.Mock).mockResolvedValueOnce(mockRealEstateResponse);
+    await genericApiCall("real_estate", {
+      value: 5000,
+      unit: "m2",
+      type: "Commercial",
+      country: "USA",
+      attribution: { outstandingAmount: undefined, propertyValue: undefined },
+    });
+    expect(RealEstate.calculate).toHaveBeenCalledWith(
+      expect.not.objectContaining({ attribution: expect.anything() })
+    );
+  });
+
+  it("includes attribution when at least one field is non-null", async () => {
+    (RealEstate.calculate as jest.Mock).mockResolvedValueOnce(mockRealEstateResponse);
+    await genericApiCall("real_estate", {
+      value: 5000,
+      unit: "m2",
+      type: "Commercial",
+      country: "USA",
+      attribution: { outstandingAmount: 1000000, propertyValue: null as any },
+    });
+    expect(RealEstate.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({ attribution: { outstandingAmount: 1000000 } })
+    );
+  });
+
+  it.each([undefined, null, "" as any, 0])(
+    "omits value from activity for economic_activity when value is %s",
+    async (emptyValue) => {
+      (EconomicActivity.calculate as jest.Mock).mockResolvedValueOnce(mockEconomicActivityResponse);
+      await genericApiCall("economic_activity", {
+        value: emptyValue,
+        factorId: 42,
+      });
+      expect(EconomicActivity.calculate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activity: expect.not.objectContaining({ value: expect.anything() }),
+        })
+      );
+    }
+  );
+
+  it("still includes value in activity for economic_activity when value is provided", async () => {
+    (EconomicActivity.calculate as jest.Mock).mockResolvedValueOnce(mockEconomicActivityResponse);
+    await genericApiCall("economic_activity", {
+      value: 500,
+      factorId: 42,
+    });
+    expect(EconomicActivity.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activity: expect.objectContaining({ value: 500 }),
+      })
+    );
   });
 });
