@@ -101,6 +101,8 @@ export const HEADER_FIELDS = {
     displayName: "Asset Turn Over Ratio",
   },
   SCORE: { apiResponseName: "score", displayName: "Score" },
+  FINANCED_EMISSION: { apiResponseName: "financedEmission", displayName: "Financed Emission" },
+  ATTRIBUTION_FACTOR: { apiResponseName: "attributionFactor", displayName: "Attribution Factor" },
 
   // Attribution input fields (for real_estate, physical_activity, and economic_activity)
   OUTSTANDING_AMOUNT: { apiResponseName: "outstandingAmount", displayName: "Outstanding Amount" },
@@ -291,6 +293,8 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
       HEADER_FIELDS.ENERGY,
       HEADER_FIELDS.ASSET_TURNOVER_RATIO,
       HEADER_FIELDS.SCORE,
+      HEADER_FIELDS.FINANCED_EMISSION,
+      HEADER_FIELDS.ATTRIBUTION_FACTOR,
     ],
     factorIdInputHeaders: [
       ...FACTOR_ID_INPUT_HEADERS,
@@ -315,7 +319,8 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     outputHeaders: [
       ...STANDARD_OUTPUT_HEADERS,
       HEADER_FIELDS.ENERGY,
-      HEADER_FIELDS.ASSET_TURNOVER_RATIO,
+      HEADER_FIELDS.FINANCED_EMISSION,
+      HEADER_FIELDS.ATTRIBUTION_FACTOR,
     ],
     factorIdInputHeaders: [
       ...FACTOR_ID_INPUT_HEADERS,
@@ -341,7 +346,8 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     outputHeaders: [
       ...STANDARD_OUTPUT_HEADERS,
       HEADER_FIELDS.ENERGY,
-      HEADER_FIELDS.ASSET_TURNOVER_RATIO,
+      HEADER_FIELDS.FINANCED_EMISSION,
+      HEADER_FIELDS.ATTRIBUTION_FACTOR,
     ],
     factorIdInputHeaders: [
       ...FACTOR_ID_INPUT_HEADERS,
