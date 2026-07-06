@@ -117,9 +117,9 @@ describe("ActivityTypeRecommenderContent", () => {
       expect(screen.getByText("electricity")).toBeInTheDocument();
     });
 
-    it("should render stateProvince tag when provided", () => {
+    it("should render country tag when provided", () => {
       renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
-      expect(screen.getByText("California")).toBeInTheDocument();
+      expect(screen.getByText("USA")).toBeInTheDocument();
     });
 
     it("should render unit tag when provided", () => {

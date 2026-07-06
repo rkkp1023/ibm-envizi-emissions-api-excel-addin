@@ -74,7 +74,7 @@ describe("activityTypeRecommenderService", () => {
         confidence: 0.95,
         activityDescription: "Combustion of diesel fuel",
         region: "USA",
-        scope: "Scope 1",
+        scope: ["Scope 1"],
         activityUnit: ["L", "gal"],
       },
       {
@@ -82,7 +82,7 @@ describe("activityTypeRecommenderService", () => {
         confidence: 0.85,
         activityDescription: "Transportation using diesel",
         region: "USA",
-        scope: "Scope 1",
+        scope: ["Scope 1"],
         activityUnit: ["km"],
       },
     ],
@@ -91,7 +91,7 @@ describe("activityTypeRecommenderService", () => {
   describe("recommendActivityType", () => {
     it("returns formatted activity type recommendations", async () => {
       mockedBuildSearchParams.mockReturnValue(mockBaseSearchParams);
-      mockedTypeRecommenderSearch.mockResolvedValue(mockTypeRecommenderResponse);
+      mockedTypeRecommenderSearch.mockResolvedValue(mockTypeRecommenderResponse as any);
 
       const result = await recommendActivityType(mockSearchParams);
 
@@ -119,7 +119,7 @@ describe("activityTypeRecommenderService", () => {
           confidence: 0.95,
           activityDescription: "Combustion of diesel fuel",
           region: "USA",
-          scope: "Scope 1",
+          scope: ["Scope 1"],
           units: ["L", "gal"],
         },
         {
@@ -128,7 +128,7 @@ describe("activityTypeRecommenderService", () => {
           confidence: 0.85,
           activityDescription: "Transportation using diesel",
           region: "USA",
-          scope: "Scope 1",
+          scope: ["Scope 1"],
           units: ["km"],
         },
       ]);
@@ -173,7 +173,7 @@ describe("activityTypeRecommenderService", () => {
         confidence: 0.9,
         activityDescription: "Electricity from grid",
         region: "-",
-        scope: "-",
+        scope: undefined,
         units: [],
       });
     });
@@ -245,7 +245,7 @@ describe("activityTypeRecommenderService", () => {
           confidence: 0,
           activityDescription: "",
           region: "-",
-          scope: "-",
+          scope: undefined,
           units: [],
         },
       ]);
@@ -494,7 +494,7 @@ describe("activityTypeRecommenderService", () => {
         confidence: 0.9,
         activityDescription: "",
         region: "",
-        scope: "",
+        scope: undefined,
         units: [],
       });
     });

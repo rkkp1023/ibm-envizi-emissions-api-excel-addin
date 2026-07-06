@@ -1,6 +1,5 @@
 // Copyright IBM Corp. 2026
 
-import { Earth } from "@carbon/icons-react";
 import {
   AILabel,
   DataTable,
@@ -24,7 +23,7 @@ export interface ActivityTypeRecommendation {
   confidence: number;
   activityDescription: string;
   region?: string;
-  scope?: string;
+  scope?: string[];
   units?: string[];
 }
 
@@ -134,14 +133,9 @@ export default function ActivityTypeRecommenderTable({
                           <div className="activity-type-table-row__content">
                             <div>{rowData.activityType}</div>
                             <div className="activity-type-table-row__metadata">
-                              <FormLabel className="activity-type-table-row__region">
-                                <Earth size={16} />
-                                Global
-                              </FormLabel>
-
                               <div className="activity-type-table-row__details-list">
                                 <FormLabel className="activity-type-table-row__details-item">
-                                  {rowData.scope}
+                                  Scope {rowData.scope?.join(", ")}
                                 </FormLabel>
                                 <FormLabel className="activity-type-table-row__details-item">
                                   {rowData.units?.join(", ")}

@@ -37,7 +37,7 @@ describe("ActivityTypeRecommenderTable", () => {
       confidence: 95,
       activityDescription: "Waste Recycled - Cardboard",
       region: "Global",
-      scope: "Scope 3 - Category 5: Waste generated in operations",
+      scope: ["Scope 3 - Category 5: Waste generated in operations"],
       units: ["kg", "tonnes"],
     },
     {
@@ -46,7 +46,7 @@ describe("ActivityTypeRecommenderTable", () => {
       confidence: 88,
       activityDescription: "Waste Recycled - Paper",
       region: "Global",
-      scope: "Scope 3 - Category 5: Waste generated in operations",
+      scope: ["Scope 3 - Category 5: Waste generated in operations"],
       units: ["kg", "tonnes"],
     },
     {
@@ -55,7 +55,7 @@ describe("ActivityTypeRecommenderTable", () => {
       confidence: 82,
       activityDescription: "Waste Recycled - Plastic",
       region: "Global",
-      scope: "Scope 3 - Category 5: Waste generated in operations",
+      scope: ["Scope 3 - Category 5: Waste generated in operations"],
       units: ["kg", "tonnes"],
     },
   ];
@@ -153,7 +153,7 @@ describe("ActivityTypeRecommenderTable", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
       const scopeElements = screen.getAllByText(
-        "Scope 3 - Category 5: Waste generated in operations"
+        "Scope Scope 3 - Category 5: Waste generated in operations"
       );
       expect(scopeElements.length).toBeGreaterThan(0);
     });
@@ -165,11 +165,11 @@ describe("ActivityTypeRecommenderTable", () => {
       expect(unitsElements.length).toBeGreaterThan(0);
     });
 
-    it("should render Global region label", () => {
+    it("should render activity type cell for each row", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
-      const globalLabels = screen.getAllByText("Global");
-      expect(globalLabels.length).toBeGreaterThan(0);
+      const activityCells = screen.getAllByText("Waste Recycled - Cardboard");
+      expect(activityCells.length).toBeGreaterThan(0);
     });
   });
 
@@ -267,7 +267,7 @@ describe("ActivityTypeRecommenderTable", () => {
           confidence: 88,
           activityDescription: "Waste Recycled - Paper",
           region: "Global",
-          scope: "Scope 3 - Category 5: Waste generated in operations",
+          scope: ["Scope 3 - Category 5: Waste generated in operations"],
           units: ["kg", "tonnes"],
         })
       );
@@ -493,13 +493,13 @@ describe("ActivityTypeRecommenderTable", () => {
       expect(metadataSections.length).toBe(mockRecommendations.length);
     });
 
-    it("should render region with Earth icon", () => {
+    it("should render details items for each row", () => {
       const { container } = render(
         <ActivityTypeRecommenderTable recommendations={mockRecommendations} />
       );
 
-      const regionElements = container.querySelectorAll(".activity-type-table-row__region");
-      expect(regionElements.length).toBeGreaterThan(0);
+      const detailItems = container.querySelectorAll(".activity-type-table-row__details-item");
+      expect(detailItems.length).toBeGreaterThan(0);
     });
 
     it("should render details list with scope and units", () => {
