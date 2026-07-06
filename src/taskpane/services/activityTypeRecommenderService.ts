@@ -20,7 +20,7 @@ export interface ActivityTypeRecommendation {
   confidence: number;
   activityDescription: string;
   region?: string;
-  scope?: string;
+  scope?: string[];
   units?: string[];
 }
 
@@ -29,7 +29,7 @@ interface TypeRecommenderResponseItem {
   confidence?: number;
   activityDescription?: string;
   region?: string;
-  scope?: string;
+  scope?: string[];
   activityUnit?: string[];
 }
 
@@ -71,7 +71,7 @@ function mapRecommendation(
     confidence: typeof recommendation?.confidence === "number" ? recommendation.confidence : 0,
     activityDescription: recommendation?.activityDescription ?? "",
     region: recommendation?.region ?? "-",
-    scope: recommendation?.scope ?? "-",
+    scope: recommendation?.scope ? recommendation.scope : undefined,
     units: Array.isArray(recommendation?.activityUnit) ? recommendation.activityUnit : [],
   };
 }

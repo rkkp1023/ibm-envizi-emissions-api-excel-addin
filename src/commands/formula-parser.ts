@@ -73,17 +73,25 @@ export function extractParameterCellAddresses(formula: string): ParameterCellAdd
     return {};
   }
 
-  // Extract all cell references from the formula using the existing utility
-  const cellRefs = extractCellReferences(formula);
+  // Extract the argument list from inside the parentheses
+  const match = /\(([^)]*)\)/.exec(formula);
+  if (!match?.[1]) {
+    return {};
+  }
+  // Split by comma to preserve positional order (including empty slots)
+  const args = match[1].split(",").map((p) => p.trim());
 
-  // Map cell references to their respective parameter positions
+  // A slot is a cell ref only when it matches a bare cell reference pattern
+  const isCellRef = (s: string) => /^\$?[A-Z]+\$?\d+$/i.test(s);
+
+  // Map each positional argument to its parameter — undefined when not a cell ref
   return {
-    searchCell: cellRefs[0],
-    countryCell: cellRefs[1],
-    stateProvinceCell: cellRefs[2],
-    unitCell: cellRefs[3],
-    scopeCell: cellRefs[4],
-    dateCell: cellRefs[5],
+    searchCell: isCellRef(args[0] ?? "") ? args[0] : undefined,
+    countryCell: isCellRef(args[1] ?? "") ? args[1] : undefined,
+    stateProvinceCell: isCellRef(args[2] ?? "") ? args[2] : undefined,
+    unitCell: isCellRef(args[3] ?? "") ? args[3] : undefined,
+    scopeCell: isCellRef(args[4] ?? "") ? args[4] : undefined,
+    dateCell: isCellRef(args[5] ?? "") ? args[5] : undefined,
   };
 }
 

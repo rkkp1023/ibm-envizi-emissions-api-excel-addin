@@ -453,7 +453,7 @@
         <bt:String id="Area.Country.Label" DefaultValue="Country" />
         <bt:String id="Area.StateProvince.Label" DefaultValue="State/Province" />
         <bt:String id="Area.PowerGrid.Label" DefaultValue="Power Grid" />
-        <bt:String id="ActivityRecommendation.Label" DefaultValue="View all recommendations" />
+        <bt:String id="ActivityRecommendation.Label" DefaultValue="Activity recommendations" />
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Seamlessly integrate emissions data into your workflows. Open the 'IBM Envizi Emissions Calculations' task pane to get started." />
