@@ -106,7 +106,7 @@ const mockEconomicActivityResponse = {
 const mockRealEstateResponse = {
   ...mockResponse,
   "energy(MWh)": 42,
-  assetTurnoverRatio: "",
+  score: "",
   financedEmission: "",
   attributionFactor: "",
 };
@@ -114,7 +114,7 @@ const mockRealEstateResponse = {
 const mockPhysicalActivityResponse = {
   ...mockResponse,
   "energy(MWh)": "",
-  assetTurnoverRatio: "",
+  score: "",
   financedEmission: "",
   attributionFactor: "",
 };
@@ -171,13 +171,13 @@ const apiCases: ApiCase[] = [
     name: "Real Estate",
     apiType: "real_estate",
     emissionMock: RealEstate.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, 42, "", ""],
+    expectedResult: [...standardExpectedResult, 42, "", "", ""],
   },
   {
     name: "Physical Activity",
     apiType: "physical_activity",
     emissionMock: PhysicalActivity.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, "", "", ""],
+    expectedResult: [...standardExpectedResult, "", "", "", ""],
   },
 ];
 
