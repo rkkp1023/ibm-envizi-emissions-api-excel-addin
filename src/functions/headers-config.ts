@@ -319,6 +319,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     outputHeaders: [
       ...STANDARD_OUTPUT_HEADERS,
       HEADER_FIELDS.ENERGY,
+      HEADER_FIELDS.SCORE,
       HEADER_FIELDS.FINANCED_EMISSION,
       HEADER_FIELDS.ATTRIBUTION_FACTOR,
     ],
@@ -346,6 +347,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     outputHeaders: [
       ...STANDARD_OUTPUT_HEADERS,
       HEADER_FIELDS.ENERGY,
+      HEADER_FIELDS.SCORE,
       HEADER_FIELDS.FINANCED_EMISSION,
       HEADER_FIELDS.ATTRIBUTION_FACTOR,
     ],
