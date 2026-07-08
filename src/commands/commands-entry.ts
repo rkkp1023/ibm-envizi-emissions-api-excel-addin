@@ -51,7 +51,7 @@ function showErrorNotification(message: string): void {
 
     console.log("Opening notification dialog with URL:", notificationUrl);
 
-    Office.context.ui.displayDialogAsync(notificationUrl, { height: 40, width: 40 }, (result) => {
+    Office.context.ui.displayDialogAsync(notificationUrl, { height: 20, width: 40 }, (result) => {
       if (result.status === Office.AsyncResultStatus.Succeeded) {
         console.log("Notification dialog opened successfully");
         // Listen for close message from dialog
