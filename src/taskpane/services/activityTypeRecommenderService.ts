@@ -90,7 +90,19 @@ export async function recommendActivityType(
       .filter((item) => item?.activityType)
       .map((item, index) => mapRecommendation(item, index));
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorCode =
+      typeof error === "object" && error !== null && "code" in error ? error.code : undefined;
+    const errorMessage =
+      typeof error === "object" && error !== null && "message" in error
+        ? String(error.message)
+        : error instanceof Error
+          ? error.message
+          : "Unknown error";
+
+    if (errorCode === 404 && errorMessage === "No activity types found matching the criteria") {
+      return [];
+    }
+
     console.error("Taskpane activity type recommender request failed:", errorMessage);
     throw new Error(`Failed to fetch activity type recommendations: ${errorMessage}`);
   }

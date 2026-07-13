@@ -1,39 +1,25 @@
 // Copyright IBM Corp. 2026
 
 import { PreviousOutline } from "@carbon/icons-react";
-import { Button, ComboBox, Form, Stack, TextInput } from "@carbon/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Button, ComboBox, Form, InlineNotification, Stack, TextInput } from "@carbon/react";
+import { useEffect, useMemo, useState } from "react";
 
 import { fetchAreaMetadata, fetchUnitMetadata } from "../../../commands/metadata-service";
 import { readMetadataFromSheet } from "../../../commands/metadata-sheet-manager";
-import { createComboBoxConfig } from "../../../functions/utils";
+import { createComboBoxConfig } from "../../utils/comboBoxConfig";
 import type { ActivityTypeRecomenderContext } from "../MainPage/MainPage";
 
-const scopes = [
-  { id: "1", text: "1" },
-  { id: "2", text: "2" },
-  { id: "3.1", text: "3.1" },
-  { id: "3.2", text: "3.2" },
-  { id: "3.3", text: "3.3" },
-  { id: "3.4", text: "3.4" },
-  { id: "3.5", text: "3.5" },
-  { id: "3.6", text: "3.6" },
-  { id: "3.7", text: "3.7" },
-  { id: "3.8", text: "3.8" },
-  { id: "3.9", text: "3.9" },
-  { id: "3.10", text: "3.10" },
-  { id: "3.11", text: "3.11" },
-  { id: "3.12", text: "3.12" },
-  { id: "3.13", text: "3.13" },
-  { id: "3.14", text: "3.14" },
-  { id: "3.15", text: "3.15" },
-];
+const scopes = ["1", "2", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"].map(
+  (id) => ({ id, text: id })
+);
 
 export interface ActivityTypeRecommenderModifySearchProps {
   onBack?: () => void;
   onSearch?: (searchParams: SearchParams) => void;
   onCancel?: () => void;
   context?: ActivityTypeRecomenderContext;
+  showNoResultsNotification?: boolean;
+  disableBack?: boolean;
 }
 
 export interface SearchParams {
@@ -49,6 +35,8 @@ export default function ActivityTypeRecommenderModifySearch({
   onSearch,
   onCancel,
   context,
+  showNoResultsNotification = false,
+  disableBack = false,
 }: Readonly<ActivityTypeRecommenderModifySearchProps>) {
   const [activityName, setActivityName] = useState(context?.search || "");
   const [country, setCountry] = useState<{ id: string; text: string } | null>(
@@ -73,13 +61,9 @@ export default function ActivityTypeRecommenderModifySearch({
   const [activityNameInvalid, setActivityNameInvalid] = useState(false);
   const [countryInvalid, setCountryInvalid] = useState(false);
 
-  // Track if metadata has been fetched to prevent redundant calls
-  const metadataFetchedRef = useRef(false);
-
   // Fetch metadata on component mount
   useEffect(() => {
-    // Skip if already fetched
-    if (metadataFetchedRef.current) {
+    if (isLoadingMetadata) {
       return;
     }
 
@@ -143,9 +127,6 @@ export default function ActivityTypeRecommenderModifySearch({
           setStates(stateItems);
           setUnits(unitItems);
         }
-
-        // Mark as fetched
-        metadataFetchedRef.current = true;
       } catch (error) {
         console.error("Failed to load metadata:", error);
         setMetadataError("Failed to load metadata. Please try again.");
@@ -258,6 +239,7 @@ export default function ActivityTypeRecommenderModifySearch({
             onClick={onBack}
             hasIconOnly
             iconDescription="Go back"
+            disabled={disableBack}
           >
             <PreviousOutline size={20} />
           </Button>
@@ -271,6 +253,19 @@ export default function ActivityTypeRecommenderModifySearch({
       {metadataError && (
         <div className="metadata-error" style={{ color: "red", padding: "0.5rem" }}>
           {metadataError}
+        </div>
+      )}
+
+      {showNoResultsNotification && (
+        <div className="error-notification">
+          <InlineNotification
+            kind="error"
+            title="No results"
+            subtitle="No recommendations are available for the provided input. Please change the parameters and try again."
+            lowContrast
+            hideCloseButton
+            className="error-notification"
+          />
         </div>
       )}
 

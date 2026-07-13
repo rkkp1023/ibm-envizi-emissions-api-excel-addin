@@ -43,6 +43,31 @@ jest.mock("../ActivityTypeRecommenderTable/ActivityTypeRecommenderTable", () => 
   )),
 }));
 
+// Mock the Modify Search panel so tests don't pull in real metadata/Excel services
+const mockModifySearchProps: Record<string, unknown> = {};
+jest.mock(
+  "../ActivityTypeRecommenderModifySearch/ActivityTypeRecommenderModifySearch",
+  () => ({
+    __esModule: true,
+    default: jest.fn((props) => {
+      Object.assign(mockModifySearchProps, props);
+      return (
+        <div data-testid="modify-search-panel">
+          <button
+            data-testid="modify-search-submit"
+            onClick={() => props.onSearch?.({ activityName: "test", country: { id: "AU", text: "Australia" }, state: null, unit: null, scope: null })}
+          >
+            Search
+          </button>
+          <button data-testid="modify-search-cancel" onClick={() => props.onCancel?.()}>
+            Cancel
+          </button>
+        </div>
+      );
+    }),
+  })
+);
+
 // Mock @griffel/react
 jest.mock("@griffel/react", () => ({
   makeStyles: jest.fn(() => () => ({
@@ -103,6 +128,7 @@ describe("ActivityTypeRecommenderContent", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    Object.keys(mockModifySearchProps).forEach((k) => delete mockModifySearchProps[k]);
     mockRecommendActivityType.mockResolvedValue(mockRecommendations);
   });
 
@@ -201,6 +227,129 @@ describe("ActivityTypeRecommenderContent", () => {
       expect(
         screen.getByText(/If you can't locate what you need in this list/i)
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("Modify Search manual navigation", () => {
+    it("should open the Modify Search panel when Modify Search button is clicked", async () => {
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() =>
+        expect(screen.getByText(/Modify Search/i)).toBeInTheDocument()
+      );
+      fireEvent.click(screen.getByText(/Modify Search/i));
+      expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument();
+    });
+
+    it("should pass showNoResultsNotification=false when opening manually with results", async () => {
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() => expect(screen.getByText(/Modify Search/i)).toBeInTheDocument());
+      fireEvent.click(screen.getByText(/Modify Search/i));
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+      expect(mockModifySearchProps.showNoResultsNotification).toBe(false);
+    });
+
+    it("should pass disableBack=false when opening manually with results", async () => {
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() => expect(screen.getByText(/Modify Search/i)).toBeInTheDocument());
+      fireEvent.click(screen.getByText(/Modify Search/i));
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+      expect(mockModifySearchProps.disableBack).toBe(false);
+    });
+  });
+
+  describe("Auto-open Modify Search on empty results", () => {
+    beforeEach(() => {
+      mockRecommendActivityType.mockResolvedValue([]);
+    });
+
+    it("should auto-open the Modify Search panel when the API returns no results", async () => {
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+    });
+
+    it("should pass showNoResultsNotification=true to Modify Search on empty initial load", async () => {
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+      expect(mockModifySearchProps.showNoResultsNotification).toBe(true);
+    });
+
+    it("should pass disableBack=true to Modify Search on empty initial load", async () => {
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+      expect(mockModifySearchProps.disableBack).toBe(true);
+    });
+
+    it("should auto-open the Modify Search panel when the API returns an error", async () => {
+      mockRecommendActivityType.mockRejectedValue(new Error("API error"));
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+      expect(mockModifySearchProps.showNoResultsNotification).toBe(true);
+    });
+  });
+
+  describe("Modify search re-submit flow", () => {
+    it("should close the Modify Search panel when re-submit returns results", async () => {
+      // Initial load returns empty → panel auto-opens
+      mockRecommendActivityType.mockResolvedValue([]);
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+
+      // Next fetch returns results
+      mockRecommendActivityType.mockResolvedValue(mockRecommendations);
+      fireEvent.click(screen.getByTestId("modify-search-submit"));
+
+      await waitFor(() =>
+        expect(screen.queryByTestId("modify-search-panel")).not.toBeInTheDocument()
+      );
+    });
+
+    it("should keep the Modify Search panel open when re-submit returns empty results", async () => {
+      // Initial load returns empty → panel auto-opens
+      mockRecommendActivityType.mockResolvedValue([]);
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+
+      // Next fetch also returns empty
+      fireEvent.click(screen.getByTestId("modify-search-submit"));
+
+      await waitFor(() => {
+        // Panel remains open
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument();
+        // Notification stays true
+        expect(mockModifySearchProps.showNoResultsNotification).toBe(true);
+      });
+    });
+
+    it("should clear showNoResultsNotification when re-submit returns results", async () => {
+      mockRecommendActivityType.mockResolvedValue([]);
+      renderWithQueryClient(<ActivityTypeRecommenderContent {...defaultProps} />);
+      await waitFor(() =>
+        expect(screen.getByTestId("modify-search-panel")).toBeInTheDocument()
+      );
+
+      mockRecommendActivityType.mockResolvedValue(mockRecommendations);
+      fireEvent.click(screen.getByTestId("modify-search-submit"));
+
+      // Panel closes and table view returns with results
+      await waitFor(() =>
+        expect(screen.getByTestId("activity-type-recommender-table")).toBeInTheDocument()
+      );
     });
   });
 });

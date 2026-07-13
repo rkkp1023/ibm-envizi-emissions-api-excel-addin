@@ -7,11 +7,20 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ActivityRecommenderProvider } from "../../context/ActivityRecommenderContext";
 import { useAccountSubscription, useCarbonTheme } from "../../hooks";
+import { getIsTaskpaneOpen } from "../../../commands/taskPaneVisibility";
 import { MainPage } from "./MainPage";
 
 jest.mock("../../hooks", () => ({
   useAccountSubscription: jest.fn(),
   useCarbonTheme: jest.fn(),
+}));
+
+jest.mock("../../../commands/taskPaneVisibility", () => ({
+  getIsTaskpaneOpen: jest.fn(() => true),
+}));
+
+jest.mock("../../../commands/commands", () => ({
+  openTaskpane: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("../QuickHelpTab/QuickHelpTab", () => ({
@@ -52,6 +61,7 @@ jest.mock("../DismissibleTab/DismissibleTab", () => ({
 
 const mockedUseAccountSubscription = jest.mocked(useAccountSubscription);
 const mockedUseCarbonTheme = jest.mocked(useCarbonTheme);
+const mockedGetIsTaskpaneOpen = jest.mocked(getIsTaskpaneOpen);
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -85,6 +95,8 @@ describe("MainPage", () => {
         subscriptionType: "paid",
       },
     } as unknown as ReturnType<typeof useAccountSubscription>);
+    // Default: task pane is already open (matches the module-level default of isTaskpaneOpen=true)
+    mockedGetIsTaskpaneOpen.mockReturnValue(true);
     delete (window as any).recommendedParams;
   });
 
@@ -171,6 +183,7 @@ describe("MainPage", () => {
 
   describe("Event Handlers and Callbacks", () => {
     it("should render ActivityTypeRecommender (standalone) when ACTIVITY_RECOMMENDER_REQUESTED event contains recommendedParams and task pane was closed", () => {
+      mockedGetIsTaskpaneOpen.mockReturnValue(false);
       renderMainPage();
 
       act(() => {
@@ -275,6 +288,7 @@ describe("MainPage", () => {
     });
 
     it("should render ActivityTypeRecommender when window.recommendedParams contains recommendedParams", () => {
+      mockedGetIsTaskpaneOpen.mockReturnValue(false);
       (window as any).recommendedParams = {
         recommendedParams: {
           activityType: "test",

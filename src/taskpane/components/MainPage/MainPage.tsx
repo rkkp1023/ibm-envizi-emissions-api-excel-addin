@@ -4,7 +4,7 @@ import { AiRecommend } from "@carbon/icons-react";
 import { Theme } from "@carbon/react";
 import { Tab, TabList } from "@fluentui/react-components";
 import { makeStyles } from "@griffel/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useActivityRecommender } from "../../context/ActivityRecommenderContext";
 import { useAccountSubscription, useCarbonTheme } from "../../hooks";
@@ -15,8 +15,13 @@ import { DismissibleTab } from "../DismissibleTab/DismissibleTab";
 import { QuickHelpTab } from "../QuickHelpTab/QuickHelpTab";
 import { ResourcesTab } from "../ResourcesTab/ResourcesTab";
 import { TrialCountHeader } from "../TrialCountHeader/TrialCountHeader";
+import { getIsTaskpaneOpen } from "../../../commands/taskPaneVisibility";
+import { openTaskpane } from "../../../commands/commands";
+import { RecommendedParams } from "../../../commands/commands-entry";
 
 type TabValue = "quickHelp" | "account" | "resources" | "activityTypeRecommender";
+
+type ActivityRecommenderRequestedDetail = { recommendedParams: RecommendedParams };
 
 export interface ActivityTypeRecomenderContext {
   search: string;
@@ -58,22 +63,33 @@ export function MainPage() {
     }
   }, [activityRecommenderState]);
 
+  // Stable ref so the event handler always reads the latest state without
+  // needing to be re-registered on every state change.
+  const activityRecommenderStateRef = useRef(activityRecommenderState);
   useEffect(() => {
-    const handleActivityRecommenderRequested = (event: CustomEvent<any>) => {
-      const data = event.detail;
-      if (!data) return;
+    activityRecommenderStateRef.current = activityRecommenderState;
+  }, [activityRecommenderState]);
 
-      const { recommendedParams, wasAlreadyOpen } = data;
+  useEffect(() => {
+    const handleActivityRecommenderRequested = (
+      event: CustomEvent<ActivityRecommenderRequestedDetail>
+    ): void => {
+      const { recommendedParams } = event.detail ?? {};
       if (!recommendedParams) return;
 
       setRecommendedParams(recommendedParams);
+
+      const wasAlreadyOpen = getIsTaskpaneOpen();
       if (!wasAlreadyOpen) {
         setActivityRecommenderState("standalone");
+        openTaskpane().catch((error) => {
+          console.error("Failed to open taskpane:", error);
+        });
       } else {
-        // Task pane was already open
-        // If recommender state is undefined, set to dismissable
-        // If it's already standalone, keep it standalone
-        if (activityRecommenderState === undefined) {
+        // Task pane was already open.
+        // Only promote to "dismissable" when no recommender session is active;
+        // keep "standalone" unchanged.
+        if (activityRecommenderStateRef.current === undefined) {
           setActivityRecommenderState("dismissable");
         }
       }
@@ -84,11 +100,14 @@ export function MainPage() {
       handleActivityRecommenderRequested as EventListener
     );
 
+    // Bootstrap: pane was opened with pre-set params from the ribbon command —
+    // run once on mount only, always treated as standalone.
     if (window.recommendedParams) {
-      // Pane was just opened with pre-set params — always standalone
-      handleActivityRecommenderRequested({
-        detail: { ...window.recommendedParams, wasAlreadyOpen: false },
-      } as CustomEvent);
+      handleActivityRecommenderRequested(
+        new CustomEvent<ActivityRecommenderRequestedDetail>("ACTIVITY_RECOMMENDER_REQUESTED", {
+          detail: { recommendedParams: window.recommendedParams },
+        })
+      );
     }
 
     return () => {
@@ -97,7 +116,7 @@ export function MainPage() {
         handleActivityRecommenderRequested as EventListener
       );
     };
-  }, [activityRecommenderState, setActivityRecommenderState, setRecommendedParams]);
+  }, [setActivityRecommenderState, setRecommendedParams]);
 
   const onClose = () => {
     if (activityRecommenderState === "standalone") {
@@ -136,7 +155,7 @@ export function MainPage() {
             <DismissibleTab
               value="activityTypeRecommender"
               icon={<AiRecommend />}
-              label="Envizi Activity type recommender"
+              label="Activity type recommendations"
               onDismiss={onClose}
             />
           )}

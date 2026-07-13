@@ -3,7 +3,7 @@
 import { Idea, Search, WarningAlt } from "@carbon/icons-react";
 import { Button, InlineLoading, Stack, Tag } from "@carbon/react";
 import { makeStyles } from "@griffel/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   extractParameterCellAddresses,
@@ -45,12 +45,39 @@ export function ActivityTypeRecommenderContent({
     context
   );
   const [manualUpdateFields, setManualUpdateFields] = useState<ManualUpdateField[] | null>(null);
+  const [pendingSearch, setPendingSearch] = useState(false);
+  const [showNoResultsNotification, setShowNoResultsNotification] = useState(false);
 
-  const { data: recommendations, isLoading } = useActivityTypeRecommendations({
+  const { data: recommendations, isLoading, status } = useActivityTypeRecommendations({
     search: localContext?.search || "",
     country: localContext?.country || "",
     ...localContext,
   });
+
+  useEffect(() => {
+    // Wait until the query has settled (success or error — not loading/idle)
+    if (status === "pending") return;
+
+    const isEmpty = status === "error" || !recommendations || recommendations.length === 0;
+
+    // Initial load with no results — auto-open Modify Search with notification
+    if (!pendingSearch && isEmpty && !showModifySearch) {
+      setShowModifySearch(true);
+      setShowNoResultsNotification(true);
+      return;
+    }
+
+    // Modify search submit resolved
+    if (pendingSearch) {
+      if (!isEmpty) {
+        setShowModifySearch(false);
+        setShowNoResultsNotification(false);
+      } else {
+        setShowNoResultsNotification(true);
+      }
+      setPendingSearch(false);
+    }
+  }, [status, recommendations, pendingSearch, showModifySearch]);
 
   const handleRadioSelect = (recommendation: ActivityTypeRecommendation) => {
     setSelectedRecommendation(recommendation);
@@ -164,16 +191,20 @@ export function ActivityTypeRecommenderContent({
       scope: searchParams.scope?.text ?? undefined,
       date: localContext?.date, // no date field in form — preserve original value
     });
-    setShowModifySearch(false);
+    setPendingSearch(true);
   };
+
+  const isEmpty = status === "error" || !recommendations || recommendations.length === 0;
 
   if (showModifySearch) {
     return (
       <ActivityTypeRecommenderModifySearch
         context={localContext}
-        onBack={() => setShowModifySearch(false)}
-        onCancel={() => setShowModifySearch(false)}
+        onBack={isEmpty ? undefined : () => { setShowModifySearch(false); setShowNoResultsNotification(false); }}
+        onCancel={isEmpty ? onClose : () => { setShowModifySearch(false); setShowNoResultsNotification(false); }}
         onSearch={handleSearch}
+        showNoResultsNotification={showNoResultsNotification}
+        disableBack={isEmpty}
       />
     );
   }

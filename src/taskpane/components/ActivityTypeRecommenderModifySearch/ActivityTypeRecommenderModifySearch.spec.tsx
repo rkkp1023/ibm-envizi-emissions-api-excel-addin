@@ -240,4 +240,57 @@ describe("ActivityTypeRecommenderModifySearch", () => {
       expect(onSearch).not.toHaveBeenCalled();
     });
   });
+
+  describe("showNoResultsNotification prop", () => {
+    it("renders the inline notification when showNoResultsNotification is true", () => {
+      render(<ActivityTypeRecommenderModifySearch showNoResultsNotification={true} />);
+      expect(screen.getByRole("status")).toBeInTheDocument();
+    });
+
+    it("renders the notification title 'No results' when showNoResultsNotification is true", () => {
+      render(<ActivityTypeRecommenderModifySearch showNoResultsNotification={true} />);
+      expect(screen.getByText(/No results/i)).toBeInTheDocument();
+    });
+
+    it("renders the notification subtitle when showNoResultsNotification is true", () => {
+      render(<ActivityTypeRecommenderModifySearch showNoResultsNotification={true} />);
+      expect(
+        screen.getByText(/No recommendations are available for the provided input/i)
+      ).toBeInTheDocument();
+    });
+
+    it("does not render the inline notification when showNoResultsNotification is false", () => {
+      render(<ActivityTypeRecommenderModifySearch showNoResultsNotification={false} />);
+      expect(screen.queryByText(/No results/i)).not.toBeInTheDocument();
+    });
+
+    it("does not render the inline notification when showNoResultsNotification is omitted", () => {
+      render(<ActivityTypeRecommenderModifySearch />);
+      expect(screen.queryByText(/No results/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe("disableBack prop", () => {
+    it("disables the back button when disableBack is true", () => {
+      render(<ActivityTypeRecommenderModifySearch disableBack={true} />);
+      expect(screen.getByRole("button", { name: /go back/i })).toBeDisabled();
+    });
+
+    it("enables the back button when disableBack is false", () => {
+      render(<ActivityTypeRecommenderModifySearch disableBack={false} />);
+      expect(screen.getByRole("button", { name: /go back/i })).not.toBeDisabled();
+    });
+
+    it("enables the back button when disableBack is omitted (default)", () => {
+      render(<ActivityTypeRecommenderModifySearch />);
+      expect(screen.getByRole("button", { name: /go back/i })).not.toBeDisabled();
+    });
+
+    it("does not call onBack when the back button is disabled and clicked", () => {
+      const onBack = jest.fn();
+      render(<ActivityTypeRecommenderModifySearch onBack={onBack} disableBack={true} />);
+      fireEvent.click(screen.getByRole("button", { name: /go back/i }));
+      expect(onBack).not.toHaveBeenCalled();
+    });
+  });
 });

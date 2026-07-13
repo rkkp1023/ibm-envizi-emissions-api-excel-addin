@@ -321,6 +321,17 @@ describe("activityTypeRecommenderService", () => {
       expect(result[2].id).toBe("recommendation-2");
     });
 
+    it("returns an empty array for the no-results 404 API response", async () => {
+      mockedBuildSearchParams.mockReturnValue(mockBaseSearchParams);
+      mockedTypeRecommenderSearch.mockRejectedValue({
+        code: 404,
+        message: "No activity types found matching the criteria",
+      });
+
+      await expect(recommendActivityType(mockSearchParams)).resolves.toEqual([]);
+      expect(console.error).not.toHaveBeenCalled();
+    });
+
     it("throws error when TypeRecommender.search fails", async () => {
       mockedBuildSearchParams.mockReturnValue(mockBaseSearchParams);
       const error = new Error("API request failed");
