@@ -6,6 +6,9 @@ import { Tab, TabList } from "@fluentui/react-components";
 import { makeStyles } from "@griffel/react";
 import { useEffect, useRef, useState } from "react";
 
+import { getBuyNowUrl } from "../../../common/env";
+import { AnnouncementBar, AnnouncementBarProps } from "../AnnouncementBar/AnnouncementBar";
+
 import { useActivityRecommender } from "../../context/ActivityRecommenderContext";
 import { useAccountSubscription, useCarbonTheme } from "../../hooks";
 import { AccountTab } from "../AccountTab/AccountTab";
@@ -39,11 +42,24 @@ const useStyles = makeStyles({
   },
 });
 
+const announcementConfig: AnnouncementBarProps = {
+  title: "New feature!",
+  body: "Introducing the new Model Context Protocol (MCP) server. Leverage it with AI tools such as Claude to enhance insights, automate processes, and more. Click Learn more to begin.",
+  intent: "info",
+  actions: [
+    {
+      label: "Learn more",
+      href: getBuyNowUrl(),
+    },
+  ],
+};
+
 export function MainPage() {
   const styles = useStyles();
   const theme = useCarbonTheme();
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
   const [previousTab, setPreviousTab] = useState<TabValue>("quickHelp");
+  const [showAnnouncement, setShowAnnouncement] = useState<boolean>(true);
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
 
@@ -161,6 +177,7 @@ export function MainPage() {
           )}
         </TabList>
         <div className="tab-content">
+          {showAnnouncement && <AnnouncementBar {...announcementConfig} />}
           {selectedTab === "quickHelp" && <QuickHelpTab />}
           {selectedTab === "resources" && <ResourcesTab />}
           {selectedTab === "account" && <AccountTab />}

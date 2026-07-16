@@ -59,6 +59,12 @@ jest.mock("../DismissibleTab/DismissibleTab", () => ({
   ),
 }));
 
+jest.mock("../AnnouncementBar/AnnouncementBar", () => ({
+  AnnouncementBar: ({ title }: { title: string }) => (
+    <div data-testid="announcement-bar">{title}</div>
+  ),
+}));
+
 const mockedUseAccountSubscription = jest.mocked(useAccountSubscription);
 const mockedUseCarbonTheme = jest.mocked(useCarbonTheme);
 const mockedGetIsTaskpaneOpen = jest.mocked(getIsTaskpaneOpen);
@@ -98,6 +104,22 @@ describe("MainPage", () => {
     // Default: task pane is already open (matches the module-level default of isTaskpaneOpen=true)
     mockedGetIsTaskpaneOpen.mockReturnValue(true);
     delete (window as any).recommendedParams;
+  });
+
+  describe("AnnouncementBar", () => {
+    it("should render the announcement bar by default", () => {
+      renderMainPage();
+
+      expect(screen.getByTestId("announcement-bar")).toBeInTheDocument();
+    });
+
+    it("should display the announcement title", () => {
+      renderMainPage();
+
+      expect(
+        screen.getByText("Great news! This add-in is now live.")
+      ).toBeInTheDocument();
+    });
   });
 
   describe("Component Rendering", () => {
