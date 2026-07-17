@@ -4,7 +4,7 @@
   xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
   xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>90ef193d-e53e-4f93-b280-39e2dc609661</Id>
-  <Version>1.2.1</Version>
+  <Version>1.2.2</Version>
   <ProviderName>IBM</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="IBM Envizi Emissions Calculations" />
@@ -18,11 +18,11 @@
   <Hosts>
     <Host Name="Workbook" />
   </Hosts>
- <Requirements>
-  <Sets DefaultMinVersion="1.1">
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
       <Set Name="SharedRuntime" MinVersion="1.1" />
-  </Sets>
-</Requirements>
+    </Sets>
+  </Requirements>
   <DefaultSettings>
     <SourceLocation DefaultValue="https://localhost:8000/taskpane.html" />
   </DefaultSettings>
@@ -81,9 +81,7 @@
                 </Control>
               </Group>
             </OfficeTab>
-          </ExtensionPoint>
-          <!-- Custom IBM Envizi tab -->
-          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <!-- Custom IBM Envizi tab -->
             <CustomTab id="EnviziTab">
               <!-- Group 1: Open Taskpane -->
               <Group id="TaskpaneGroup">
@@ -378,9 +376,9 @@
                   <Description resid="ActivityRecommendation.Tooltip" />
                 </Supertip>
                 <Icon>
-                  <bt:Image size="16" resid="Icon.16x16" />
-                  <bt:Image size="32" resid="Icon.32x32" />
-                  <bt:Image size="80" resid="Icon.80x80" />
+                  <bt:Image size="16" resid="ActRec.Icon.16x16"/>
+                  <bt:Image size="32" resid="ActRec.Icon.32x32"/>
+                  <bt:Image size="80" resid="ActRec.Icon.80x80"/>
                 </Icon>
                 <Action xsi:type="ExecuteFunction">
                   <FunctionName>actionShowActivityRecommendation</FunctionName>
