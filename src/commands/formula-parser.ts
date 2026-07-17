@@ -165,7 +165,7 @@ export async function parseFormulaParams(
     stateProvince: resolvedValues[2] || undefined,
     unit: resolvedValues[3] || undefined,
     scope: resolvedValues[4] || undefined,
-    date: convertExcelDateToISO(resolvedValues[5]) || undefined,
+    date: resolvedValues[5] ? convertExcelDateToISO(resolvedValues[5]) || undefined : undefined,
   };
 
   return params;
