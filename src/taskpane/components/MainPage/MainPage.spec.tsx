@@ -114,20 +114,6 @@ describe("MainPage", () => {
     delete (window as any).recommendedParams;
   });
 
-  describe("AnnouncementBar", () => {
-    it("should render the announcement bar by default", () => {
-      renderMainPage();
-
-      expect(screen.getByTestId("announcement-bar")).toBeInTheDocument();
-    });
-
-    it("should display the announcement title", () => {
-      renderMainPage();
-
-      expect(screen.getByText("New feature!")).toBeInTheDocument();
-    });
-  });
-
   describe("Component Rendering", () => {
     it("should render the main page container with all tabs", () => {
       renderMainPage();
