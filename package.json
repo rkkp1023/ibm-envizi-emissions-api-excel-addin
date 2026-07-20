@@ -110,6 +110,7 @@
     "ie 11"
   ],
   "resolutions": {
+    "adm-zip": "0.6.0",
     "http-proxy-middleware": ">=3.0.6",
     "@babel/core": "^7.29.6",
     "webpack-dev-server": ">=5.2.5",
