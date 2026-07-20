@@ -97,14 +97,37 @@ function buildLocation(
   return location;
 }
 
+/** Returns true when a numeric field should be included in the request payload. */
+function isValidValue(value: number | undefined | null | ""): boolean {
+  return value !== undefined && value !== null && value !== ("" as any) && value !== 0;
+}
+
+/**
+ * Builds a compact attribution object from an AttributionPayload,
+ * omitting any field that is undefined, null, or zero.
+ * Returns undefined when nothing would be included.
+ */
+function buildAttribution(attribution: AttributionPayload): AttributionPayload | undefined {
+  const result: AttributionPayload = {};
+  const keys = Object.keys(attribution) as (keyof AttributionPayload)[];
+
+  for (const key of keys) {
+    const val = attribution[key];
+    if (isValidValue(val)) {
+      (result as any)[key] = val;
+    }
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined;
+}
+
 function buildApiParams(apiType: ApiType, payload: Payload): any {
   const { value, unit, attribution } = payload;
 
-  // Extract unit symbol from display format
-  // "kilogram (kg)" → "kg" or "kg" → "kg"
+  // Extract unit symbol from display format: "kilogram (kg)" → "kg"
   const unitSymbol = unit ? extractSymbolFromDisplay(unit) : undefined;
 
-  const includeValue = apiType !== "economic_activity" || (value !== undefined && value !== null && value !== ("" as any) && value !== 0);
+  const includeValue = apiType !== "economic_activity" || isValidValue(value);
   const activity: any = {
     ...(includeValue ? { value } : {}),
     ...(unitSymbol ? { unit: unitSymbol } : {}),
@@ -123,37 +146,13 @@ function buildApiParams(apiType: ApiType, payload: Payload): any {
     if (location) apiParams.location = location;
 
     const formattedDate = payload.date?.trim() ? convertExcelDateToISO(payload.date) : null;
-    if (formattedDate) {
-      apiParams.time = { date: formattedDate };
-    }
+    if (formattedDate) apiParams.time = { date: formattedDate };
   }
 
   // Add attribution if provided (for real_estate, physical_activity, and economic_activity)
   if (attribution) {
-    const attributionObj: any = {};
-
-    if (attribution.outstandingAmount !== undefined && attribution.outstandingAmount !== null && attribution.outstandingAmount !== 0) {
-      attributionObj.outstandingAmount = attribution.outstandingAmount;
-    }
-    if (attribution.propertyValue !== undefined && attribution.propertyValue !== null && attribution.propertyValue !== 0) {
-      attributionObj.propertyValue = attribution.propertyValue;
-    }
-    if (attribution.totalEquity !== undefined && attribution.totalEquity !== null && attribution.totalEquity !== 0) {
-      attributionObj.totalEquity = attribution.totalEquity;
-    }
-    if (attribution.totalDebt !== undefined && attribution.totalDebt !== null && attribution.totalDebt !== 0) {
-      attributionObj.totalDebt = attribution.totalDebt;
-    }
-    if (attribution.evic !== undefined && attribution.evic !== null && attribution.evic !== 0) {
-      attributionObj.evic = attribution.evic;
-    }
-    if (attribution.revenue !== undefined && attribution.revenue !== null && attribution.revenue !== 0) {
-      attributionObj.revenue = attribution.revenue;
-    }
-
-    if (Object.keys(attributionObj).length > 0) {
-      apiParams.attribution = attributionObj;
-    }
+    const attributionObj = buildAttribution(attribution);
+    if (attributionObj) apiParams.attribution = attributionObj;
   }
 
   return apiParams;
