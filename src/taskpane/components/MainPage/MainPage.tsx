@@ -6,9 +6,8 @@ import { Tab, TabList } from "@fluentui/react-components";
 import { makeStyles } from "@griffel/react";
 import { useEffect, useRef, useState } from "react";
 
-import { getBuyNowUrl } from "../../../common/env";
+import { getMCPServerUrl } from "../../../common/env";
 import { AnnouncementBar, AnnouncementBarProps } from "../AnnouncementBar/AnnouncementBar";
-
 import { useActivityRecommender } from "../../context/ActivityRecommenderContext";
 import { useAccountSubscription, useCarbonTheme } from "../../hooks";
 import { AccountTab } from "../AccountTab/AccountTab";
@@ -44,12 +43,12 @@ const useStyles = makeStyles({
 
 const announcementConfig: AnnouncementBarProps = {
   title: "New feature!",
-  body: "Introducing the new Model Context Protocol (MCP) server. Leverage it with AI tools such as Claude to enhance insights, automate processes, and more. Click Learn more to begin.",
+  body: "The Model Context Protocol (MCP) server connects Envizi data to AI tools like Claude to enhance sustainability insights and automate emissions reporting.",
   intent: "info",
   actions: [
     {
-      label: "Learn more",
-      href: getBuyNowUrl(),
+      label: "Learn more about MCP",
+      href: getMCPServerUrl(),
     },
   ],
 };
@@ -59,7 +58,9 @@ export function MainPage() {
   const theme = useCarbonTheme();
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
   const [previousTab, setPreviousTab] = useState<TabValue>("quickHelp");
-  const [showAnnouncement, setShowAnnouncement] = useState<boolean>(true);
+  const [showAnnouncement, setShowAnnouncement] = useState<boolean>(
+    () => localStorage.getItem("showMcpBanner") === "true"
+  );
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
 
@@ -177,7 +178,15 @@ export function MainPage() {
           )}
         </TabList>
         <div className="tab-content">
-          {showAnnouncement && <AnnouncementBar {...announcementConfig} />}
+          {showAnnouncement && (
+            <AnnouncementBar
+              {...announcementConfig}
+              onDismiss={() => {
+                localStorage.setItem(announcementLocalStorageKey, "true");
+                setShowAnnouncement(false);
+              }}
+            />
+          )}
           {selectedTab === "quickHelp" && <QuickHelpTab />}
           {selectedTab === "resources" && <ResourcesTab />}
           {selectedTab === "account" && <AccountTab />}

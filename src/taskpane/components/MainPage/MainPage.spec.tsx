@@ -52,7 +52,15 @@ jest.mock("../ActivityTypeRecommenderContent/ActivityTypeRecommenderContent", ()
 }));
 
 jest.mock("../DismissibleTab/DismissibleTab", () => ({
-  DismissibleTab: ({ value, label, onDismiss }: { value: string; label: string; onDismiss: () => void }) => (
+  DismissibleTab: ({
+    value,
+    label,
+    onDismiss,
+  }: {
+    value: string;
+    label: string;
+    onDismiss: () => void;
+  }) => (
     <button role="tab" data-testid="dismissible-tab" data-value={value} onClick={onDismiss}>
       {label}
     </button>
@@ -116,9 +124,7 @@ describe("MainPage", () => {
     it("should display the announcement title", () => {
       renderMainPage();
 
-      expect(
-        screen.getByText("Great news! This add-in is now live.")
-      ).toBeInTheDocument();
+      expect(screen.getByText("New feature!")).toBeInTheDocument();
     });
   });
 

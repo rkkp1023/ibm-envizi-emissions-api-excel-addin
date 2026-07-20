@@ -104,6 +104,10 @@ export function getAccountUsageUrl(): string {
   return `${getEnviziApiHomeUrl()}/account-usage`;
 }
 
+export function getMCPServerUrl(): string {
+  return `${getEnviziApiHomeUrl()}/mcp-server`;
+}
+
 export function getEnviziUiOrigin(envType?: EnvType): string {
   const override = window.localStorage.getItem("enviziUiOrigin");
   return override || enviziUiOrigins[envType || getEnvType()];
