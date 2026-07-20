@@ -240,7 +240,7 @@ export function ActivityTypeRecommenderContent({
         <span>
           Top 30 recommendations for "<b>{localContext?.search}</b>"
         </span>
-        <Stack gap={3} orientation="horizontal">
+        <div className="tags-row">
           {localContext?.country && (
             <Tag size="md" title="Clear filter" type="blue">
               {localContext?.country}
@@ -251,7 +251,7 @@ export function ActivityTypeRecommenderContent({
               {localContext?.unit}
             </Tag>
           )}
-        </Stack>
+        </div>
       </div>
       <Button
         kind="ghost"

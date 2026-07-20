@@ -1,1 +1,1 @@
-ibm-envizi-emissions-api-excel-addin-internal semantic release rebuild 20260705-002616
+ibm-envizi-emissions-api-excel-addin-internal semantic release rebuild 20260717-081725
