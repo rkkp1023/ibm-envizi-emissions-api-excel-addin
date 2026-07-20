@@ -132,22 +132,22 @@ function buildApiParams(apiType: ApiType, payload: Payload): any {
   if (attribution) {
     const attributionObj: any = {};
 
-    if (attribution.outstandingAmount !== undefined && attribution.outstandingAmount !== null) {
+    if (attribution.outstandingAmount !== undefined && attribution.outstandingAmount !== null && attribution.outstandingAmount !== 0) {
       attributionObj.outstandingAmount = attribution.outstandingAmount;
     }
-    if (attribution.propertyValue !== undefined && attribution.propertyValue !== null) {
+    if (attribution.propertyValue !== undefined && attribution.propertyValue !== null && attribution.propertyValue !== 0) {
       attributionObj.propertyValue = attribution.propertyValue;
     }
-    if (attribution.totalEquity !== undefined && attribution.totalEquity !== null) {
+    if (attribution.totalEquity !== undefined && attribution.totalEquity !== null && attribution.totalEquity !== 0) {
       attributionObj.totalEquity = attribution.totalEquity;
     }
-    if (attribution.totalDebt !== undefined && attribution.totalDebt !== null) {
+    if (attribution.totalDebt !== undefined && attribution.totalDebt !== null && attribution.totalDebt !== 0) {
       attributionObj.totalDebt = attribution.totalDebt;
     }
-    if (attribution.evic !== undefined && attribution.evic !== null) {
+    if (attribution.evic !== undefined && attribution.evic !== null && attribution.evic !== 0) {
       attributionObj.evic = attribution.evic;
     }
-    if (attribution.revenue !== undefined && attribution.revenue !== null) {
+    if (attribution.revenue !== undefined && attribution.revenue !== null && attribution.revenue !== 0) {
       attributionObj.revenue = attribution.revenue;
     }
 
