@@ -102,7 +102,7 @@
     "typescript-eslint": "^8.0.0",
     "webpack": "^5.107.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "5.2.5"
+    "webpack-dev-server": "5.2.6"
   },
   "prettier": "office-addin-prettier-config",
   "browserslist": [
@@ -110,21 +110,23 @@
     "ie 11"
   ],
   "resolutions": {
-    "adm-zip": "0.6.0",
-    "brace-expansion": "5.0.7",
-    "http-proxy-middleware": ">=3.0.6",
     "@babel/core": "^7.29.6",
-    "webpack-dev-server": ">=5.2.5",
     "@grpc/grpc-js": ">=1.14.4",
     "@opentelemetry/core": ">=2.8.0",
     "@opentelemetry/exporter-prometheus": ">=0.217.0",
     "@opentelemetry/sdk-node": ">=0.217.0",
+    "@protobufjs/utf8": "^1.1.1",
+    "adm-zip": "0.6.0",
     "ajv": ">=8.18.0",
+    "axios": ">=1.18.0",
+    "body-parser": ">=1.20.6",
+    "brace-expansion": "5.0.7",
     "fast-uri": ">=3.1.2",
     "flatted": "^3.4.2",
     "follow-redirects": "^1.16.0",
     "form-data": "^4.0.6",
     "handlebars": "^4.7.9",
+    "http-proxy-middleware": ">=3.0.6",
     "js-yaml": ">=4.3.0",
     "json-bigint": "^1.0.0",
     "launch-editor": ">=2.14.1",
@@ -134,14 +136,13 @@
     "path-to-regexp": "^0.1.13",
     "postcss": "^8.5.12",
     "protobufjs": "^7.6.5",
-    "@protobufjs/utf8": "^1.1.1",
+    "qs": "^6.15.2",
     "shell-quote": ">=1.9.0",
     "test-exclude": "^7.0.1",
     "uuid": "^14.0.0",
     "websocket-driver": "0.7.5",
     "ws": "8.21.0",
     "xml2js": "^0.5.0",
-    "yaml": "^1.10.3",
-    "qs": "^6.15.2"
+    "yaml": "^1.10.3"
   }
 }
