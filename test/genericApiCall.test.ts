@@ -316,6 +316,20 @@ describe("genericApiCall", () => {
     );
   });
 
+  it("omits attribution entirely when all attribution fields are zero", async () => {
+    (RealEstate.calculate as jest.Mock).mockResolvedValueOnce(mockRealEstateResponse);
+    await genericApiCall("real_estate", {
+      value: 5000,
+      unit: "m2",
+      type: "Commercial",
+      country: "USA",
+      attribution: { outstandingAmount: 0, propertyValue: 0 },
+    });
+    expect(RealEstate.calculate).toHaveBeenCalledWith(
+      expect.not.objectContaining({ attribution: expect.anything() })
+    );
+  });
+
   it("includes attribution when at least one field is non-null", async () => {
     (RealEstate.calculate as jest.Mock).mockResolvedValueOnce(mockRealEstateResponse);
     await genericApiCall("real_estate", {
@@ -328,6 +342,140 @@ describe("genericApiCall", () => {
     expect(RealEstate.calculate).toHaveBeenCalledWith(
       expect.objectContaining({ attribution: { outstandingAmount: 1000000 } })
     );
+  });
+
+  it("includes attribution for economic_activity when fields are non-zero", async () => {
+    (EconomicActivity.calculate as jest.Mock).mockResolvedValueOnce(mockEconomicActivityResponse);
+    await genericApiCall("economic_activity", {
+      value: 0,
+      type: "Electricity",
+      country: "USA",
+      attribution: { outstandingAmount: 500000, totalEquity: 200000, totalDebt: 300000, evic: 1000000, revenue: 400000 },
+    });
+    expect(EconomicActivity.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        attribution: {
+          outstandingAmount: 500000,
+          totalEquity: 200000,
+          totalDebt: 300000,
+          evic: 1000000,
+          revenue: 400000,
+        },
+      })
+    );
+  });
+
+  it("includes attribution for physical_activity when fields are non-zero", async () => {
+    (PhysicalActivity.calculate as jest.Mock).mockResolvedValueOnce(mockPhysicalActivityResponse);
+    await genericApiCall("physical_activity", {
+      value: 100,
+      type: "Electricity",
+      country: "USA",
+      attribution: { outstandingAmount: 750000, totalEquity: 150000, totalDebt: 250000, evic: 900000 },
+    });
+    expect(PhysicalActivity.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        attribution: {
+          outstandingAmount: 750000,
+          totalEquity: 150000,
+          totalDebt: 250000,
+          evic: 900000,
+        },
+      })
+    );
+  });
+
+  it.each(["location", "calculation"] as const)(
+    "includes powerGrid in location params for %s api type",
+    async (apiType) => {
+      const mock = apiType === "location"
+        ? (Location.calculate as jest.Mock)
+        : (Calculation.calculate as jest.Mock);
+      mock.mockResolvedValueOnce(mockResponse);
+      await genericApiCall(apiType, {
+        value: 100,
+        unit: "kWh",
+        type: "Electricity",
+        country: "USA",
+        powerGrid: "USA - WECC",
+      });
+      expect(mock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          location: expect.objectContaining({ powerGrid: "USA - WECC" }),
+        })
+      );
+    }
+  );
+
+  it("ignores powerGrid for api types other than location and calculation", async () => {
+    (Stationary.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+    await genericApiCall("stationary", {
+      value: 100,
+      unit: "kWh",
+      type: "Natural Gas",
+      country: "USA",
+      powerGrid: "USA - WECC",
+    });
+    expect(Stationary.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        location: expect.not.objectContaining({ powerGrid: expect.anything() }),
+      })
+    );
+  });
+
+  it("omits time when date is empty", async () => {
+    (Location.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+    await genericApiCall("location", {
+      value: 100,
+      unit: "kWh",
+      type: "Electricity",
+      country: "USA",
+      date: "",
+    });
+    expect(Location.calculate).toHaveBeenCalledWith(
+      expect.not.objectContaining({ time: expect.anything() })
+    );
+  });
+
+  it("omits unit from activity when unit is not provided", async () => {
+    (Stationary.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+    await genericApiCall("stationary", {
+      value: 100,
+      type: "Natural Gas",
+      country: "USA",
+    });
+    expect(Stationary.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activity: expect.not.objectContaining({ unit: expect.anything() }),
+      })
+    );
+  });
+
+  it("uses 400 invalidValue error code when API responds with status 400", async () => {
+    const err: any = new Error("bad request");
+    err.status = 400;
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(err);
+    await expect(
+      genericApiCall("location", { value: 1, unit: "kg", type: "Electricity", country: "USA" })
+    ).rejects.toMatchObject({ code: "InvalidValue", message: "bad request" });
+  });
+
+  it("uses notAvailable error code for non-400 API errors", async () => {
+    const err: any = new Error("server error");
+    err.status = 500;
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(err);
+    await expect(
+      genericApiCall("location", { value: 1, unit: "kg", type: "Electricity", country: "USA" })
+    ).rejects.toMatchObject({ code: "NotAvailable", message: "server error" });
+  });
+
+  it("prefers error message from response.data.message when available", async () => {
+    const err: any = new Error("fallback");
+    err.response = { data: { message: "detailed API error" } };
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(err);
+    await expect(
+      genericApiCall("location", { value: 1, unit: "kg", type: "Electricity", country: "USA" })
+    ).rejects.toMatchObject({ message: "detailed API error" });
   });
 
   it.each([undefined, null, "" as any, 0])(
