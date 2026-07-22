@@ -53,13 +53,15 @@ const announcementConfig: AnnouncementBarProps = {
   ],
 };
 
+const announcementLocalStorageKey = "showMcpBanner";
+
 export function MainPage() {
   const styles = useStyles();
   const theme = useCarbonTheme();
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
   const [previousTab, setPreviousTab] = useState<TabValue>("quickHelp");
   const [showAnnouncement, setShowAnnouncement] = useState<boolean>(
-    () => localStorage.getItem("showMcpBanner") === "true"
+    () => localStorage.getItem(announcementLocalStorageKey) === "true"
   );
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
@@ -182,7 +184,7 @@ export function MainPage() {
             <AnnouncementBar
               {...announcementConfig}
               onDismiss={() => {
-                localStorage.setItem(announcementLocalStorageKey, "true");
+                localStorage.setItem(announcementLocalStorageKey, "false");
                 setShowAnnouncement(false);
               }}
             />

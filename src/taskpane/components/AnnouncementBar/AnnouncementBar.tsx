@@ -7,6 +7,7 @@ import {
   MessageBarBody,
   MessageBarTitle,
 } from "@fluentui/react-components";
+import { DismissRegular } from "@fluentui/react-icons";
 
 export type AnnouncementBarButtonAction = {
   label: string;
@@ -19,17 +20,22 @@ export interface AnnouncementBarProps {
   body: string;
   intent: "info" | "warning" | "error" | "success";
   actions: AnnouncementBarButtonAction[];
+  onDismiss?: () => void;
 }
 
-export function AnnouncementBar({ title, body, intent, actions }: Readonly<AnnouncementBarProps>) {
+export function AnnouncementBar({ title, body, intent, actions, onDismiss }: Readonly<AnnouncementBarProps>) {
   return (
     <MessageBar intent={intent} layout="multiline">
-      <MessageBarBody className="">
+      <MessageBarBody>
         <MessageBarTitle>{title}</MessageBarTitle>
         <p>{body}</p>
       </MessageBarBody>
 
-      <MessageBarActions>
+      <MessageBarActions
+        containerAction={
+          <Button aria-label="dismiss" appearance="transparent" icon={<DismissRegular />} onClick={onDismiss} />
+        }
+      >
         {actions.map((action) => (
           <Button
             key={action.href}
