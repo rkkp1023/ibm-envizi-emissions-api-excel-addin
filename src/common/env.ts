@@ -89,8 +89,8 @@ export function getEnvType(): EnvType {
   return window.envType;
 }
 
-export function getApiUrl(api: ApiId, envType?: EnvType) {
-  return apiUrls[api][envType || getEnvType()];
+export function getApiUrl(api: ApiId) {
+  return apiUrls[api][getEnvType()];
 }
 
 export function getEnviziTokenExchangeConfig(envType?: EnvType): {
