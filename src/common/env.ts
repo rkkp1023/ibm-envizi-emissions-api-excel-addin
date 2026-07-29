@@ -22,6 +22,24 @@ export const apiUrls: Record<ApiId, Record<EnvType, string>> = {
   },
 };
 
+export const enviziTokenExchangeConfigs: Record<
+  EnvType,
+  { tokenExchangeUrl: string; enviziTokenExchangeClientId: string }
+> = {
+  prod: {
+    tokenExchangeUrl: "https://api.ibm.com/saascore/bluerun/envizi-auth/exchange",
+    enviziTokenExchangeClientId: "f3d0be6fd3fb3d938b748fe18612cf92",
+  },
+  np: {
+    tokenExchangeUrl: "https://dev.api.ibm.com/saascore/bluetest/envizi-auth/exchange",
+    enviziTokenExchangeClientId: "c88b6c561e5e31425da9a31a87345f39",
+  },
+  local: {
+    tokenExchangeUrl: "https://dev.api.ibm.com/saascore/bluetest/envizi-auth/exchange",
+    enviziTokenExchangeClientId: "c88b6c561e5e31425da9a31a87345f39",
+  },
+};
+
 export const apiHomeUrls: Record<EnvType, string> = {
   prod: "https://www.app.ibm.com/envizi/emissions-api-home",
   np: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
@@ -71,8 +89,15 @@ export function getEnvType(): EnvType {
   return window.envType;
 }
 
-export function getApiUrl(api: ApiId, envType?: EnvType) {
-  return apiUrls[api][envType || getEnvType()];
+export function getApiUrl(api: ApiId) {
+  return apiUrls[api][getEnvType()];
+}
+
+export function getEnviziTokenExchangeConfig(envType?: EnvType): {
+  tokenExchangeUrl: string;
+  enviziTokenExchangeClientId: string;
+} {
+  return enviziTokenExchangeConfigs[envType || getEnvType()];
 }
 
 export function getApiHomeUrl(): string {

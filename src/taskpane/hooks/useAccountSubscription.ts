@@ -5,6 +5,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useMemo } from "react";
 
+import { getApiUrl } from "../../common/env";
 import { CoreToken } from "../../common/credentials";
 import { SubscriptionType } from "../types/product-subscriptions.types";
 import { useAuth } from "./useAuth";
@@ -42,7 +43,7 @@ export async function getAccountSubscriptionData(
     "X-IBM-Client-Id": `saascore-${tenantId}`,
   };
   const response = await axios.get<AccountSubscriptionData>(
-    `https://api.ibm.com/saascore/run/rolodex-registration/na/api/v1/organizations/${orgId}/ghgapiallotment`,
+    `${getApiUrl("saascore")}/rolodex-registration/na/api/v1/organizations/${orgId}/ghgapiallotment`,
     { headers }
   );
   let subscriptionType = subscriptionTypes[response.data.partNumber];

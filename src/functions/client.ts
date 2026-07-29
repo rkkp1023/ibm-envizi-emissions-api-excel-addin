@@ -20,8 +20,8 @@ async function getClientConfig(credentials?: Credentials): Promise<ClientConfig>
   const tenantId = decodedToken.tenantId;
 
   const config: ClientConfig = {
-    host: getApiUrl("ghgemissions", "prod"),
-    authUrl: `${getApiUrl("saascore", "prod")}/authentication-retrieve/api-key`,
+    host: getApiUrl("ghgemissions"),
+    authUrl: `${getApiUrl("saascore")}/authentication-retrieve/api-key`,
     clientId: tenantId,
     token: resolvedCredentials.coreToken,
     isExcelAddIn: true,
