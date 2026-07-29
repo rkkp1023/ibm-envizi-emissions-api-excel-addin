@@ -4,7 +4,7 @@
   xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
   xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>90ef193d-e53e-4f93-b280-39e2dc609661</Id>
-  <Version>1.2.3</Version>
+  <Version>1.2.4</Version>
   <ProviderName>IBM</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="IBM Envizi Emissions Calculations" />
@@ -370,20 +370,35 @@
           <!-- Context Menu for IBM Envizi Suggestions -->
           <ExtensionPoint xsi:type="ContextMenu">
             <OfficeMenu id="ContextMenuCell">
-              <Control xsi:type="Button" id="ActivityRecommendation">
-                <Label resid="ActivityRecommendation.Label" />
+              <Control xsi:type="Menu" id="EnviziRecommendations">
+                <Label resid="EnviziRecommendations.Label" />
                 <Supertip>
-                  <Title resid="ActivityRecommendation.Label" />
-                  <Description resid="ActivityRecommendation.Tooltip" />
+                  <Title resid="EnviziRecommendations.Label" />
+                  <Description resid="EnviziRecommendations.Tooltip" />
                 </Supertip>
                 <Icon>
                   <bt:Image size="16" resid="ActRec.Icon.16x16"/>
                   <bt:Image size="32" resid="ActRec.Icon.32x32"/>
                   <bt:Image size="80" resid="ActRec.Icon.80x80"/>
                 </Icon>
-                <Action xsi:type="ExecuteFunction">
-                  <FunctionName>actionShowActivityRecommendation</FunctionName>
-                </Action>
+                <Items>
+                  <Item id="ViewActivityRecommendations">
+                    <Label resid="ActivityRecommendation.Label" />
+                    <Supertip>
+                      <Title resid="ActivityRecommendation.Label" />
+                      <Description resid="ActivityRecommendation.Tooltip" />
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="ActRec.Icon.16x16"/>
+                      <bt:Image size="32" resid="ActRec.Icon.32x32"/>
+                      <bt:Image size="80" resid="ActRec.Icon.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ExecuteFunction">
+                      <FunctionName>actionShowActivityRecommendation</FunctionName>
+                    </Action>
+                    <Enabled>false</Enabled>
+                  </Item>
+                </Items>
               </Control>
             </OfficeMenu>
           </ExtensionPoint>
@@ -484,6 +499,7 @@
         <bt:String id="ActivityRecommendation.Label" DefaultValue="Activity recommendations" />
         <bt:String id="ActRec.Group.Label" DefaultValue="Activity recommendations" />
         <bt:String id="ActRec.Button.Label" DefaultValue="Activity recommendations" />
+        <bt:String id="EnviziRecommendations.Label" DefaultValue="Envizi Recommendations" />
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Seamlessly integrate emissions data into your workflows. Open the 'IBM Envizi Emissions Calculations' task pane to get started." />
@@ -504,6 +520,7 @@
         <bt:String id="Area.PowerGrid.Tooltip" DefaultValue="Insert validation for power grids" />
         <bt:String id="ActivityRecommendation.Tooltip" DefaultValue="Get activity type suggestions from IBM Envizi based on the selected cell value" />
         <bt:String id="ActRec.Button.Tooltip" DefaultValue="View recommendations" />
+        <bt:String id="EnviziRecommendations.Tooltip" DefaultValue="IBM Envizi recommendations for the selected cell" />
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

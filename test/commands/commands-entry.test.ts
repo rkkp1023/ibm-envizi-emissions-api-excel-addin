@@ -388,7 +388,10 @@ describe("updateActivityRecommendationButtonState", () => {
     await triggerSelectionChange(officeMock, fakeCtx);
 
     expect(contextMenuMock.requestUpdate).toHaveBeenCalledWith({
-      controls: [{ id: "ActivityRecommendation", enabled: true }],
+      controls: [
+        { id: "EnviziRecommendations", enabled: true },
+        { id: "ViewActivityRecommendations", enabled: true },
+      ],
     });
   });
 

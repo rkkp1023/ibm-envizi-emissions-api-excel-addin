@@ -195,7 +195,10 @@ async function updateActivityRecommendationButtonState(): Promise<void> {
     // Update context menu item (ContextMenuApi 1.1 — available from Office)
     if ((Office as any).contextMenu) {
       await (Office as any).contextMenu.requestUpdate({
-        controls: [{ id: "ActivityRecommendation", enabled: shouldEnable }],
+        controls: [
+          { id: "EnviziRecommendations", enabled: shouldEnable },
+          { id: "ViewActivityRecommendations", enabled: shouldEnable },
+        ],
       });
     }
 
