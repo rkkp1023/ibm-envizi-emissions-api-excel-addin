@@ -14,34 +14,32 @@ let dbPromise: Promise<IDBDatabase> | null = null;
  * only one `indexedDB.open()` request is ever in flight.
  */
 function openDb(): Promise<IDBDatabase> {
-  if (dbPromise === null) {
-    dbPromise = new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
+  dbPromise ??= new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-          db.createObjectStore(STORE_NAME);
-        }
-      };
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
 
-      request.onsuccess = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        // If another tab upgrades the database the browser fires versionchange,
-        // which closes the connection. Null out dbPromise so the next call
-        // re-opens a fresh connection instead of reusing a closed handle.
-        db.onversionchange = () => {
-          db.close();
-          dbPromise = null;
-        };
-        resolve(db);
+    request.onsuccess = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      // If another tab upgrades the database the browser fires versionchange,
+      // which closes the connection. Null out dbPromise so the next call
+      // re-opens a fresh connection instead of reusing a closed handle.
+      db.onversionchange = () => {
+        db.close();
+        dbPromise = null;
       };
-      request.onerror = (event) => {
-        dbPromise = null; // allow retry on next call
-        reject((event.target as IDBOpenDBRequest).error);
-      };
-    });
-  }
+      resolve(db);
+    };
+    request.onerror = (event) => {
+      dbPromise = null; // allow retry on next call
+      reject((event.target as IDBOpenDBRequest).error);
+    };
+  });
   return dbPromise;
 }
 
