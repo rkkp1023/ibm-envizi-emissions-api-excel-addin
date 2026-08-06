@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2025
+// Copyright IBM Corp. 2026
 
 const DB_NAME = "emissions-cache";
 const DB_VERSION = 1;
@@ -14,7 +14,7 @@ let dbPromise: Promise<IDBDatabase> | null = null;
  * only one `indexedDB.open()` request is ever in flight.
  */
 function openDb(): Promise<IDBDatabase> {
-  if (!dbPromise) {
+  if (dbPromise === null) {
     dbPromise = new Promise((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, DB_VERSION);
 
