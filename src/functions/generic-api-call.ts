@@ -163,7 +163,7 @@ function formatResponse(response: any, apiType: ApiType): (string | number)[][] 
   return [formatRow(response, apiType)];
 }
 
-export async function genericApiCall(apiType: ApiType, payload: Payload, _address?: string): Promise<any[][]> {
+export async function genericApiCall(apiType: ApiType, payload: Payload): Promise<any[][]> {
   const apiParams = buildApiParams(apiType, payload);
   const cacheKey = await buildCacheKey(apiType, apiParams);
 
