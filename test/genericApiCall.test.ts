@@ -21,6 +21,23 @@
   },
 };
 
+// ---------------------------------------------------------------------------
+// Mock result-cache so this test suite doesn't depend on IndexedDB / crypto.
+// Cache behaviour is tested independently in test/result-cache.test.ts.
+// ---------------------------------------------------------------------------
+const cacheStore = new Map<string, { payload: unknown; response: any[][] }>();
+
+jest.mock("../src/functions/result-cache", () => ({
+  buildCacheKey: jest.fn(async (_apiType: string, params: unknown) =>
+    JSON.stringify(params)
+  ),
+  getSnapshot: jest.fn(async (key: string) => cacheStore.get(key) ?? null),
+  setSnapshot: jest.fn(async (key: string, response: any[][]) => {
+    cacheStore.set(key, response);
+  }),
+  clearSnapshots: jest.fn(async () => { cacheStore.clear(); }),
+}));
+
 // Mock the utils module BEFORE imports
 jest.mock("../src/functions/utils", () => ({
   convertExcelDateToISO: jest.fn().mockReturnValue("2025-08-23"),
@@ -184,6 +201,24 @@ const apiCases: ApiCase[] = [
 describe("genericApiCall", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    cacheStore.clear();
+    // Re-apply mocked implementations cleared by jest.clearAllMocks()
+    const { buildCacheKey, getSnapshot, setSnapshot, clearSnapshots } =
+      jest.requireMock("../src/functions/result-cache");
+    (buildCacheKey as jest.Mock).mockImplementation(
+      async (_apiType: string, params: unknown) => JSON.stringify(params)
+    );
+    (getSnapshot as jest.Mock).mockImplementation(
+      async (key: string) => cacheStore.get(key) ?? null
+    );
+    (setSnapshot as jest.Mock).mockImplementation(
+      async (key: string, response: any[][]) => {
+        cacheStore.set(key, response);
+      }
+    );
+    (clearSnapshots as jest.Mock).mockImplementation(
+      async () => { cacheStore.clear(); }
+    );
     apiCases.forEach((c) => {
       let response = mockResponse;
       if (c.apiType === "real_estate") {
@@ -286,6 +321,58 @@ describe("genericApiCall", () => {
         country: "US",
       })
     ).rejects.toThrow("boom");
+  });
+
+  it("caches the formatted response after a successful call", async () => {
+    const { setSnapshot } = jest.requireMock("../src/functions/result-cache");
+    (Location.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+
+    await genericApiCall("location", {
+      value: 1,
+      unit: "kWh",
+      type: "Electricity",
+      country: "USA",
+    });
+
+    expect(setSnapshot).toHaveBeenCalledWith(
+      expect.any(String),   // cache key (hash)
+      expect.any(Array)     // formatted response
+    );
+  });
+
+  it("returns cached response when API fails and a cache entry exists", async () => {
+    const payload = {
+      value: 1,
+      unit: "kWh",
+      type: "Electricity",
+      country: "USA",
+    };
+    const previousValues = [[100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "desc", "txn-1"]];
+
+    // Prime the cache with a successful call, then override the stored response
+    (Location.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+    await genericApiCall("location", payload);
+    cacheStore.forEach((_v, k) => cacheStore.set(k, previousValues));
+
+    // Now make the API fail — the cached response should be returned
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(new Error("auth error"));
+
+    const result = await genericApiCall("location", payload);
+
+    expect(result).toEqual(previousValues);
+  });
+
+  it("throws when API fails and no cached result exists", async () => {
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(new Error("auth error"));
+
+    await expect(
+      genericApiCall("location", {
+        value: 1,
+        unit: "kWh",
+        type: "Electricity",
+        country: "USA",
+      })
+    ).rejects.toThrow("auth error");
   });
 
   it("omits attribution entirely when all attribution fields are null", async () => {

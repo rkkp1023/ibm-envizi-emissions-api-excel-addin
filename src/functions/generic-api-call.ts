@@ -14,6 +14,7 @@ import {
 
 import { ensureClient } from "./client";
 import { formatRow, FunctionNameType } from "./headers-config";
+import { buildCacheKey, getSnapshot, setSnapshot } from "./result-cache";
 import { convertExcelDateToISO, extractSymbolFromDisplay, extractValueAfterDash } from "./utils";
 
 type ApiType = Extract<
@@ -163,6 +164,9 @@ function formatResponse(response: any, apiType: ApiType): (string | number)[][] 
 }
 
 export async function genericApiCall(apiType: ApiType, payload: Payload): Promise<any[][]> {
+  const apiParams = buildApiParams(apiType, payload);
+  const cacheKey = await buildCacheKey(apiType, apiParams);
+
   try {
     await ensureClient();
 
@@ -174,7 +178,6 @@ export async function genericApiCall(apiType: ApiType, payload: Payload): Promis
       );
     }
 
-    const apiParams = buildApiParams(apiType, payload);
     const response = await apiFn(apiParams);
 
     if (!response || typeof response !== "object") {
@@ -184,8 +187,16 @@ export async function genericApiCall(apiType: ApiType, payload: Payload): Promis
       );
     }
 
-    return formatResponse(response, apiType);
+    const formatted = formatResponse(response, apiType);
+    await setSnapshot(cacheKey, formatted);
+
+    return formatted;
   } catch (e: any) {
+    const cached = await getSnapshot(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     if (e instanceof CustomFunctions.Error) throw e;
 
     const message = e?.response?.data?.message || e?.message || "Unknown error";
