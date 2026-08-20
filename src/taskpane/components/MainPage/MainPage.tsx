@@ -61,7 +61,7 @@ export function MainPage() {
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
   const [previousTab, setPreviousTab] = useState<TabValue>("quickHelp");
   const [showAnnouncement, setShowAnnouncement] = useState<boolean>(
-    () => localStorage.getItem(announcementLocalStorageKey) === "true"
+    () => localStorage.getItem(announcementLocalStorageKey) !== "false"
   );
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
