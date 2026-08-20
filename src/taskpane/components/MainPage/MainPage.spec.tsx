@@ -15,6 +15,12 @@ jest.mock("../../hooks", () => ({
   useCarbonTheme: jest.fn(),
 }));
 
+jest.mock("../../services/analyticsService", () => ({
+  analyticsService: {
+    setPartNumber: jest.fn(),
+  },
+}));
+
 jest.mock("../../../commands/taskPaneVisibility", () => ({
   getIsTaskpaneOpen: jest.fn(() => true),
 }));
@@ -76,6 +82,9 @@ jest.mock("../AnnouncementBar/AnnouncementBar", () => ({
 const mockedUseAccountSubscription = jest.mocked(useAccountSubscription);
 const mockedUseCarbonTheme = jest.mocked(useCarbonTheme);
 const mockedGetIsTaskpaneOpen = jest.mocked(getIsTaskpaneOpen);
+const { analyticsService: mockedAnalyticsService } = jest.requireMock(
+  "../../services/analyticsService"
+);
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -313,6 +322,43 @@ describe("MainPage", () => {
 
       expect(screen.getByTestId("activity-type-recommender")).toBeInTheDocument();
       expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Analytics - setPartNumber", () => {
+    it("should call analyticsService.setPartNumber with the subscription partNumber when data loads", () => {
+      mockedUseAccountSubscription.mockReturnValue({
+        data: {
+          subscriptionType: "paid",
+          partNumber: "D09SJZX",
+        },
+      } as unknown as ReturnType<typeof useAccountSubscription>);
+
+      renderMainPage();
+
+      expect(mockedAnalyticsService.setPartNumber).toHaveBeenCalledWith("D09SJZX");
+    });
+
+    it("should not call analyticsService.setPartNumber when partNumber is absent from data", () => {
+      mockedUseAccountSubscription.mockReturnValue({
+        data: {
+          subscriptionType: "paid",
+        },
+      } as unknown as ReturnType<typeof useAccountSubscription>);
+
+      renderMainPage();
+
+      expect(mockedAnalyticsService.setPartNumber).not.toHaveBeenCalled();
+    });
+
+    it("should not call analyticsService.setPartNumber when subscription data is undefined", () => {
+      mockedUseAccountSubscription.mockReturnValue({
+        data: undefined,
+      } as unknown as ReturnType<typeof useAccountSubscription>);
+
+      renderMainPage();
+
+      expect(mockedAnalyticsService.setPartNumber).not.toHaveBeenCalled();
     });
   });
 });
