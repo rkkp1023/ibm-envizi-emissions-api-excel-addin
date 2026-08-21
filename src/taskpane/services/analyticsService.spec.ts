@@ -69,7 +69,7 @@ describe("AnalyticsService", () => {
       const mockTrack = jest.fn();
       const service = new AnalyticsService();
       (service as any).isInitialized = true;
-      window.analytics = { track: mockTrack } as any;
+      window.analytics = { track: mockTrack, identify: jest.fn() } as any;
 
       await service.updateUserProfile();
 
@@ -80,7 +80,7 @@ describe("AnalyticsService", () => {
       const mockTrack = jest.fn();
       const service = new AnalyticsService();
       (service as any).isInitialized = true;
-      window.analytics = { track: mockTrack } as any;
+      window.analytics = { track: mockTrack, identify: jest.fn() } as any;
 
       await service.updateUserProfile();
       expect(mockTrack).not.toHaveBeenCalledWith("Service Login", expect.anything());
@@ -98,7 +98,7 @@ describe("AnalyticsService", () => {
       const mockTrack = jest.fn();
       const service = new AnalyticsService();
       (service as any).isInitialized = true;
-      window.analytics = { track: mockTrack } as any;
+      window.analytics = { track: mockTrack, identify: jest.fn() } as any;
 
       service.setPartNumber("D09SJZX");
       await service.updateUserProfile();
@@ -114,7 +114,7 @@ describe("AnalyticsService", () => {
       const mockTrack = jest.fn();
       const service = new AnalyticsService();
       (service as any).isInitialized = true;
-      window.analytics = { track: mockTrack } as any;
+      window.analytics = { track: mockTrack, identify: jest.fn() } as any;
 
       await service.updateUserProfile();
       service.setPartNumber("D09SJZX");
