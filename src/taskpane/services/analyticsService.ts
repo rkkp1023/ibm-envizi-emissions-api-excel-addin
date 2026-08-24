@@ -126,8 +126,8 @@ export class AnalyticsService {
   setPartNumber(partNumber: string): void {
     this.partNumber = partNumber;
     this.partNumberResolved = true;
-    if (window.digitalData?.page?.pageInfo?.segment?.commonProperties) {
-      window.digitalData.page.pageInfo.segment.commonProperties.partNumber = partNumber;
+    if (globalThis.digitalData?.page?.pageInfo?.segment?.commonProperties) {
+      globalThis.digitalData.page.pageInfo.segment.commonProperties.partNumber = partNumber;
     }
     this.flushServiceLogin();
   }
