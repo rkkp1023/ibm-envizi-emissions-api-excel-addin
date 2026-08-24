@@ -46,7 +46,7 @@ export async function factorHelper(
 
   const response = await Factor.retrieveFactor(apiParams);
 
-  if (!response || typeof response === "undefined") {
+  if (!response) {
     throw new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable, "Invalid API response");
   }
 

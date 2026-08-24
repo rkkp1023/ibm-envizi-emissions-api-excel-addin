@@ -16,7 +16,6 @@ import {
 } from "./commands";
 import { ActivityTypeOption, AreaTypeOption } from "./data-validation-manager";
 import { getParamsFromCell, isRecommendActivityTypeFormula } from "./formula-parser";
-import { getIsTaskpaneOpen } from "./taskPaneVisibility";
 
 declare global {
   interface Window {
@@ -56,12 +55,7 @@ function showErrorNotification(message: string): void {
         console.log("Notification dialog opened successfully");
         // Listen for close message from dialog
         result.value.addEventHandler(Office.EventType.DialogMessageReceived, () => {
-          try {
-            result.value.close();
-          } catch (e) {
-            // Dialog already closed, ignore
-            console.log("Dialog already closed");
-          }
+          result.value.close();
         });
       } else {
         // Dialog failed, but error is already in console
