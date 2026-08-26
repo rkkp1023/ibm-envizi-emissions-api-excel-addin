@@ -1,5 +1,12 @@
 // Copyright IBM Corp. 2026
 
+import { Client } from "emissions-api-sdk";
+import { jwtDecode } from "jwt-decode";
+
+import { loadCredentialsFromStorage } from "../common/credentials";
+import { getApiUrl } from "../common/env";
+import { ensureClient, resetClient } from "./client";
+
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
 jest.mock("emissions-api-sdk", () => ({
@@ -26,15 +33,6 @@ jest.mock("../common/env", () => ({
     return urls[api] ?? "https://api.ibm.com/unknown";
   }),
 }));
-
-// ─── Imports ──────────────────────────────────────────────────────────────────
-
-import { Client } from "emissions-api-sdk";
-import { jwtDecode } from "jwt-decode";
-
-import { loadCredentialsFromStorage } from "../common/credentials";
-import { getApiUrl } from "../common/env";
-import { ensureClient, resetClient } from "./client";
 
 // ─── Typed mock references ────────────────────────────────────────────────────
 
@@ -269,9 +267,7 @@ describe("client", () => {
     });
 
     it("should throw with a message prompting the user to enter credentials", async () => {
-      await expect(ensureClient()).rejects.toThrow(
-        "Enter your credentials in the task pane."
-      );
+      await expect(ensureClient()).rejects.toThrow("Enter your credentials in the task pane.");
     });
 
     it("should not call Client.getClient when credentials are missing", async () => {
