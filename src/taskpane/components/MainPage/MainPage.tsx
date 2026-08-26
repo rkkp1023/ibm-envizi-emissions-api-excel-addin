@@ -6,6 +6,8 @@ import { Tab, TabList } from "@fluentui/react-components";
 import { makeStyles } from "@griffel/react";
 import { useEffect, useRef, useState } from "react";
 
+import { analyticsService } from "../../services/analyticsService";
+
 import { getMCPServerUrl } from "../../../common/env";
 import { AnnouncementBar, AnnouncementBarProps } from "../AnnouncementBar/AnnouncementBar";
 import { useActivityRecommender } from "../../context/ActivityRecommenderContext";
@@ -65,6 +67,12 @@ export function MainPage() {
   );
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
+
+  useEffect(() => {
+    if (subscriptionInfo.data?.partNumber !== undefined) {
+      analyticsService.setPartNumber(subscriptionInfo.data.partNumber);
+    }
+  }, [subscriptionInfo.data?.partNumber]);
 
   const {
     activityRecommenderState,

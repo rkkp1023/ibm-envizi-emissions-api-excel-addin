@@ -64,6 +64,68 @@ describe("AnalyticsService", () => {
         email: "test@ibm.com",
       });
     });
+
+    it("should not fire Service Login immediately when partNumber is not yet set", async () => {
+      const mockTrack = jest.fn();
+      const service = new AnalyticsService();
+      (service as any).isInitialized = true;
+      window.analytics = { track: mockTrack, identify: jest.fn() } as any;
+
+      await service.updateUserProfile();
+
+      expect(mockTrack).not.toHaveBeenCalledWith("Service Login", expect.anything());
+    });
+
+    it("should fire Service Login once setPartNumber is called after updateUserProfile", async () => {
+      const mockTrack = jest.fn();
+      const service = new AnalyticsService();
+      (service as any).isInitialized = true;
+      window.analytics = { track: mockTrack, identify: jest.fn() } as any;
+
+      await service.updateUserProfile();
+      expect(mockTrack).not.toHaveBeenCalledWith("Service Login", expect.anything());
+
+      service.setPartNumber("D09SJZX");
+
+      expect(mockTrack).toHaveBeenCalledTimes(1);
+      expect(mockTrack).toHaveBeenCalledWith(
+        "Service Login",
+        expect.objectContaining({ partNumber: "D09SJZX", loginMethod: "UI" })
+      );
+    });
+
+    it("should fire Service Login immediately when partNumber is already set before updateUserProfile", async () => {
+      const mockTrack = jest.fn();
+      const service = new AnalyticsService();
+      (service as any).isInitialized = true;
+      window.analytics = { track: mockTrack, identify: jest.fn() } as any;
+
+      service.setPartNumber("D09SJZX");
+      await service.updateUserProfile();
+
+      expect(mockTrack).toHaveBeenCalledTimes(1);
+      expect(mockTrack).toHaveBeenCalledWith(
+        "Service Login",
+        expect.objectContaining({ partNumber: "D09SJZX", loginMethod: "UI" })
+      );
+    });
+
+    it("should fire Service Login only once even if setPartNumber is called multiple times", async () => {
+      const mockTrack = jest.fn();
+      const service = new AnalyticsService();
+      (service as any).isInitialized = true;
+      window.analytics = { track: mockTrack, identify: jest.fn() } as any;
+
+      await service.updateUserProfile();
+      service.setPartNumber("D09SJZX");
+      service.setPartNumber("D11IQZX");
+
+      expect(mockTrack).toHaveBeenCalledTimes(1);
+      expect(mockTrack).toHaveBeenCalledWith(
+        "Service Login",
+        expect.objectContaining({ partNumber: "D09SJZX" })
+      );
+    });
   });
 
   describe("trackUiInteraction", () => {
@@ -104,6 +166,7 @@ describe("AnalyticsService", () => {
         productCode: expect.any(String),
         productCodeType: expect.any(String),
         UT30: expect.any(String),
+        partNumber: "",
         source: window.location.origin,
         action: "Autotrack",
       });
@@ -153,6 +216,7 @@ describe("AnalyticsService", () => {
         productCode: expect.any(String),
         productCodeType: expect.any(String),
         UT30: expect.any(String),
+        partNumber: "",
         source: window.location.origin,
         action: "Autotrack",
         CTA: "custom-cta",
@@ -202,6 +266,7 @@ describe("AnalyticsService", () => {
         productCode: expect.any(String),
         productCodeType: expect.any(String),
         UT30: expect.any(String),
+        partNumber: "",
         source: window.location.origin,
         loginMethod: "UI",
       });
@@ -223,7 +288,87 @@ describe("AnalyticsService", () => {
       expect(callArgs[1]).toHaveProperty("productCode");
       expect(callArgs[1]).toHaveProperty("productCodeType");
       expect(callArgs[1]).toHaveProperty("UT30");
+      expect(callArgs[1]).toHaveProperty("partNumber", "");
       expect(callArgs[1]).toHaveProperty("loginMethod", "UI");
+    });
+  });
+
+  describe("setPartNumber", () => {
+    it("should update window.digitalData commonProperties with the given partNumber", () => {
+      const service = new AnalyticsService();
+
+      window.digitalData = {
+        page: {
+          pageInfo: {
+            segment: {
+              key: "test-key",
+              commonProperties: {
+                UT30: "30BZD",
+                instanceId: "inst-1",
+                productCode: "WW1171",
+                productCodeType: "WWPC",
+                productTitle: "IBM Envizi",
+                partNumber: "",
+              },
+            },
+          },
+        },
+      } as any;
+
+      service.setPartNumber("D09SJZX");
+
+      expect(window.digitalData.page.pageInfo.segment!.commonProperties!.partNumber).toBe(
+        "D09SJZX"
+      );
+    });
+
+    it("should not throw when window.digitalData is not present", () => {
+      const service = new AnalyticsService();
+      window.digitalData = undefined as any;
+
+      expect(() => service.setPartNumber("D09SJZX")).not.toThrow();
+    });
+
+    it("should include the partNumber in trackServiceLogin payload after setPartNumber is called", () => {
+      const mockTrack = jest.fn();
+      const service = new AnalyticsService();
+      (service as any).isInitialized = true;
+      window.analytics = { track: mockTrack } as any;
+
+      service.setPartNumber("D09SJZX");
+      service.trackServiceLogin();
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        "Service Login",
+        expect.objectContaining({ partNumber: "D09SJZX" })
+      );
+    });
+
+    it("should include the partNumber in trackUiInteraction payload after setPartNumber is called", () => {
+      const mockTrack = jest.fn();
+      const service = new AnalyticsService();
+      (service as any).isInitialized = true;
+      window.analytics = { track: mockTrack } as any;
+
+      service.setPartNumber("D11IQZX");
+      service.trackUiInteraction({ CTA: "test-button" });
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        "UI Interaction",
+        expect.objectContaining({ partNumber: "D11IQZX" })
+      );
+    });
+
+    it("should send empty string partNumber in payload before setPartNumber is called", () => {
+      const mockTrack = jest.fn();
+      const service = new AnalyticsService();
+      (service as any).isInitialized = true;
+      window.analytics = { track: mockTrack } as any;
+
+      service.trackServiceLogin();
+
+      const payload = mockTrack.mock.calls[0][1];
+      expect(payload).toHaveProperty("partNumber", "");
     });
   });
 });
