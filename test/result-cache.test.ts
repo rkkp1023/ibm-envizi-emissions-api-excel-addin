@@ -1,5 +1,7 @@
 // Copyright IBM Corp. 2025
 
+import { buildCacheKey, clearSnapshots, getSnapshot, hashInput, setSnapshot } from "../src/functions/result-cache";
+
 // ---------------------------------------------------------------------------
 // IndexedDB fake
 // ---------------------------------------------------------------------------
@@ -88,11 +90,6 @@ Object.defineProperty(global.crypto, "subtle", {
 if (typeof (global as any).TextEncoder === "undefined") {
   (global as any).TextEncoder = require("util").TextEncoder;
 }
-
-// ---------------------------------------------------------------------------
-// Imports (after globals are set up)
-// ---------------------------------------------------------------------------
-import { buildCacheKey, clearSnapshots, getSnapshot, hashInput, setSnapshot } from "../src/functions/result-cache";
 
 beforeEach(() => {
   jest.clearAllMocks();

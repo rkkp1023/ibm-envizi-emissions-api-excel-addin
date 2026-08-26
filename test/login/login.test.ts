@@ -1,6 +1,7 @@
 // Copyright IBM Corp. 2026
 
-// ─── Module mocks (must be declared before any imports) ──────────────────────
+import { coreEnviziAuth } from "../../src/api/coreEnviziAuth";
+import { getEnvType } from "../../src/common/env";
 
 jest.mock("../../src/api/coreEnviziAuth", () => ({
   coreEnviziAuth: {
@@ -19,11 +20,6 @@ jest.mock("../../src/common/env", () => ({
     return origins[env] ?? origins["local"];
   }),
 }));
-
-// ─── Imports of mocked modules ────────────────────────────────────────────────
-
-import { coreEnviziAuth } from "../../src/api/coreEnviziAuth";
-import { getEnvType } from "../../src/common/env";
 
 // ─── Typed mock references ────────────────────────────────────────────────────
 

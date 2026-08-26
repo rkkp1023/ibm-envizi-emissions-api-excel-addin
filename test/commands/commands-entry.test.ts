@@ -1,5 +1,18 @@
 // Copyright IBM Corp. 2026
 
+import { getEnvType } from "../../src/common/env";
+import { analyticsService } from "../../src/taskpane/services/analyticsService";
+import {
+  handleInsertActivityTypes,
+  handleInsertArea,
+  handleInsertUnits,
+  openTaskpane,
+} from "../../src/commands/commands";
+import {
+  getParamsFromCell,
+  isRecommendActivityTypeFormula,
+} from "../../src/commands/formula-parser";
+
 jest.mock("../../src/common/env", () => ({
   getEnvType: jest.fn(() => "local"),
 }));
@@ -25,21 +38,6 @@ jest.mock("../../src/commands/formula-parser", () => ({
 jest.mock("../../src/commands/taskPaneVisibility", () => ({
   getIsTaskpaneOpen: jest.fn(() => false),
 }));
-
-// ─── Imports of mocked modules (used to cast & configure in tests) ────────────
-
-import { getEnvType } from "../../src/common/env";
-import { analyticsService } from "../../src/taskpane/services/analyticsService";
-import {
-  handleInsertActivityTypes,
-  handleInsertArea,
-  handleInsertUnits,
-  openTaskpane,
-} from "../../src/commands/commands";
-import {
-  getParamsFromCell,
-  isRecommendActivityTypeFormula,
-} from "../../src/commands/formula-parser";
 
 // ─── Typed mock references ────────────────────────────────────────────────────
 

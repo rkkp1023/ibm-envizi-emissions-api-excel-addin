@@ -1,5 +1,21 @@
 // Copyright IBM Corp. 2025
 
+import {
+  Calculation,
+  EconomicActivity,
+  Fugitive,
+  Location,
+  Mobile,
+  PhysicalActivity,
+  RealEstate,
+  Stationary,
+  TransportationAndDistribution,
+} from "emissions-api-sdk";
+
+import { ensureClient } from "../src/functions/client";
+import { genericApiCall } from "../src/functions/generic-api-call";
+import { convertExcelDateToISO } from "../src/functions/utils";
+
 (global as any).CustomFunctions = {
   Error: class extends Error {
     code: string;
@@ -38,7 +54,6 @@ jest.mock("../src/functions/result-cache", () => ({
   clearSnapshots: jest.fn(async () => { cacheStore.clear(); }),
 }));
 
-// Mock the utils module BEFORE imports
 jest.mock("../src/functions/utils", () => ({
   convertExcelDateToISO: jest.fn().mockReturnValue("2025-08-23"),
   extractSymbolFromDisplay: jest.fn((value) => {
@@ -53,22 +68,6 @@ jest.mock("../src/functions/utils", () => ({
 jest.mock("../src/functions/client", () => ({
   ensureClient: jest.fn().mockResolvedValue(undefined),
 }));
-
-import {
-  Calculation,
-  EconomicActivity,
-  Fugitive,
-  Location,
-  Mobile,
-  PhysicalActivity,
-  RealEstate,
-  Stationary,
-  TransportationAndDistribution,
-} from "emissions-api-sdk";
-
-import { ensureClient } from "../src/functions/client";
-import { genericApiCall } from "../src/functions/generic-api-call";
-import { convertExcelDateToISO } from "../src/functions/utils";
 
 // Mock Emission classes
 jest.mock("emissions-api-sdk", () => {

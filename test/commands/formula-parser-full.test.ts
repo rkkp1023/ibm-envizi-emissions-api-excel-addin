@@ -1,11 +1,5 @@
 // Copyright IBM Corp. 2026
 
-// convertExcelDateToISO is a passthrough so date formatting doesn't interfere.
-jest.mock("../../src/functions/utils", () => ({
-  ...jest.requireActual("../../src/functions/utils"),
-  convertExcelDateToISO: jest.fn((d: string) => d),
-}));
-
 import {
   extractCellReferences,
   extractParameterCellAddresses,
@@ -14,6 +8,12 @@ import {
   parseFormulaParams,
   readCellValues,
 } from "../../src/commands/formula-parser";
+
+// convertExcelDateToISO is a passthrough so date formatting doesn't interfere.
+jest.mock("../../src/functions/utils", () => ({
+  ...jest.requireActual("../../src/functions/utils"),
+  convertExcelDateToISO: jest.fn((d: string) => d),
+}));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -72,7 +72,9 @@ function buildGetParamsContext({
   };
 
   const worksheet = {
-    getRange: jest.fn((ref: string) => ranges[ref] ?? { load: jest.fn(), values: [[""]], formulas: [[""]] }),
+    getRange: jest.fn(
+      (ref: string) => ranges[ref] ?? { load: jest.fn(), values: [[""]], formulas: [[""]] }
+    ),
   };
 
   return {
@@ -93,34 +95,26 @@ describe("formula-parser", () => {
   describe("isRecommendActivityTypeFormula", () => {
     describe("returns true", () => {
       it("should detect the exact formula string", () => {
-        expect(
-          isRecommendActivityTypeFormula("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1)")
-        ).toBe(true);
+        expect(isRecommendActivityTypeFormula("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1)")).toBe(true);
       });
 
       it("should be case-insensitive for the formula name", () => {
-        expect(
-          isRecommendActivityTypeFormula("=envizi.recommend_activity_type(A1,B1)")
-        ).toBe(true);
+        expect(isRecommendActivityTypeFormula("=envizi.recommend_activity_type(A1,B1)")).toBe(true);
       });
 
       it("should be case-insensitive for mixed casing", () => {
-        expect(
-          isRecommendActivityTypeFormula("=Envizi.Recommend_Activity_Type(A1,B1)")
-        ).toBe(true);
+        expect(isRecommendActivityTypeFormula("=Envizi.Recommend_Activity_Type(A1,B1)")).toBe(true);
       });
 
       it("should match when formula has leading/trailing whitespace", () => {
-        expect(
-          isRecommendActivityTypeFormula("  =ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1)  ")
-        ).toBe(true);
+        expect(isRecommendActivityTypeFormula("  =ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1)  ")).toBe(
+          true
+        );
       });
 
       it("should match a full 6-argument formula", () => {
         expect(
-          isRecommendActivityTypeFormula(
-            "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1,C1,D1,E1,F1)"
-          )
+          isRecommendActivityTypeFormula("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1,C1,D1,E1,F1)")
         ).toBe(true);
       });
     });
@@ -135,15 +129,11 @@ describe("formula-parser", () => {
       });
 
       it("should return false for a different ENVIZI formula", () => {
-        expect(
-          isRecommendActivityTypeFormula("=ENVIZI.LOCATION(A1,B1)")
-        ).toBe(false);
+        expect(isRecommendActivityTypeFormula("=ENVIZI.LOCATION(A1,B1)")).toBe(false);
       });
 
       it("should return false when the opening parenthesis is missing", () => {
-        expect(
-          isRecommendActivityTypeFormula("=ENVIZI.RECOMMEND_ACTIVITY_TYPE")
-        ).toBe(false);
+        expect(isRecommendActivityTypeFormula("=ENVIZI.RECOMMEND_ACTIVITY_TYPE")).toBe(false);
       });
 
       it("should return false for null input", () => {
@@ -164,9 +154,11 @@ describe("formula-parser", () => {
 
   describe("extractCellReferences", () => {
     it("should extract simple cell references", () => {
-      expect(
-        extractCellReferences("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B2,C3)")
-      ).toEqual(["A1", "B2", "C3"]);
+      expect(extractCellReferences("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B2,C3)")).toEqual([
+        "A1",
+        "B2",
+        "C3",
+      ]);
     });
 
     it("should extract absolute cell references with $ prefix", () => {
@@ -217,9 +209,7 @@ describe("formula-parser", () => {
     });
 
     it("should extract 2-argument formula (search + country)", () => {
-      const result = extractParameterCellAddresses(
-        "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(B7,H7)"
-      );
+      const result = extractParameterCellAddresses("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(B7,H7)");
       expect(result.searchCell).toBe("B7");
       expect(result.countryCell).toBe("H7");
       expect(result.stateProvinceCell).toBeUndefined();
@@ -237,9 +227,7 @@ describe("formula-parser", () => {
     });
 
     it("should handle absolute references ($A$1)", () => {
-      const result = extractParameterCellAddresses(
-        "=ENVIZI.RECOMMEND_ACTIVITY_TYPE($A$1,$B$1)"
-      );
+      const result = extractParameterCellAddresses("=ENVIZI.RECOMMEND_ACTIVITY_TYPE($A$1,$B$1)");
       expect(result.searchCell).toBe("$A$1");
       expect(result.countryCell).toBe("$B$1");
     });
@@ -311,10 +299,7 @@ describe("formula-parser", () => {
   describe("parseFormulaParams", () => {
     it("should parse a 2-argument formula (search + country)", async () => {
       const ctx = buildFakeContext({ B7: "electricity", H7: "USA" });
-      const result = await parseFormulaParams(
-        "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(B7,H7)",
-        ctx
-      );
+      const result = await parseFormulaParams("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(B7,H7)", ctx);
       expect(result.search).toBe("electricity");
       expect(result.country).toBe("USA");
       expect(result.stateProvince).toBeUndefined();
@@ -356,27 +341,21 @@ describe("formula-parser", () => {
 
     it("should default country to USA when country cell is empty", async () => {
       const ctx = buildFakeContext({ A1: "coal", B1: "" });
-      const result = await parseFormulaParams(
-        "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1)",
-        ctx
-      );
+      const result = await parseFormulaParams("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1)", ctx);
       expect(result.country).toBe("USA");
     });
 
     it("should set stateProvince to undefined when the cell is empty", async () => {
       const ctx = buildFakeContext({ A1: "coal", B1: "AUS", C1: "" });
-      const result = await parseFormulaParams(
-        "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1,C1)",
-        ctx
-      );
+      const result = await parseFormulaParams("=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1,C1)", ctx);
       expect(result.stateProvince).toBeUndefined();
     });
 
     it("should throw when the formula has no parentheses", async () => {
       const ctx = buildFakeContext({});
-      await expect(
-        parseFormulaParams("=ENVIZI.RECOMMEND_ACTIVITY_TYPE", ctx)
-      ).rejects.toThrow("Invalid formula");
+      await expect(parseFormulaParams("=ENVIZI.RECOMMEND_ACTIVITY_TYPE", ctx)).rejects.toThrow(
+        "Invalid formula"
+      );
     });
 
     it("should throw when the formula is empty", async () => {
