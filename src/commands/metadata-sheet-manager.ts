@@ -347,15 +347,13 @@ export async function createNamedRanges(): Promise<void> {
           columnsToCheck.push({ name: rangeName, columnIndex: col });
         }
 
-        // Areas
+        // Areas and units
         columnsToCheck.push(
           { name: "Area_Country", columnIndex: columnMapping.countries },
           { name: "Area_StateProvince", columnIndex: columnMapping.stateProvinces },
-          { name: "Area_PowerGrid", columnIndex: columnMapping.powerGrids }
+          { name: "Area_PowerGrid", columnIndex: columnMapping.powerGrids },
+          { name: "Units_All", columnIndex: columnMapping.units }
         );
-
-        // Units
-        columnsToCheck.push({ name: "Units_All", columnIndex: columnMapping.units });
 
         // Load all first cells in one batch
         const firstCells = columnsToCheck.map(({ columnIndex }) => {

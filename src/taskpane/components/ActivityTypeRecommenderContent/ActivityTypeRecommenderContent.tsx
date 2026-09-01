@@ -69,11 +69,11 @@ export function ActivityTypeRecommenderContent({
 
     // Modify search submit resolved
     if (pendingSearch) {
-      if (!isEmpty) {
+      if (isEmpty) {
+        setShowNoResultsNotification(true);
+      } else {
         setShowModifySearch(false);
         setShowNoResultsNotification(false);
-      } else {
-        setShowNoResultsNotification(true);
       }
       setPendingSearch(false);
     }

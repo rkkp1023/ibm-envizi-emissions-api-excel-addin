@@ -16,6 +16,7 @@ export interface SegmentProperties {
   productCode?: string;
   productCodeType?: string;
   UT30?: string;
+  partNumber?: string;
   accountId?: string;
   instanceId?: string;
   resultValue?: string;
@@ -29,6 +30,9 @@ export interface SegmentProperties {
 
 export class AnalyticsService {
   private isInitialized = false;
+  private partNumber = "";
+  private partNumberResolved = false;
+  private serviceLoginPending = false;
 
   async initialize(): Promise<void> {
     if (this.isInitialized) {
@@ -81,6 +85,7 @@ export class AnalyticsService {
               productCodeType: enviziProductInfo.productCodeType,
               productTitle: enviziProductInfo.productTitle,
               instanceId: enviziProductInfo.productId, // TODO: need to replace productId with accountId or organizationId
+              partNumber: "",
             },
             pageProperties: {
               productCode: enviziProductInfo.productCode,
@@ -106,6 +111,7 @@ export class AnalyticsService {
 
   /**
    * Updates the analytics user profile by fetching user status from IDSaaS.
+   * Defers the Service Login event until the partNumber is available.
    */
   async updateUserProfile(): Promise<void> {
     const userStatus = await idaasApi.getUserStatus();
@@ -113,7 +119,24 @@ export class AnalyticsService {
     const traits = { email: userStatus.user };
     console.log("Analytics identify:", userId, traits);
     window.analytics?.identify(userId, traits);
-    this.trackServiceLogin();
+    this.serviceLoginPending = true;
+    this.flushServiceLogin();
+  }
+
+  setPartNumber(partNumber: string): void {
+    this.partNumber = partNumber;
+    this.partNumberResolved = true;
+    if (globalThis.digitalData?.page?.pageInfo?.segment?.commonProperties) {
+      globalThis.digitalData.page.pageInfo.segment.commonProperties.partNumber = partNumber;
+    }
+    this.flushServiceLogin();
+  }
+
+  private flushServiceLogin(): void {
+    if (this.serviceLoginPending && this.partNumberResolved) {
+      this.serviceLoginPending = false;
+      this.trackServiceLogin();
+    }
   }
 
   trackUiInteraction(properties?: SegmentProperties): void {
@@ -146,6 +169,7 @@ export class AnalyticsService {
       productCode: enviziProductInfo.productCode,
       productCodeType: enviziProductInfo.productCodeType,
       UT30: enviziProductInfo.UT30,
+      partNumber: this.partNumber,
       source: window.location.origin,
       ...properties,
     };

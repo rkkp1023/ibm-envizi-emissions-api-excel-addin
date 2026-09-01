@@ -3,6 +3,8 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
+import { readMetadataFromSheet } from "../../../commands/metadata-sheet-manager";
+import { fetchAreaMetadata, fetchUnitMetadata } from "../../../commands/metadata-service";
 import ActivityTypeRecommenderModifySearch from "./ActivityTypeRecommenderModifySearch";
 import type { ActivityTypeRecomenderContext } from "../MainPage/MainPage";
 
@@ -35,9 +37,6 @@ jest.mock("../../../commands/metadata-service", () => ({
   fetchAreaMetadata: jest.fn(),
   fetchUnitMetadata: jest.fn(),
 }));
-
-import { readMetadataFromSheet } from "../../../commands/metadata-sheet-manager";
-import { fetchAreaMetadata, fetchUnitMetadata } from "../../../commands/metadata-service";
 
 const mockReadMetadataFromSheet = readMetadataFromSheet as jest.Mock;
 const mockFetchAreaMetadata = fetchAreaMetadata as jest.Mock;

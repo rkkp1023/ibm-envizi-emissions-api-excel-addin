@@ -1,12 +1,12 @@
 // Copyright IBM Corp. 2026
 
+import { parseFormulaParams } from "../../src/commands/formula-parser";
+
 // convertExcelDateToISO is a passthrough mock so date formatting is transparent.
 jest.mock("../../src/functions/utils", () => ({
   ...jest.requireActual("../../src/functions/utils"),
   convertExcelDateToISO: jest.fn((d: string) => d),
 }));
-
-import { parseFormulaParams } from "../../src/commands/formula-parser";
 
 /**
  * Builds a minimal fake Excel.RequestContext whose active worksheet returns

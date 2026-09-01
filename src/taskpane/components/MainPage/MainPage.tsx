@@ -6,6 +6,8 @@ import { Tab, TabList } from "@fluentui/react-components";
 import { makeStyles } from "@griffel/react";
 import { useEffect, useRef, useState } from "react";
 
+import { analyticsService } from "../../services/analyticsService";
+
 import { getMCPServerUrl } from "../../../common/env";
 import { AnnouncementBar, AnnouncementBarProps } from "../AnnouncementBar/AnnouncementBar";
 import { useActivityRecommender } from "../../context/ActivityRecommenderContext";
@@ -61,10 +63,16 @@ export function MainPage() {
   const [selectedTab, setSelectedTab] = useState<TabValue>("quickHelp");
   const [previousTab, setPreviousTab] = useState<TabValue>("quickHelp");
   const [showAnnouncement, setShowAnnouncement] = useState<boolean>(
-    () => localStorage.getItem(announcementLocalStorageKey) === "true"
+    () => localStorage.getItem(announcementLocalStorageKey) !== "false"
   );
   const subscriptionInfo = useAccountSubscription();
   const shouldShowTrialCountHeader = subscriptionInfo.data?.subscriptionType === "trial";
+
+  useEffect(() => {
+    if (subscriptionInfo.data?.partNumber !== undefined) {
+      analyticsService.setPartNumber(subscriptionInfo.data.partNumber);
+    }
+  }, [subscriptionInfo.data?.partNumber]);
 
   const {
     activityRecommenderState,
@@ -99,18 +107,18 @@ export function MainPage() {
       setRecommendedParams(recommendedParams);
 
       const wasAlreadyOpen = getIsTaskpaneOpen();
-      if (!wasAlreadyOpen) {
-        setActivityRecommenderState("standalone");
-        openTaskpane().catch((error) => {
-          console.error("Failed to open taskpane:", error);
-        });
-      } else {
+      if (wasAlreadyOpen) {
         // Task pane was already open.
         // Only promote to "dismissable" when no recommender session is active;
         // keep "standalone" unchanged.
         if (activityRecommenderStateRef.current === undefined) {
           setActivityRecommenderState("dismissable");
         }
+      } else {
+        setActivityRecommenderState("standalone");
+        openTaskpane().catch((error) => {
+          console.error("Failed to open taskpane:", error);
+        });
       }
     };
 
