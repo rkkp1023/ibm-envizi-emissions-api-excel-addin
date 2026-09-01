@@ -30,7 +30,6 @@ export function DismissibleTab({ value, icon, label, onDismiss }: Readonly<Dismi
         {icon}
         <span className="dismissible-tab-label">{label}</span>
         <span
-          role="button"
           tabIndex={0}
           aria-label="Close tab"
           className="dismissible-tab-close"

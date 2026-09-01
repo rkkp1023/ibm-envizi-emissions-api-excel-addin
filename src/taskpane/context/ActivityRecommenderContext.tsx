@@ -1,14 +1,15 @@
 // Copyright IBM Corp. 2026
 
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { FormulaParams } from "../../commands/formula-parser";
 
 type ActivityRecommenderState = undefined | "dismissable" | "standalone";
 
 interface ActivityRecommenderContextType {
   activityRecommenderState: ActivityRecommenderState | undefined;
   setActivityRecommenderState: (state: ActivityRecommenderState | undefined) => void;
-  recommendedParams: any | undefined;
-  setRecommendedParams: (params: any | undefined) => void;
+  recommendedParams: FormulaParams | undefined;
+  setRecommendedParams: (params: FormulaParams | undefined) => void;
 }
 
 export const ActivityRecommenderContext = createContext<ActivityRecommenderContextType | undefined>(
@@ -19,14 +20,17 @@ export function ActivityRecommenderProvider({ children }: Readonly<{ children: R
   const [activityRecommenderState, setActivityRecommenderState] = useState<
     ActivityRecommenderState | undefined
   >(undefined);
-  const [recommendedParams, setRecommendedParams] = useState<any | undefined>(undefined);
+  const [recommendedParams, setRecommendedParams] = useState<FormulaParams | undefined>(undefined);
 
-  const value: ActivityRecommenderContextType = {
-    activityRecommenderState,
-    setActivityRecommenderState,
-    recommendedParams,
-    setRecommendedParams,
-  };
+  const value = useMemo<ActivityRecommenderContextType>(
+    () => ({
+      activityRecommenderState,
+      setActivityRecommenderState,
+      recommendedParams,
+      setRecommendedParams,
+    }),
+    [activityRecommenderState, recommendedParams]
+  );
 
   return <ActivityRecommenderContext value={value}>{children}</ActivityRecommenderContext>;
 }
