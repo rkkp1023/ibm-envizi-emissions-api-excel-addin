@@ -10,6 +10,7 @@ import {
   METADATA_SHEET_NAME,
   metadataSheetExists,
   needsMetadataRefresh,
+  readMetadataFromSheet,
   writeMetadataToSheet,
 } from "../../src/commands/metadata-sheet-manager";
 
@@ -86,18 +87,38 @@ const mockCustomProperty = {
   context: {},
 };
 
+// A second named range mock for getRange().getUsedRange() chaining used in readMetadataFromSheet
+const mockUsedRange = {
+  address: "'_EnviziMetadata'!J:J",
+  values: [["USA(United States)"], ["CAN(Canada)"]],
+  load: jest.fn(),
+};
+
 describe("metadata-sheet-manager", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSheet.isNullObject = false;
+    mockRange.isNullObject = false;
+    mockNamedRange.isNullObject = false;
+    mockCustomProperty.isNullObject = false;
+    mockCustomProperty.value = JSON.stringify({
+      lastRefreshTimestamp: new Date().toISOString(),
+      sheetExists: true,
+    });
     mockContext.workbook.worksheets.getItemOrNullObject.mockReturnValue(mockSheet);
     mockContext.workbook.names.getItemOrNullObject.mockReturnValue(mockNamedRange);
     mockContext.workbook.properties.custom.getItemOrNullObject.mockReturnValue(mockCustomProperty);
     mockSheet.getUsedRangeOrNullObject.mockReturnValue(mockRange);
     mockSheet.getRangeByIndexes.mockReturnValue(mockRange);
     mockSheet.getRange.mockReturnValue(mockRange);
-    mockNamedRange.getRange.mockReturnValue(mockRange);
+    // readMetadataFromSheet: namedRange.getRange().getUsedRange(true)
+    mockNamedRange.getRange.mockReturnValue({
+      getUsedRange: jest.fn().mockReturnValue(mockUsedRange),
+    });
     mockRange.load.mockReturnValue(mockRange);
     mockCustomProperty.load.mockReturnValue(mockCustomProperty);
+    mockUsedRange.load.mockReturnValue(mockUsedRange);
+    mockUsedRange.values = [["USA(United States)"], ["CAN(Canada)"]];
   });
 
   describe("metadataSheetExists", () => {
@@ -293,6 +314,120 @@ describe("metadata-sheet-manager", () => {
     });
   });
 
+  // ── setMetadataState branches (exercised via writeMetadataToSheet) ─────────
+
+  describe("setMetadataState branches", () => {
+    const minimalMetadata: CompleteMetadata = {
+      activityTypes: {},
+      areas: { countries: [], stateProvinces: [], powerGrids: [] },
+      units: { units: [] },
+      timestamp: "2026-01-01T00:00:00.000Z",
+    };
+
+    it("should update an existing custom property when stateProperty.isNullObject is false", async () => {
+      mockCustomProperty.isNullObject = false;
+
+      await writeMetadataToSheet(minimalMetadata);
+
+      // update path: add() must NOT be called
+      expect(mockContext.workbook.properties.custom.add).not.toHaveBeenCalled();
+    });
+
+    it("should add a new custom property when stateProperty.isNullObject is true", async () => {
+      mockCustomProperty.isNullObject = true;
+
+      await writeMetadataToSheet(minimalMetadata);
+
+      expect(mockContext.workbook.properties.custom.add).toHaveBeenCalledWith(
+        "EnviziMetadataState",
+        expect.any(String)
+      );
+    });
+
+    it("should reject when setMetadataState sync throws", async () => {
+      jest.spyOn(console, "error").mockImplementation();
+      // syncs: (1) getOrCreate check, (2) getOrCreate sheet-add,
+      // (3) clear+write batch, (4) setMetadataState getItemOrNullObject, (5) setMetadataState final
+      mockContext.sync
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(undefined)
+        .mockRejectedValueOnce(new Error("property write failed"));
+
+      await expect(writeMetadataToSheet(minimalMetadata)).rejects.toThrow("property write failed");
+    });
+  });
+
+  // ── writeMetadataToSheet error handling ────────────────────────────────────
+
+  describe("writeMetadataToSheet error handling", () => {
+    it("should reject when the first sync inside Excel.run throws", async () => {
+      jest.spyOn(console, "error").mockImplementation();
+      mockContext.sync.mockRejectedValueOnce(new Error("write failed"));
+
+      await expect(
+        writeMetadataToSheet({
+          activityTypes: {},
+          areas: { countries: [], stateProvinces: [], powerGrids: [] },
+          units: { units: [] },
+          timestamp: "2026-01-01T00:00:00.000Z",
+        })
+      ).rejects.toThrow("write failed");
+    });
+
+    it("should wrap a non-Error throw in an Error instance", async () => {
+      jest.spyOn(console, "error").mockImplementation();
+      mockContext.sync.mockRejectedValueOnce("string error");
+
+      await expect(
+        writeMetadataToSheet({
+          activityTypes: {},
+          areas: { countries: [], stateProvinces: [], powerGrids: [] },
+          units: { units: [] },
+          timestamp: "2026-01-01T00:00:00.000Z",
+        })
+      ).rejects.toBeInstanceOf(Error);
+    });
+  });
+
+  // ── createNamedRanges error + skip-empty-column ────────────────────────────
+
+  describe("createNamedRanges additional branches", () => {
+    it("should skip creating a named range when the first cell is empty string", async () => {
+      mockContext.workbook.worksheets.getItem = jest.fn().mockReturnValue(mockSheet);
+      // All first-cell values are empty → no named ranges created
+      mockRange.values = [[""]];
+
+      await createNamedRanges();
+
+      expect(mockContext.workbook.names.add).not.toHaveBeenCalled();
+    });
+
+    it("should skip creating a named range when the first cell value is null", async () => {
+      mockContext.workbook.worksheets.getItem = jest.fn().mockReturnValue(mockSheet);
+      mockRange.values = [[null]];
+
+      await createNamedRanges();
+
+      expect(mockContext.workbook.names.add).not.toHaveBeenCalled();
+    });
+
+    it("should reject when sync throws inside createNamedRanges", async () => {
+      mockContext.workbook.worksheets.getItem = jest.fn().mockReturnValue(mockSheet);
+      mockContext.sync.mockRejectedValueOnce(new Error("named range error"));
+
+      await expect(createNamedRanges()).rejects.toThrow("named range error");
+    });
+
+    it("should wrap non-Error throws in createNamedRanges in an Error", async () => {
+      mockContext.workbook.worksheets.getItem = jest.fn().mockReturnValue(mockSheet);
+      mockContext.sync.mockRejectedValueOnce("raw string");
+
+      await expect(createNamedRanges()).rejects.toBeInstanceOf(Error);
+    });
+  });
+
   describe("createNamedRanges", () => {
     it("should create named ranges successfully", async () => {
       mockSheet.isNullObject = false;
@@ -371,6 +506,119 @@ describe("metadata-sheet-manager", () => {
   describe("getUnitsRangeName", () => {
     it("should return correct range name for units", () => {
       expect(getUnitsRangeName()).toBe("Units_All");
+    });
+  });
+
+  // ── readMetadataFromSheet ───────────────────────────────────────────────────
+
+  describe("readMetadataFromSheet", () => {
+    beforeEach(() => {
+      mockContext.workbook.worksheets.getItemOrNullObject.mockReturnValue(mockSheet);
+      mockSheet.isNullObject = false;
+      mockNamedRange.isNullObject = false;
+      mockUsedRange.values = [["USA(United States)"], ["CAN(Canada)"]];
+      mockNamedRange.getRange.mockReturnValue({
+        getUsedRange: jest.fn().mockReturnValue(mockUsedRange),
+      });
+    });
+
+    it("should return null when the metadata sheet does not exist", async () => {
+      jest.spyOn(console, "warn").mockImplementation();
+      mockSheet.isNullObject = true;
+
+      const result = await readMetadataFromSheet();
+
+      expect(result).toBeNull();
+      expect(console.warn).toHaveBeenCalledWith("Metadata sheet not found.");
+    });
+
+    it("should return null when a required named range is missing", async () => {
+      jest.spyOn(console, "error").mockImplementation();
+      mockNamedRange.isNullObject = true;
+
+      const result = await readMetadataFromSheet();
+
+      expect(result).toBeNull();
+      expect(console.error).toHaveBeenCalledWith("One or more named ranges are missing.");
+    });
+
+    it("should return parsed countries, stateProvinces, and units", async () => {
+      const countryUsed = { values: [["USA(United States)"], ["CAN(Canada)"]], load: jest.fn() };
+      const stateUsed = { values: [["California"], ["Ontario"]], load: jest.fn() };
+      const unitUsed = { values: [["kg(kilogram)"], ["t(metric ton)"]], load: jest.fn() };
+
+      let callCount = 0;
+      mockContext.workbook.names.getItemOrNullObject.mockImplementation(() => {
+        const usedRanges = [countryUsed, stateUsed, unitUsed];
+        const used = usedRanges[callCount % 3];
+        callCount++;
+        return {
+          isNullObject: false,
+          load: jest.fn(),
+          getRange: jest.fn().mockReturnValue({
+            getUsedRange: jest.fn().mockReturnValue(used),
+          }),
+        };
+      });
+
+      const result = await readMetadataFromSheet();
+
+      expect(result).not.toBeNull();
+      expect(result!.countries).toEqual(["USA(United States)", "CAN(Canada)"]);
+      expect(result!.stateProvinces).toEqual(["California", "Ontario"]);
+      expect(result!.units).toEqual(["kg(kilogram)", "t(metric ton)"]);
+    });
+
+    it("should filter out empty and whitespace-only values", async () => {
+      const usedWithBlanks = {
+        values: [["USA(United States)"], [""], ["  "], [null], ["CAN(Canada)"]],
+        load: jest.fn(),
+      };
+
+      mockContext.workbook.names.getItemOrNullObject.mockReturnValue({
+        isNullObject: false,
+        load: jest.fn(),
+        getRange: jest.fn().mockReturnValue({
+          getUsedRange: jest.fn().mockReturnValue(usedWithBlanks),
+        }),
+      });
+
+      const result = await readMetadataFromSheet();
+
+      expect(result).not.toBeNull();
+      expect(result!.countries).toEqual(["USA(United States)", "CAN(Canada)"]);
+    });
+
+    it("should return empty arrays when used range values are empty", async () => {
+      const emptyUsed = { values: [], load: jest.fn() };
+
+      mockContext.workbook.names.getItemOrNullObject.mockReturnValue({
+        isNullObject: false,
+        load: jest.fn(),
+        getRange: jest.fn().mockReturnValue({
+          getUsedRange: jest.fn().mockReturnValue(emptyUsed),
+        }),
+      });
+
+      const result = await readMetadataFromSheet();
+
+      expect(result).not.toBeNull();
+      expect(result!.countries).toEqual([]);
+      expect(result!.stateProvinces).toEqual([]);
+      expect(result!.units).toEqual([]);
+    });
+
+    it("should return null and log error when Excel.run throws", async () => {
+      jest.spyOn(console, "error").mockImplementation();
+      mockContext.sync.mockRejectedValueOnce(new Error("read failed"));
+
+      const result = await readMetadataFromSheet();
+
+      expect(result).toBeNull();
+      expect(console.error).toHaveBeenCalledWith(
+        "Failed to read metadata from sheet:",
+        expect.any(Error)
+      );
     });
   });
 });

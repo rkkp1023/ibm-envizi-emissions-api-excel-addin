@@ -28,8 +28,8 @@ export interface ActivityTypeRecommendation {
 }
 
 interface ActivityRecommenderTableProps {
-  recommendations: ActivityTypeRecommendation[];
-  onSelect?: (selectedRecommendation: ActivityTypeRecommendation) => void;
+  readonly recommendations: ActivityTypeRecommendation[];
+  readonly onSelect?: (selectedRecommendation: ActivityTypeRecommendation) => void;
 }
 
 const useStyles = makeStyles({

@@ -1,5 +1,7 @@
 // Copyright IBM Corp. 2025
 
+import { headers, headers_by_factorid } from "../src/functions/functions";
+
 (global as any).CustomFunctions = {
   Error: class extends Error {
     code: string;
@@ -14,8 +16,6 @@
     invalidValue: "InvalidValue",
   },
 };
-
-import { headers } from "../src/functions/functions";
 
 describe("ENVIZI.HEADERS function", () => {
   beforeAll(() => {
@@ -409,8 +409,6 @@ describe("ENVIZI.HEADERS function", () => {
     });
   });
 });
-
-import { headers_by_factorid } from "../src/functions/functions";
 
 describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
   beforeAll(() => {

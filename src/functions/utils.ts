@@ -163,7 +163,7 @@ export function convertExcelDateToISO(input: string): string {
     // Validate that it's actually a valid date
     const date = new Date(trimmed);
     if (isNaN(date.getTime())) {
-      throw new Error(
+      throw new TypeError(
         `Date should be in YYYY-MM-DD format. Invalid date values provided: "${trimmed}"`
       );
     }
@@ -175,7 +175,7 @@ export function convertExcelDateToISO(input: string): string {
   if (!isNaN(asNumber) && asNumber > 20000) {
     const date = new Date(Math.round((asNumber - 25569) * 86400 * 1000));
     if (isNaN(date.getTime())) {
-      throw new Error(
+      throw new TypeError(
         `Date should be in YYYY-MM-DD format. Invalid Excel serial date: "${trimmed}"`
       );
     }

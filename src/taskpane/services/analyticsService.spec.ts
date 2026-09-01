@@ -1,6 +1,8 @@
 // Copyright IBM Corp. 2026
 
 import { analyticsService, AnalyticsService } from "./analyticsService";
+import * as loadScriptModule from "../../utils/load-script";
+import * as envModule from "../../common/env";
 
 // Mock the IDaasApi
 const mockGetUserStatus = jest.fn();
@@ -8,6 +10,11 @@ jest.mock("../../api/IDaaSApi", () => ({
   idaasApi: {
     getUserStatus: (...args: any[]) => mockGetUserStatus(...args),
   },
+}));
+
+// Mock load-script so tests don't actually inject <script> tags
+jest.mock("../../utils/load-script", () => ({
+  loadScript: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("AnalyticsService", () => {
@@ -27,6 +34,10 @@ describe("AnalyticsService", () => {
     jest.spyOn(console, "log").mockImplementation();
     jest.spyOn(console, "error").mockImplementation();
     jest.spyOn(console, "warn").mockImplementation();
+    // Reset window globals between tests
+    delete (window as any)._ibmAnalytics;
+    delete (window as any).digitalData;
+    delete (window as any).analytics;
   });
 
   afterEach(() => {
@@ -44,6 +55,137 @@ describe("AnalyticsService", () => {
     it("should be an instance of AnalyticsService", () => {
       expect(analyticsService).toBeDefined();
       expect(typeof analyticsService.updateUserProfile).toBe("function");
+    });
+  });
+
+  describe("initialize", () => {
+    it("should set isInitialized to true on success", async () => {
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      expect((service as any).isInitialized).toBe(true);
+    });
+
+    it("should call loadScript for the ibm-common.js script", async () => {
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      expect(loadScriptModule.loadScript).toHaveBeenCalledWith(
+        "https://1.www.s81c.com/common/stats/ibm-common.js"
+      );
+    });
+
+    it("should call loadScript for the autotrack script when enableCarbonAutotrack is true", async () => {
+      jest.replaceProperty(envModule, "enableCarbonAutotrack", true);
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      expect(loadScriptModule.loadScript).toHaveBeenCalledWith(
+        "https://1.www.s81c.com/common/carbon/autotrack.min.js"
+      );
+    });
+
+    it("should not call loadScript for autotrack when enableCarbonAutotrack is false", async () => {
+      jest.replaceProperty(envModule, "enableCarbonAutotrack", false);
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      expect(loadScriptModule.loadScript).not.toHaveBeenCalledWith(
+        "https://1.www.s81c.com/common/carbon/autotrack.min.js"
+      );
+    });
+
+    it("should not call loadScript a second time when already initialized", async () => {
+      const service = new AnalyticsService();
+
+      await service.initialize();
+      await service.initialize();
+
+      // loadScript is called once for ibm-common.js (and once for autotrack),
+      // but NOT duplicated on the second initialize() call.
+      const calls = (loadScriptModule.loadScript as jest.Mock).mock.calls;
+      const ibmCommonCalls = calls.filter(([url]) =>
+        url.includes("ibm-common.js")
+      );
+      expect(ibmCommonCalls).toHaveLength(1);
+    });
+
+    it("should set window._ibmAnalytics with the correct settings", async () => {
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      expect(window._ibmAnalytics).toEqual({
+        settings: {
+          name: "Envizi Excel Add-in",
+          isSpa: false,
+          tealiumProfileName: "in-app-usage-growth",
+        },
+        onLoad: [["ibmStats.pageview", []]],
+      });
+    });
+
+    it("should set window.digitalData with correct page info", async () => {
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      const pageInfo = window.digitalData.page.pageInfo;
+      expect(pageInfo.pageID).toBe("Page Load");
+      expect(pageInfo.productTitle).toBe(envModule.enviziProductInfo.productTitle);
+      expect(pageInfo.analytics).toEqual({ category: "Offering Interface" });
+      expect(pageInfo.ibm?.siteId).toBe(`IBM_Envizi Excel Add-in`);
+    });
+
+    it("should set segment config with correct key and env for np", async () => {
+      (window as any).envType = "np";
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      const segment = window.digitalData.page.pageInfo.segment!;
+      expect(segment.key).toBe(envModule.segmentKeys.np);
+      expect(segment.env).toBe("test");
+      delete (window as any).envType;
+    });
+
+    it("should set segment env to prod when envType is prod", async () => {
+      (window as any).envType = "prod";
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      const segment = window.digitalData.page.pageInfo.segment!;
+      expect(segment.key).toBe(envModule.segmentKeys.prod);
+      expect(segment.env).toBe("prod");
+      delete (window as any).envType;
+    });
+
+    it("should set digitalData.page.category.primaryCategory to PC110", async () => {
+      const service = new AnalyticsService();
+
+      await service.initialize();
+
+      expect(window.digitalData.page.category?.primaryCategory).toBe("PC110");
+    });
+
+    it("should log an error and not throw when loadScript rejects", async () => {
+      (loadScriptModule.loadScript as jest.Mock).mockRejectedValueOnce(
+        new Error("network error")
+      );
+      const service = new AnalyticsService();
+
+      await expect(service.initialize()).resolves.toBeUndefined();
+
+      expect(console.error).toHaveBeenCalledWith(
+        "Failed to initialize analytics:",
+        expect.any(Error)
+      );
+      expect((service as any).isInitialized).toBe(false);
     });
   });
 
