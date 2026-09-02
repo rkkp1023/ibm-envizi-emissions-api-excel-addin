@@ -109,12 +109,13 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       return;
     }
 
+    const credentials = state.credentials;
     const refreshTimeoutMinutes = 10;
     console.log(`Setting a ${refreshTimeoutMinutes}-minute token refresh timer`);
 
     let intervalId: ReturnType<typeof setInterval> | undefined = setInterval(() => {
       console.log("Refreshing token...");
-      refreshToken(state.credentials!).then(
+      refreshToken(credentials).then(
         (newCredentials) => {
           console.log("Received new credentials:", newCredentials);
           saveUserCredentialsToStorage(newCredentials);
