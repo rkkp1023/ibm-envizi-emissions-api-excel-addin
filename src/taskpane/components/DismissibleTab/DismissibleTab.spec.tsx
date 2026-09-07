@@ -35,7 +35,7 @@ describe("DismissibleTab", () => {
     it("should render the close button with aria-label", () => {
       render(<DismissibleTab {...defaultProps} />);
 
-      expect(screen.getByRole("button", { name: "Close tab" })).toBeInTheDocument();
+      expect(screen.getByLabelText("Close tab")).toBeInTheDocument();
     });
 
     it("should render the close icon inside the dismiss button", () => {
@@ -72,7 +72,7 @@ describe("DismissibleTab", () => {
     it("should set tabIndex={0} on the dismiss button", () => {
       render(<DismissibleTab {...defaultProps} />);
 
-      const closeButton = screen.getByRole("button", { name: "Close tab" });
+      const closeButton = screen.getByLabelText("Close tab");
       expect(closeButton).toHaveAttribute("tabindex", "0");
     });
   });
@@ -82,7 +82,7 @@ describe("DismissibleTab", () => {
       const onDismiss = jest.fn();
       render(<DismissibleTab {...defaultProps} onDismiss={onDismiss} />);
 
-      fireEvent.click(screen.getByRole("button", { name: "Close tab" }));
+      fireEvent.click(screen.getByLabelText("Close tab"));
 
       expect(onDismiss).toHaveBeenCalledTimes(1);
     });
@@ -91,7 +91,7 @@ describe("DismissibleTab", () => {
       const onDismiss = jest.fn();
       render(<DismissibleTab {...defaultProps} onDismiss={onDismiss} />);
 
-      fireEvent.keyDown(screen.getByRole("button", { name: "Close tab" }), { key: "Enter" });
+      fireEvent.keyDown(screen.getByLabelText("Close tab"), { key: "Enter" });
 
       expect(onDismiss).toHaveBeenCalledTimes(1);
     });
@@ -100,7 +100,7 @@ describe("DismissibleTab", () => {
       const onDismiss = jest.fn();
       render(<DismissibleTab {...defaultProps} onDismiss={onDismiss} />);
 
-      fireEvent.keyDown(screen.getByRole("button", { name: "Close tab" }), { key: " " });
+      fireEvent.keyDown(screen.getByLabelText("Close tab"), { key: " " });
 
       expect(onDismiss).toHaveBeenCalledTimes(1);
     });
@@ -109,7 +109,7 @@ describe("DismissibleTab", () => {
       const onDismiss = jest.fn();
       render(<DismissibleTab {...defaultProps} onDismiss={onDismiss} />);
 
-      fireEvent.keyDown(screen.getByRole("button", { name: "Close tab" }), { key: "Tab" });
+      fireEvent.keyDown(screen.getByLabelText("Close tab"), { key: "Tab" });
 
       expect(onDismiss).not.toHaveBeenCalled();
     });
@@ -124,7 +124,7 @@ describe("DismissibleTab", () => {
         </div>
       );
 
-      fireEvent.click(screen.getByRole("button", { name: "Close tab" }));
+      fireEvent.click(screen.getByLabelText("Close tab"));
 
       expect(onDismiss).toHaveBeenCalledTimes(1);
       expect(parentClickHandler).not.toHaveBeenCalled();

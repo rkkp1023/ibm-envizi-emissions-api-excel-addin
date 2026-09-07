@@ -15,16 +15,12 @@ import {
   openTaskpane,
 } from "./commands";
 import { ActivityTypeOption, AreaTypeOption } from "./data-validation-manager";
-import { getParamsFromCell, isRecommendActivityTypeFormula } from "./formula-parser";
+import { FormulaParams, getParamsFromCell, isRecommendActivityTypeFormula } from "./formula-parser";
 
 declare global {
   interface Window {
-    recommendedParams?: RecommendedParams;
+    recommendedParams?: FormulaParams;
   }
-}
-
-export interface RecommendedParams {
-  payload: any;
 }
 
 /**
