@@ -90,14 +90,14 @@ export async function recommendActivityType(
       .filter((item) => item?.activityType)
       .map((item, index) => mapRecommendation(item, index));
   } catch (error: unknown) {
-    const errorCode =
-      typeof error === "object" && error !== null && "code" in error ? error.code : undefined;
-    const errorMessage =
-      typeof error === "object" && error !== null && "message" in error
-        ? String(error.message)
-        : error instanceof Error
-          ? error.message
-          : "Unknown error";
+    const err = error as Record<string, unknown>;
+    const errorCode = err?.code;
+    let errorMessage = "Unknown error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof err?.message === "string") {
+      errorMessage = err.message;
+    }
 
     if (errorCode === 404 && errorMessage === "No activity types found matching the criteria") {
       return [];

@@ -21,11 +21,11 @@ import { ResourcesTab } from "../ResourcesTab/ResourcesTab";
 import { TrialCountHeader } from "../TrialCountHeader/TrialCountHeader";
 import { getIsTaskpaneOpen } from "../../../commands/taskPaneVisibility";
 import { openTaskpane } from "../../../commands/commands";
-import { RecommendedParams } from "../../../commands/commands-entry";
+import { FormulaParams } from "../../../commands/formula-parser";
 
 type TabValue = "quickHelp" | "account" | "resources" | "activityTypeRecommender";
 
-type ActivityRecommenderRequestedDetail = { recommendedParams: RecommendedParams };
+type ActivityRecommenderRequestedDetail = { recommendedParams: FormulaParams };
 
 export interface ActivityTypeRecomenderContext {
   search: string;
