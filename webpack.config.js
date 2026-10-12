@@ -140,6 +140,15 @@ module.exports = async (env, options) => {
             from: "assets/templates/*.xlsx",
             to: "assets/templates/[name][ext]",
           },
+          // Root-level templates: serve at the legacy root URL and under assets/templates
+          {
+            from: "*.xlsx",
+            to: "[name][ext]",
+          },
+          {
+            from: "*.xlsx",
+            to: "assets/templates/[name][ext]",
+          },
         ],
       }),
       new webpack.ProvidePlugin({
