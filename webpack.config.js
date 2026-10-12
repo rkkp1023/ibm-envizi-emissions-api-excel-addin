@@ -137,8 +137,8 @@ module.exports = async (env, options) => {
             },
           },
           {
-            from: "*.xlsx",
-            to: "[name][ext]",
+            from: "assets/templates/*.xlsx",
+            to: "assets/templates/[name][ext]",
           },
         ],
       }),
