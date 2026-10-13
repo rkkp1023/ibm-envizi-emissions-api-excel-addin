@@ -2,16 +2,18 @@
  * Copyright IBM Corp. 2026
  */
 
-import { Link } from "@fluentui/react-components";
+import { Link } from "@carbon/react";
 
 import { getEnviziExcelAddInOverviewUrl } from "../../../common/env";
 import { useAccountSubscription } from "../../hooks";
+import { Download } from "@carbon/icons-react";
 
 interface ResourceSectionProps {
   title: string;
   links: Array<{
     href: string;
     text: string;
+    icon?: React.ComponentType;
   }>;
 }
 
@@ -21,7 +23,7 @@ function ResourceSection({ title, links }: Readonly<ResourceSectionProps>) {
       <p className="block-header">{title}</p>
       <div className="stack-gap-8">
         {links.map((link) => (
-          <Link key={link.href} href={link.href} target="_blank">
+          <Link key={link.href} href={link.href} target="_blank" renderIcon={link.icon}>
             {link.text}
           </Link>
         ))}
@@ -47,6 +49,21 @@ const getResourceSections = (supportLink: string) => {
         {
           href: "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html",
           text: "Excel add-in documentation",
+        },
+      ],
+    },
+    {
+      title: "Sample datasets and templates",
+      links: [
+        {
+          text: "Financed emissions dataset",
+          href: "assets/templates/Financed%20Emissions%20Sample%20Data.xlsx",
+          icon: Download,
+        },
+        {
+          text: "Emissions API Excel template",
+          href: "assets/templates/IBM%20Envizi%20Emissions%20Calculations%20Template.xlsx",
+          icon: Download,
         },
       ],
     },
