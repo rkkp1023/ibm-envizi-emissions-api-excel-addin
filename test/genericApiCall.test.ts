@@ -116,6 +116,10 @@ const mockEconomicActivityResponse = {
   assetTurnoverRatio: "",
   score: "",
   financedEmission: "",
+  scope1: 11,
+  scope2: 12,
+  scope3Upstream: 13,
+  scope3Downstream: "",
   attributionFactor: "",
 };
 
@@ -181,7 +185,7 @@ const apiCases: ApiCase[] = [
     name: "Economic Activity",
     apiType: "economic_activity",
     emissionMock: EconomicActivity.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, "", "", "", "", ""],
+    expectedResult: [...standardExpectedResult, "", "", "", "", 11, 12, 13, "", ""],
   },
   {
     name: "Real Estate",
