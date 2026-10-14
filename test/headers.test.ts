@@ -841,6 +841,18 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
       ]);
     });
 
+    it("should return output headers for economic_activity endpoint including scope columns", async () => {
+      const result = await headers_by_factorid("economic_activity", false, true);
+      expect(result[0].slice(-6)).toEqual([
+        "Financed Emission",
+        "Scope 1",
+        "Scope 2",
+        "Scope 3 Upstream",
+        "Scope 3 Downstream",
+        "Attribution Factor",
+      ]);
+    });
+
     it("should default to output headers when input not specified", async () => {
       const result = await headers_by_factorid("mobile", false, true);
       expect(result).toEqual([
