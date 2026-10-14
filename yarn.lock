@@ -2881,10 +2881,10 @@
   dependencies:
     csstype "^3.1.3"
 
-"@grpc/grpc-js@>=1.14.4", "@grpc/grpc-js@^1.14.3":
-  version "1.14.4"
-  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.14.4.tgz#e73ff57d97802f063999545f43ebb2b1eca65d9d"
-  integrity sha512-k9Dj3DV/itK9D06Y8f190Qgop7/Ui+D0njFV3LHMPwPT75DpXLQohE9Wmz0QElrJnzsjB7KPWiKJbOl7IPDArQ==
+"@grpc/grpc-js@>=1.14.5", "@grpc/grpc-js@^1.14.3":
+  version "1.14.6"
+  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.14.6.tgz#f3f3d65315bf9b45252f575e4cc142148c587cac"
+  integrity sha512-SgC/B3/VZ8lTyOZ4Cwk6f1skWhmkNAaVfiX90qd5u1rRXGKk1//8FTUEN9GvOUq7rfWIqAYkA3CoyumYVpOS6g==
   dependencies:
     "@grpc/proto-loader" "^0.8.0"
     "@js-sdsl/ordered-map" "^4.4.2"
@@ -3737,6 +3737,13 @@
   dependencies:
     "@opentelemetry/api" "^1.3.0"
 
+"@opentelemetry/api-logs@0.223.0":
+  version "0.223.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/api-logs/-/api-logs-0.223.0.tgz#12819b6542fbde1a394a592214b62990a3ad1615"
+  integrity sha512-Oepm6etVPFCn0VWB1t833iOTgz1eYBDUPxcrOR/XvwzD1+Ag9VzSPSrrKAFNJ/haatj+8CXbG47pZXvdNQKDJw==
+  dependencies:
+    "@opentelemetry/api" "^1.3.0"
+
 "@opentelemetry/api@1.0.0-rc.0":
   version "1.0.0-rc.0"
   resolved "https://registry.npmjs.org/@opentelemetry/api/-/api-1.0.0-rc.0.tgz"
@@ -3777,7 +3784,7 @@
   resolved "https://registry.npmjs.org/@opentelemetry/context-base/-/context-base-0.10.2.tgz"
   integrity sha512-hZNKjKOYsckoOEgBziGMnBcX0M7EtstnCmwz5jZUOUYwlZ+/xxX6z3jPu1XVO2Jivk0eLfuP9GP+vFD49CMetw==
 
-"@opentelemetry/core@2.1.0", "@opentelemetry/core@2.10.0", "@opentelemetry/core@2.2.0", "@opentelemetry/core@2.6.1", "@opentelemetry/core@2.7.1", "@opentelemetry/core@>=2.8.0", "@opentelemetry/core@^0.10.2", "@opentelemetry/core@^2.0.0", "@opentelemetry/core@^2.1.0", "@opentelemetry/core@^2.2.0":
+"@opentelemetry/core@2.1.0", "@opentelemetry/core@2.10.0", "@opentelemetry/core@2.2.0", "@opentelemetry/core@2.6.1", "@opentelemetry/core@2.7.1", "@opentelemetry/core@>=2.8.0", "@opentelemetry/core@^0.10.2", "@opentelemetry/core@^2.0.0", "@opentelemetry/core@^2.1.0", "@opentelemetry/core@^2.2.0", "@opentelemetry/core@^2.9.0":
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/@opentelemetry/core/-/core-2.8.0.tgz#f6e86de3688bdb54a6ca8f4935363a5b588ae91c"
   integrity sha512-hd1Lfh8p545nNz+jq1Ejfz+Mn1hyLuxYn1YzTfFNrxr8urEWMNQLPf1Th8kjOH+HxwawCrtgBp8JpBUR4ZSgww==
@@ -3983,25 +3990,25 @@
   dependencies:
     "@opentelemetry/instrumentation" "^0.208.0"
 
-"@opentelemetry/instrumentation-mysql@^0.54.0":
-  version "0.54.0"
-  resolved "https://registry.npmjs.org/@opentelemetry/instrumentation-mysql/-/instrumentation-mysql-0.54.0.tgz"
-  integrity sha512-bqC1YhnwAeWmRzy1/Xf9cDqxNG2d/JDkaxnqF5N6iJKN1eVWI+vg7NfDkf52/Nggp3tl1jcC++ptC61BD6738A==
+"@opentelemetry/instrumentation-mysql@>=0.67.0", "@opentelemetry/instrumentation-mysql@^0.54.0":
+  version "0.69.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/instrumentation-mysql/-/instrumentation-mysql-0.69.0.tgz#37200447fed95eec0d90bf26139354a1f1345544"
+  integrity sha512-IutugnpcJujsKiBrp2ihLtMa9Vp2mWh6JNB1YlP2qVIc5bgB4gxO8uQ/Sy3PKWdnYama8rzrPoJuEly/6btkEQ==
   dependencies:
-    "@opentelemetry/instrumentation" "^0.208.0"
-    "@types/mysql" "2.15.27"
+    "@opentelemetry/instrumentation" "^0.223.0"
+    "@opentelemetry/semantic-conventions" "^1.33.0"
 
-"@opentelemetry/instrumentation-pg@^0.61.0":
-  version "0.61.2"
-  resolved "https://registry.npmjs.org/@opentelemetry/instrumentation-pg/-/instrumentation-pg-0.61.2.tgz"
-  integrity sha512-l1tN4dX8Ig1bKzMu81Q1EBXWFRy9wqchXbeHDRniJsXYND5dC8u1Uhah7wz1zZta3fbBWflP2mJZcDPWNsAMRg==
+"@opentelemetry/instrumentation-pg@>=0.73.0", "@opentelemetry/instrumentation-pg@^0.61.0":
+  version "0.75.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/instrumentation-pg/-/instrumentation-pg-0.75.0.tgz#7e19a05827b52e3ee0123b81f0da96ce6e58ddf9"
+  integrity sha512-YleNiIjYYEmIsH5ECDpq15ybFFXgcjdVhnh2vG3ij2xAApBMhgysuKtl6jM/KAelTl6rKZnREhrteGYmGBIPYg==
   dependencies:
-    "@opentelemetry/core" "^2.0.0"
-    "@opentelemetry/instrumentation" "^0.208.0"
+    "@opentelemetry/core" "^2.9.0"
+    "@opentelemetry/instrumentation" "^0.223.0"
     "@opentelemetry/semantic-conventions" "^1.34.0"
-    "@opentelemetry/sql-common" "^0.41.2"
+    "@opentelemetry/sql-common" "^0.42.0"
     "@types/pg" "8.15.6"
-    "@types/pg-pool" "2.0.6"
+    "@types/pg-pool" "2.0.7"
 
 "@opentelemetry/instrumentation-redis@^0.57.0":
   version "0.57.2"
@@ -4045,6 +4052,15 @@
   dependencies:
     "@opentelemetry/api-logs" "0.211.0"
     import-in-the-middle "^2.0.0"
+    require-in-the-middle "^8.0.0"
+
+"@opentelemetry/instrumentation@^0.223.0":
+  version "0.223.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/instrumentation/-/instrumentation-0.223.0.tgz#b7248c91cfe26d6851dd2334e680a001abc86854"
+  integrity sha512-tttBo88TbwK1zpsH6VeJoxLQopxOjW3cnrP50fsQJRZftkSKDDwjolXXBvow2jy0LKXlNRkDQh0NT6yI/q+BEQ==
+  dependencies:
+    "@opentelemetry/api-logs" "0.223.0"
+    import-in-the-middle "^3.0.0"
     require-in-the-middle "^8.0.0"
 
 "@opentelemetry/otlp-exporter-base@0.208.0", "@opentelemetry/otlp-exporter-base@^0.208.0":
@@ -4313,10 +4329,15 @@
   resolved "https://registry.npmjs.org/@opentelemetry/semantic-conventions/-/semantic-conventions-1.40.0.tgz"
   integrity sha512-cifvXDhcqMwwTlTK04GBNeIe7yyo28Mfby85QXFe1Yk8nmi36Ab/5UQwptOx84SsoGNRg+EVSjwzfSZMy6pmlw==
 
-"@opentelemetry/sql-common@^0.41.2":
-  version "0.41.2"
-  resolved "https://registry.npmjs.org/@opentelemetry/sql-common/-/sql-common-0.41.2.tgz"
-  integrity sha512-4mhWm3Z8z+i508zQJ7r6Xi7y4mmoJpdvH0fZPFRkWrdp5fq7hhZ2HhYokEOLkfqSMgPR4Z9EyB3DBkbKGOqZiQ==
+"@opentelemetry/semantic-conventions@^1.33.0":
+  version "1.43.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/semantic-conventions/-/semantic-conventions-1.43.0.tgz#f3f467e36c27332f0e735ec86cdcd78dd6f27865"
+  integrity sha512-eSYWTm620tTk45EKSedaUL8MFYI8hW164hIXsgIHyxu3VobUB3fFCu5t0hQby6OoWRPsG1KkKUG2M5UadiLiVg==
+
+"@opentelemetry/sql-common@^0.42.0":
+  version "0.42.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/sql-common/-/sql-common-0.42.0.tgz#c0b3a28fd63263741c8b27e4ae84fc6395a2f21d"
+  integrity sha512-nwUwUU+8O8a4bnLqk6CodWeegGMEANgC94KTAhXcpGWLrW/2/hek/0ajNbjXnSOoNuCX+nteUPs46HFHhou9Xw==
   dependencies:
     "@opentelemetry/core" "^2.0.0"
 
@@ -4886,13 +4907,6 @@
   resolved "https://registry.npmjs.org/@types/minimatch/-/minimatch-3.0.5.tgz"
   integrity sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==
 
-"@types/mysql@2.15.27":
-  version "2.15.27"
-  resolved "https://registry.npmjs.org/@types/mysql/-/mysql-2.15.27.tgz"
-  integrity sha512-YfWiV16IY0OeBfBCk8+hXKmdTKrKlwKN1MNKAPBu5JYxLwBEZl7QzeEpGnlZb3VMGJrrGmB84gXiH+ofs/TezA==
-  dependencies:
-    "@types/node" "*"
-
 "@types/node-fetch@^2.5.0":
   version "2.6.13"
   resolved "https://registry.npmjs.org/@types/node-fetch/-/node-fetch-2.6.13.tgz"
@@ -4923,10 +4937,10 @@
   resolved "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.2.tgz"
   integrity sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==
 
-"@types/pg-pool@2.0.6":
-  version "2.0.6"
-  resolved "https://registry.npmjs.org/@types/pg-pool/-/pg-pool-2.0.6.tgz"
-  integrity sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==
+"@types/pg-pool@2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@types/pg-pool/-/pg-pool-2.0.7.tgz#c17945a74472d9a3beaf8e66d5aa6fc938328734"
+  integrity sha512-U4CwmGVQcbEuqpyju8/ptOKg6gEC+Tqsvj2xS9o1g71bUh8twxnC6ZL5rZKCsGN0iyH0CwgUyc9VR5owNQF9Ng==
   dependencies:
     "@types/pg" "*"
 
@@ -5945,10 +5959,10 @@ boolbase@^1.0.0:
   resolved "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz"
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
 
-brace-expansion@>=5.0.9, brace-expansion@^5.0.5:
-  version "5.0.9"
-  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-5.0.9.tgz#7c72438809b5fa5babf54199a1f1c281a6984fcf"
-  integrity sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==
+brace-expansion@>=5.0.12, brace-expansion@^5.0.5:
+  version "5.0.12"
+  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-5.0.12.tgz#995fbb4750a77c4d16a7dc942ff2ca6ef8e675ec"
+  integrity sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==
   dependencies:
     balanced-match "^4.0.2"
 
@@ -6285,14 +6299,15 @@ compressible@~2.0.18:
   dependencies:
     mime-db ">= 1.43.0 < 2"
 
-compression@^1.8.1:
-  version "1.8.1"
-  resolved "https://registry.npmjs.org/compression/-/compression-1.8.1.tgz"
-  integrity sha512-9mAqGPHLakhCLeNyxPkK4xVo746zQ/czLH1Ky+vkitMnWfWZps8r0qXuwhwizagCRttsL4lfG4pIOvaWLpAP0w==
+compression@>=1.8.2, compression@^1.8.1:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/compression/-/compression-1.8.2.tgz#781397127ae2da00c0c5f7c76bda5b2a9b32a49f"
+  integrity sha512-o8vI5RE5A6EVVOd9o41jKp41aJom+QTEO/Bx8MYNjexMo/Bv2WOjUfZr+aL0WnYSgymUy6zeguqLTsIhV0gMvQ==
   dependencies:
     bytes "3.1.2"
     compressible "~2.0.18"
     debug "2.6.9"
+    destroy "1.2.0"
     negotiator "~0.6.4"
     on-headers "~1.1.0"
     safe-buffer "5.2.1"
@@ -7374,10 +7389,10 @@ fast-levenshtein@^2.0.6:
   resolved "https://registry.npmjs.org/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
-fast-uri@>=4.1.3, fast-uri@^3.0.1:
-  version "4.1.4"
-  resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-4.1.4.tgz#2076a9d7bce86a86aa31ac40650b935fd5b1cd60"
-  integrity sha512-dODXrIxlS9JSdgAnhIUKOosKV1oMtU2VtVw87QRaHzyl5jxO290Ii5tEZfCfzfWNHi3jKWwBSdQj0qIyshdZdQ==
+fast-uri@>=4.1.5, fast-uri@^3.0.1:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-4.2.2.tgz#428437b7ff49d069f1e16be3bdb6597e8cd72cb9"
+  integrity sha512-EwVpUMzLVNOmcWW0zi5G3JJwkopB6XXjnVvNBGfqrMMsVew2hkQWl5e/pe/CfYUeS6jt4cIO2MnamEW7v/7wPw==
 
 fastest-levenshtein@^1.0.12:
   version "1.0.16"
@@ -7779,12 +7794,12 @@ handle-thing@^2.0.0:
   resolved "https://registry.npmjs.org/handle-thing/-/handle-thing-2.0.1.tgz"
   integrity sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==
 
-handlebars@^4.7.9:
-  version "4.7.9"
-  resolved "https://registry.npmjs.org/handlebars/-/handlebars-4.7.9.tgz"
-  integrity sha512-4E71E0rpOaQuJR2A3xDZ+GM1HyWYv1clR58tC8emQNeQe3RH7MAzSbat+V0wG78LQBo6m6bzSG/L4pBuCsgnUQ==
+handlebars@>=4.7.10, handlebars@^4.7.9:
+  version "4.7.10"
+  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.10.tgz#12419ea1b41391b3ffcf003f2164dcbce090c417"
+  integrity sha512-P5VJMVM7qgBn6vjXMw8WG9uVI+ncf2pi72j4de4yz5ZULLj2RGqLYaKOYGsgyrViQ0tePOVlN1tDCCXXtFqXKg==
   dependencies:
-    minimist "^1.2.5"
+    minimist "^1.2.8"
     neo-async "^2.6.2"
     source-map "^0.6.1"
     wordwrap "^1.0.0"
@@ -8905,10 +8920,10 @@ jest@^30.3.0:
   resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-yaml@>=5.2.2, js-yaml@^3.13.1, js-yaml@^3.14.1, js-yaml@^4.1.1:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-5.2.2.tgz#497bfe63f0b0db11c7bbc5ce8bc568e836c8b08c"
-  integrity sha512-dayzUzKkJ1MkuUtZglSebU43utNXH0OWQByK9rKOOuYIO8M5TV1y+n8ALMdG0rdzBnfNkOmZEqrURepb0ejqBw==
+js-yaml@>=5.4.1, js-yaml@^3.13.1, js-yaml@^3.14.1, js-yaml@^4.1.1:
+  version "5.4.3"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-5.4.3.tgz#4ae09e2145682daea9c91b4b1f0610de4c80c941"
+  integrity sha512-yzzNtgczwgoVHNigCyKTXcQJU4Y8t/ikU4UxXW0BvrLfHTGWZhsNcOT2s/a7vn81/4KqVnNmHjaUEPlvWnNwVw==
   dependencies:
     argparse "^2.0.1"
 
@@ -9393,9 +9408,9 @@ minimatch@^10.2.2, minimatch@^10.2.5, minimatch@^3.0.4, minimatch@^3.1.2, minima
   dependencies:
     brace-expansion "^5.0.5"
 
-minimist@^1.2.5:
+minimist@^1.2.8:
   version "1.2.8"
-  resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.8.tgz"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
   integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
 
 "minipass@^5.0.0 || ^6.0.2 || ^7.0.0", minipass@^7.1.2:
@@ -9649,6 +9664,15 @@ obuf@^1.0.0, obuf@^1.1.2:
   resolved "https://registry.npmjs.org/obuf/-/obuf-1.1.2.tgz"
   integrity sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==
 
+office-addin-cli@^2.0.10:
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/office-addin-cli/-/office-addin-cli-2.0.10.tgz#d8a0a4d159bfd01e3fdaccabf4c4d3d54e637cc7"
+  integrity sha512-SfNM7vuEGqboHd+VQpm50DqNAbpJNtfvt5wIVSXj8O0KqiA4e4Hc/vi0dOcV0XTzVZ/uLobPoV9ieqKF70N8uA==
+  dependencies:
+    commander "^13.0.0"
+    node-fetch "^2.6.1"
+    read-package-json-fast "^2.0.2"
+
 office-addin-cli@^2.0.3, office-addin-cli@^2.0.8:
   version "2.0.8"
   resolved "https://registry.npmjs.org/office-addin-cli/-/office-addin-cli-2.0.8.tgz"
@@ -9659,21 +9683,32 @@ office-addin-cli@^2.0.3, office-addin-cli@^2.0.8:
     read-package-json-fast "^2.0.2"
 
 office-addin-debugging@^6.0.7:
-  version "6.1.0"
-  resolved "https://registry.npmjs.org/office-addin-debugging/-/office-addin-debugging-6.1.0.tgz"
-  integrity sha512-83eHYN77Z6QKggh745gPSe41eTeFJQ6TZlXZS50wewmRyAQtzlagWNzx6VpzQLun0Pl/CRI3qWYHubspSE5eng==
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/office-addin-debugging/-/office-addin-debugging-6.1.2.tgz#45448ed63d33455944fce08a27f8c65f4d844e03"
+  integrity sha512-4HED21BvZaDJAipZSWeSth9uSsTmTWQD44Hm1lbC1ayb+rPGfVUjbYirpZ0kp9Wj1JTsMhR4VYqGCgaWyGOYBw==
   dependencies:
     adm-zip "0.5.12"
     commander "^13.0.0"
     node-fetch "^2.6.1"
-    office-addin-cli "^2.0.8"
-    office-addin-dev-certs "^2.0.8"
-    office-addin-dev-settings "^3.1.0"
-    office-addin-manifest "^2.1.4"
-    office-addin-node-debugger "^1.0.8"
-    office-addin-usage-data "^2.0.8"
+    office-addin-cli "^2.0.10"
+    office-addin-dev-certs "^2.0.10"
+    office-addin-dev-settings "^3.1.2"
+    office-addin-manifest "^2.1.6"
+    office-addin-node-debugger "^1.0.10"
+    office-addin-usage-data "^2.1.1"
 
-office-addin-dev-certs@^2.0.6, office-addin-dev-certs@^2.0.8:
+office-addin-dev-certs@^2.0.10:
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/office-addin-dev-certs/-/office-addin-dev-certs-2.0.10.tgz#4cc92fd7c56396abcfb2d69ee2e6ca79b2e98cbc"
+  integrity sha512-njHuhfhVo7+df8risRjGp7PWivdE+KhG5B57kBov8YXSt4nrBoEE+i6tYHCj0WrULcgH+aHNUzVAVig3/E2Nzw==
+  dependencies:
+    commander "^13.0.0"
+    fs-extra "^11.2.0"
+    mkcert "^3.2.0"
+    office-addin-cli "^2.0.10"
+    office-addin-usage-data "^2.1.1"
+
+office-addin-dev-certs@^2.0.6:
   version "2.0.8"
   resolved "https://registry.npmjs.org/office-addin-dev-certs/-/office-addin-dev-certs-2.0.8.tgz"
   integrity sha512-N+NjYzShdC9H2NPWhTChlDszShwPkTyXWztgUkA1jzpsnlEfum5QHOR+U/7EiVsy8+Ya7/BrRtGHgclyO/Valg==
@@ -9684,18 +9719,18 @@ office-addin-dev-certs@^2.0.6, office-addin-dev-certs@^2.0.8:
     office-addin-cli "^2.0.8"
     office-addin-usage-data "^2.0.8"
 
-office-addin-dev-settings@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/office-addin-dev-settings/-/office-addin-dev-settings-3.1.0.tgz"
-  integrity sha512-a+P0kmbC7E2ALDhAS/BlUHIl9I8F1LDQxBdeAav++EhOzdDWBj8teXJ8JLK45hILGyHMPJTrrNuETgQYlqC57A==
+office-addin-dev-settings@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/office-addin-dev-settings/-/office-addin-dev-settings-3.1.2.tgz#5461042a1b628561388d6fad8f30eafb5a46bee1"
+  integrity sha512-IOgyE3XC+B/57nyUxfUv5bLMdNaQFBXuI76PxRZUzeSmzlnQGC0WuS74FCP8AK/Z83rSQSwStEOo3WgOKo1FsQ==
   dependencies:
     adm-zip "0.5.12"
     commander "^13.0.0"
     fs-extra "^11.2.0"
     inquirer "^12.10.0"
     junk "^3.1.0"
-    office-addin-manifest "^2.1.4"
-    office-addin-usage-data "^2.0.8"
+    office-addin-manifest "^2.1.6"
+    office-addin-usage-data "^2.1.1"
     open "^6.4.0"
     whatwg-url "^14.0.0"
     winreg "1.2.4"
@@ -9715,7 +9750,7 @@ office-addin-lint@^3.0.7:
     prettier "^3.2.5"
     typescript-eslint "^8.4.0"
 
-office-addin-manifest@^2.0.3, office-addin-manifest@^2.1.3, office-addin-manifest@^2.1.4:
+office-addin-manifest@^2.0.3, office-addin-manifest@^2.1.3:
   version "2.1.4"
   resolved "https://registry.npmjs.org/office-addin-manifest/-/office-addin-manifest-2.1.4.tgz"
   integrity sha512-3jowrnSEut8+PkBPjgdOgcdTxRXkF8hV+lnPeaLcIZCdGog3/OOnRo6tcKr3plXP3t1qj1a67aUGztGKHX6P4w==
@@ -9730,6 +9765,21 @@ office-addin-manifest@^2.0.3, office-addin-manifest@^2.1.3, office-addin-manifes
     uuid "^8.3.2"
     xml2js "^0.5.0"
 
+office-addin-manifest@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/office-addin-manifest/-/office-addin-manifest-2.1.6.tgz#b7261ae8e56bb74a7d8085e6970f8fb8ec97ab21"
+  integrity sha512-kxV247eRDdGhBKOZYBhAvgzm/PveXdUXvZR5bi0mDYWFeY6wHoDuCSjRw00khRR///1ZvgixfvS4CqSfezyptQ==
+  dependencies:
+    "@microsoft/app-manifest" "^1.0.2"
+    adm-zip "0.5.16"
+    chalk "^2.4.2"
+    commander "^13.0.0"
+    fs-extra "^7.0.1"
+    node-fetch "^2.6.1"
+    office-addin-usage-data "^2.1.1"
+    uuid "^14.0.1"
+    xml2js "^0.5.0"
+
 office-addin-mock@^3.0.3:
   version "3.0.7"
   resolved "https://registry.npmjs.org/office-addin-mock/-/office-addin-mock-3.0.7.tgz"
@@ -9738,14 +9788,14 @@ office-addin-mock@^3.0.3:
     office-addin-manifest "^2.1.3"
     office-addin-usage-data "^2.0.7"
 
-office-addin-node-debugger@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.npmjs.org/office-addin-node-debugger/-/office-addin-node-debugger-1.0.8.tgz"
-  integrity sha512-rb9tzNTc0q2vrk463LEMeAYi/w0Orxcl8gNSvAtjYjrZwg9wfwMdfzy7z1a5EL5aI9O4+3N7ryE0+2J2PRdkjA==
+office-addin-node-debugger@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/office-addin-node-debugger/-/office-addin-node-debugger-1.0.10.tgz#b18c7d41168f81fad7920302485175d8d73308b0"
+  integrity sha512-HM/9s5JSP2EGwlzqtM1SUBdt3eav5U8P4+WAMR/7kJpSrg+vs71ierATEKQaf5jUFdQpu/PeoJz7fLt/PM6xyg==
   dependencies:
     commander "^13.0.0"
     node-fetch "^2.6.1"
-    office-addin-usage-data "^2.0.8"
+    office-addin-usage-data "^2.1.1"
     ws "^7.4.6"
 
 office-addin-prettier-config@^2.0.1, office-addin-prettier-config@^2.0.2:
@@ -9762,6 +9812,13 @@ office-addin-usage-data@^2.0.7, office-addin-usage-data@^2.0.8:
     commander "^13.0.0"
     readline-sync "^1.4.9"
     uuid "8.3.2"
+
+office-addin-usage-data@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/office-addin-usage-data/-/office-addin-usage-data-2.1.1.tgz#4dcf71da53d19dad7141aeda52af24604cb13cdc"
+  integrity sha512-MUbcqOodtlOUNhLKjSdqeLBHFVd7Qh5pUODqmQe2VLBKk7PuRgl4dCk6bp2dU79vl6BcDyrRERpkyVnQg6zdFg==
+  dependencies:
+    commander "^13.0.0"
 
 on-finished@^2.4.1, on-finished@~2.4.1:
   version "2.4.1"
@@ -10086,10 +10143,10 @@ postcss-modules-values@^4.0.0:
   dependencies:
     icss-utils "^5.0.0"
 
-postcss-selector-parser@>=7.1.3, postcss-selector-parser@^7.0.0:
-  version "7.1.5"
-  resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-7.1.5.tgz#ee7b090724eb60739b530660e5b402200e694a97"
-  integrity sha512-KvvtD7SrlBP7dlgkBghEE3r84CABm5SmV2aNcG4oCA+qDnJ/tvKonFVvwWAyyWUEwxuNawdfEAZKP9zM3oZ2Uw==
+postcss-selector-parser@>=7.1.6, postcss-selector-parser@^7.0.0:
+  version "7.1.6"
+  resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-7.1.6.tgz#45e970f2d93d4547d6754167ed1132f43012c4bf"
+  integrity sha512-7qASPzhKF2l2KLboRZux8CCTRMdGiV08vWmyKzPz22qZ7ZjQBOeY7rNzNoCLSUiftJ7HUq0GERHmxw/t0dCdMw==
   dependencies:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
@@ -10214,10 +10271,10 @@ protobufjs@^7.3.0, protobufjs@^7.5.3, protobufjs@^7.6.5:
     "@types/node" ">=13.7.0"
     long "^5.3.2"
 
-proxy-addr@~2.0.7:
-  version "2.0.7"
-  resolved "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.7.tgz"
-  integrity sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==
+proxy-addr@>=2.0.8, proxy-addr@~2.0.7:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-2.0.8.tgz#624e760fd8ab06b1b8320c2f8506d4422cf8e932"
+  integrity sha512-5nnx0yGyVUcY6t9RnWcARWtwT9F1D8O9rt08htPvnd49W1IgZtmLkhu9WfMzQj1cFxjHIO6connUNVW5k7AVyQ==
   dependencies:
     forwarded "0.2.0"
     ipaddr.js "1.9.1"
@@ -10845,10 +10902,10 @@ shebang-regex@^3.0.0:
   resolved "https://registry.npmjs.org/shebang-regex/-/shebang-regex-3.0.0.tgz"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shell-quote@1.8.3, shell-quote@>=1.9.0, shell-quote@^1.8.4:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.10.0.tgz#482033e192e4f5c07151521ffa03400ec71b1b0f"
-  integrity sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA==
+shell-quote@1.8.3, shell-quote@>=1.11.0, shell-quote@^1.8.4:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.12.0.tgz#e98fdfd2e921d8a58ae2820f4fc0f75c39f09675"
+  integrity sha512-PcByqNyT/38F2kDNi006HAMRJaULuBzq/FOsw3qdZvX/GA9W/jamDaRskgHjubHiftXK5sIFxLNkvrXUwcof6Q==
 
 side-channel-list@^1.0.0, side-channel-list@^1.0.1:
   version "1.0.1"
@@ -10932,10 +10989,10 @@ sockjs@^0.3.24:
     uuid "^8.3.2"
     websocket-driver "^0.7.4"
 
-"source-map-js@>=0.6.2 <2.0.0", source-map-js@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz"
-  integrity sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==
+"source-map-js@>=0.6.2 <2.0.0", source-map-js@>=1.2.2, source-map-js@^1.2.1:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.2.2.tgz#79fb88d97535a21cb27162cb05d211b67acea4ab"
+  integrity sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==
 
 source-map-support@0.5.13:
   version "0.5.13"
@@ -11647,7 +11704,7 @@ utils-merge@1.0.1:
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
-uuid@8.3.2, uuid@^14.0.0, uuid@^8.3.0, uuid@^8.3.2:
+uuid@8.3.2, uuid@^14.0.0, uuid@^14.0.1, uuid@^8.3.0, uuid@^8.3.2:
   version "14.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-14.0.0.tgz#0af883220163d264ffe0c084f6b8a89b9666966d"
   integrity sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==
