@@ -1,5 +1,7 @@
 // Copyright IBM Corp. 2026
 
+import { Launch } from "@carbon/icons-react";
+
 import { EmissionScopeConfig } from "../EmissionScopeSection/types";
 
 export const gettingStartedSteps = [
@@ -68,6 +70,11 @@ export const functions: EmissionScopeConfig[] = [
   {
     iconName: "GasStation",
     title: "Scope 1 emissions",
+    link: {
+      text: "Watch the how-to video",
+      href: "https://mediacenter.ibm.com/media/Calculating+Scope+1+emissions+using+Microsoft+Excel+in+IBM+Envizi/1_wqppvdoh/310784402",
+      icon: Launch,
+    },
     formulas: [
       {
         category: "Stationary",
