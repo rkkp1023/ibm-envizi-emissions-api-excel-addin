@@ -41,6 +41,10 @@ const getResourceSections = (supportLink: string) => {
           href: getEnviziExcelAddInOverviewUrl(),
           text: "Excel add-in overview page",
         },
+        {
+          href: "https://mediacenter.ibm.com/channel/IBM+Envizi+Overview+and+How-To+Videos/310784402",
+          text: "How-to videos",
+        },
       ],
     },
     {
@@ -49,6 +53,10 @@ const getResourceSections = (supportLink: string) => {
         {
           href: "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html",
           text: "Excel add-in documentation",
+        },
+        {
+          href: "https://www.ibm.com/docs/en/envizi-esg-suite?topic=api-mcp-server-overview",
+          text: "MCP server documentation",
         },
       ],
     },

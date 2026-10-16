@@ -350,10 +350,10 @@ describe("ResourcesTab", () => {
       });
     });
 
-    it("should render all 9 external links", () => {
+    it("should render all 11 external links", () => {
       render(<ResourcesTab />, { wrapper });
       const links = screen.getAllByRole("link");
-      expect(links).toHaveLength(9);
+      expect(links).toHaveLength(11);
     });
 
     it("should render block headers for resource sections", () => {
