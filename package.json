@@ -110,6 +110,7 @@
     "ie 11"
   ],
   "resolutions": {
+    "@azure/msal-node": "7.1.0",
     "@babel/core": "^7.29.6",
     "@humanfs/node": ">=0.16.8",
     "browserslist": ">=4.28.7",
@@ -125,10 +126,10 @@
     "adm-zip": ">=0.6.1",
     "ajv": ">=8.18.0",
     "axios": ">=1.20.0",
-    "body-parser": ">=1.20.6",
+    "body-parser": ">=2.4.0",
     "brace-expansion": ">=5.0.12",
     "compression": ">=1.8.2",
-    "fast-uri": ">=4.1.5",
+    "fast-uri": "4.2.3",
     "flatted": "^3.4.2",
     "follow-redirects": "^1.16.1",
     "form-data": "^4.0.6",
@@ -147,6 +148,7 @@
     "protobufjs": "^7.6.5",
     "proxy-addr": ">=2.0.8",
     "qs": "^6.16.0",
+    "serialize-javascript": "^7.1.4",
     "source-map-js": ">=1.2.2",
     "shell-quote": ">=1.11.0",
     "test-exclude": "^7.0.1",
