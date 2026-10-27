@@ -350,6 +350,14 @@ describe("factorSearch", () => {
     }));
   });
 
+  it("includes factorSet in activity params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    await factorSearch("diesel", "USA", { factorSet: "EPA" });
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: expect.objectContaining({ search: "diesel", factorSet: "EPA" })
+    }));
+  });
+
   it("handles activityUnit as undefined in formatFactorSearchResponse", async () => {
     const responseWithUndefinedUnit = {
       factors: [

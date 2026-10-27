@@ -178,20 +178,38 @@ describe("utils", () => {
   });
 
   describe("buildSearchParams", () => {
-    it("should build search params with all parameters", () => {
+    it("should build search params with all parameters including factorSet", () => {
       const result = buildSearchParams(
         "electricity",
         "USA (United States)",
         "USA - California",
         "kWh",
         "2",
-        "2024-01-01"
+        "2024-01-01",
+        "EPA (United States Environmental Protection Agency)"
       );
 
       expect(result).toEqual({
-        activity: { search: "electricity", unit: "kWh", scope: "2" },
+        activity: { search: "electricity", unit: "kWh", scope: "2", factorSet: "EPA" },
         location: { country: "USA", stateProvince: "California" },
         time: { date: "2024-01-01" },
+      });
+    });
+
+    it("should build search params with direct factorSet string", () => {
+      const result = buildSearchParams(
+        "electricity",
+        "USA",
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        "DEFRA"
+      );
+
+      expect(result).toEqual({
+        activity: { search: "electricity", factorSet: "DEFRA" },
+        location: { country: "USA" },
       });
     });
 
