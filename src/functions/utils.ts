@@ -206,7 +206,8 @@ export function buildSearchParams(
   stateProvince?: string,
   unit?: string,
   scope?: string,
-  date?: string
+  date?: string,
+  factorSet?: string
 ): any {
   // Extract country code from display format: "USA (United States)" → "USA"
   const countryCode = extractSymbolFromDisplay(country?.trim()) || country?.trim();
@@ -216,7 +217,7 @@ export function buildSearchParams(
     location: { country: countryCode },
   };
 
-  // Add unit and scope to activity object if provided
+  // Add unit, scope, and factorSet to activity object if provided
   if (unit?.trim()) {
     // Extract unit symbol from display format: "kg (kilogram)" → "kg"
     const unitSymbol = extractSymbolFromDisplay(unit.trim()) || unit.trim();
@@ -225,6 +226,11 @@ export function buildSearchParams(
 
   if (scope?.trim()) {
     params.activity.scope = scope.trim();
+  }
+
+  if (factorSet?.trim()) {
+    const factorSetValue = extractSymbolFromDisplay(factorSet.trim()) || factorSet.trim();
+    params.activity.factorSet = factorSetValue;
   }
 
   if (stateProvince?.trim()) {
