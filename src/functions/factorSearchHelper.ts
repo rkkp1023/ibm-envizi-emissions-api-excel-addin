@@ -13,6 +13,7 @@ interface FactorSearchOptions {
   date?: string;
   page?: number;
   size?: number;
+  factorSet?: string;
 }
 
 function buildFactorSearchParams(
@@ -20,10 +21,10 @@ function buildFactorSearchParams(
   country: string,
   options: FactorSearchOptions = {}
 ): any {
-  const { stateProvince, unit, scope, date, page, size } = options;
+  const { stateProvince, unit, scope, date, page, size, factorSet } = options;
 
   // Use shared utility for common parameter building
-  const params = buildSearchParams(search, country, stateProvince, unit, scope, date);
+  const params = buildSearchParams(search, country, stateProvince, unit, scope, date, factorSet);
 
   // Add pagination specific to factor search
   params.pagination = {
