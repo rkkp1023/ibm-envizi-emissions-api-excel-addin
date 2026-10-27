@@ -12,10 +12,11 @@ function buildTypeRecommenderParams(
   stateProvince?: string,
   unit?: string,
   scope?: string,
-  date?: string
+  date?: string,
+  factorSet?: string
 ): any {
   // Use shared utility for common parameter building
-  const params = buildSearchParams(search, country, stateProvince, unit, scope, date);
+  const params = buildSearchParams(search, country, stateProvince, unit, scope, date, factorSet);
 
   // Add pagination specific to type recommender (always returns top 1 result)
   params.pagination = {
@@ -41,12 +42,13 @@ export async function typeRecommender(
   stateProvince?: string,
   unit?: string,
   scope?: string,
-  date?: string
+  date?: string,
+  factorSet?: string
 ): Promise<any[][]> {
   try {
     await ensureClient();
 
-    const apiParams = buildTypeRecommenderParams(search, country, stateProvince, unit, scope, date);
+    const apiParams = buildTypeRecommenderParams(search, country, stateProvince, unit, scope, date, factorSet);
 
     const response = await TypeRecommender.search(apiParams);
 
