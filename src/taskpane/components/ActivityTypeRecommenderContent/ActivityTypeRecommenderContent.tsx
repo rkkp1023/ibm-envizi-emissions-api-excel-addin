@@ -137,6 +137,12 @@ export function ActivityTypeRecommenderContent({
               localValue: localContext?.scope,
               originalValue: context?.scope,
             },
+            {
+              label: "Factor Set",
+              cellKey: "factorSetCell",
+              localValue: localContext?.factorSet,
+              originalValue: context?.factorSet,
+            },
           ];
 
           const missingCellFields: ManualUpdateField[] = [];
@@ -190,6 +196,7 @@ export function ActivityTypeRecommenderContent({
       unit: searchParams.unit?.text ?? undefined,
       scope: searchParams.scope?.text ?? undefined,
       date: localContext?.date, // no date field in form — preserve original value
+      factorSet: localContext?.factorSet,
     });
     setPendingSearch(true);
   };

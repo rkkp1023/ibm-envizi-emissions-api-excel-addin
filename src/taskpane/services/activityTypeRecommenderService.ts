@@ -12,6 +12,7 @@ export interface ActivityTypeRecommenderSearchParams {
   unit?: string;
   scope?: string;
   date?: string;
+  factorSet?: string;
 }
 
 export interface ActivityTypeRecommendation {
@@ -44,13 +45,14 @@ function buildTypeRecommenderParams({
   unit,
   scope,
   date,
+  factorSet,
 }: ActivityTypeRecommenderSearchParams): ReturnType<typeof buildSearchParams> & {
   pagination: {
     page: number;
     size: number;
   };
 } {
-  const params = buildSearchParams(search, country, stateProvince, unit, scope, date);
+  const params = buildSearchParams(search, country, stateProvince, unit, scope, date, factorSet);
 
   return {
     ...params,
