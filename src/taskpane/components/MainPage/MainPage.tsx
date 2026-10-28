@@ -34,6 +34,7 @@ export interface ActivityTypeRecomenderContext {
   scope?: string;
   stateProvince?: string;
   unit?: string;
+  factorSet?: string;
 }
 
 const useStyles = makeStyles({

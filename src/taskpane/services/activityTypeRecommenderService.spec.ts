@@ -102,7 +102,8 @@ describe("activityTypeRecommenderService", () => {
         "CA",
         "L",
         "1",
-        "2024-01-01"
+        "2024-01-01",
+        undefined
       );
       expect(mockedTypeRecommenderSearch).toHaveBeenCalledWith({
         ...mockBaseSearchParams,
@@ -164,6 +165,7 @@ describe("activityTypeRecommenderService", () => {
         undefined,
         undefined,
         undefined,
+        undefined,
         undefined
       );
       expect(result).toHaveLength(1);
@@ -176,6 +178,40 @@ describe("activityTypeRecommenderService", () => {
         scope: undefined,
         units: [],
       });
+    });
+
+    it("passes factorSet to buildSearchParams when provided", async () => {
+      const paramsWithFactorSet: ActivityTypeRecommenderSearchParams = {
+        search: "electricity",
+        country: "USA",
+        factorSet: "EPA",
+      };
+
+      mockedBuildSearchParams.mockReturnValue({
+        activity: { search: "electricity", factorSet: "EPA" },
+        location: { country: "USA" },
+      });
+      mockedTypeRecommenderSearch.mockResolvedValue({
+        types: [
+          {
+            activityType: "Grid Electricity",
+            confidence: 0.9,
+            activityDescription: "Electricity from grid",
+          },
+        ],
+      } as any);
+
+      await recommendActivityType(paramsWithFactorSet);
+
+      expect(mockedBuildSearchParams).toHaveBeenCalledWith(
+        "electricity",
+        "USA",
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        "EPA"
+      );
     });
 
     it("filters out recommendations without activityType", async () => {

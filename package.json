@@ -39,7 +39,7 @@
     "axios": "^1.21.0",
     "buffer": "^6.0.3",
     "core-js": "^3.36.0",
-    "emissions-api-sdk": "1.0.16",
+    "emissions-api-sdk": "1.0.17",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.7.2",
     "react": "^19.2.3",

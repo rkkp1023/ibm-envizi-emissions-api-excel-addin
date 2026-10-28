@@ -3,6 +3,7 @@ import { factorHelper } from "../src/functions/factorHelper";
 import { factorSearch } from "../src/functions/factorSearchHelper";
 import * as api from "../src/functions/functions";
 import { genericApiCall } from "../src/functions/generic-api-call";
+import { typeRecommender } from "../src/functions/typeRecommenderHelper";
 
 jest.mock("../src/functions/generic-api-call", () => ({
   genericApiCall: jest.fn(),
@@ -14,6 +15,10 @@ jest.mock("../src/functions/factorSearchHelper", () => ({
 
 jest.mock("../src/functions/factorHelper", () => ({
   factorHelper: jest.fn(),
+}));
+
+jest.mock("../src/functions/typeRecommenderHelper", () => ({
+  typeRecommender: jest.fn(),
 }));
 
 
@@ -358,8 +363,32 @@ describe("factor-related functions", () => {
       date: "10/10/2020",
       page: 2,
       size: 50,
+      factorSet: undefined,
     });
     expect(result).toEqual([["search-result"]]);
+  });
+
+  it("factor_search calls factorSearch with factorSet parameter", async () => {
+    const result = await api.factor_search("electricity", "usa", "new york", "kWh", "2", "10/10/2020", 1, 30, "EPA");
+    expect(mockedFactorSearch).toHaveBeenCalledWith("electricity", "usa", {
+      stateProvince: "new york",
+      unit: "kWh",
+      scope: "2",
+      date: "10/10/2020",
+      page: 1,
+      size: 30,
+      factorSet: "EPA",
+    });
+    expect(result).toEqual([["search-result"]]);
+  });
+
+  it("RECOMMEND_ACTIVITY_TYPE calls typeRecommender with correct arguments including factorSet", async () => {
+    const mockedTypeRecommender = typeRecommender as jest.MockedFunction<typeof typeRecommender>;
+    mockedTypeRecommender.mockResolvedValue([["recommender-result"]]);
+
+    const result = await api.RECOMMEND_ACTIVITY_TYPE("electricity", "usa", "new york", "kWh", "2", "10/10/2020", "EPA");
+    expect(mockedTypeRecommender).toHaveBeenCalledWith("electricity", "usa", "new york", "kWh", "2", "10/10/2020", "EPA");
+    expect(result).toEqual([["recommender-result"]]);
   });
 
   it("factor calls factorHelper with correct arguments", async () => {

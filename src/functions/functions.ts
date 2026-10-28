@@ -302,6 +302,7 @@ export async function calculation_by_factorId(
  * @param date Activity date
  * @param page Page number for pagination
  * @param size Number of results per page
+ * @param factorSet Emission factor set identifier
  */
 // NOSONAR: S107 - Excel @customfunction parameters map 1-to-1 to spreadsheet formula arguments and cannot be grouped into an options object
 export async function factor_search(
@@ -312,9 +313,10 @@ export async function factor_search(
   scope?: string,
   date?: string,
   page?: number,
-  size?: number
+  size?: number,
+  factorSet?: string
 ): Promise<any[][]> {
-  return factorSearch(search, country, { stateProvince, unit, scope, date, page, size });
+  return factorSearch(search, country, { stateProvince, unit, scope, date, page, size, factorSet });
 }
 
 /**
@@ -327,6 +329,7 @@ export async function factor_search(
  * @param unit Unit of measurement
  * @param scope Emission scope
  * @param date Activity date
+ * @param factorSet Emission factor set identifier
  */
 export async function RECOMMEND_ACTIVITY_TYPE(
   search: string,
@@ -334,9 +337,10 @@ export async function RECOMMEND_ACTIVITY_TYPE(
   stateProvince?: string,
   unit?: string,
   scope?: string,
-  date?: string
+  date?: string,
+  factorSet?: string
 ): Promise<any[][]> {
-  return typeRecommender(search, country, stateProvince, unit, scope, date);
+  return typeRecommender(search, country, stateProvince, unit, scope, date, factorSet);
 }
 
 /**

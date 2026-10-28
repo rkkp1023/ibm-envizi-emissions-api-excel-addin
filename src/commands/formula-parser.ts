@@ -16,6 +16,7 @@ export interface FormulaParams {
   unit?: string;
   scope?: string;
   date?: string;
+  factorSet?: string;
 }
 
 /**
@@ -60,13 +61,14 @@ export interface ParameterCellAddresses {
   unitCell?: string;
   scopeCell?: string;
   dateCell?: string;
+  factorSetCell?: string;
 }
 
 /**
  * Extracts parameter cell addresses from the ENVIZI.recommend_activity_type formula
  * Uses extractCellReferences to get all cell references and maps them to parameter positions
  * @param formula The formula string (e.g., "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1, B1, C1, D1)")
- * @returns Object containing cell addresses for each parameter (search, country, stateProvince, unit, scope, date)
+ * @returns Object containing cell addresses for each parameter (search, country, stateProvince, unit, scope, date, factorSet)
  */
 export function extractParameterCellAddresses(formula: string): ParameterCellAddresses {
   if (!formula) {
@@ -92,6 +94,7 @@ export function extractParameterCellAddresses(formula: string): ParameterCellAdd
     unitCell: isCellRef(args[3] ?? "") ? args[3] : undefined,
     scopeCell: isCellRef(args[4] ?? "") ? args[4] : undefined,
     dateCell: isCellRef(args[5] ?? "") ? args[5] : undefined,
+    factorSetCell: isCellRef(args[6] ?? "") ? args[6] : undefined,
   };
 }
 
@@ -166,6 +169,7 @@ export async function parseFormulaParams(
     unit: resolvedValues[3] || undefined,
     scope: resolvedValues[4] || undefined,
     date: resolvedValues[5] ? convertExcelDateToISO(resolvedValues[5]) || undefined : undefined,
+    factorSet: resolvedValues[6] || undefined,
   };
 
   return params;
