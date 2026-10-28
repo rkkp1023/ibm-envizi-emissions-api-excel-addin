@@ -132,12 +132,12 @@ describe("ActivityTypeRecommenderTable", () => {
       expect(screen.getAllByText("Waste Recycled - Plastic")[0]).toBeInTheDocument();
     });
 
-    it("should render confidence values with percentage", () => {
+    it("should render confidence values", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
-      expect(screen.getByText("95%")).toBeInTheDocument();
-      expect(screen.getByText("88%")).toBeInTheDocument();
-      expect(screen.getByText("82%")).toBeInTheDocument();
+      expect(screen.getByText("95")).toBeInTheDocument();
+      expect(screen.getByText("88")).toBeInTheDocument();
+      expect(screen.getByText("82")).toBeInTheDocument();
     });
 
     it("should render activity descriptions", () => {
@@ -334,19 +334,19 @@ describe("ActivityTypeRecommenderTable", () => {
   });
 
   describe("Confidence Value Display", () => {
-    it("should display confidence as percentage", () => {
+    it("should display confidence as a plain number", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
-      const confidenceCells = screen.getAllByText(/\d+%/);
+      const confidenceCells = screen.getAllByText(/^\d+$/);
       expect(confidenceCells.length).toBeGreaterThan(0);
     });
 
     it("should display correct confidence values", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
-      expect(screen.getByText("95%")).toBeInTheDocument();
-      expect(screen.getByText("88%")).toBeInTheDocument();
-      expect(screen.getByText("82%")).toBeInTheDocument();
+      expect(screen.getByText("95")).toBeInTheDocument();
+      expect(screen.getByText("88")).toBeInTheDocument();
+      expect(screen.getByText("82")).toBeInTheDocument();
     });
 
     it("should handle confidence value of 0", () => {
@@ -360,7 +360,7 @@ describe("ActivityTypeRecommenderTable", () => {
       ];
 
       render(<ActivityTypeRecommenderTable recommendations={zeroConfidenceRec} />);
-      expect(screen.getByText("0%")).toBeInTheDocument();
+      expect(screen.getByText("0")).toBeInTheDocument();
     });
 
     it("should handle confidence value of 100", () => {
@@ -374,7 +374,7 @@ describe("ActivityTypeRecommenderTable", () => {
       ];
 
       render(<ActivityTypeRecommenderTable recommendations={fullConfidenceRec} />);
-      expect(screen.getByText("100%")).toBeInTheDocument();
+      expect(screen.getByText("100")).toBeInTheDocument();
     });
   });
 
