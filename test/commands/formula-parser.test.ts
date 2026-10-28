@@ -79,6 +79,32 @@ describe("parseFormulaParams", () => {
     expect(result.date).toBe("2024-03-15");
   });
 
+  it("handles a fully-specified 7-argument formula with factorSet", async () => {
+    // =ENVIZI.RECOMMEND_ACTIVITY_TYPE(B1,C1,D1,E1,F1,G1,H1)
+    const ctx = buildFakeContext({
+      B1: "natural gas",
+      C1: "AUS",
+      D1: "Victoria",
+      E1: "GJ",
+      F1: "1",
+      G1: "2024-03-15",
+      H1: "EPA",
+    });
+
+    const result = await parseFormulaParams(
+      "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(B1,C1,D1,E1,F1,G1,H1)",
+      ctx
+    );
+
+    expect(result.search).toBe("natural gas");
+    expect(result.country).toBe("AUS");
+    expect(result.stateProvince).toBe("Victoria");
+    expect(result.unit).toBe("GJ");
+    expect(result.scope).toBe("1");
+    expect(result.date).toBe("2024-03-15");
+    expect(result.factorSet).toBe("EPA");
+  });
+
   it("strips surrounding quotes from a static string literal for search", async () => {
     // =ENVIZI.RECOMMEND_ACTIVITY_TYPE("electricity",H7) — search is a literal, country is a cell
     const ctx = buildFakeContext({ H7: "USA" });

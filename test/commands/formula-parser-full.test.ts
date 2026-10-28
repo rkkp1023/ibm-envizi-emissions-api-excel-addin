@@ -194,7 +194,7 @@ describe("formula-parser", () => {
   // ── extractParameterCellAddresses ───────────────────────────────────────────
 
   describe("extractParameterCellAddresses", () => {
-    it("should extract all 6 cell positions from a full formula", () => {
+    it("should extract all 6 cell positions from a 6-argument formula", () => {
       const result = extractParameterCellAddresses(
         "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1,C1,D1,E1,F1)"
       );
@@ -205,6 +205,22 @@ describe("formula-parser", () => {
         unitCell: "D1",
         scopeCell: "E1",
         dateCell: "F1",
+        factorSetCell: undefined,
+      });
+    });
+
+    it("should extract all 7 cell positions from a full 7-argument formula", () => {
+      const result = extractParameterCellAddresses(
+        "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1,B1,C1,D1,E1,F1,G1)"
+      );
+      expect(result).toEqual({
+        searchCell: "A1",
+        countryCell: "B1",
+        stateProvinceCell: "C1",
+        unitCell: "D1",
+        scopeCell: "E1",
+        dateCell: "F1",
+        factorSetCell: "G1",
       });
     });
 
@@ -216,6 +232,7 @@ describe("formula-parser", () => {
       expect(result.unitCell).toBeUndefined();
       expect(result.scopeCell).toBeUndefined();
       expect(result.dateCell).toBeUndefined();
+      expect(result.factorSetCell).toBeUndefined();
     });
 
     it("should set slot to undefined when the argument is a string literal, not a cell ref", () => {
@@ -327,6 +344,30 @@ describe("formula-parser", () => {
       expect(result.unit).toBe("GJ");
       expect(result.scope).toBe("1");
       expect(result.date).toBe("2024-03-15");
+      expect(result.factorSet).toBeUndefined();
+    });
+
+    it("should parse a fully-specified 7-argument formula (with factorSet)", async () => {
+      const ctx = buildFakeContext({
+        B1: "natural gas",
+        C1: "AUS",
+        D1: "Victoria",
+        E1: "GJ",
+        F1: "1",
+        G1: "2024-03-15",
+        H1: "EPA",
+      });
+      const result = await parseFormulaParams(
+        "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(B1,C1,D1,E1,F1,G1,H1)",
+        ctx
+      );
+      expect(result.search).toBe("natural gas");
+      expect(result.country).toBe("AUS");
+      expect(result.stateProvince).toBe("Victoria");
+      expect(result.unit).toBe("GJ");
+      expect(result.scope).toBe("1");
+      expect(result.date).toBe("2024-03-15");
+      expect(result.factorSet).toBe("EPA");
     });
 
     it("should strip surrounding quotes from static string literals", async () => {

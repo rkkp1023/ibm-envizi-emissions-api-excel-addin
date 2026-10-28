@@ -255,6 +255,16 @@ describe("typeRecommender", () => {
     }));
   });
 
+  it("includes factorSet in activity params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+    
+    await typeRecommender("electricity", "USA", undefined, undefined, undefined, undefined, "EPA");
+    
+    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
+      activity: expect.objectContaining({ search: "electricity", factorSet: "EPA" })
+    }));
+  });
+
   it("builds correct API params with only required parameters", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
     
