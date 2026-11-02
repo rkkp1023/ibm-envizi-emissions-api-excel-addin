@@ -146,7 +146,7 @@ export default function ActivityTypeRecommenderTable({
                         </div>
                       </TableCell>
                       <TableCell className="activity-type-table-row__confidence-cell">
-                        {rowData.confidence}%
+                        {rowData.confidence}
                       </TableCell>
                       <TableCell>{rowData.activityDescription}</TableCell>
                     </TableRow>
