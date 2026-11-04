@@ -2,11 +2,18 @@
 
 @use "@carbon/layout/scss/spacing";
 @use "@carbon/themes/scss/tokens";
+@use "@carbon/react/scss/type";
 
 .tags-container {
   display: flex;
   gap: spacing.$spacing-03;
   flex-direction: column;
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: spacing.$spacing-03;
 }
 
 .information-banner {
@@ -23,4 +30,14 @@
   justify-content: flex-start;
   flex-wrap: wrap;
   gap: spacing.$spacing-03;
+}
+
+.manual-update-header {
+  display: flex;
+  justify-content: flex-start;
+  gap: spacing.$spacing-03;
+}
+
+.manual-update-body {
+  @include type.type-style("body-01");
 }

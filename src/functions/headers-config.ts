@@ -104,6 +104,12 @@ export const HEADER_FIELDS = {
   FINANCED_EMISSION: { apiResponseName: "financedEmission", displayName: "Financed Emission" },
   ATTRIBUTION_FACTOR: { apiResponseName: "attributionFactor", displayName: "Attribution Factor" },
 
+  // Economic Activity specific scope output fields
+  SCOPE_1: { apiResponseName: "scope1", displayName: "Scope 1" },
+  SCOPE_2: { apiResponseName: "scope2", displayName: "Scope 2" },
+  SCOPE_3_UPSTREAM: { apiResponseName: "scope3Upstream", displayName: "Scope 3 Upstream" },
+  SCOPE_3_DOWNSTREAM: { apiResponseName: "scope3Downstream", displayName: "Scope 3 Downstream" },
+
   // Attribution input fields (for real_estate, physical_activity, and economic_activity)
   OUTSTANDING_AMOUNT: { apiResponseName: "outstandingAmount", displayName: "Outstanding Amount" },
   PROPERTY_VALUE: { apiResponseName: "propertyValue", displayName: "Property Value" },
@@ -294,6 +300,10 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
       HEADER_FIELDS.ASSET_TURNOVER_RATIO,
       HEADER_FIELDS.SCORE,
       HEADER_FIELDS.FINANCED_EMISSION,
+      HEADER_FIELDS.SCOPE_1,
+      HEADER_FIELDS.SCOPE_2,
+      HEADER_FIELDS.SCOPE_3_UPSTREAM,
+      HEADER_FIELDS.SCOPE_3_DOWNSTREAM,
       HEADER_FIELDS.ATTRIBUTION_FACTOR,
     ],
     factorIdInputHeaders: [
@@ -319,6 +329,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     outputHeaders: [
       ...STANDARD_OUTPUT_HEADERS,
       HEADER_FIELDS.ENERGY,
+      HEADER_FIELDS.SCORE,
       HEADER_FIELDS.FINANCED_EMISSION,
       HEADER_FIELDS.ATTRIBUTION_FACTOR,
     ],
@@ -346,6 +357,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
     outputHeaders: [
       ...STANDARD_OUTPUT_HEADERS,
       HEADER_FIELDS.ENERGY,
+      HEADER_FIELDS.SCORE,
       HEADER_FIELDS.FINANCED_EMISSION,
       HEADER_FIELDS.ATTRIBUTION_FACTOR,
     ],
@@ -388,6 +400,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
       HEADER_FIELDS.DATE,
       HEADER_FIELDS.PAGE,
       HEADER_FIELDS.SIZE,
+      HEADER_FIELDS.FACTOR_SET,
     ],
     outputHeaders: FACTOR_SEARCH_OUTPUT_HEADERS,
   },
@@ -399,6 +412,7 @@ const FUNCTION_NAME_CONFIGS: Record<FunctionNameType, FunctionNameConfig> = {
       HEADER_FIELDS.SEARCH_UNIT,
       HEADER_FIELDS.SEARCH_SCOPE,
       HEADER_FIELDS.DATE,
+      HEADER_FIELDS.FACTOR_SET,
     ],
     outputHeaders: RECOMMEND_ACTIVITY_TYPE_OUTPUT_HEADERS,
   },

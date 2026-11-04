@@ -1,5 +1,21 @@
 // Copyright IBM Corp. 2025
 
+import {
+  Calculation,
+  EconomicActivity,
+  Fugitive,
+  Location,
+  Mobile,
+  PhysicalActivity,
+  RealEstate,
+  Stationary,
+  TransportationAndDistribution,
+} from "emissions-api-sdk";
+
+import { ensureClient } from "../src/functions/client";
+import { genericApiCall } from "../src/functions/generic-api-call";
+import { convertExcelDateToISO } from "../src/functions/utils";
+
 (global as any).CustomFunctions = {
   Error: class extends Error {
     code: string;
@@ -21,7 +37,23 @@
   },
 };
 
-// Mock the utils module BEFORE imports
+// ---------------------------------------------------------------------------
+// Mock result-cache so this test suite doesn't depend on IndexedDB / crypto.
+// Cache behaviour is tested independently in test/result-cache.test.ts.
+// ---------------------------------------------------------------------------
+const cacheStore = new Map<string, { payload: unknown; response: any[][] }>();
+
+jest.mock("../src/functions/result-cache", () => ({
+  buildCacheKey: jest.fn(async (_apiType: string, params: unknown) => JSON.stringify(params)),
+  getSnapshot: jest.fn(async (key: string) => cacheStore.get(key) ?? null),
+  setSnapshot: jest.fn(async (key: string, response: any[][]) => {
+    cacheStore.set(key, response);
+  }),
+  clearSnapshots: jest.fn(async () => {
+    cacheStore.clear();
+  }),
+}));
+
 jest.mock("../src/functions/utils", () => ({
   convertExcelDateToISO: jest.fn().mockReturnValue("2025-08-23"),
   extractSymbolFromDisplay: jest.fn((value) => {
@@ -36,22 +68,6 @@ jest.mock("../src/functions/utils", () => ({
 jest.mock("../src/functions/client", () => ({
   ensureClient: jest.fn().mockResolvedValue(undefined),
 }));
-
-import {
-  Calculation,
-  EconomicActivity,
-  Fugitive,
-  Location,
-  Mobile,
-  PhysicalActivity,
-  RealEstate,
-  Stationary,
-  TransportationAndDistribution,
-} from "emissions-api-sdk";
-
-import { ensureClient } from "../src/functions/client";
-import { genericApiCall } from "../src/functions/generic-api-call";
-import { convertExcelDateToISO } from "../src/functions/utils";
 
 // Mock Emission classes
 jest.mock("emissions-api-sdk", () => {
@@ -100,13 +116,17 @@ const mockEconomicActivityResponse = {
   assetTurnoverRatio: "",
   score: "",
   financedEmission: "",
+  scope1: 11,
+  scope2: 12,
+  scope3Upstream: 13,
+  scope3Downstream: "",
   attributionFactor: "",
 };
 
 const mockRealEstateResponse = {
   ...mockResponse,
   "energy(MWh)": 42,
-  assetTurnoverRatio: "",
+  score: "",
   financedEmission: "",
   attributionFactor: "",
 };
@@ -114,7 +134,7 @@ const mockRealEstateResponse = {
 const mockPhysicalActivityResponse = {
   ...mockResponse,
   "energy(MWh)": "",
-  assetTurnoverRatio: "",
+  score: "",
   financedEmission: "",
   attributionFactor: "",
 };
@@ -137,18 +157,47 @@ type ApiCase = {
 
 // All APIs use STANDARD_OUTPUT_HEADERS: TotalCO2e, CO2, CH4, N2O, HFC, PFC, SF6, NF3, BioCO2, IndirectCO2e, Unit, Description, Transaction Id
 // API returns camelCase, but headers are displayed with proper capitalization
-const standardExpectedResult = [100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "Mock description", "txn-123"];
+const standardExpectedResult = [
+  100,
+  50,
+  10,
+  5,
+  0,
+  0,
+  0,
+  0,
+  0,
+  2,
+  "kgCO2e",
+  "Mock description",
+  "txn-123",
+];
 
 const apiCases: ApiCase[] = [
-  { name: "Location", apiType: "location", emissionMock: Location.calculate as jest.Mock, expectedResult: standardExpectedResult },
+  {
+    name: "Location",
+    apiType: "location",
+    emissionMock: Location.calculate as jest.Mock,
+    expectedResult: standardExpectedResult,
+  },
   {
     name: "Stationary",
     apiType: "stationary",
     emissionMock: Stationary.calculate as jest.Mock,
     expectedResult: standardExpectedResult,
   },
-  { name: "Fugitive", apiType: "fugitive", emissionMock: Fugitive.calculate as jest.Mock, expectedResult: standardExpectedResult },
-  { name: "Mobile", apiType: "mobile", emissionMock: Mobile.calculate as jest.Mock, expectedResult: standardExpectedResult },
+  {
+    name: "Fugitive",
+    apiType: "fugitive",
+    emissionMock: Fugitive.calculate as jest.Mock,
+    expectedResult: standardExpectedResult,
+  },
+  {
+    name: "Mobile",
+    apiType: "mobile",
+    emissionMock: Mobile.calculate as jest.Mock,
+    expectedResult: standardExpectedResult,
+  },
   {
     name: "Generic Calculation",
     apiType: "calculation",
@@ -165,25 +214,42 @@ const apiCases: ApiCase[] = [
     name: "Economic Activity",
     apiType: "economic_activity",
     emissionMock: EconomicActivity.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, "", "", "", "", ""],
+    expectedResult: [...standardExpectedResult, "", "", "", "", 11, 12, 13, "", ""],
   },
   {
     name: "Real Estate",
     apiType: "real_estate",
     emissionMock: RealEstate.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, 42, "", ""],
+    expectedResult: [...standardExpectedResult, 42, "", "", ""],
   },
   {
     name: "Physical Activity",
     apiType: "physical_activity",
     emissionMock: PhysicalActivity.calculate as jest.Mock,
-    expectedResult: [...standardExpectedResult, "", "", ""],
+    expectedResult: [...standardExpectedResult, "", "", "", ""],
   },
 ];
 
 describe("genericApiCall", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    cacheStore.clear();
+    // Re-apply mocked implementations cleared by jest.clearAllMocks()
+    const { buildCacheKey, getSnapshot, setSnapshot, clearSnapshots } = jest.requireMock(
+      "../src/functions/result-cache"
+    );
+    (buildCacheKey as jest.Mock).mockImplementation(async (_apiType: string, params: unknown) =>
+      JSON.stringify(params)
+    );
+    (getSnapshot as jest.Mock).mockImplementation(
+      async (key: string) => cacheStore.get(key) ?? null
+    );
+    (setSnapshot as jest.Mock).mockImplementation(async (key: string, response: any[][]) => {
+      cacheStore.set(key, response);
+    });
+    (clearSnapshots as jest.Mock).mockImplementation(async () => {
+      cacheStore.clear();
+    });
     apiCases.forEach((c) => {
       let response = mockResponse;
       if (c.apiType === "real_estate") {
@@ -288,6 +354,58 @@ describe("genericApiCall", () => {
     ).rejects.toThrow("boom");
   });
 
+  it("caches the formatted response after a successful call", async () => {
+    const { setSnapshot } = jest.requireMock("../src/functions/result-cache");
+    (Location.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+
+    await genericApiCall("location", {
+      value: 1,
+      unit: "kWh",
+      type: "Electricity",
+      country: "USA",
+    });
+
+    expect(setSnapshot).toHaveBeenCalledWith(
+      expect.any(String), // cache key (hash)
+      expect.any(Array) // formatted response
+    );
+  });
+
+  it("returns cached response when API fails and a cache entry exists", async () => {
+    const payload = {
+      value: 1,
+      unit: "kWh",
+      type: "Electricity",
+      country: "USA",
+    };
+    const previousValues = [[100, 50, 10, 5, 0, 0, 0, 0, 0, 2, "kgCO2e", "desc", "txn-1"]];
+
+    // Prime the cache with a successful call, then override the stored response
+    (Location.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+    await genericApiCall("location", payload);
+    cacheStore.forEach((_v, k) => cacheStore.set(k, previousValues));
+
+    // Now make the API fail — the cached response should be returned
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(new Error("auth error"));
+
+    const result = await genericApiCall("location", payload);
+
+    expect(result).toEqual(previousValues);
+  });
+
+  it("throws when API fails and no cached result exists", async () => {
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(new Error("auth error"));
+
+    await expect(
+      genericApiCall("location", {
+        value: 1,
+        unit: "kWh",
+        type: "Electricity",
+        country: "USA",
+      })
+    ).rejects.toThrow("auth error");
+  });
+
   it("omits attribution entirely when all attribution fields are null", async () => {
     (RealEstate.calculate as jest.Mock).mockResolvedValueOnce(mockRealEstateResponse);
     await genericApiCall("real_estate", {
@@ -316,6 +434,20 @@ describe("genericApiCall", () => {
     );
   });
 
+  it("omits attribution entirely when all attribution fields are zero", async () => {
+    (RealEstate.calculate as jest.Mock).mockResolvedValueOnce(mockRealEstateResponse);
+    await genericApiCall("real_estate", {
+      value: 5000,
+      unit: "m2",
+      type: "Commercial",
+      country: "USA",
+      attribution: { outstandingAmount: 0, propertyValue: 0 },
+    });
+    expect(RealEstate.calculate).toHaveBeenCalledWith(
+      expect.not.objectContaining({ attribution: expect.anything() })
+    );
+  });
+
   it("includes attribution when at least one field is non-null", async () => {
     (RealEstate.calculate as jest.Mock).mockResolvedValueOnce(mockRealEstateResponse);
     await genericApiCall("real_estate", {
@@ -328,6 +460,152 @@ describe("genericApiCall", () => {
     expect(RealEstate.calculate).toHaveBeenCalledWith(
       expect.objectContaining({ attribution: { outstandingAmount: 1000000 } })
     );
+  });
+
+  it("includes attribution for economic_activity when fields are non-zero", async () => {
+    (EconomicActivity.calculate as jest.Mock).mockResolvedValueOnce(mockEconomicActivityResponse);
+    await genericApiCall("economic_activity", {
+      value: 0,
+      type: "Electricity",
+      country: "USA",
+      attribution: {
+        outstandingAmount: 500000,
+        totalEquity: 200000,
+        totalDebt: 300000,
+        evic: 1000000,
+        revenue: 400000,
+      },
+    });
+    expect(EconomicActivity.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        attribution: {
+          outstandingAmount: 500000,
+          totalEquity: 200000,
+          totalDebt: 300000,
+          evic: 1000000,
+          revenue: 400000,
+        },
+      })
+    );
+  });
+
+  it("includes attribution for physical_activity when fields are non-zero", async () => {
+    (PhysicalActivity.calculate as jest.Mock).mockResolvedValueOnce(mockPhysicalActivityResponse);
+    await genericApiCall("physical_activity", {
+      value: 100,
+      type: "Electricity",
+      country: "USA",
+      attribution: {
+        outstandingAmount: 750000,
+        totalEquity: 150000,
+        totalDebt: 250000,
+        evic: 900000,
+      },
+    });
+    expect(PhysicalActivity.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        attribution: {
+          outstandingAmount: 750000,
+          totalEquity: 150000,
+          totalDebt: 250000,
+          evic: 900000,
+        },
+      })
+    );
+  });
+
+  it.each(["location", "calculation"] as const)(
+    "includes powerGrid in location params for %s api type",
+    async (apiType) => {
+      const mock =
+        apiType === "location"
+          ? (Location.calculate as jest.Mock)
+          : (Calculation.calculate as jest.Mock);
+      mock.mockResolvedValueOnce(mockResponse);
+      await genericApiCall(apiType, {
+        value: 100,
+        unit: "kWh",
+        type: "Electricity",
+        country: "USA",
+        powerGrid: "USA - WECC",
+      });
+      expect(mock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          location: expect.objectContaining({ powerGrid: "USA - WECC" }),
+        })
+      );
+    }
+  );
+
+  it("ignores powerGrid for api types other than location and calculation", async () => {
+    (Stationary.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+    await genericApiCall("stationary", {
+      value: 100,
+      unit: "kWh",
+      type: "Natural Gas",
+      country: "USA",
+      powerGrid: "USA - WECC",
+    });
+    expect(Stationary.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        location: expect.not.objectContaining({ powerGrid: expect.anything() }),
+      })
+    );
+  });
+
+  it("omits time when date is empty", async () => {
+    (Location.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+    await genericApiCall("location", {
+      value: 100,
+      unit: "kWh",
+      type: "Electricity",
+      country: "USA",
+      date: "",
+    });
+    expect(Location.calculate).toHaveBeenCalledWith(
+      expect.not.objectContaining({ time: expect.anything() })
+    );
+  });
+
+  it("omits unit from activity when unit is not provided", async () => {
+    (Stationary.calculate as jest.Mock).mockResolvedValueOnce(mockResponse);
+    await genericApiCall("stationary", {
+      value: 100,
+      type: "Natural Gas",
+      country: "USA",
+    });
+    expect(Stationary.calculate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activity: expect.not.objectContaining({ unit: expect.anything() }),
+      })
+    );
+  });
+
+  it("uses 400 invalidValue error code when API responds with status 400", async () => {
+    const err: any = new Error("bad request");
+    err.status = 400;
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(err);
+    await expect(
+      genericApiCall("location", { value: 1, unit: "kg", type: "Electricity", country: "USA" })
+    ).rejects.toMatchObject({ code: "InvalidValue", message: "bad request" });
+  });
+
+  it("uses notAvailable error code for non-400 API errors", async () => {
+    const err: any = new Error("server error");
+    err.status = 500;
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(err);
+    await expect(
+      genericApiCall("location", { value: 1, unit: "kg", type: "Electricity", country: "USA" })
+    ).rejects.toMatchObject({ code: "NotAvailable", message: "server error" });
+  });
+
+  it("prefers error message from response.data.message when available", async () => {
+    const err: any = new Error("fallback");
+    err.response = { data: { message: "detailed API error" } };
+    (Location.calculate as jest.Mock).mockRejectedValueOnce(err);
+    await expect(
+      genericApiCall("location", { value: 1, unit: "kg", type: "Electricity", country: "USA" })
+    ).rejects.toMatchObject({ message: "detailed API error" });
   });
 
   it.each([undefined, null, "" as any, 0])(

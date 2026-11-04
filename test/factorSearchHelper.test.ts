@@ -5,7 +5,6 @@ import { Factor } from "emissions-api-sdk";
 import { ensureClient } from "../src/functions/client";
 import { factorSearch } from "../src/functions/factorSearchHelper";
 
-
 jest.mock("emissions-api-sdk", () => ({
   Factor: {
     search: jest.fn(),
@@ -128,10 +127,12 @@ describe("factorSearch", () => {
       ["set1", "source1", "", "", "type1", "kg", "USA", 1001, "2024-01-01", "2025-01-01"],
       ["set2", "source2", "", "", "type2", "L", "Canada", 1002, "2024-01-01", "2025-01-01"],
     ]);
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      pagination: { page: 1, size: 30 }
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pagination: { page: 1, size: 30 },
+      })
+    );
   });
 
   it("handles typed object response from SDK v1.0.2+", async () => {
@@ -179,179 +180,79 @@ describe("factorSearch", () => {
   });
 
   it("returns default values for missing or null fields in factor search response", async () => {
-  
-  const mockResponseWithNullValues = {
-    factors: [
-      {
-        ...mockResponse.factors[0],
-        factorSet: null,
-        factorId: null as any,
-        methodology: null,
-        scope: null,
-      },
-      {
-        ...mockResponse.factors[1],
-        source: null,
-        methodology: null,
-        scope: null,
-      },
-    ],
-  };
+    const mockResponseWithNullValues = {
+      factors: [
+        {
+          ...mockResponse.factors[0],
+          factorSet: null,
+          factorId: null as any,
+          methodology: null,
+          scope: null,
+        },
+        {
+          ...mockResponse.factors[1],
+          source: null,
+          methodology: null,
+          scope: null,
+        },
+      ],
+    };
 
-  
-  mockedSearch.mockResolvedValue(mockResponseWithNullValues);
+    mockedSearch.mockResolvedValue(mockResponseWithNullValues);
 
-  const result = await factorSearch("diesel", "USA");
+    const result = await factorSearch("diesel", "USA");
 
-  
-  expect(result).toEqual([
-    [
-      "",
-      "source1",
-      "",  // methodology
-      "",  // scope
-      "type1",
-      "kg",
-      "USA",
-      "",
-      "2024-01-01",
-      "2025-01-01",
-    ],
-    [
-      "set2",
-      "",
-      "",  // methodology
-      "",  // scope
-      "type2",
-      "L",
-      "Canada",
-      1002,
-      "2024-01-01",
-      "2025-01-01",
-    ],
-  ]);
-});
+    expect(result).toEqual([
+      [
+        "",
+        "source1",
+        "", // methodology
+        "", // scope
+        "type1",
+        "kg",
+        "USA",
+        "",
+        "2024-01-01",
+        "2025-01-01",
+      ],
+      [
+        "set2",
+        "",
+        "", // methodology
+        "", // scope
+        "type2",
+        "L",
+        "Canada",
+        1002,
+        "2024-01-01",
+        "2025-01-01",
+      ],
+    ]);
+  });
 
   it("uses custom pagination parameters when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
 
-    await factorSearch("diesel", "USA", undefined, undefined, undefined, undefined, 2, 50);
+    await factorSearch("diesel", "USA", { page: 2, size: 50 });
 
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      pagination: { page: 2, size: 50 }
-    }));
-
-});
-
-describe("factorSearch", () => {
-  const mockedEnsureClient = ensureClient as jest.MockedFunction<typeof ensureClient>;
-  const mockedSearch = Factor.search as jest.MockedFunction<typeof Factor.search>;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockedEnsureClient.mockResolvedValue(undefined);
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pagination: { page: 2, size: 50 },
+      })
+    );
   });
 
-  const mockResponse = {
-    factors: [
-      {
-        factorSet: "set1",
-        source: "source1",
-        methodology: undefined,
-        scope: undefined,
-        activityType: "type1",
-        activityUnit: ["kg"],
-        region: "USA",
-        factorId: 1001,
-        transactionId: "txn-1001",
-        name: "Factor 1",
-        description: "Description 1",
-        effectiveFrom: "2024-01-01",
-        effectiveTo: "2025-01-01",
-        publishedFrom: "2024-01-01",
-        publishedTo: "2025-01-01",
-        totalCO2e: 100,
-        CO2: 50,
-        CH4: 10,
-        N2O: 5,
-        HFC: 0,
-        PFC: 0,
-        SF6: 0,
-        NF3: 0,
-        bioCO2: 0,
-        indirectCO2e: 2,
-        unit: "kgCO2e",
-      },
-    ],
-  };
+  describe("factorSearch", () => {
+    const mockedEnsureClient = ensureClient as jest.MockedFunction<typeof ensureClient>;
+    const mockedSearch = Factor.search as jest.MockedFunction<typeof Factor.search>;
 
-  it("includes stateProvince in params when provided", async () => {
-    mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA", "CA");
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      location: { country: "USA", stateProvince: "CA" }
-    }));
-  });
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockedEnsureClient.mockResolvedValue(undefined);
+      jest.spyOn(console, "error").mockImplementation(() => {});
+    });
 
-  it("excludes stateProvince from params when not provided", async () => {
-    mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA");
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      location: { country: "USA" }
-    }));
-  });
-
-  it("includes date in params when provided", async () => {
-    mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA", undefined, undefined, undefined, "2024-01-01");
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      time: { date: "2024-01-01" }
-    }));
-  });
-
-  it("excludes date from params when empty string", async () => {
-    mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA", undefined, undefined, undefined, "   ");
-    expect(mockedSearch).toHaveBeenCalledWith(expect.not.objectContaining({
-      time: expect.anything()
-    }));
-  });
-
-  it("includes unit in activity params when provided", async () => {
-    mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA", undefined, "kWh");
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      activity: expect.objectContaining({ unit: "kWh" })
-    }));
-  });
-
-  it("excludes unit from activity params when not provided", async () => {
-    mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA");
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      activity: { search: "diesel" }
-    }));
-  });
-
-  it("includes scope in activity params when provided", async () => {
-    mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA", undefined, undefined, "1");
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      activity: expect.objectContaining({ scope: "1" })
-    }));
-  });
-
-  it("excludes scope from activity params when not provided", async () => {
-    mockedSearch.mockResolvedValue(mockResponse);
-    await factorSearch("diesel", "USA");
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      activity: { search: "diesel" }
-    }));
-  });
-
-  it("handles activityUnit as undefined in formatFactorSearchResponse", async () => {
-    const responseWithUndefinedUnit = {
+    const mockResponse = {
       factors: [
         {
           factorSet: "set1",
@@ -359,7 +260,7 @@ describe("factorSearch", () => {
           methodology: undefined,
           scope: undefined,
           activityType: "type1",
-          activityUnit: undefined,
+          activityUnit: ["kg"],
           region: "USA",
           factorId: 1001,
           transactionId: "txn-1001",
@@ -383,106 +284,230 @@ describe("factorSearch", () => {
         },
       ],
     };
-    mockedSearch.mockResolvedValue(responseWithUndefinedUnit as any);
-    const result = await factorSearch("diesel", "USA");
-    expect(result[0][5]).toBe(""); // activityUnit (index shifted by 2)
-  });
 
-  it("handles activityUnit as null in formatFactorSearchResponse", async () => {
-    const responseWithNullUnit = {
-      factors: [
-        {
-          factorSet: "set1",
-          source: "source1",
-          methodology: undefined,
-          scope: undefined,
-          activityType: "type1",
-          activityUnit: null,
-          region: "USA",
-          factorId: 1001,
-          transactionId: "txn-1001",
-          name: "Factor 1",
-          description: "Description 1",
-          effectiveFrom: "2024-01-01",
-          effectiveTo: "2025-01-01",
-          publishedFrom: "2024-01-01",
-          publishedTo: "2025-01-01",
-          totalCO2e: 100,
-          CO2: 50,
-          CH4: 10,
-          N2O: 5,
-          HFC: 0,
-          PFC: 0,
-          SF6: 0,
-          NF3: 0,
-          bioCO2: 0,
-          indirectCO2e: 2,
-          unit: "kgCO2e",
-        },
-      ],
-    };
-    mockedSearch.mockResolvedValue(responseWithNullUnit as any);
-    const result = await factorSearch("diesel", "USA");
-    expect(result[0][5]).toBe(""); // activityUnit (index shifted by 2)
-  });
+    it("includes stateProvince in params when provided", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
+      await factorSearch("diesel", "USA", { stateProvince: "CA" });
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          location: { country: "USA", stateProvince: "CA" },
+        })
+      );
+    });
 
-  it("handles activityUnit as non-array string in formatFactorSearchResponse", async () => {
-    const responseWithStringUnit = {
-      factors: [
-        {
-          factorSet: "set1",
-          source: "source1",
-          methodology: undefined,
-          scope: undefined,
-          activityType: "type1",
-          activityUnit: "kg",
-          region: "USA",
-          factorId: 1001,
-          transactionId: "txn-1001",
-          name: "Factor 1",
-          description: "Description 1",
-          effectiveFrom: "2024-01-01",
-          effectiveTo: "2025-01-01",
-          publishedFrom: "2024-01-01",
-          publishedTo: "2025-01-01",
-          totalCO2e: 100,
-          CO2: 50,
-          CH4: 10,
-          N2O: 5,
-          HFC: 0,
-          PFC: 0,
-          SF6: 0,
-          NF3: 0,
-          bioCO2: 0,
-          indirectCO2e: 2,
-          unit: "kgCO2e",
-        },
-      ],
-    };
-    mockedSearch.mockResolvedValue(responseWithStringUnit as any);
-    const result = await factorSearch("diesel", "USA");
-    expect(result[0][5]).toBe("kg"); // activityUnit (index shifted by 2)
-  });
-
-  it("throws error when response is missing factors array", async () => {
-    mockedSearch.mockResolvedValue({ factors: null } as any);
-    await expect(factorSearch("diesel", "USA")).rejects.toThrow("Invalid API response structure");
-  });
-
-  it("re-throws CustomFunctions.Error without modification", async () => {
-    const customError = new (global as any).CustomFunctions.Error("NotAvailable", "Custom error");
-    mockedSearch.mockRejectedValue(customError);
-    await expect(factorSearch("diesel", "USA")).rejects.toThrow(customError);
-  });
-
-  it("uses InvalidValue error code for 400 status", async () => {
-    const error = { status: 400, message: "Bad request" };
-    mockedSearch.mockRejectedValue(error);
-    try {
+    it("excludes stateProvince from params when not provided", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
       await factorSearch("diesel", "USA");
-    } catch (e: any) {
-      expect(e.code).toBe("InvalidValue");
-    }
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          location: { country: "USA" },
+        })
+      );
+    });
+
+    it("includes date in params when provided", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
+      await factorSearch("diesel", "USA", { date: "2024-01-01" });
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          time: { date: "2024-01-01" },
+        })
+      );
+    });
+
+    it("excludes date from params when empty string", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
+      await factorSearch("diesel", "USA", { date: "   " });
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          time: expect.anything(),
+        })
+      );
+    });
+
+    it("includes unit in activity params when provided", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
+      await factorSearch("diesel", "USA", { unit: "kWh" });
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activity: expect.objectContaining({ unit: "kWh" }),
+        })
+      );
+    });
+
+    it("excludes unit from activity params when not provided", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
+      await factorSearch("diesel", "USA");
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activity: { search: "diesel" },
+        })
+      );
+    });
+
+    it("includes scope in activity params when provided", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
+      await factorSearch("diesel", "USA", { scope: "1" });
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activity: expect.objectContaining({ scope: "1" }),
+        })
+      );
+    });
+
+    it("excludes scope from activity params when not provided", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
+      await factorSearch("diesel", "USA");
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activity: { search: "diesel" },
+        })
+      );
+    });
+
+    it("includes factorSet in activity params when provided", async () => {
+      mockedSearch.mockResolvedValue(mockResponse);
+      await factorSearch("diesel", "USA", { factorSet: "EPA" });
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activity: expect.objectContaining({ search: "diesel", factorSet: "EPA" }),
+        })
+      );
+    });
+
+    it("handles activityUnit as undefined in formatFactorSearchResponse", async () => {
+      const responseWithUndefinedUnit = {
+        factors: [
+          {
+            factorSet: "set1",
+            source: "source1",
+            methodology: undefined,
+            scope: undefined,
+            activityType: "type1",
+            activityUnit: undefined,
+            region: "USA",
+            factorId: 1001,
+            transactionId: "txn-1001",
+            name: "Factor 1",
+            description: "Description 1",
+            effectiveFrom: "2024-01-01",
+            effectiveTo: "2025-01-01",
+            publishedFrom: "2024-01-01",
+            publishedTo: "2025-01-01",
+            totalCO2e: 100,
+            CO2: 50,
+            CH4: 10,
+            N2O: 5,
+            HFC: 0,
+            PFC: 0,
+            SF6: 0,
+            NF3: 0,
+            bioCO2: 0,
+            indirectCO2e: 2,
+            unit: "kgCO2e",
+          },
+        ],
+      };
+      mockedSearch.mockResolvedValue(responseWithUndefinedUnit as any);
+      const result = await factorSearch("diesel", "USA");
+      expect(result[0][5]).toBe(""); // activityUnit (index shifted by 2)
+    });
+
+    it("handles activityUnit as null in formatFactorSearchResponse", async () => {
+      const responseWithNullUnit = {
+        factors: [
+          {
+            factorSet: "set1",
+            source: "source1",
+            methodology: undefined,
+            scope: undefined,
+            activityType: "type1",
+            activityUnit: null,
+            region: "USA",
+            factorId: 1001,
+            transactionId: "txn-1001",
+            name: "Factor 1",
+            description: "Description 1",
+            effectiveFrom: "2024-01-01",
+            effectiveTo: "2025-01-01",
+            publishedFrom: "2024-01-01",
+            publishedTo: "2025-01-01",
+            totalCO2e: 100,
+            CO2: 50,
+            CH4: 10,
+            N2O: 5,
+            HFC: 0,
+            PFC: 0,
+            SF6: 0,
+            NF3: 0,
+            bioCO2: 0,
+            indirectCO2e: 2,
+            unit: "kgCO2e",
+          },
+        ],
+      };
+      mockedSearch.mockResolvedValue(responseWithNullUnit as any);
+      const result = await factorSearch("diesel", "USA");
+      expect(result[0][5]).toBe(""); // activityUnit (index shifted by 2)
+    });
+
+    it("handles activityUnit as non-array string in formatFactorSearchResponse", async () => {
+      const responseWithStringUnit = {
+        factors: [
+          {
+            factorSet: "set1",
+            source: "source1",
+            methodology: undefined,
+            scope: undefined,
+            activityType: "type1",
+            activityUnit: "kg",
+            region: "USA",
+            factorId: 1001,
+            transactionId: "txn-1001",
+            name: "Factor 1",
+            description: "Description 1",
+            effectiveFrom: "2024-01-01",
+            effectiveTo: "2025-01-01",
+            publishedFrom: "2024-01-01",
+            publishedTo: "2025-01-01",
+            totalCO2e: 100,
+            CO2: 50,
+            CH4: 10,
+            N2O: 5,
+            HFC: 0,
+            PFC: 0,
+            SF6: 0,
+            NF3: 0,
+            bioCO2: 0,
+            indirectCO2e: 2,
+            unit: "kgCO2e",
+          },
+        ],
+      };
+      mockedSearch.mockResolvedValue(responseWithStringUnit as any);
+      const result = await factorSearch("diesel", "USA");
+      expect(result[0][5]).toBe("kg"); // activityUnit (index shifted by 2)
+    });
+
+    it("throws error when response is missing factors array", async () => {
+      mockedSearch.mockResolvedValue({ factors: null } as any);
+      await expect(factorSearch("diesel", "USA")).rejects.toThrow("Invalid API response structure");
+    });
+
+    it("re-throws CustomFunctions.Error without modification", async () => {
+      const customError = new (global as any).CustomFunctions.Error("NotAvailable", "Custom error");
+      mockedSearch.mockRejectedValue(customError);
+      await expect(factorSearch("diesel", "USA")).rejects.toThrow(customError);
+    });
+
+    it("uses InvalidValue error code for 400 status", async () => {
+      const error = { status: 400, message: "Bad request" };
+      mockedSearch.mockRejectedValue(error);
+      try {
+        await factorSearch("diesel", "USA");
+      } catch (e: any) {
+        expect(e.code).toBe("InvalidValue");
+      }
+    });
   });
-});
 });

@@ -1,6 +1,5 @@
 // Copyright IBM Corp. 2026
 
-import { Earth } from "@carbon/icons-react";
 import {
   AILabel,
   DataTable,
@@ -24,13 +23,13 @@ export interface ActivityTypeRecommendation {
   confidence: number;
   activityDescription: string;
   region?: string;
-  scope?: string;
+  scope?: string[];
   units?: string[];
 }
 
 interface ActivityRecommenderTableProps {
-  recommendations: ActivityTypeRecommendation[];
-  onSelect?: (selectedRecommendation: ActivityTypeRecommendation) => void;
+  readonly recommendations: ActivityTypeRecommendation[];
+  readonly onSelect?: (selectedRecommendation: ActivityTypeRecommendation) => void;
 }
 
 const useStyles = makeStyles({
@@ -134,14 +133,9 @@ export default function ActivityTypeRecommenderTable({
                           <div className="activity-type-table-row__content">
                             <div>{rowData.activityType}</div>
                             <div className="activity-type-table-row__metadata">
-                              <FormLabel className="activity-type-table-row__region">
-                                <Earth size={16} />
-                                Global
-                              </FormLabel>
-
                               <div className="activity-type-table-row__details-list">
                                 <FormLabel className="activity-type-table-row__details-item">
-                                  {rowData.scope}
+                                  Scope {rowData.scope?.join(", ")}
                                 </FormLabel>
                                 <FormLabel className="activity-type-table-row__details-item">
                                   {rowData.units?.join(", ")}
@@ -152,7 +146,7 @@ export default function ActivityTypeRecommenderTable({
                         </div>
                       </TableCell>
                       <TableCell className="activity-type-table-row__confidence-cell">
-                        {rowData.confidence}%
+                        {rowData.confidence}
                       </TableCell>
                       <TableCell>{rowData.activityDescription}</TableCell>
                     </TableRow>

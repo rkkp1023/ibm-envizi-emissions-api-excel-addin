@@ -129,6 +129,7 @@ function EmissionScopeSections({
           title={feature.title}
           formulas={feature.formulas}
           isFirst={index === 0}
+          link={feature.link}
         />
       ))}
       <div className="learn-more-btn">
@@ -225,7 +226,7 @@ function GettingStartedAccordionItem(): React.ReactElement {
               <Open16Regular />
             </Link>
             <Link
-              href="https://plugins.app.ibm.com/excel-addin/IBM%20Envizi%20Emissions%20Calculations%20Template.xlsx"
+              href="assets/templates/IBM%20Envizi%20Emissions%20Calculations%20Template.xlsx"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.linkWithIcon}

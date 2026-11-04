@@ -12,11 +12,18 @@ export interface Link {
   href: string;
 }
 
+export interface ScopeSectionLink {
+  text: string;
+  href: string;
+  icon?: React.ComponentType;
+}
+
 export interface EmissionScopeSectionProps {
   icon: React.ReactNode;
   title: string;
   formulas: EmissionFormula[];
   isFirst?: boolean;
+  link?: ScopeSectionLink;
 }
 
 export interface EmissionFormulaItemProps {
@@ -27,4 +34,5 @@ export interface EmissionScopeConfig {
   title: string;
   formulas: EmissionFormula[];
   iconName?: string;
+  link?: ScopeSectionLink;
 }

@@ -38,7 +38,8 @@ declare global {
               productTitle: string; // Required. The name of the offering as registered in the Growth portal
               subscriptionId?: string; // The unique identifier for MCSP Subscriptions. This will hold subscriptionIds across different cloud providers.
               productPlanName?: string; // The name of the plan the user is subscribed to
-              productPlanType?: string; // Must be one of the following three values: “trial”, “subscription”, or “contract”
+              productPlanType?: string; // Must be one of the following three values: "trial", "subscription", or "contract"
+              partNumber?: string; // The subscription part number (e.g. D09SJZX)
             };
             carbonComponentEvents?: boolean; // Boolean toggle for Automatic Carbon Component Events
           };

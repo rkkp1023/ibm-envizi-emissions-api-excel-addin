@@ -6,7 +6,7 @@
 const allowedDomains = ["*.ibm.com", "ibm.com"];
 
 // Only allow HTTPS protocol for security
-const allowedProtocols = ["https:"];
+const allowedProtocols = new Set(["https:"]);
 
 const urlParams = new URLSearchParams(window.location.search);
 const targetUrl = urlParams.get("url");
@@ -22,7 +22,7 @@ export function validateUrl(url: string): string | null {
     const parsedUrl = new URL(url);
 
     // Check if protocol is allowed (prevents javascript:, data:, file: URIs)
-    if (!allowedProtocols.includes(parsedUrl.protocol)) {
+    if (!allowedProtocols.has(parsedUrl.protocol)) {
       console.warn(`Blocked redirect: Invalid protocol "${parsedUrl.protocol}"`);
       return null;
     }

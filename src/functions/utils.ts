@@ -163,7 +163,7 @@ export function convertExcelDateToISO(input: string): string {
     // Validate that it's actually a valid date
     const date = new Date(trimmed);
     if (isNaN(date.getTime())) {
-      throw new Error(
+      throw new TypeError(
         `Date should be in YYYY-MM-DD format. Invalid date values provided: "${trimmed}"`
       );
     }
@@ -175,7 +175,7 @@ export function convertExcelDateToISO(input: string): string {
   if (!isNaN(asNumber) && asNumber > 20000) {
     const date = new Date(Math.round((asNumber - 25569) * 86400 * 1000));
     if (isNaN(date.getTime())) {
-      throw new Error(
+      throw new TypeError(
         `Date should be in YYYY-MM-DD format. Invalid Excel serial date: "${trimmed}"`
       );
     }
@@ -206,7 +206,8 @@ export function buildSearchParams(
   stateProvince?: string,
   unit?: string,
   scope?: string,
-  date?: string
+  date?: string,
+  factorSet?: string
 ): any {
   // Extract country code from display format: "USA (United States)" → "USA"
   const countryCode = extractSymbolFromDisplay(country?.trim()) || country?.trim();
@@ -216,7 +217,7 @@ export function buildSearchParams(
     location: { country: countryCode },
   };
 
-  // Add unit and scope to activity object if provided
+  // Add unit, scope, and factorSet to activity object if provided
   if (unit?.trim()) {
     // Extract unit symbol from display format: "kg (kilogram)" → "kg"
     const unitSymbol = extractSymbolFromDisplay(unit.trim()) || unit.trim();
@@ -225,6 +226,11 @@ export function buildSearchParams(
 
   if (scope?.trim()) {
     params.activity.scope = scope.trim();
+  }
+
+  if (factorSet?.trim()) {
+    const factorSetValue = extractSymbolFromDisplay(factorSet.trim()) || factorSet.trim();
+    params.activity.factorSet = factorSetValue;
   }
 
   if (stateProvince?.trim()) {

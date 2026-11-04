@@ -1,6 +1,6 @@
 // Copyright IBM Corp. 2025, 2026
 
-export type EnvType = "prod";
+export type EnvType = "prod" | "np" | "local";
 export type ApiId = "saascore" | "ghgemissions";
 
 declare global {
@@ -12,34 +12,74 @@ declare global {
 export const apiUrls: Record<ApiId, Record<EnvType, string>> = {
   saascore: {
     prod: "https://api.ibm.com/saascore/run",
+    np: "https://dev.api.ibm.com/saascore/test",
+    local: "https://dev.api.ibm.com/saascore/test",
   },
   ghgemissions: {
     prod: "https://api.ibm.com/ghgemissions/run",
+    np: "https://dev.api.ibm.com/ghgemissions/test",
+    local: "https://dev.api.ibm.com/ghgemissions/test",
+  },
+};
+
+export const enviziTokenExchangeConfigs: Record<
+  EnvType,
+  { tokenExchangeUrl: string; enviziTokenExchangeClientId: string }
+> = {
+  prod: {
+    tokenExchangeUrl: "https://api.ibm.com/saascore/bluerun/envizi-auth/exchange",
+    enviziTokenExchangeClientId: "f3d0be6fd3fb3d938b748fe18612cf92",
+  },
+  np: {
+    tokenExchangeUrl: "https://dev.api.ibm.com/saascore/bluetest/envizi-auth/exchange",
+    enviziTokenExchangeClientId: "c88b6c561e5e31425da9a31a87345f39",
+  },
+  local: {
+    tokenExchangeUrl: "https://dev.api.ibm.com/saascore/bluetest/envizi-auth/exchange",
+    enviziTokenExchangeClientId: "c88b6c561e5e31425da9a31a87345f39",
   },
 };
 
 export const apiHomeUrls: Record<EnvType, string> = {
   prod: "https://www.app.ibm.com/envizi/emissions-api-home",
+  np: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
+  local: "https://www-dev.app.ibm.com/envizi/emissions-api-home",
 };
 
 export const enviziUiOrigins: Record<EnvType, string> = {
   prod: "https://envizi.ibm.com",
+  np: "https://us006t.envizi.com",
+  local: "https://local.us006t.envizi.com",
 };
 
 export const enviziApiOrigins: Record<EnvType, string> = {
   prod: "https://envizi.ibm.com",
+  np: "https://us006t.envizi.com",
+  local: "https://us006t.envizi.com",
 };
 
 export const enviziGraphQLUrls: Record<string, string> = {
   "https://envizi.ibm.com": "https://envizi.ibm.com/graphqlapi-uxm",
+  "https://pentest.envizi.ibm.com": "https://pentest.envizi.ibm.com/graphqlapi-uxm",
+  "https://us006t.envizi.com": "https://us006t.envizi.com/graphqlapi-dev",
 };
 
 export const enviziApiHomeUrls: Record<EnvType, string> = {
   prod: `${getEnviziUiOrigin("prod")}/emissions`,
+  np: `${getEnviziUiOrigin("np")}/emissions`,
+  local: `${getEnviziUiOrigin("local")}/emissions-bridge`,
 };
 
 function detectEnvType(): EnvType {
-  return "prod";
+  const origin = window.location.origin;
+  if (origin === "https://plugins.app.ibm.com") {
+    return "prod";
+  } else if (origin === "https://plugins-dev.app.ibm.com") {
+    return "np";
+  } else if (/localhost/gi.test(origin)) {
+    return "local";
+  }
+  return "np";
 }
 
 export function getEnvType(): EnvType {
@@ -49,8 +89,15 @@ export function getEnvType(): EnvType {
   return window.envType;
 }
 
-export function getApiUrl(api: ApiId, envType?: EnvType) {
-  return apiUrls[api][envType || getEnvType()];
+export function getApiUrl(api: ApiId) {
+  return apiUrls[api][getEnvType()];
+}
+
+export function getEnviziTokenExchangeConfig(envType?: EnvType): {
+  tokenExchangeUrl: string;
+  enviziTokenExchangeClientId: string;
+} {
+  return enviziTokenExchangeConfigs[envType || getEnvType()];
 }
 
 export function getApiHomeUrl(): string {
@@ -82,6 +129,10 @@ export function getAccountUsageUrl(): string {
   return `${getEnviziApiHomeUrl()}/account-usage`;
 }
 
+export function getMCPServerUrl(): string {
+  return `${getEnviziApiHomeUrl()}/mcp-server`;
+}
+
 export function getEnviziUiOrigin(envType?: EnvType): string {
   const override = window.localStorage.getItem("enviziUiOrigin");
   return override || enviziUiOrigins[envType || getEnvType()];
@@ -107,4 +158,26 @@ export function getBuyNowUrl(): string {
 
 export function getPricingPageUrl(): string {
   return "https://www.ibm.com/products/envizi/pricing";
+}
+
+export const segmentKeys: Record<EnvType, string> = {
+  prod: "UFQ2aJT29kmBYu1kxjkmAAYnOtCgapWp",
+  np: "NQBwxzQErkTkwSG5npxexaKuVDEkCqrT",
+  local: "NQBwxzQErkTkwSG5npxexaKuVDEkCqrT",
+};
+
+export const enviziProductInfo = {
+  UT30: "30BZD",
+  productCode: "WW1171",
+  productCodeType: "WWPC",
+  productId: "5900API",
+  productTitle: "IBM Envizi",
+};
+
+// Feature flag for Carbon AutoTrack support
+export const enableCarbonAutotrack = true;
+
+export function getSegmentKey(envType?: EnvType): string {
+  const override = window.localStorage.getItem("useProdSegmentSetup");
+  return segmentKeys[override ? "prod" : envType || getEnvType()];
 }

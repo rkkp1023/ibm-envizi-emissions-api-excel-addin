@@ -37,7 +37,7 @@ describe("ActivityTypeRecommenderTable", () => {
       confidence: 95,
       activityDescription: "Waste Recycled - Cardboard",
       region: "Global",
-      scope: "Scope 3 - Category 5: Waste generated in operations",
+      scope: ["Scope 3 - Category 5: Waste generated in operations"],
       units: ["kg", "tonnes"],
     },
     {
@@ -46,7 +46,7 @@ describe("ActivityTypeRecommenderTable", () => {
       confidence: 88,
       activityDescription: "Waste Recycled - Paper",
       region: "Global",
-      scope: "Scope 3 - Category 5: Waste generated in operations",
+      scope: ["Scope 3 - Category 5: Waste generated in operations"],
       units: ["kg", "tonnes"],
     },
     {
@@ -55,7 +55,7 @@ describe("ActivityTypeRecommenderTable", () => {
       confidence: 82,
       activityDescription: "Waste Recycled - Plastic",
       region: "Global",
-      scope: "Scope 3 - Category 5: Waste generated in operations",
+      scope: ["Scope 3 - Category 5: Waste generated in operations"],
       units: ["kg", "tonnes"],
     },
   ];
@@ -132,12 +132,12 @@ describe("ActivityTypeRecommenderTable", () => {
       expect(screen.getAllByText("Waste Recycled - Plastic")[0]).toBeInTheDocument();
     });
 
-    it("should render confidence values with percentage", () => {
+    it("should render confidence values", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
-      expect(screen.getByText("95%")).toBeInTheDocument();
-      expect(screen.getByText("88%")).toBeInTheDocument();
-      expect(screen.getByText("82%")).toBeInTheDocument();
+      expect(screen.getByText("95")).toBeInTheDocument();
+      expect(screen.getByText("88")).toBeInTheDocument();
+      expect(screen.getByText("82")).toBeInTheDocument();
     });
 
     it("should render activity descriptions", () => {
@@ -153,7 +153,7 @@ describe("ActivityTypeRecommenderTable", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
       const scopeElements = screen.getAllByText(
-        "Scope 3 - Category 5: Waste generated in operations"
+        "Scope Scope 3 - Category 5: Waste generated in operations"
       );
       expect(scopeElements.length).toBeGreaterThan(0);
     });
@@ -165,11 +165,11 @@ describe("ActivityTypeRecommenderTable", () => {
       expect(unitsElements.length).toBeGreaterThan(0);
     });
 
-    it("should render Global region label", () => {
+    it("should render activity type cell for each row", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
-      const globalLabels = screen.getAllByText("Global");
-      expect(globalLabels.length).toBeGreaterThan(0);
+      const activityCells = screen.getAllByText("Waste Recycled - Cardboard");
+      expect(activityCells.length).toBeGreaterThan(0);
     });
   });
 
@@ -267,7 +267,7 @@ describe("ActivityTypeRecommenderTable", () => {
           confidence: 88,
           activityDescription: "Waste Recycled - Paper",
           region: "Global",
-          scope: "Scope 3 - Category 5: Waste generated in operations",
+          scope: ["Scope 3 - Category 5: Waste generated in operations"],
           units: ["kg", "tonnes"],
         })
       );
@@ -334,19 +334,19 @@ describe("ActivityTypeRecommenderTable", () => {
   });
 
   describe("Confidence Value Display", () => {
-    it("should display confidence as percentage", () => {
+    it("should display confidence as a plain number", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
-      const confidenceCells = screen.getAllByText(/\d+%/);
+      const confidenceCells = screen.getAllByText(/^\d+$/);
       expect(confidenceCells.length).toBeGreaterThan(0);
     });
 
     it("should display correct confidence values", () => {
       render(<ActivityTypeRecommenderTable recommendations={mockRecommendations} />);
 
-      expect(screen.getByText("95%")).toBeInTheDocument();
-      expect(screen.getByText("88%")).toBeInTheDocument();
-      expect(screen.getByText("82%")).toBeInTheDocument();
+      expect(screen.getByText("95")).toBeInTheDocument();
+      expect(screen.getByText("88")).toBeInTheDocument();
+      expect(screen.getByText("82")).toBeInTheDocument();
     });
 
     it("should handle confidence value of 0", () => {
@@ -360,7 +360,7 @@ describe("ActivityTypeRecommenderTable", () => {
       ];
 
       render(<ActivityTypeRecommenderTable recommendations={zeroConfidenceRec} />);
-      expect(screen.getByText("0%")).toBeInTheDocument();
+      expect(screen.getByText("0")).toBeInTheDocument();
     });
 
     it("should handle confidence value of 100", () => {
@@ -374,7 +374,7 @@ describe("ActivityTypeRecommenderTable", () => {
       ];
 
       render(<ActivityTypeRecommenderTable recommendations={fullConfidenceRec} />);
-      expect(screen.getByText("100%")).toBeInTheDocument();
+      expect(screen.getByText("100")).toBeInTheDocument();
     });
   });
 
@@ -493,13 +493,13 @@ describe("ActivityTypeRecommenderTable", () => {
       expect(metadataSections.length).toBe(mockRecommendations.length);
     });
 
-    it("should render region with Earth icon", () => {
+    it("should render details items for each row", () => {
       const { container } = render(
         <ActivityTypeRecommenderTable recommendations={mockRecommendations} />
       );
 
-      const regionElements = container.querySelectorAll(".activity-type-table-row__region");
-      expect(regionElements.length).toBeGreaterThan(0);
+      const detailItems = container.querySelectorAll(".activity-type-table-row__details-item");
+      expect(detailItems.length).toBeGreaterThan(0);
     });
 
     it("should render details list with scope and units", () => {

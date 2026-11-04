@@ -18,5 +18,6 @@ export function useActivityTypeRecommendations(params: ActivityTypeRecommenderSe
     queryKey: ["activityTypeRecommendations", params],
     queryFn: () => recommendActivityType(params),
     enabled: !!params.search,
+    retry: false,
   });
 }

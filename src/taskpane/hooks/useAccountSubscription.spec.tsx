@@ -12,6 +12,9 @@ import { getAccountSubscriptionData, useAccountSubscription } from "./useAccount
 jest.mock("axios");
 jest.mock("jwt-decode");
 jest.mock("./useAuth");
+jest.mock("../../common/env", () => ({
+  getApiUrl: jest.fn(() => "https://api.ibm.com/saascore/run"),
+}));
 
 jest.mock("./useUserInfo", () => ({
   useUserInfo: jest.fn(() => ({

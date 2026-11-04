@@ -117,18 +117,15 @@ export async function deleteMetadataSheet(): Promise<void> {
         const sheets = context.workbook.worksheets;
         const metadataSheet = sheets.getItemOrNullObject(METADATA_SHEET_NAME);
         await context.sync();
-        
         if (!metadataSheet.isNullObject) {
           metadataSheet.delete();
           await context.sync();
         }
-        
         // Also clear the metadata state
         await setMetadataState({
           lastRefreshTimestamp: "",
           sheetExists: false,
         });
-        
         resolve();
       } catch (error) {
         console.error("Failed to delete metadata sheet:", error);
@@ -223,7 +220,6 @@ export async function writeMetadataToSheet(metadata: CompleteMetadata): Promise<
       try {
         // Suspend screen updating for better performance
         context.workbook.application.suspendScreenUpdatingUntilNextSync();
-        
         const sheet = await getOrCreateMetadataSheet(context);
         const columnMapping = calculateColumnMapping();
 
@@ -243,7 +239,6 @@ export async function writeMetadataToSheet(metadata: CompleteMetadata): Promise<
         for (const endpoint of ACTIVITY_TYPE_ENDPOINTS) {
           const col = columnMapping.activityTypes[endpoint];
           const types = metadata.activityTypes[endpoint] || [];
-          
           if (types.length > 0) {
             const dataRange = sheet.getRangeByIndexes(0, col, types.length, 1);
             dataRange.values = types.map((type) => [type]);
@@ -253,21 +248,36 @@ export async function writeMetadataToSheet(metadata: CompleteMetadata): Promise<
         // Write countries
         const countries = metadata.areas.countries;
         if (countries.length > 0) {
-          const dataRange = sheet.getRangeByIndexes(0, columnMapping.countries, countries.length, 1);
+          const dataRange = sheet.getRangeByIndexes(
+            0,
+            columnMapping.countries,
+            countries.length,
+            1
+          );
           dataRange.values = countries.map((c) => [c]);
         }
 
         // Write state/provinces
         const stateProvinces = metadata.areas.stateProvinces;
         if (stateProvinces.length > 0) {
-          const dataRange = sheet.getRangeByIndexes(0, columnMapping.stateProvinces, stateProvinces.length, 1);
+          const dataRange = sheet.getRangeByIndexes(
+            0,
+            columnMapping.stateProvinces,
+            stateProvinces.length,
+            1
+          );
           dataRange.values = stateProvinces.map((sp) => [sp]);
         }
 
         // Write power grids
         const powerGrids = metadata.areas.powerGrids;
         if (powerGrids.length > 0) {
-          const dataRange = sheet.getRangeByIndexes(0, columnMapping.powerGrids, powerGrids.length, 1);
+          const dataRange = sheet.getRangeByIndexes(
+            0,
+            columnMapping.powerGrids,
+            powerGrids.length,
+            1
+          );
           dataRange.values = powerGrids.map((pg) => [pg]);
         }
 
@@ -305,14 +315,13 @@ export async function createNamedRanges(): Promise<void> {
       try {
         // Suspend screen updating for better performance
         context.workbook.application.suspendScreenUpdatingUntilNextSync();
-        
         const sheet = context.workbook.worksheets.getItem(METADATA_SHEET_NAME);
         const namedItems = context.workbook.names;
         const columnMapping = calculateColumnMapping();
 
         // Helper function to get column letter from index (0=A, 1=B, etc.)
         const getColumnLetter = (columnIndex: number): string => {
-          let letter = '';
+          let letter = "";
           let temp = columnIndex;
           while (temp >= 0) {
             // Use String.fromCodePoint for better Unicode support
@@ -324,23 +333,20 @@ export async function createNamedRanges(): Promise<void> {
 
         // Collect all column indices to check
         const columnsToCheck: Array<{ name: string; columnIndex: number }> = [];
-        
         // Activity types
         for (const endpoint of ACTIVITY_TYPE_ENDPOINTS) {
           const col = columnMapping.activityTypes[endpoint];
           const rangeName = `ActivityType_${endpoint.replaceAll("-", "_")}`;
           columnsToCheck.push({ name: rangeName, columnIndex: col });
         }
-        
-        // Areas
+
+        // Areas and units
         columnsToCheck.push(
           { name: "Area_Country", columnIndex: columnMapping.countries },
           { name: "Area_StateProvince", columnIndex: columnMapping.stateProvinces },
-          { name: "Area_PowerGrid", columnIndex: columnMapping.powerGrids }
+          { name: "Area_PowerGrid", columnIndex: columnMapping.powerGrids },
+          { name: "Units_All", columnIndex: columnMapping.units }
         );
-        
-        // Units
-        columnsToCheck.push({ name: "Units_All", columnIndex: columnMapping.units });
 
         // Load all first cells in one batch
         const firstCells = columnsToCheck.map(({ columnIndex }) => {
@@ -348,7 +354,6 @@ export async function createNamedRanges(): Promise<void> {
           cell.load("values");
           return cell;
         });
-        
         await context.sync();
 
         // Load all existing named ranges in one batch
@@ -356,7 +361,6 @@ export async function createNamedRanges(): Promise<void> {
           const range = namedItems.getItemOrNullObject(name);
           return range;
         });
-        
         await context.sync();
 
         // Process each column and create named ranges
@@ -420,6 +424,82 @@ export function getAreaRangeName(areaType: "country" | "stateprovince" | "powerg
  */
 export function getUnitsRangeName(): string {
   return "Units_All";
+}
+
+/**
+ * Reads metadata from the hidden sheet's named ranges
+ * Returns null if metadata doesn't exist or can't be read
+ */
+export async function readMetadataFromSheet(): Promise<{
+  countries: string[];
+  stateProvinces: string[];
+  units: string[];
+} | null> {
+  try {
+    return await Excel.run(async (context) => {
+      const metadataSheet = context.workbook.worksheets.getItemOrNullObject(METADATA_SHEET_NAME);
+      await context.sync();
+
+      if (metadataSheet.isNullObject) {
+        console.warn("Metadata sheet not found.");
+        return null;
+      }
+
+      const workbook = context.workbook;
+      const countryName = workbook.names.getItemOrNullObject(getAreaRangeName("country"));
+      const stateName = workbook.names.getItemOrNullObject(getAreaRangeName("stateprovince"));
+      const unitName = workbook.names.getItemOrNullObject(getUnitsRangeName());
+
+      countryName.load(["name", "formula"]);
+      stateName.load(["name", "formula"]);
+      unitName.load(["name", "formula"]);
+
+      await context.sync();
+
+      if (countryName.isNullObject || stateName.isNullObject || unitName.isNullObject) {
+        console.error("One or more named ranges are missing.");
+        return null;
+      }
+
+      // Important: Named ranges point to J:J, K:K, M:M.
+      // Use getUsedRange(true) to avoid loading 1,048,576 rows.
+      const countryRange = countryName.getRange().getUsedRange(true);
+      const stateRange = stateName.getRange().getUsedRange(true);
+      const unitRange = unitName.getRange().getUsedRange(true);
+
+      countryRange.load(["address", "values"]);
+      stateRange.load(["address", "values"]);
+      unitRange.load(["address", "values"]);
+
+      await context.sync();
+
+      const extractValues = (values: any[][] | null | undefined): string[] => {
+        if (!values?.length) {
+          return [];
+        }
+
+        return values
+          .flat()
+          .filter((value) => value !== null && value !== undefined && String(value).trim() !== "")
+          .map(String);
+      };
+
+      const countries = extractValues(countryRange.values);
+      const stateProvinces = extractValues(stateRange.values);
+      const units = extractValues(unitRange.values);
+
+      const result = {
+        countries,
+        stateProvinces,
+        units,
+      };
+
+      return result;
+    });
+  } catch (error) {
+    console.error("Failed to read metadata from sheet:", error);
+    return null;
+  }
 }
 
 // Made with Bob

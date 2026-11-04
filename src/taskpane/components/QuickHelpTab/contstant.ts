@@ -1,5 +1,7 @@
 // Copyright IBM Corp. 2026
 
+import { Launch } from "@carbon/icons-react";
+
 import { EmissionScopeConfig } from "../EmissionScopeSection/types";
 
 export const gettingStartedSteps = [
@@ -26,7 +28,7 @@ export const usefulFeatures: EmissionScopeConfig[] = [
         description:
           "Use AI to help you choose the activity type  when you’re not sure which one to use. You then review the recommended data type and decide whether it is appropriate to your activity.",
         formulaSyntax:
-          "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(search,country,[stateProvince],[unit],[scope],[date])",
+          "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(search,country,[stateProvince],[unit],[scope],[date],[factorSet])",
         link: {
           href: "https://www.ibm.com/docs/SSFJN8P/topics/t_ctr_calc_emissions_excel.html",
           title: "Learn more about the recommender",
@@ -68,6 +70,11 @@ export const functions: EmissionScopeConfig[] = [
   {
     iconName: "GasStation",
     title: "Scope 1 emissions",
+    link: {
+      text: "Watch the how-to video",
+      href: "https://mediacenter.ibm.com/media/Calculating+Scope+1+emissions+using+Microsoft+Excel+in+IBM+Envizi/1_wqppvdoh/310784402",
+      icon: Launch,
+    },
     formulas: [
       {
         category: "Stationary",
@@ -139,7 +146,7 @@ export const functions: EmissionScopeConfig[] = [
         description:
           "Fetch relevant factor sets by filtering by location, activity, and published year.",
         formulaSyntax:
-          "=ENVIZI.FACTOR_SEARCH(search,country,[stateProvince],[unit],[scope],[date],[page],[size])",
+          "=ENVIZI.FACTOR_SEARCH(search,country,[stateProvince],[unit],[scope],[date],[page],[size],[factorSet])",
       },
     ],
   },
