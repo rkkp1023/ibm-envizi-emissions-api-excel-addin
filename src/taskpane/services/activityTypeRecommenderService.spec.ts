@@ -74,7 +74,7 @@ describe("activityTypeRecommenderService", () => {
         confidence: 0.95,
         activityDescription: "Combustion of diesel fuel",
         region: "USA",
-        scope: "Scope 1",
+        scope: ["Scope 1"],
         activityUnit: ["L", "gal"],
       },
       {
@@ -82,7 +82,7 @@ describe("activityTypeRecommenderService", () => {
         confidence: 0.85,
         activityDescription: "Transportation using diesel",
         region: "USA",
-        scope: "Scope 1",
+        scope: ["Scope 1"],
         activityUnit: ["km"],
       },
     ],
@@ -91,7 +91,7 @@ describe("activityTypeRecommenderService", () => {
   describe("recommendActivityType", () => {
     it("returns formatted activity type recommendations", async () => {
       mockedBuildSearchParams.mockReturnValue(mockBaseSearchParams);
-      mockedTypeRecommenderSearch.mockResolvedValue(mockTypeRecommenderResponse);
+      mockedTypeRecommenderSearch.mockResolvedValue(mockTypeRecommenderResponse as any);
 
       const result = await recommendActivityType(mockSearchParams);
 
@@ -102,7 +102,8 @@ describe("activityTypeRecommenderService", () => {
         "CA",
         "L",
         "1",
-        "2024-01-01"
+        "2024-01-01",
+        undefined
       );
       expect(mockedTypeRecommenderSearch).toHaveBeenCalledWith({
         ...mockBaseSearchParams,
@@ -119,7 +120,7 @@ describe("activityTypeRecommenderService", () => {
           confidence: 0.95,
           activityDescription: "Combustion of diesel fuel",
           region: "USA",
-          scope: "Scope 1",
+          scope: ["Scope 1"],
           units: ["L", "gal"],
         },
         {
@@ -128,7 +129,7 @@ describe("activityTypeRecommenderService", () => {
           confidence: 0.85,
           activityDescription: "Transportation using diesel",
           region: "USA",
-          scope: "Scope 1",
+          scope: ["Scope 1"],
           units: ["km"],
         },
       ]);
@@ -164,6 +165,7 @@ describe("activityTypeRecommenderService", () => {
         undefined,
         undefined,
         undefined,
+        undefined,
         undefined
       );
       expect(result).toHaveLength(1);
@@ -173,9 +175,43 @@ describe("activityTypeRecommenderService", () => {
         confidence: 0.9,
         activityDescription: "Electricity from grid",
         region: "-",
-        scope: "-",
+        scope: undefined,
         units: [],
       });
+    });
+
+    it("passes factorSet to buildSearchParams when provided", async () => {
+      const paramsWithFactorSet: ActivityTypeRecommenderSearchParams = {
+        search: "electricity",
+        country: "USA",
+        factorSet: "EPA",
+      };
+
+      mockedBuildSearchParams.mockReturnValue({
+        activity: { search: "electricity", factorSet: "EPA" },
+        location: { country: "USA" },
+      });
+      mockedTypeRecommenderSearch.mockResolvedValue({
+        types: [
+          {
+            activityType: "Grid Electricity",
+            confidence: 0.9,
+            activityDescription: "Electricity from grid",
+          },
+        ],
+      } as any);
+
+      await recommendActivityType(paramsWithFactorSet);
+
+      expect(mockedBuildSearchParams).toHaveBeenCalledWith(
+        "electricity",
+        "USA",
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        "EPA"
+      );
     });
 
     it("filters out recommendations without activityType", async () => {
@@ -245,7 +281,7 @@ describe("activityTypeRecommenderService", () => {
           confidence: 0,
           activityDescription: "",
           region: "-",
-          scope: "-",
+          scope: undefined,
           units: [],
         },
       ]);
@@ -319,6 +355,17 @@ describe("activityTypeRecommenderService", () => {
       expect(result[0].id).toBe("recommendation-0");
       expect(result[1].id).toBe("recommendation-1");
       expect(result[2].id).toBe("recommendation-2");
+    });
+
+    it("returns an empty array for the no-results 404 API response", async () => {
+      mockedBuildSearchParams.mockReturnValue(mockBaseSearchParams);
+      mockedTypeRecommenderSearch.mockRejectedValue({
+        code: 404,
+        message: "No activity types found matching the criteria",
+      });
+
+      await expect(recommendActivityType(mockSearchParams)).resolves.toEqual([]);
+      expect(console.error).not.toHaveBeenCalled();
     });
 
     it("throws error when TypeRecommender.search fails", async () => {
@@ -494,7 +541,7 @@ describe("activityTypeRecommenderService", () => {
         confidence: 0.9,
         activityDescription: "",
         region: "",
-        scope: "",
+        scope: undefined,
         units: [],
       });
     });

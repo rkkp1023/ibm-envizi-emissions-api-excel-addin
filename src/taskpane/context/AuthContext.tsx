@@ -30,9 +30,9 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 class RefreshTokenError extends Error {
-  errors: Record<string, any>[]; // GraphQL errors
+  errors?: Record<string, any>[]; // GraphQL errors
 
-  constructor(message: string, errors: Record<string, any>[]) {
+  constructor(message: string, errors?: Record<string, any>[]) {
     super(message);
     this.name = "RefreshTokenError";
     this.errors = errors;
@@ -45,7 +45,7 @@ async function refreshToken(userCredentials: UserCredentials): Promise<UserCrede
     refreshToken: userCredentials.refreshToken,
   });
   if (!renewResponse.data?.renewToken) {
-    throw new RefreshTokenError("Failed to refresh token.", renewResponse.errors!);
+    throw new RefreshTokenError("Failed to refresh token.", renewResponse.errors);
   }
   const newCoreToken = await coreEnviziAuth.exchangeToken(renewResponse.data.renewToken.token);
   return {
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       // Check token expiry
       if (credentials?.["token"]) {
         const decodedToken = jwtDecode(credentials["token"]);
-        if (Date.now() >= decodedToken.exp! * 1000) {
+        if (decodedToken.exp && Date.now() >= decodedToken.exp * 1000) {
           // Token expired, discard it
           console.log("Token has expired; removing from storage.");
           credentials = null;
@@ -109,12 +109,13 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       return;
     }
 
+    const credentials = state.credentials;
     const refreshTimeoutMinutes = 10;
     console.log(`Setting a ${refreshTimeoutMinutes}-minute token refresh timer`);
 
     let intervalId: ReturnType<typeof setInterval> | undefined = setInterval(() => {
       console.log("Refreshing token...");
-      refreshToken(state.credentials as UserCredentials).then(
+      refreshToken(credentials).then(
         (newCredentials) => {
           console.log("Received new credentials:", newCredentials);
           saveUserCredentialsToStorage(newCredentials);

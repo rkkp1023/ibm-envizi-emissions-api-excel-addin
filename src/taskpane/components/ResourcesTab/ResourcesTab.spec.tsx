@@ -74,10 +74,11 @@ describe("ResourcesTab", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render all four resource sections", () => {
+    it("should render all five resource sections", () => {
       render(<ResourcesTab />, { wrapper });
       expect(screen.getByText("Overview")).toBeInTheDocument();
       expect(screen.getByText("Documentation")).toBeInTheDocument();
+      expect(screen.getByText("Sample datasets and templates")).toBeInTheDocument();
       expect(screen.getByText("Community")).toBeInTheDocument();
       expect(screen.getByText("Support")).toBeInTheDocument();
     });
@@ -125,6 +126,44 @@ describe("ResourcesTab", () => {
         "https://www.ibm.com/docs/envizi-esg-suite?topic=SSFJN8P/topics/c_ctr_new_emissions_excel.html"
       );
       expect(link).toHaveAttribute("target", "_blank");
+    });
+  });
+
+  describe("Sample Datasets and Templates Links", () => {
+    beforeEach(() => {
+      useAccountSubscription.mockReturnValue({
+        data: undefined,
+        isLoading: false,
+        isError: false,
+      });
+      render(<ResourcesTab />, { wrapper });
+    });
+
+    it("should render Financed emissions dataset link", () => {
+      const link = screen.getByRole("link", { name: /Financed emissions dataset/i });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute(
+        "href",
+        "assets/templates/Financed%20Emissions%20Sample%20Data.xlsx"
+      );
+      expect(link).toHaveAttribute("target", "_blank");
+    });
+
+    it("should render Emissions API Excel template link", () => {
+      const link = screen.getByRole("link", { name: /Emissions API Excel template/i });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute(
+        "href",
+        "assets/templates/IBM%20Envizi%20Emissions%20Calculations%20Template.xlsx"
+      );
+      expect(link).toHaveAttribute("target", "_blank");
+    });
+
+    it("should render a download icon on each link", () => {
+      const datasetLink = screen.getByRole("link", { name: /Financed emissions dataset/i });
+      const templateLink = screen.getByRole("link", { name: /Emissions API Excel template/i });
+      expect(datasetLink.querySelector("svg")).toBeInTheDocument();
+      expect(templateLink.querySelector("svg")).toBeInTheDocument();
     });
   });
 
@@ -311,22 +350,22 @@ describe("ResourcesTab", () => {
       });
     });
 
-    it("should render all 7 external links", () => {
+    it("should render all 11 external links", () => {
       render(<ResourcesTab />, { wrapper });
       const links = screen.getAllByRole("link");
-      expect(links).toHaveLength(7);
+      expect(links).toHaveLength(11);
     });
 
     it("should render block headers for resource sections", () => {
       const { container } = render(<ResourcesTab />, { wrapper });
       const blockHeaders = container.querySelectorAll(".block-header");
-      expect(blockHeaders).toHaveLength(4);
+      expect(blockHeaders).toHaveLength(5);
     });
 
     it("should render stack-gap-8 containers for links", () => {
       const { container } = render(<ResourcesTab />, { wrapper });
       const stackGaps = container.querySelectorAll(".stack-gap-8");
-      expect(stackGaps).toHaveLength(4);
+      expect(stackGaps).toHaveLength(5);
     });
 
     it("should render stack-gap-16 container for main content", () => {
@@ -349,11 +388,13 @@ describe("ResourcesTab", () => {
       render(<ResourcesTab />, { wrapper });
       const overviewHeader = screen.getByText("Overview");
       const documentationHeader = screen.getByText("Documentation");
+      const samplesHeader = screen.getByText("Sample datasets and templates");
       const communityHeader = screen.getByText("Community");
       const supportHeader = screen.getByText("Support");
 
       expect(overviewHeader).toHaveClass("block-header");
       expect(documentationHeader).toHaveClass("block-header");
+      expect(samplesHeader).toHaveClass("block-header");
       expect(communityHeader).toHaveClass("block-header");
       expect(supportHeader).toHaveClass("block-header");
     });
@@ -368,6 +409,13 @@ describe("ResourcesTab", () => {
       // Documentation section should have 1 link
       const docLinks = [screen.getByRole("link", { name: /Excel add-in documentation/i })];
       expect(docLinks).toHaveLength(1);
+
+      // Sample datasets and templates section should have 2 links
+      const sampleLinks = [
+        screen.getByRole("link", { name: /Financed emissions dataset/i }),
+        screen.getByRole("link", { name: /Emissions API Excel template/i }),
+      ];
+      expect(sampleLinks).toHaveLength(2);
 
       // Community section should have 3 links
       const communityLinks = [

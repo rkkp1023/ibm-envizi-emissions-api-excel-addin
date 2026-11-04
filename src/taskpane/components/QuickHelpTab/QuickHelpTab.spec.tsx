@@ -203,7 +203,7 @@ describe("Useful Features Section", () => {
   it("should render AI recommendation formula syntax", () => {
     expect(
       screen.getByText(
-        /=ENVIZI\.RECOMMEND_ACTIVITY_TYPE\(search,country,\[stateProvince\],\[unit\],\[scope\],\[date\]\)/i
+        /=ENVIZI\.RECOMMEND_ACTIVITY_TYPE\(search,country,\[stateProvince\],\[unit\],\[scope\],\[date\],\[factorSet\]\)/i
       )
     ).toBeInTheDocument();
   });

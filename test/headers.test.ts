@@ -1,5 +1,7 @@
 // Copyright IBM Corp. 2025
 
+import { headers, headers_by_factorid } from "../src/functions/functions";
+
 (global as any).CustomFunctions = {
   Error: class extends Error {
     code: string;
@@ -14,8 +16,6 @@
     invalidValue: "InvalidValue",
   },
 };
-
-import { headers } from "../src/functions/functions";
 
 describe("ENVIZI.HEADERS function", () => {
   beforeAll(() => {
@@ -158,32 +158,65 @@ describe("ENVIZI.HEADERS function", () => {
 
     it("should return input headers for stationary endpoint (no powerGrid)", async () => {
       const result = await headers("stationary", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it("should return input headers for fugitive endpoint", async () => {
       const result = await headers("fugitive", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it("should return input headers for mobile endpoint", async () => {
       const result = await headers("mobile", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it("should return input headers for transportation_and_distribution endpoint", async () => {
       const result = await headers("transportation_and_distribution", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it("should return input headers for economic_activity endpoint", async () => {
       const result = await headers("economic_activity", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Total Equity", "Total Debt", "EVIC", "Revenue"]]);
+      expect(result).toEqual([
+        [
+          "Activity Type",
+          "Value",
+          "Unit",
+          "Country",
+          "StateProvince",
+          "Date",
+          "Outstanding Amount",
+          "Total Equity",
+          "Total Debt",
+          "EVIC",
+          "Revenue",
+        ],
+      ]);
     });
 
     it("should return input headers for real_estate endpoint", async () => {
       const result = await headers("real_estate", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Property Value"]]);
+      expect(result).toEqual([
+        [
+          "Activity Type",
+          "Value",
+          "Unit",
+          "Country",
+          "StateProvince",
+          "Date",
+          "Outstanding Amount",
+          "Property Value",
+        ],
+      ]);
     });
 
     it("should return input headers for factor endpoint", async () => {
@@ -193,7 +226,19 @@ describe("ENVIZI.HEADERS function", () => {
 
     it("should return input headers for factor_search endpoint", async () => {
       const result = await headers("factor_search", true, false);
-      expect(result).toEqual([["Search", "Country", "StateProvince", "Unit", "Scope", "Date", "Page", "Size"]]);
+      expect(result).toEqual([
+        [
+          "Search",
+          "Country",
+          "StateProvince",
+          "Unit",
+          "Scope",
+          "Date",
+          "Page",
+          "Size",
+          "Factor Set",
+        ],
+      ]);
     });
   });
 
@@ -228,7 +273,9 @@ describe("ENVIZI.HEADERS function", () => {
 
     it("should handle endpoint names with whitespace", async () => {
       const result = await headers("  fugitive  ", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
   });
 
@@ -270,7 +317,9 @@ describe("ENVIZI.HEADERS function", () => {
 
     it('should handle string "TRUE" (uppercase)', async () => {
       const result = await headers("stationary", "TRUE" as any, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it('should handle string "false" (lowercase)', async () => {
@@ -324,7 +373,21 @@ describe("ENVIZI.HEADERS function", () => {
 
     it('should handle string with whitespace " true "', async () => {
       const result = await headers("economic_activity", " true " as any, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Total Equity", "Total Debt", "EVIC", "Revenue"]]);
+      expect(result).toEqual([
+        [
+          "Activity Type",
+          "Value",
+          "Unit",
+          "Country",
+          "StateProvince",
+          "Date",
+          "Outstanding Amount",
+          "Total Equity",
+          "Total Debt",
+          "EVIC",
+          "Revenue",
+        ],
+      ]);
     });
 
     it('should treat non-"true" strings as false', async () => {
@@ -345,6 +408,7 @@ describe("ENVIZI.HEADERS function", () => {
           "Description",
           "Transaction Id",
           "Energy (MWh)",
+          "Score",
           "Financed Emission",
           "Attribution Factor",
         ],
@@ -408,8 +472,6 @@ describe("ENVIZI.HEADERS function", () => {
     });
   });
 });
-
-import { headers_by_factorid } from "../src/functions/functions";
 
 describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
   beforeAll(() => {
@@ -539,32 +601,65 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it("should return input headers for stationary endpoint (no powerGrid)", async () => {
       const result = await headers("stationary", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it("should return input headers for fugitive endpoint", async () => {
       const result = await headers("fugitive", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it("should return input headers for mobile endpoint", async () => {
       const result = await headers("mobile", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it("should return input headers for transportation_and_distribution endpoint", async () => {
       const result = await headers("transportation_and_distribution", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it("should return input headers for economic_activity endpoint", async () => {
       const result = await headers("economic_activity", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Total Equity", "Total Debt", "EVIC", "Revenue"]]);
+      expect(result).toEqual([
+        [
+          "Activity Type",
+          "Value",
+          "Unit",
+          "Country",
+          "StateProvince",
+          "Date",
+          "Outstanding Amount",
+          "Total Equity",
+          "Total Debt",
+          "EVIC",
+          "Revenue",
+        ],
+      ]);
     });
 
     it("should return input headers for real_estate endpoint", async () => {
       const result = await headers("real_estate", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Property Value"]]);
+      expect(result).toEqual([
+        [
+          "Activity Type",
+          "Value",
+          "Unit",
+          "Country",
+          "StateProvince",
+          "Date",
+          "Outstanding Amount",
+          "Property Value",
+        ],
+      ]);
     });
 
     it("should return input headers for factor endpoint", async () => {
@@ -574,7 +669,19 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it("should return input headers for factor_search endpoint", async () => {
       const result = await headers("factor_search", true, false);
-      expect(result).toEqual([["Search", "Country", "StateProvince", "Unit", "Scope", "Date", "Page", "Size"]]);
+      expect(result).toEqual([
+        [
+          "Search",
+          "Country",
+          "StateProvince",
+          "Unit",
+          "Scope",
+          "Date",
+          "Page",
+          "Size",
+          "Factor Set",
+        ],
+      ]);
     });
   });
 
@@ -609,7 +716,9 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it("should handle endpoint names with whitespace", async () => {
       const result = await headers("  fugitive  ", true, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
   });
 
@@ -651,7 +760,9 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it('should handle string "TRUE" (uppercase)', async () => {
       const result = await headers("stationary", "TRUE" as any, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"]]);
+      expect(result).toEqual([
+        ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+      ]);
     });
 
     it('should handle string "false" (lowercase)', async () => {
@@ -705,7 +816,21 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
 
     it('should handle string with whitespace " true "', async () => {
       const result = await headers("economic_activity", " true " as any, false);
-      expect(result).toEqual([["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Outstanding Amount", "Total Equity", "Total Debt", "EVIC", "Revenue"]]);
+      expect(result).toEqual([
+        [
+          "Activity Type",
+          "Value",
+          "Unit",
+          "Country",
+          "StateProvince",
+          "Date",
+          "Outstanding Amount",
+          "Total Equity",
+          "Total Debt",
+          "EVIC",
+          "Revenue",
+        ],
+      ]);
     });
 
     it('should treat non-"true" strings as false', async () => {
@@ -726,6 +851,7 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
           "Description",
           "Transaction Id",
           "Energy (MWh)",
+          "Score",
           "Financed Emission",
           "Attribution Factor",
         ],
@@ -841,6 +967,18 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
       ]);
     });
 
+    it("should return output headers for economic_activity endpoint including scope columns", async () => {
+      const result = await headers_by_factorid("economic_activity", false, true);
+      expect(result[0].slice(-6)).toEqual([
+        "Financed Emission",
+        "Scope 1",
+        "Scope 2",
+        "Scope 3 Upstream",
+        "Scope 3 Downstream",
+        "Attribution Factor",
+      ]);
+    });
+
     it("should default to output headers when input not specified", async () => {
       const result = await headers_by_factorid("mobile", false, true);
       expect(result).toEqual([
@@ -900,117 +1038,103 @@ describe("ENVIZI.HEADERS_BY_FACTORID function", () => {
       "factor",
     ];
 
-    it.each(supportedEndpoints)(
-      "should return factorId input headers for %s",
-      async (endpoint) => {
-        const result = await headers_by_factorid(endpoint, true);
-        expect(result).toBeDefined();
-        expect(Array.isArray(result)).toBe(true);
-        expect(result.length).toBe(1);
-        expect(Array.isArray(result[0])).toBe(true);
-        expect(result[0]).toContain("factorId");
-      }
-    );
-
-  describe("Input headers with includeActivityTypeRecommender", () => {
-    it("should include recommender headers for location endpoint when flag is true", async () => {
-      const result = await headers("location", true, false, true);
-      expect(result).toEqual([[
-        "Activity Type",
-        "Recommended Activity Type",
-        "Confidence(%)",
-        "Description",
-        "Value",
-        "Unit",
-        "Country",
-        "StateProvince",
-        "Date",
-        "Power Grid"
-      ]]);
+    it.each(supportedEndpoints)("should return factorId input headers for %s", async (endpoint) => {
+      const result = await headers_by_factorid(endpoint, true);
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(1);
+      expect(Array.isArray(result[0])).toBe(true);
+      expect(result[0]).toContain("factorId");
     });
 
-    it("should not include recommender headers when flag is false", async () => {
-      const result = await headers("location", true, false, false);
-      expect(result).toEqual([[
-        "Activity Type",
-        "Value",
-        "Unit",
-        "Country",
-        "StateProvince",
-        "Date",
-        "Power Grid"
-      ]]);
+    describe("Input headers with includeActivityTypeRecommender", () => {
+      it("should include recommender headers for location endpoint when flag is true", async () => {
+        const result = await headers("location", true, false, true);
+        expect(result).toEqual([
+          [
+            "Activity Type",
+            "Recommended Activity Type",
+            "Confidence(%)",
+            "Description",
+            "Value",
+            "Unit",
+            "Country",
+            "StateProvince",
+            "Date",
+            "Power Grid",
+          ],
+        ]);
+      });
+
+      it("should not include recommender headers when flag is false", async () => {
+        const result = await headers("location", true, false, false);
+        expect(result).toEqual([
+          ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date", "Power Grid"],
+        ]);
+      });
+
+      it("should not include recommender headers when flag is not provided (default)", async () => {
+        const result = await headers("stationary", true, false);
+        expect(result).toEqual([
+          ["Activity Type", "Value", "Unit", "Country", "StateProvince", "Date"],
+        ]);
+      });
+
+      it("should handle string 'true' for includeActivityTypeRecommender parameter", async () => {
+        const result = await headers("mobile", "true", "false", "true");
+        expect(result[0]).toContain("Activity Type");
+        expect(result[0]).toContain("Recommended Activity Type");
+        expect(result[0]).toContain("Confidence(%)");
+        expect(result[0]).toContain("Description");
+      });
+
+      it("should ignore includeActivityTypeRecommender when input is false", async () => {
+        const result = await headers("location", false, true, true);
+        expect(result[0]).toContain("TotalCO2e");
+        expect(result[0]).not.toContain("Recommended Activity Type");
+      });
+
+      it("should not add recommender headers for endpoints without 'type' field", async () => {
+        const result = await headers("factor_search", true, false, true);
+        expect(result).toEqual([
+          [
+            "Search",
+            "Country",
+            "StateProvince",
+            "Unit",
+            "Scope",
+            "Date",
+            "Page",
+            "Size",
+            "Factor Set",
+          ],
+        ]);
+      });
     });
 
-    it("should not include recommender headers when flag is not provided (default)", async () => {
-      const result = await headers("stationary", true, false);
-      expect(result).toEqual([[
-        "Activity Type",
-        "Value",
-        "Unit",
-        "Country",
-        "StateProvince",
-        "Date"
-      ]]);
-    });
+    describe("recommend_activity_type endpoint", () => {
+      it("should return input headers for recommend_activity_type endpoint", async () => {
+        const result = await headers("recommend_activity_type", true, false);
+        expect(result).toEqual([
+          ["Search", "Country", "StateProvince", "Unit", "Scope", "Date", "Factor Set"],
+        ]);
+      });
 
-    it("should handle string 'true' for includeActivityTypeRecommender parameter", async () => {
-      const result = await headers("mobile", "true", "false", "true");
-      expect(result[0]).toContain("Activity Type");
-      expect(result[0]).toContain("Recommended Activity Type");
-      expect(result[0]).toContain("Confidence(%)");
-      expect(result[0]).toContain("Description");
+      it("should return both input and output headers when both are true with recommender", async () => {
+        const result = await headers("calculation", true, true, true);
+        // Should contain input headers with recommender
+        expect(result[0]).toContain("Activity Type");
+        expect(result[0]).toContain("Recommended Activity Type");
+        expect(result[0]).toContain("Confidence(%)");
+        expect(result[0]).toContain("Description");
+        expect(result[0]).toContain("Value");
+        expect(result[0]).toContain("Unit");
+        expect(result[0]).toContain("Country");
+        // Should also contain output headers
+        expect(result[0]).toContain("TotalCO2e");
+        expect(result[0]).toContain("CO2");
+        expect(result[0]).toContain("Transaction Id");
+      });
     });
-
-    it("should ignore includeActivityTypeRecommender when input is false", async () => {
-      const result = await headers("location", false, true, true);
-      expect(result[0]).toContain("TotalCO2e");
-      expect(result[0]).not.toContain("Recommended Activity Type");
-    });
-
-    it("should not add recommender headers for endpoints without 'type' field", async () => {
-      const result = await headers("factor_search", true, false, true);
-      expect(result).toEqual([[
-        "Search",
-        "Country",
-        "StateProvince",
-        "Unit",
-        "Scope",
-        "Date",
-        "Page",
-        "Size"
-      ]]);
-    });
-  });
-
-  describe("recommend_activity_type endpoint", () => {
-    it("should return input headers for recommend_activity_type endpoint", async () => {
-      const result = await headers("recommend_activity_type", true, false);
-      expect(result).toEqual([[
-        "Search",
-        "Country",
-        "StateProvince",
-        "Unit",
-        "Scope",
-        "Date"
-      ]]);
-    });
-
-    it("should return both input and output headers when both are true with recommender", async () => {
-      const result = await headers("calculation", true, true, true);
-      // Should contain input headers with recommender
-      expect(result[0]).toContain("Activity Type");
-      expect(result[0]).toContain("Recommended Activity Type");
-      expect(result[0]).toContain("Confidence(%)");
-      expect(result[0]).toContain("Description");
-      expect(result[0]).toContain("Value");
-      expect(result[0]).toContain("Unit");
-      expect(result[0]).toContain("Country");
-      // Should also contain output headers
-      expect(result[0]).toContain("TotalCO2e");
-      expect(result[0]).toContain("CO2");
-      expect(result[0]).toContain("Transaction Id");
-    });
-  });
   });
 });

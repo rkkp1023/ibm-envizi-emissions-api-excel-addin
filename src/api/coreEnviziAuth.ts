@@ -2,11 +2,11 @@
 
 import axios from "axios";
 
+import { getEnviziTokenExchangeConfig } from "../common/env";
+
 export class CoreEnviziAuth {
   async exchangeToken(token: string): Promise<string> {
-    // Using prod URL since the test accounts were created on prod
-    const tokenExchangeUrl = "https://api.ibm.com/saascore/bluerun/envizi-auth/exchange";
-    const enviziTokenExchangeClientId = "[REDACTED]";
+    const { tokenExchangeUrl, enviziTokenExchangeClientId } = getEnviziTokenExchangeConfig();
     const response = await axios.post<string>(tokenExchangeUrl, null, {
       headers: { authorization: `Bearer ${token}`, "x-ibm-client-id": enviziTokenExchangeClientId },
       responseType: "text",

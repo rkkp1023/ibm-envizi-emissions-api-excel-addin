@@ -16,6 +16,7 @@ export interface FormulaParams {
   unit?: string;
   scope?: string;
   date?: string;
+  factorSet?: string;
 }
 
 /**
@@ -60,30 +61,40 @@ export interface ParameterCellAddresses {
   unitCell?: string;
   scopeCell?: string;
   dateCell?: string;
+  factorSetCell?: string;
 }
 
 /**
  * Extracts parameter cell addresses from the ENVIZI.recommend_activity_type formula
  * Uses extractCellReferences to get all cell references and maps them to parameter positions
  * @param formula The formula string (e.g., "=ENVIZI.RECOMMEND_ACTIVITY_TYPE(A1, B1, C1, D1)")
- * @returns Object containing cell addresses for each parameter (search, country, stateProvince, unit, scope, date)
+ * @returns Object containing cell addresses for each parameter (search, country, stateProvince, unit, scope, date, factorSet)
  */
 export function extractParameterCellAddresses(formula: string): ParameterCellAddresses {
   if (!formula) {
     return {};
   }
 
-  // Extract all cell references from the formula using the existing utility
-  const cellRefs = extractCellReferences(formula);
+  // Extract the argument list from inside the parentheses
+  const match = /\(([^)]*)\)/.exec(formula);
+  if (!match?.[1]) {
+    return {};
+  }
+  // Split by comma to preserve positional order (including empty slots)
+  const args = match[1].split(",").map((p) => p.trim());
 
-  // Map cell references to their respective parameter positions
+  // A slot is a cell ref only when it matches a bare cell reference pattern
+  const isCellRef = (s: string) => /^\$?[A-Z]+\$?\d+$/i.test(s);
+
+  // Map each positional argument to its parameter — undefined when not a cell ref
   return {
-    searchCell: cellRefs[0],
-    countryCell: cellRefs[1],
-    stateProvinceCell: cellRefs[2],
-    unitCell: cellRefs[3],
-    scopeCell: cellRefs[4],
-    dateCell: cellRefs[5],
+    searchCell: isCellRef(args[0] ?? "") ? args[0] : undefined,
+    countryCell: isCellRef(args[1] ?? "") ? args[1] : undefined,
+    stateProvinceCell: isCellRef(args[2] ?? "") ? args[2] : undefined,
+    unitCell: isCellRef(args[3] ?? "") ? args[3] : undefined,
+    scopeCell: isCellRef(args[4] ?? "") ? args[4] : undefined,
+    dateCell: isCellRef(args[5] ?? "") ? args[5] : undefined,
+    factorSetCell: isCellRef(args[6] ?? "") ? args[6] : undefined,
   };
 }
 
@@ -157,7 +168,8 @@ export async function parseFormulaParams(
     stateProvince: resolvedValues[2] || undefined,
     unit: resolvedValues[3] || undefined,
     scope: resolvedValues[4] || undefined,
-    date: convertExcelDateToISO(resolvedValues[5]) || undefined,
+    date: resolvedValues[5] ? convertExcelDateToISO(resolvedValues[5]) || undefined : undefined,
+    factorSet: resolvedValues[6] || undefined,
   };
 
   return params;

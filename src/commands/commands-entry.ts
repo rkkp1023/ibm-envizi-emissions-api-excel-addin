@@ -15,17 +15,12 @@ import {
   openTaskpane,
 } from "./commands";
 import { ActivityTypeOption, AreaTypeOption } from "./data-validation-manager";
-import { getParamsFromCell } from "./formula-parser";
-import { getIsTaskpaneOpen } from "./taskPaneVisibility";
+import { FormulaParams, getParamsFromCell, isRecommendActivityTypeFormula } from "./formula-parser";
 
 declare global {
   interface Window {
-    recommendedParams?: RecommendedParams;
+    recommendedParams?: FormulaParams;
   }
-}
-
-export interface RecommendedParams {
-  payload: any;
 }
 
 /**
@@ -51,17 +46,12 @@ function showErrorNotification(message: string): void {
 
     console.log("Opening notification dialog with URL:", notificationUrl);
 
-    Office.context.ui.displayDialogAsync(notificationUrl, { height: 40, width: 40 }, (result) => {
+    Office.context.ui.displayDialogAsync(notificationUrl, { height: 20, width: 40 }, (result) => {
       if (result.status === Office.AsyncResultStatus.Succeeded) {
         console.log("Notification dialog opened successfully");
         // Listen for close message from dialog
         result.value.addEventHandler(Office.EventType.DialogMessageReceived, () => {
-          try {
-            result.value.close();
-          } catch (e) {
-            // Dialog already closed, ignore
-            console.log("Dialog already closed");
-          }
+          result.value.close();
         });
       } else {
         // Dialog failed, but error is already in console
@@ -155,41 +145,87 @@ async function actionInsertUnits(event: Office.AddinCommands.Event): Promise<voi
   }
 }
 
+// Tracks the last-set enabled state of the Activity Recommendation controls
+let activityRecommendationEnabled = false;
+
+/**
+ * Checks the selected cell and enables/disables the Activity Recommendation
+ * ribbon button and context menu item accordingly.
+ */
+async function updateActivityRecommendationButtonState(): Promise<void> {
+  try {
+    let shouldEnable = false;
+    await Excel.run(async (context) => {
+      const range = context.workbook.getSelectedRange();
+      range.load("formulas");
+      await context.sync();
+      const formula = range.formulas[0][0] as string;
+      shouldEnable = isRecommendActivityTypeFormula(formula);
+    });
+
+    if (shouldEnable === activityRecommendationEnabled) {
+      return;
+    }
+
+    // Update ribbon button (RibbonApi 1.1)
+    Office.ribbon.requestUpdate({
+      tabs: [
+        {
+          id: "EnviziTab",
+          groups: [
+            {
+              id: "ActivityRecommendationsGroup",
+              controls: [{ id: "ActivityRecommendationsButton", enabled: shouldEnable }],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Update context menu item (ContextMenuApi 1.1 — available from Office)
+    if ((Office as any).contextMenu) {
+      await (Office as any).contextMenu.requestUpdate({
+        controls: [
+          { id: "EnviziRecommendations", enabled: shouldEnable },
+          { id: "ViewActivityRecommendations", enabled: shouldEnable },
+        ],
+      });
+    }
+
+    activityRecommendationEnabled = shouldEnable;
+  } catch (error) {
+    console.log("[Add-in] Activity recommendation button state update failed:", error);
+  }
+}
+
 /**
  * Command handler for IBM Envizi Suggestions context menu
  * Opens task pane and shows recommendations in the Suggestions tab
  */
 async function actionShowActivityRecommendation(event: Office.AddinCommands.Event): Promise<void> {
+  // Guard against race condition where button fires before state update catches up
+  if (!activityRecommendationEnabled) {
+    updateActivityRecommendationButtonState();
+    event.completed();
+    return;
+  }
+
   try {
     await Excel.run(async (context) => {
       const range = context.workbook.getSelectedRange();
-      range.load(["address", "values"]);
+      range.load(["address", "formulas"]);
       await context.sync();
-
-      const value = range.values[0][0];
-      if (value === null || value === "") {
-        showErrorNotification(
-          "The selected cell is empty. Please choose a valid cell or enter data before proceeding"
-        );
-      }
 
       const cellAddress = range.address.split("!")[1]; // Remove sheet name
 
       // Get parameters from cell (with formula detection)
       const params = await getParamsFromCell(cellAddress, context);
 
-      // Capture whether the task pane was already open BEFORE opening it
-      const wasAlreadyOpen = getIsTaskpaneOpen();
-
-      // Open task pane
-      await openTaskpane();
-
       // Dispatch event with recommendation parameters and task pane state
       window.dispatchEvent(
         new CustomEvent("ACTIVITY_RECOMMENDER_REQUESTED", {
           detail: {
             recommendedParams: params,
-            wasAlreadyOpen,
           },
         })
       );
@@ -239,9 +275,20 @@ async function actionShowActivityRecommendation(event: Office.AddinCommands.Even
 (globalThis as any).actionInsertUnits = actionInsertUnits;
 (globalThis as any).actionShowActivityRecommendation = actionShowActivityRecommendation;
 
-// Initialize Office
-Office.onReady(() => {
-  // Commands ready
+// Initialize Office and register selection-change listener
+Office.onReady(async () => {
+  try {
+    await Excel.run(async (context) => {
+      context.workbook.worksheets.onSelectionChanged.add(() =>
+        updateActivityRecommendationButtonState()
+      );
+      await context.sync();
+    });
+    // Set initial button state based on current selection
+    updateActivityRecommendationButtonState();
+  } catch (error) {
+    console.log("[Add-in] Failed to register selection change handler:", error);
+  }
 });
 
 // Made with Bob

@@ -71,53 +71,61 @@ describe("typeRecommender", () => {
 
     const result = await typeRecommender("electricity", "USA");
 
-    expect(result).toEqual([
-      ["Electricity - Grid", 0.95, "Electricity consumption from the grid"],
-    ]);
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      pagination: { page: 1, size: 1 }
-    }));
+    expect(result).toEqual([["Electricity - Grid", 0.95, "Electricity consumption from the grid"]]);
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pagination: { page: 1, size: 1 },
+      })
+    );
   });
 
   it("includes stateProvince in params when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA", "California");
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      location: { country: "USA", stateProvince: "California" }
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        location: { country: "USA", stateProvince: "California" },
+      })
+    );
   });
 
   it("excludes stateProvince from params when not provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA");
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      location: { country: "USA" }
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        location: { country: "USA" },
+      })
+    );
   });
 
   it("includes date in params when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA", undefined, undefined, undefined, "2024-01-01");
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      time: { date: "2024-01-01" }
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        time: { date: "2024-01-01" },
+      })
+    );
   });
 
   it("excludes date from params when empty string", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA", undefined, undefined, undefined, "   ");
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.not.objectContaining({
-      time: expect.anything()
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.not.objectContaining({
+        time: expect.anything(),
+      })
+    );
   });
 
   it("returns default message when no types found", async () => {
@@ -125,9 +133,7 @@ describe("typeRecommender", () => {
 
     const result = await typeRecommender("unknown", "USA");
 
-    expect(result).toEqual([
-      ["No recommendations found", 0, ""],
-    ]);
+    expect(result).toEqual([["No recommendations found", 0, ""]]);
   });
 
   it("handles null/undefined fields in response", async () => {
@@ -145,9 +151,7 @@ describe("typeRecommender", () => {
 
     const result = await typeRecommender("electricity", "USA");
 
-    expect(result).toEqual([
-      ["", "", ""],
-    ]);
+    expect(result).toEqual([["", "", ""]]);
   });
 
   it("throws CustomFunctions.Error with message from error response", async () => {
@@ -169,21 +173,23 @@ describe("typeRecommender", () => {
 
   it("throws error when response is missing types array", async () => {
     mockedSearch.mockResolvedValue({ types: null } as any);
-    
-    await expect(typeRecommender("electricity", "USA")).rejects.toThrow("Invalid API response structure");
+
+    await expect(typeRecommender("electricity", "USA")).rejects.toThrow(
+      "Invalid API response structure"
+    );
   });
 
   it("re-throws CustomFunctions.Error without modification", async () => {
     const customError = new (global as any).CustomFunctions.Error("NotAvailable", "Custom error");
     mockedSearch.mockRejectedValue(customError);
-    
+
     await expect(typeRecommender("electricity", "USA")).rejects.toThrow(customError);
   });
 
   it("uses InvalidValue error code for 400 status", async () => {
     const error = { status: 400, message: "Bad request" };
     mockedSearch.mockRejectedValue(error);
-    
+
     try {
       await typeRecommender("electricity", "USA");
     } catch (e: any) {
@@ -194,7 +200,7 @@ describe("typeRecommender", () => {
   it("uses NotAvailable error code for non-400 status", async () => {
     const error = { status: 500, message: "Server error" };
     mockedSearch.mockRejectedValue(error);
-    
+
     try {
       await typeRecommender("electricity", "USA");
     } catch (e: any) {
@@ -204,66 +210,86 @@ describe("typeRecommender", () => {
 
   it("always uses pagination with page 1 and size 1", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA");
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      pagination: { page: 1, size: 1 }
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pagination: { page: 1, size: 1 },
+      })
+    );
   });
 
   it("builds correct API params with all optional parameters", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA", "California", undefined, undefined, "2024-01-01");
-    
+
     expect(mockedSearch).toHaveBeenCalledWith({
       activity: { search: "electricity" },
       location: { country: "USA", stateProvince: "California" },
       time: { date: "2024-01-01" },
-      pagination: { page: 1, size: 1 }
+      pagination: { page: 1, size: 1 },
     });
   });
 
   it("includes unit in activity params when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA", undefined, "kWh");
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      activity: expect.objectContaining({ search: "electricity", unit: "kWh" })
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activity: expect.objectContaining({ search: "electricity", unit: "kWh" }),
+      })
+    );
   });
 
   it("includes scope in activity params when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA", undefined, undefined, "1");
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      activity: expect.objectContaining({ search: "electricity", scope: "1" })
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activity: expect.objectContaining({ search: "electricity", scope: "1" }),
+      })
+    );
   });
 
   it("includes both unit and scope in activity params when provided", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA", undefined, "kWh", "2");
-    
-    expect(mockedSearch).toHaveBeenCalledWith(expect.objectContaining({
-      activity: expect.objectContaining({ search: "electricity", unit: "kWh", scope: "2" })
-    }));
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activity: expect.objectContaining({ search: "electricity", unit: "kWh", scope: "2" }),
+      })
+    );
+  });
+
+  it("includes factorSet in activity params when provided", async () => {
+    mockedSearch.mockResolvedValue(mockResponse);
+
+    await typeRecommender("electricity", "USA", undefined, undefined, undefined, undefined, "EPA");
+
+    expect(mockedSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activity: expect.objectContaining({ search: "electricity", factorSet: "EPA" }),
+      })
+    );
   });
 
   it("builds correct API params with only required parameters", async () => {
     mockedSearch.mockResolvedValue(mockResponse);
-    
+
     await typeRecommender("electricity", "USA");
-    
+
     expect(mockedSearch).toHaveBeenCalledWith({
       activity: { search: "electricity" },
       location: { country: "USA" },
-      pagination: { page: 1, size: 1 }
+      pagination: { page: 1, size: 1 },
     });
   });
 });

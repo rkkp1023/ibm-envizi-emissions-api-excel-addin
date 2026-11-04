@@ -1,10 +1,8 @@
 // Copyright IBM Corp. 2026
 
 import { Close } from "@carbon/icons-react";
-import { Button, Theme } from "@carbon/react";
 import { Tab } from "@fluentui/react-components";
 import { type ReactNode } from "react";
-import { useCarbonTheme } from "../../hooks";
 
 export interface DismissibleTabProps {
   value: string;
@@ -14,8 +12,7 @@ export interface DismissibleTabProps {
 }
 
 export function DismissibleTab({ value, icon, label, onDismiss }: Readonly<DismissibleTabProps>) {
-  const theme = useCarbonTheme();
-  const handleDismiss = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDismiss = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
     onDismiss();
   };
@@ -32,19 +29,21 @@ export function DismissibleTab({ value, icon, label, onDismiss }: Readonly<Dismi
       <span className="dismissible-tab-content">
         {icon}
         <span className="dismissible-tab-label">{label}</span>
-        <Theme theme={theme.theme}>
-          <span onPointerDown={blockTabSelect}>
-            <Button
-              hasIconOnly
-              kind="ghost"
-              size="sm"
-              renderIcon={Close}
-              iconDescription="Close tab"
-              aria-label="Close tab"
-              onClick={handleDismiss}
-            ></Button>
-          </span>
-        </Theme>
+        <span
+          tabIndex={0}
+          aria-label="Close tab"
+          className="dismissible-tab-close"
+          onClick={handleDismiss}
+          onPointerDown={blockTabSelect}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.stopPropagation();
+              onDismiss();
+            }
+          }}
+        >
+          <Close />
+        </span>
       </span>
     </Tab>
   );

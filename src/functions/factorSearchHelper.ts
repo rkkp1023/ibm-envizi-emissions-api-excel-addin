@@ -6,29 +6,34 @@ import { ensureClient } from "./client";
 import { formatRow } from "./headers-config";
 import { buildSearchParams } from "./utils";
 
+interface FactorSearchOptions {
+  stateProvince?: string;
+  unit?: string;
+  scope?: string;
+  date?: string;
+  page?: number;
+  size?: number;
+  factorSet?: string;
+}
+
 function buildFactorSearchParams(
   search: string,
   country: string,
-  stateProvince?: string,
-  unit?: string,
-  scope?: string,
-  date?: string,
-  page?: number,
-  size?: number
+  options: FactorSearchOptions = {}
 ): any {
+  const { stateProvince, unit, scope, date, page, size, factorSet } = options;
+
   // Use shared utility for common parameter building
-  const params = buildSearchParams(search, country, stateProvince, unit, scope, date);
+  const params = buildSearchParams(search, country, stateProvince, unit, scope, date, factorSet);
 
   // Add pagination specific to factor search
   params.pagination = {
     page: page || 1,
-    size: size || 30
+    size: size || 30,
   };
 
   return params;
 }
-
-
 
 function formatFactorSearchResponse(response: any): (string | number)[][] {
   return response.factors.map((factor: any) => formatRow(factor, "factor_search"));
@@ -37,20 +42,14 @@ function formatFactorSearchResponse(response: any): (string | number)[][] {
 export async function factorSearch(
   search: string,
   country: string,
-  stateProvince?: string,
-  unit?: string,
-  scope?: string,
-  date?: string,
-  page?: number,
-  size?: number
+  options: FactorSearchOptions = {}
 ): Promise<any[][]> {
   try {
     await ensureClient();
 
-    const apiParams = buildFactorSearchParams(search, country, stateProvince, unit, scope, date, page, size);
+    const apiParams = buildFactorSearchParams(search, country, options);
 
     const response = await Factor.search(apiParams);
-
 
     if (!response || !Array.isArray(response.factors)) {
       throw new CustomFunctions.Error(

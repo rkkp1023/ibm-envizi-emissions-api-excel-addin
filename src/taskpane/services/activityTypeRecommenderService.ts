@@ -12,6 +12,7 @@ export interface ActivityTypeRecommenderSearchParams {
   unit?: string;
   scope?: string;
   date?: string;
+  factorSet?: string;
 }
 
 export interface ActivityTypeRecommendation {
@@ -20,7 +21,7 @@ export interface ActivityTypeRecommendation {
   confidence: number;
   activityDescription: string;
   region?: string;
-  scope?: string;
+  scope?: string[];
   units?: string[];
 }
 
@@ -29,7 +30,7 @@ interface TypeRecommenderResponseItem {
   confidence?: number;
   activityDescription?: string;
   region?: string;
-  scope?: string;
+  scope?: string[];
   activityUnit?: string[];
 }
 
@@ -44,13 +45,14 @@ function buildTypeRecommenderParams({
   unit,
   scope,
   date,
+  factorSet,
 }: ActivityTypeRecommenderSearchParams): ReturnType<typeof buildSearchParams> & {
   pagination: {
     page: number;
     size: number;
   };
 } {
-  const params = buildSearchParams(search, country, stateProvince, unit, scope, date);
+  const params = buildSearchParams(search, country, stateProvince, unit, scope, date, factorSet);
 
   return {
     ...params,
@@ -71,7 +73,7 @@ function mapRecommendation(
     confidence: typeof recommendation?.confidence === "number" ? recommendation.confidence : 0,
     activityDescription: recommendation?.activityDescription ?? "",
     region: recommendation?.region ?? "-",
-    scope: recommendation?.scope ?? "-",
+    scope: recommendation?.scope ? recommendation.scope : undefined,
     units: Array.isArray(recommendation?.activityUnit) ? recommendation.activityUnit : [],
   };
 }
@@ -90,7 +92,19 @@ export async function recommendActivityType(
       .filter((item) => item?.activityType)
       .map((item, index) => mapRecommendation(item, index));
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const err = error as Record<string, unknown>;
+    const errorCode = err?.code;
+    let errorMessage = "Unknown error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof err?.message === "string") {
+      errorMessage = err.message;
+    }
+
+    if (errorCode === 404 && errorMessage === "No activity types found matching the criteria") {
+      return [];
+    }
+
     console.error("Taskpane activity type recommender request failed:", errorMessage);
     throw new Error(`Failed to fetch activity type recommendations: ${errorMessage}`);
   }

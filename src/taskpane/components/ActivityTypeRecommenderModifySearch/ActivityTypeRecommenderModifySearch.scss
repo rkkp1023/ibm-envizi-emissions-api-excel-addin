@@ -1,0 +1,42 @@
+// Copyright IBM Corp. 2026
+
+@use "@carbon/react/scss/spacing";
+@use "@carbon/react/scss/type";
+
+.modify-search-container {
+  .page-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #c6c6c6;
+
+    .heading-title {
+      @include type.type-style("heading-compact-02");
+    }
+
+    .left,
+    .right {
+      flex: 1;
+    }
+  }
+
+  .back-btn {
+    flex-shrink: 0;
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: spacing.$spacing-05;
+    margin-top: 1rem;
+
+    button {
+      flex: 1;
+    }
+  }
+  .modify-search-form {
+    padding: spacing.$spacing-05;
+  }
+
+  .error-notification {
+    max-inline-size: 100%;
+  }
+}
